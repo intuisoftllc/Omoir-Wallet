@@ -193,7 +193,8 @@ class SettingsFragment : PinProtectedFragment<FragmentSettingsBinding>() {
             },
 
             onEnroll = {
-                // ignore
+                binding.enableFingerprintSetting.setLayoutClickTriggersSwitch()
+                viewModel.saveFingerprintRegistered(false)
             }
         )
 

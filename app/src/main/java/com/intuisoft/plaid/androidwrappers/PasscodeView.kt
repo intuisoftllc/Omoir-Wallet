@@ -147,7 +147,6 @@ class PasscodeView @JvmOverloads constructor(
         iv_fingerprint!!.setOnClickListener { scanFingerprint() }
         tintImageView(numberB, numberTextColor)
         tintImageView(numberOK, numberTextColor)
-        tintImageView(iv_ok, correctStatusColor)
         number0!!.tag = 0
         number1!!.tag = 1
         number2!!.tag = 2

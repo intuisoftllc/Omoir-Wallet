@@ -28,7 +28,7 @@
             android:scaleX="0"
             android:scaleY="0"
             app:srcCompat="@drawable/ic_check_bold_24dp"
-            app:tint="#66e75d" />
+            app:tint="@color/white" />
     </RelativeLayout>
 
     <TextView

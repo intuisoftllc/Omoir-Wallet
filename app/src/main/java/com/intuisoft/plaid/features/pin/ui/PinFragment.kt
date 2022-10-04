@@ -25,6 +25,7 @@ import com.intuisoft.plaid.features.pin.viewmodel.PinViewModel
 import com.intuisoft.plaid.util.Constants
 import com.intuisoft.plaid.util.entensions.hideSoftKeyboard
 import com.intuisoft.plaid.util.entensions.ignoreOnBackPressed
+import com.intuisoft.plaid.util.entensions.validateFingerprint
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -92,33 +93,18 @@ class PinFragment: BindingFragment<FragmentPinEntryBinding>() {
             }
 
             override fun onScanFingerprint(listener: FingerprintScanResponse) {
-                var executor: Executor = ContextCompat.getMainExecutor(requireContext())
-                var biometricPrompt = BiometricPrompt(this@PinFragment, executor,
-                    object : BiometricPrompt.AuthenticationCallback() {
-                        override fun onAuthenticationError(errorCode: Int,
-                                                           errString: CharSequence) {
-                            super.onAuthenticationError(errorCode, errString)
-                            listener.onScanFail()
-                        }
+                validateFingerprint(
+                    onSuccess = {
+                        listener.onScanSuccess()
+                    },
 
-                        override fun onAuthenticationSucceeded(
-                            result: BiometricPrompt.AuthenticationResult) {
-                            super.onAuthenticationSucceeded(result)
-                            listener.onScanSuccess()
-                        }
+                    onError = {
+                        listener.onScanFail()
+                    },
 
-                        override fun onAuthenticationFailed() {
-                            super.onAuthenticationFailed()
-                        }
-                    })
-
-                var promptInfo: BiometricPrompt.PromptInfo = BiometricPrompt.PromptInfo.Builder()
-                    .setTitle("Use Biometric Authentication")
-                    .setSubtitle("Unlock Plaid Crypto Wallet™ using biometrics.")
-                    .setNegativeButtonText("Use pin")
-                    .build()
-
-                biometricPrompt.authenticate(promptInfo)
+                    subTitle = Constants.Strings.USE_BIOMETRIC_REASON_2,
+                    negativeText = Constants.Strings.USE_PIN
+                )
             }
 
         })

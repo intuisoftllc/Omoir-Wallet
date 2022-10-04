@@ -58,6 +58,11 @@ class Constants {
         const val STRING_2_MINUTE_TIMEOUT = "2 Minutes"
         const val STRING_5_MINUTE_TIMEOUT = "5 Minutes"
         const val STRING_10_MINUTE_TIMEOUT = "10 Minutes"
+        const val USE_BIOMETRIC_AUTH = "Use Biometric Authentication"
+        const val USE_BIOMETRIC_REASON_1 = "Use biometrics to add an additional layer of security to your wallet when signing transactions."
+        const val USE_BIOMETRIC_REASON_2 = "Unlock Plaid Crypto Wallet™ using biometrics."
+        const val SKIP_FOR_NOW = "Skip for now"
+        const val USE_PIN = "Use pin"
     }
 
     object Time {

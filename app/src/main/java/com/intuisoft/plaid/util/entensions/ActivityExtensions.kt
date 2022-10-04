@@ -7,6 +7,7 @@ import androidx.activity.OnBackPressedCallback
 import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import com.intuisoft.plaid.util.Constants
 import java.util.concurrent.Executor
 
 // extension function to hide soft keyboard programmatically
@@ -37,13 +38,21 @@ fun Fragment.onBackPressedCallback(onBackPressed: () -> Unit) {
 }
 
 
-fun Fragment.validateFingerprint(onSuccess: () -> Unit) {
+fun Fragment.validateFingerprint(
+    title: String = Constants.Strings.USE_BIOMETRIC_AUTH,
+    subTitle: String = Constants.Strings.USE_BIOMETRIC_REASON_1,
+    negativeText: String = Constants.Strings.SKIP_FOR_NOW,
+    onFail: (() -> Unit)? = null,
+    onError: (() -> Unit)? = null,
+    onSuccess: () -> Unit
+) {
     var executor: Executor = ContextCompat.getMainExecutor(requireContext())
     var biometricPrompt = BiometricPrompt(this, executor,
         object : BiometricPrompt.AuthenticationCallback() {
             override fun onAuthenticationError(errorCode: Int,
                                                errString: CharSequence) {
                 super.onAuthenticationError(errorCode, errString)
+                onError?.invoke()
             }
 
             override fun onAuthenticationSucceeded(
@@ -54,13 +63,14 @@ fun Fragment.validateFingerprint(onSuccess: () -> Unit) {
 
             override fun onAuthenticationFailed() {
                 super.onAuthenticationFailed()
+                onFail?.invoke()
             }
         })
 
     var promptInfo: BiometricPrompt.PromptInfo = BiometricPrompt.PromptInfo.Builder()
-        .setTitle("Use Biometric Authentication")
-        .setSubtitle("Use biometrics to add an additional layer of security to your wallet when signing transactions.")
-        .setNegativeButtonText("Skip for now")
+        .setTitle(title)
+        .setDescription(subTitle)
+        .setNegativeButtonText(negativeText)
         .build()
 
     biometricPrompt.authenticate(promptInfo)
