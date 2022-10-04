@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="RoundedButtonView">
+        <attr name="btn_text" format="string"/>
+        <attr name="text_all_caps" format="boolean"/>
+        <attr name="right_icon" format="reference"/>
+        <attr name="text_size" format="integer"/>
+
+        <attr name="text_position">
+            <flag name="center" value="0" />
+            <flag name="left" value="1" />
+            <flag name="right" value="2" />
+        </attr>
+
+        <attr name="button_style">
+            <flag name="none" value="0" />
+            <flag name="rounded" value="1" />
+            <flag name="light-grey-outlined" value="2" />
+            <flag name="outlined" value="4" />
+            <flag name="white-rounded" value="8" />
+        </attr>
+    </declare-styleable>
+
+
+    <declare-styleable name="PasscodeView">
+        <attr name="passcodeViewType" format="enum">
+            <enum name="set_passcode" value="0"/>
+            <enum name="check_passcode" value="1"/>
+        </attr>
+        <attr name="normalStateColor" format="color"/>
+        <attr name="correctStateColor" format="color"/>
+        <attr name="wrongStateColor" format="color"/>
+        <attr name="numberTextColor" format="color"/>
+        <attr name="passcodeLength" format="integer"/>
+        <attr name="firstInputTip" format="string"/>
+        <attr name="trackIncorrectAttempts" format="boolean"/>
+        <attr name="tipTextColor" format="color"/>
+        <attr name="secondInputTip" format="string"/>
+        <attr name="wrongLengthTip" format="string"/>
+        <attr name="wrongInputTip" format="string"/>
+        <attr name="correctInputTip" format="string"/>
+    </declare-styleable>
+
+
+    <declare-styleable name="SettingsItemView">
+        <attr name="title_text_color" format="color"/>
+        <attr name="item_title" format="string"/>
+        <attr name="item_subtitle" format="string"/>
+        <attr name="subtitle_icon" format="reference"/>
+        <attr name="show_switch" format="boolean"/>
+    </declare-styleable>
+</resources>

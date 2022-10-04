@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/homescreen_flow_graph"
+    app:startDestination="@+id/homescreenFragment">
+
+    <include app:graph="@navigation/settings_flow_graph" />
+
+    <fragment
+        android:id="@+id/homescreenFragment"
+        android:name="com.intuisoft.plaid.features.homescreen.ui.HomescreenFragment"
+        android:label="@string/homescreen_fragment_label"
+        tools:layout="@layout/fragment_homescreen">
+
+        <action
+            android:id="@+id/action_HomescreenFragment_to_SettingsFragment"
+            app:destination="@+id/settings_flow_graph" />
+    </fragment>
+
+
+    <action
+        android:id="@+id/action_global_pinFragment"
+        app:destination="@+id/pinFragment" />
+
+</navigation>

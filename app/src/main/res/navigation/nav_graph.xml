@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/splashFragment">
+
+    <include app:graph="@navigation/onboarding_flow_graph" />
+    <include app:graph="@navigation/homescreen_flow_graph" />
+
+    <fragment
+        android:id="@+id/splashFragment"
+        android:name="com.intuisoft.plaid.features.splash.ui.SplashFragment"
+        android:label="@string/splash_fragment_label"
+        tools:layout="@layout/fragment_splash">
+
+        <action
+            android:id="@+id/action_SplashFragment_to_OnboardingFragment"
+            app:destination="@id/onboarding_flow_graph" />
+
+        <action
+            android:id="@+id/action_SplashFragment_to_HomescreenFragment"
+            app:destination="@id/homescreen_flow_graph" />
+    </fragment>
+
+
+    <fragment
+        android:id="@+id/pinFragment"
+        android:name="com.intuisoft.plaid.features.pin.ui.PinFragment"
+        android:label="@string/pin_fragment_label"
+        tools:layout="@layout/fragment_pin_entry">
+
+        <action
+            android:id="@+id/action_PinFragment_to_SplashFragment"
+            app:destination="@+id/splashFragment" />
+    </fragment>
+
+    <action
+        android:id="@+id/action_global_pinFragment"
+        app:destination="@+id/pinFragment" />
+
+</navigation>

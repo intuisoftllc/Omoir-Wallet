@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">Plaid</string>
+    <string name="action_settings">Settings</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="homescreen_fragment_label">Home</string>
+    <string name="welcome_fragment_label">Welcome</string>
+    <string name="settings_fragment_label">Settings</string>
+    <string name="display_unit_fragment_label">Bitcoin Unit</string>
+    <string name="pin_fragment_label">Pin</string>
+    <string name="splash_fragment_label">Splash</string>
+    <string name="setup_pin_fragment_label">Onboarding Pin Setup</string>
+    <string name="fingerprint_fragment_label">Setup Fingerprint</string>
+    <string name="fingerprint_all_set_label">All Set</string>
+    <string name="onboarding_greeting_1">Welcome</string>
+    <string name="onboarding_back_button_text">Back</string>
+    <string name="bitcoin">Bitcoin</string>
+    <string name="satoshi">Satoshi</string>
+    <string name="no_connection_message">No internet connection</string>
+    <string name="fingerprint_register_description_2">Add an additional layer of security to the app by requiring your fingerprint for signing transactions.\n\nYou can always skip this step and set it up later in settings.</string>
+    <string name="fingerprint_register_description_1">Use your fingerprint for signing transactions</string>
+</resources>

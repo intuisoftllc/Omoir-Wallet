@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="H2">
+        <item name="fontFamily">@font/montserrat_regular</item>
+        <item name="android:textSize">34sp</item>
+        <item name="fontWeight">600</item>
+        <item name="lineHeight">34dp</item>
+    </style>
+
+    <style name="H2.Bold">
+        <item name="fontFamily">@font/montserrat_bold</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="H4">
+        <item name="fontFamily">@font/montserrat_regular</item>
+        <item name="android:textSize">24sp</item>
+        <item name="fontWeight">400</item>
+        <item name="lineHeight">28dp</item>
+    </style>
+
+
+    <style name="H5">
+        <item name="fontFamily">@font/montserrat_regular</item>
+        <item name="android:textSize">18sp</item>
+        <item name="fontWeight">400</item>
+        <item name="lineHeight">26dp</item>
+    </style>
+
+
+    <style name="H6">
+        <item name="fontFamily">@font/montserrat_regular</item>
+        <item name="android:textSize">15sp</item>
+        <item name="fontWeight">400</item>
+        <item name="lineHeight">22dp</item>
+    </style>
+
+    <style name="H7">
+        <item name="fontFamily">@font/montserrat_regular</item>
+        <item name="android:textSize">15sp</item>
+        <item name="fontWeight">400</item>
+        <item name="lineHeight">20dp</item>
+    </style>
+
+    <style name="H6.Bold">
+        <item name="fontFamily">@font/montserrat_bold</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="H6.LightBold">
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="H4.Bold">
+        <item name="fontFamily">@font/montserrat_bold</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="NumberInPasscode">
+        <item name="android:layout_width">54dp</item>
+        <item name="android:layout_height">54dp</item>
+        <item name="android:background">@drawable/layout_selector_tran</item>
+        <item name="android:clickable">true</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textSize">29sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <style name="Subtitle">
+        <item name="fontFamily">@font/montserrat_light</item>
+        <item name="android:textSize">18sp</item>
+        <item name="fontWeight">200</item>
+    </style>
+
+    <style name="Subtitle.Bold">
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="Caption">
+        <item name="android:textSize">12sp</item>
+        <item name="lineHeight">12dp</item>
+    </style>
+
+    <style name="Caption.Grey">
+        <item name="android:textColor">@color/grey</item>
+    </style>
+
+    <style name="Subtitle.H7">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">?android:attr/textColorSecondary</item>
+        <item name="lineHeight">14dp</item>
+        <item name="android:letterSpacing">0</item>
+        <item name="fontWeight">500</item>
+    </style>
+
+
+    <style name="Subtitle.H7.Grey">
+        <item name="android:textColor">@color/grey</item>
+    </style>
+
+    <style name="Subtitle.H7.Black">
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <style name="HorizontalProgressBar" parent="Widget.AppCompat.ProgressBar.Horizontal">
+        <item name="android:progressDrawable">@drawable/onboarding_progress_bar</item>
+        <item name="android:minHeight">4dp</item>
+        <item name="android:maxHeight">4dp</item>
+    </style>
+</resources>
