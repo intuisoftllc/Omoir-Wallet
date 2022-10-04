@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingTop="10dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingVertical="10dp"
+        android:layout_margin="10dp">
+
+        <com.intuisoft.plaid.androidwrappers.SettingsItemView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:item_title="Security"
+            app:show_switch="false"
+            android:clickable="true"
+            android:paddingVertical="4dp"
+            android:id="@+id/security"
+            app:show_check="false"
+            app:show_chevron="true"
+            app:subtitle_icon="@drawable/ic_satoshi"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0"
+            android:focusable="true" />
+
+        <com.intuisoft.plaid.androidwrappers.SettingsItemView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:item_title="Privacy Policy"
+            app:show_switch="false"
+            android:clickable="true"
+            android:id="@+id/privacyPolicy"
+            app:show_check="false"
+            app:show_chevron="true"
+            android:paddingVertical="4dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0"
+            android:focusable="true" />
+
+
+        <com.intuisoft.plaid.androidwrappers.SettingsItemView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:item_title="Terms Of Service"
+            app:show_switch="false"
+            android:clickable="true"
+            android:id="@+id/termsOfService"
+            app:show_check="false"
+            app:show_chevron="true"
+            android:paddingVertical="4dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0"
+            android:focusable="true" />
+
+    </LinearLayout>
+</LinearLayout>

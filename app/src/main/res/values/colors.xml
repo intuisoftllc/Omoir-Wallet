@@ -12,6 +12,7 @@
     <color name="black">#FF000000</color>
     <color name="alt_black">#222222</color>
     <color name="grey_white">#F1F0F0</color>
+    <color name="color_disabled">#CACACA</color>
     <color name="grey">#A8AFBF</color>
     <color name="light_grey">#A8AFBF</color>
     <color name="white">#FFFFFFFF</color>

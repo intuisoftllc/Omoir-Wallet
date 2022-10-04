@@ -57,7 +57,6 @@
             app:popUpToInclusive="true"/>
     </fragment>
 
-
     <action
         android:id="@+id/action_global_pinFragment"
         app:destination="@+id/pinFragment" />

@@ -18,7 +18,7 @@ import java.util.*
 class HomeScreenViewModel(
     application: Application,
     private val userPreferences: UserPreferences
-): BaseViewModel(application) {
+): BaseViewModel(application, userPreferences) {
 
     private val _homeScreenGreeting = MutableLiveData<Pair<String, String>>()
     val homeScreenGreeting: LiveData<Pair<String, String>> = _homeScreenGreeting

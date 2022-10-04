@@ -48,6 +48,7 @@
                 app:item_subtitle="Determined by the system"
                 app:show_switch="false"
                 android:clickable="true"
+                android:id="@+id/appearanceSetting"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0"
                 android:focusable="true" />
@@ -74,6 +75,7 @@
                 app:show_switch="false"
                 android:clickable="true"
                 android:paddingVertical="10dp"
+                android:id="@+id/updatePinSetting"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0"
                 android:focusable="true" />
@@ -85,6 +87,7 @@
                 app:item_subtitle="Set the max amount of times to enter a pin"
                 app:show_switch="false"
                 android:clickable="true"
+                android:id="@+id/maxPinSettings"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0"
                 android:focusable="true" />
@@ -96,6 +99,7 @@
                 app:item_subtitle="5 min"
                 app:show_switch="false"
                 android:clickable="true"
+                android:id="@+id/timeoutSetting"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0"
                 android:focusable="true" />
@@ -107,6 +111,7 @@
                 app:item_subtitle="Require fingerprint for signing transactions"
                 app:show_switch="true"
                 android:clickable="true"
+                android:id="@+id/enableFingerprintSetting"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0"
                 android:focusable="true" />
@@ -214,6 +219,7 @@
                 app:item_subtitle="Privacy Policy and Terms of Service"
                 app:show_switch="false"
                 android:clickable="true"
+                android:id="@+id/aboutUsSetting"
                 android:paddingVertical="10dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0"
@@ -227,6 +233,7 @@
                 app:show_switch="false"
                 android:clickable="true"
                 android:paddingVertical="10dp"
+                android:id="@+id/helpSetting"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0"
                 android:focusable="true" />
@@ -244,6 +251,7 @@
                 android:paddingVertical="10dp"
                 app:show_switch="false"
                 android:clickable="true"
+                android:id="@+id/wipeDataSetting"
                 app:title_text_color="@color/error_color"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0"
@@ -262,6 +270,7 @@
                 app:item_subtitle="v1.0.2"
                 app:show_switch="false"
                 android:clickable="true"
+                android:id="@+id/appVersionSetting"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0"
                 android:focusable="true" />

@@ -14,6 +14,14 @@
         <action
             android:id="@+id/action_SettingsFragment_to_DisplayUnitFragment"
             app:destination="@+id/displayUnitFragment" />
+
+        <action
+            android:id="@+id/action_SettingsFragment_to_AppearanceFragment"
+            app:destination="@+id/appearanceFragment" />
+
+        <action
+            android:id="@+id/action_SettingsFragment_to_AboutUsFragment"
+            app:destination="@+id/aboutUsFragment" />
     </fragment>
 
     <fragment
@@ -24,4 +32,23 @@
 
     </fragment>
 
+    <fragment
+        android:id="@+id/appearanceFragment"
+        android:name="com.intuisoft.plaid.features.settings.ui.AppearanceFragment"
+        android:label="@string/appearance_fragment_label"
+        tools:layout="@layout/fragment_appearance">
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/aboutUsFragment"
+        android:name="com.intuisoft.plaid.features.settings.ui.AboutUsFragment"
+        android:label="@string/appearance_fragment_label"
+        tools:layout="@layout/fragment_about_us">
+
+    </fragment>
+
+    <action
+        android:id="@+id/action_global_splashFragment"
+        app:destination="@+id/splashFragment" />
 </navigation>

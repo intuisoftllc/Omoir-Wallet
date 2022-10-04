@@ -16,7 +16,7 @@ import kotlinx.coroutines.launch
 class SplashViewModel(
     application: Application,
     private val userPreferences: UserPreferences
-): BaseViewModel(application) {
+): BaseViewModel(application, userPreferences) {
 
     private val _nextDestination = MutableLiveData<NavDirections>()
     val nextDestination: LiveData<NavDirections> = _nextDestination

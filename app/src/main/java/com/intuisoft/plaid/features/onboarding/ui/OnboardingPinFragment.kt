@@ -74,9 +74,11 @@ class OnboardingPinFragment : OnboardingFragment<FragmentOnboardingPinBinding>()
                     Constants.Navigation.ANIMATED_ENTER_EXIT_RIGHT_NAV_OPTION
                 )
             } else {
-                // goto to end of onboarding screen
+                findNavController().navigate(
+                    OnboardingPinFragmentDirections.actionOnboardingPinSetupFragmentToAllSetFragment(),
+                    Constants.Navigation.ANIMATED_ENTER_EXIT_RIGHT_NAV_OPTION
+                )
             }
-
         })
     }
 
@@ -95,7 +97,14 @@ class OnboardingPinFragment : OnboardingFragment<FragmentOnboardingPinBinding>()
     }
 
     override fun onNextStep() {
-        viewModel.checkFingerprintSupport()
+        viewModel.checkFingerprintSupport(
+            onEnroll = {
+                findNavController().navigate(
+                    OnboardingPinFragmentDirections.actionOnboardingPinSetupFragmentToFingerprintSetupFragment(),
+                    Constants.Navigation.ANIMATED_ENTER_EXIT_RIGHT_NAV_OPTION
+                )
+            }
+        )
     }
 
     override fun onPrevStep() {

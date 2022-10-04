@@ -49,5 +49,7 @@
         <attr name="item_subtitle" format="string"/>
         <attr name="subtitle_icon" format="reference"/>
         <attr name="show_switch" format="boolean"/>
+        <attr name="show_check" format="boolean"/>
+        <attr name="show_chevron" format="boolean"/>
     </declare-styleable>
 </resources>

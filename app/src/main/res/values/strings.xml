@@ -2,10 +2,16 @@
     <string name="app_name">Plaid</string>
     <string name="action_settings">Settings</string>
     <!-- Strings used for fragments for navigation -->
+    <string name="business_email">intuisoftllc@gmail.com</string>
+    <string name="support_request_subject">Plaid Crypto Wallet Support</string>
+    <string name="support_request_message">Device: %1$s\nApi Level: %2$s\nOS Version: %3$s\nModel: %4$s\nProduct: %5$s\n----------------------------------------\n\nHello Intuisoft team, I would like to request more information regarding your app.</string>
+
     <string name="homescreen_fragment_label">Home</string>
     <string name="welcome_fragment_label">Welcome</string>
     <string name="settings_fragment_label">Settings</string>
     <string name="display_unit_fragment_label">Bitcoin Unit</string>
+    <string name="appearance_fragment_label">Appearance</string>
+    <string name="about_us_fragment_label">About Us</string>
     <string name="pin_fragment_label">Pin</string>
     <string name="splash_fragment_label">Splash</string>
     <string name="setup_pin_fragment_label">Onboarding Pin Setup</string>
@@ -14,8 +20,22 @@
     <string name="onboarding_greeting_1">Welcome</string>
     <string name="onboarding_back_button_text">Back</string>
     <string name="bitcoin">Bitcoin</string>
+    <string name="low_pin_limit_risk_message">Setting your invalid pin entry limit below 5 may result in you losing access to your funds if not properly backed up.</string>
     <string name="satoshi">Satoshi</string>
+    <string name="cancel">Cancel</string>
+    <string name="low_pin_limit_title">Low Pin Entry Limit</string>
+    <string name="wipe_data_title">Delete All Data</string>
+    <string name="wipe_data_message">Are you sure you want to wipe all data from Plaid Crypto Wallet™? This action is irreversible, please be sure you have backed up all your seed phrases.</string>
+    <string name="risk_acknowledgement_1">I Understand The Risks</string>
+    <string name="erase_data">Erase Data</string>
     <string name="no_connection_message">No internet connection</string>
     <string name="fingerprint_register_description_2">Add an additional layer of security to the app by requiring your fingerprint for signing transactions.\n\nYou can always skip this step and set it up later in settings.</string>
     <string name="fingerprint_register_description_1">Use your fingerprint for signing transactions</string>
+    <string name="create_pin_tip_message">Create a pin up to 8 digits</string>
+    <string name="incorrect_pin_length_tip_message">Pin must be at least 4 digits</string>
+    <string name="re_enter_pin_tip_message">Re-enter new pin</string>
+    <string name="wrong_input_tip_message">Pin code does not match</string>
+    <string name="pin_check_success_tip_message">Pin is correct</string>
+    <string name="enter_pin_to_unlock_message">Enter pin to unlock</string>
+    <string name="enter_pin_to_reset_message">Enter current pin to update</string>
 </resources>

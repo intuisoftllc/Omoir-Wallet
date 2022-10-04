@@ -4,17 +4,20 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.Observer
+import com.intuisoft.plaid.MainActivity
 import com.intuisoft.plaid.R
-import com.intuisoft.plaid.databinding.FragmentBitcoinUnitBinding
-import com.intuisoft.plaid.databinding.FragmentSettingsBinding
+import com.intuisoft.plaid.databinding.FragmentAboutUsBinding
+import com.intuisoft.plaid.databinding.FragmentAppearanceBinding
 import com.intuisoft.plaid.features.pin.ui.PinProtectedFragment
 import com.intuisoft.plaid.features.settings.viewmodel.SettingsViewModel
+import com.intuisoft.plaid.model.AppTheme
 import com.intuisoft.plaid.model.BitcoinDisplayUnit
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 
-class BitcoinUnitFragment : PinProtectedFragment<FragmentBitcoinUnitBinding>() {
+class AboutUsFragment : PinProtectedFragment<FragmentAboutUsBinding>() {
     private val viewModel: SettingsViewModel by sharedViewModel()
 
     override fun onCreateView(
@@ -22,7 +25,7 @@ class BitcoinUnitFragment : PinProtectedFragment<FragmentBitcoinUnitBinding>() {
         savedInstanceState: Bundle?
     ): View? {
 
-        _binding = FragmentBitcoinUnitBinding.inflate(inflater, container, false)
+        _binding = FragmentAboutUsBinding.inflate(inflater, container, false)
         return binding.root
 
     }
@@ -30,18 +33,16 @@ class BitcoinUnitFragment : PinProtectedFragment<FragmentBitcoinUnitBinding>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.updateSettingsScreen()
-        viewModel.bitcoinDisplayUnitSetting.observe(viewLifecycleOwner, Observer {
-            binding.btcUnit.showCheck(it == BitcoinDisplayUnit.BTC)
-            binding.satUnit.showCheck(it == BitcoinDisplayUnit.SATS)
-        })
-
-        binding.btcUnit.setOnClickListener {
-            viewModel.saveDisplayUnit(BitcoinDisplayUnit.BTC)
+        binding.security.setOnClickListener {
+            // todo: impl -> navigate to fragment in app explaining our security model
         }
 
-        binding.satUnit.setOnClickListener {
-            viewModel.saveDisplayUnit(BitcoinDisplayUnit.SATS)
+        binding.privacyPolicy.setOnClickListener {
+            // todo: impl -> navigate to web address on plaidcryptowallet.com
+        }
+
+        binding.termsOfService.setOnClickListener {
+            // todo: impl -> navigate to web address on plaidcryptowallet.com
         }
     }
 
@@ -56,6 +57,6 @@ class BitcoinUnitFragment : PinProtectedFragment<FragmentBitcoinUnitBinding>() {
     }
 
     override fun actionBarTitle(): Int {
-        return R.string.display_unit_fragment_label
+        return R.string.about_us_fragment_label
     }
 }

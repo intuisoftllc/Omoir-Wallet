@@ -2,7 +2,9 @@ package com.intuisoft.plaid.local
 
 import android.content.SharedPreferences
 import com.google.gson.Gson
+import com.intuisoft.plaid.model.AppTheme
 import com.intuisoft.plaid.model.BitcoinDisplayUnit
+import com.intuisoft.plaid.util.Constants
 import com.intuisoft.plaid.util.Constants.Limit.MAX_PIN_ATTEMPTS
 
 class UserPreferences(
@@ -18,6 +20,8 @@ class UserPreferences(
         const val FINGERPRINT_SECURITY_KEY = "FINGERPRINT_SECURITY_KEY"
         const val LAST_CHECKED_PIN_KEY = "LAST_CHECKED_PIN_KEY"
         const val BITCOIN_UNIT_KEY = "BITCOIN_UNIT_KEY"
+        const val APP_THEME_KEY = "APP_THEME_KEY"
+        const val PIN_TIMEOUT_KEY = "PIN_TIMEOUT_KEY"
     }
 
     var incorrectPinAttempts: Int
@@ -38,11 +42,20 @@ class UserPreferences(
 
     var bitcoinDisplayUnit: BitcoinDisplayUnit
         get() {
-            val unit = getInt(BITCOIN_UNIT_KEY, 0)
+            val unit = getInt(BITCOIN_UNIT_KEY, BitcoinDisplayUnit.BTC.typeId)
             return BitcoinDisplayUnit.values().find { it.typeId == unit } ?: BitcoinDisplayUnit.BTC
         }
         set(unit) {
             putInt(BITCOIN_UNIT_KEY, unit.typeId)
+        }
+
+    var appTheme: AppTheme
+        get() {
+            val unit = getInt(APP_THEME_KEY, 0)
+            return AppTheme.values().find { it.typeId == unit } ?: AppTheme.AUTO
+        }
+        set(theme) {
+            putInt(APP_THEME_KEY, theme.typeId)
         }
 
     var lastCheckPin: Int
@@ -51,6 +64,14 @@ class UserPreferences(
         }
         set(attempts) {
             putInt(LAST_CHECKED_PIN_KEY, attempts)
+        }
+
+    var pinTimeout: Int
+        get() {
+            return getInt(PIN_TIMEOUT_KEY, Constants.Limit.DEFAULT_PIN_TIMEOUT)
+        }
+        set(timeout) {
+            putInt(PIN_TIMEOUT_KEY, timeout)
         }
 
     var alias: String?

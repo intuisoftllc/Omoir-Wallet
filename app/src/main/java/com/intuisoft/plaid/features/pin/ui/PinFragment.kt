@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.navigation.navOptions
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.BindingFragment
@@ -32,20 +33,30 @@ import java.util.concurrent.Executor
 class PinFragment: BindingFragment<FragmentPinEntryBinding>() {
     private val pinViewModel: PinViewModel by inject()
 
+    var setupPin = false
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
 
         _binding = FragmentPinEntryBinding.inflate(inflater, container, false)
+        setupPin = arguments?.get("setupPin") as? Boolean ?: false
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        if(setupPin) {
+            binding.passcodeView.setFirstInputTip(getString(R.string.enter_pin_to_reset_message))
+            binding.passcodeView.resetView()
+            binding.passcodeView.disableFingerprint()
+        } else {
+            ignoreOnBackPressed()
+        }
 
-        ignoreOnBackPressed()
         binding.passcodeView.setLocalPasscode(pinViewModel.pin)
+
         binding.passcodeView.setListener(object: PasscodeView.PasscodeViewListener {
             override fun onFail(wrongNumber: String?) {
                 // do nothing
@@ -53,7 +64,21 @@ class PinFragment: BindingFragment<FragmentPinEntryBinding>() {
 
             override fun onSuccess(number: String?) {
                 pinViewModel.updatePinCheckedTime()
-                findNavController().popBackStack()
+
+                if(setupPin) {
+                    setupPin = false
+                    binding.passcodeView.setPasscodeType(PasscodeView.PasscodeViewType.TYPE_SET_PASSCODE)
+                    binding.passcodeView.setFirstInputTip(getString(R.string.create_pin_tip_message))
+                    binding.passcodeView.setSecondInputTip(getString(R.string.re_enter_pin_tip_message))
+                    binding.passcodeView.disablePinAttemptTracking()
+                    binding.passcodeView.resetView()
+                } else {
+                    if(binding.passcodeView.passcodeType == PasscodeView.PasscodeViewType.TYPE_SET_PASSCODE) {
+                        pinViewModel.updatePin(number!!)
+                    }
+
+                    findNavController().popBackStack()
+                }
             }
 
             override fun onMaxAttempts() {
@@ -84,7 +109,6 @@ class PinFragment: BindingFragment<FragmentPinEntryBinding>() {
 
                         override fun onAuthenticationFailed() {
                             super.onAuthenticationFailed()
-                            listener.onScanFail()
                         }
                     })
 

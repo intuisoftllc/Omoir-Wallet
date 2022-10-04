@@ -98,7 +98,7 @@ class PasscodeView @JvmOverloads constructor(
     var passcodeType: Int = TYPE_SET_PASSCODE
         private set
 
-    private fun init() {
+    fun init() {
         if (passcodeLength < minPasscodeLength) {
             throw RuntimeException("must set a passcode of at least $minPasscodeLength numbers")
         }
@@ -207,6 +207,14 @@ class PasscodeView @JvmOverloads constructor(
         this.localPasscode = localPasscode
         passcodeType = TYPE_CHECK_PASSCODE
         return this
+    }
+
+    fun disableFingerprint() {
+        iv_fingerprint?.isVisible = false
+    }
+
+    fun disablePinAttemptTracking() {
+        pinAttemptTracking = false
     }
 
     fun setListener(listener: PasscodeViewListener?): PasscodeView {
@@ -370,6 +378,14 @@ class PasscodeView @JvmOverloads constructor(
 
     private fun clearChar() {
         layout_psd!!.removeAllViews()
+    }
+
+    fun resetView() {
+        clearChar()
+
+        iv_ok!!.animate().alpha(0f).scaleX(0f).scaleY(0f).setDuration(500).start()
+        iv_lock!!.animate().alpha(1f).scaleX(1f).scaleY(1f).setDuration(500).start()
+        init()
     }
 
     private fun deleteChar() {

@@ -1,24 +1,17 @@
 package com.intuisoft.plaid.features.onboarding.ui
 
-import android.content.Context
-import android.content.Intent
-import android.os.Build
 import android.os.Bundle
-import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import com.intuisoft.plaid.databinding.FragmentFingerprintSetupBinding
 import com.intuisoft.plaid.features.onboarding.viewmodel.OnboardingViewModel
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
-import androidx.biometric.BiometricPrompt
-import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.intuisoft.plaid.util.Constants
-import java.util.concurrent.Executor
+import com.intuisoft.plaid.util.entensions.validateFingerprint
 
 
 class FingerprintSetupFragment : OnboardingFragment<FragmentFingerprintSetupBinding>() {
@@ -40,14 +33,20 @@ class FingerprintSetupFragment : OnboardingFragment<FragmentFingerprintSetupBind
 
         viewModel.enableNextButton(true)
         binding.registerFingerprint.onClick {
-            if(viewModel.fingerprintEnrollRequired) {
-                viewModel.fingerprintEnrollRequired = false
-                navigateToSettings()
-            } else {
-                registerFingerprint()
-            }
+            viewModel.checkFingerprintSupport(
+                onEnroll = {
+                    viewModel.navigateToFingerprintSettings(requireActivity())
+                }
+            )
         }
 
+        viewModel.fingerprintSupported.observe(viewLifecycleOwner, Observer {
+            if(it) {
+                validateFingerprint {
+                    viewModel.biometricAuthenticationSuccessful()
+                }
+            }
+        })
 
         binding.registerFingerprint.isVisible = !viewModel.fingerprintEnrolled
         binding.registrationSuccess.isVisible = viewModel.fingerprintEnrolled
@@ -57,34 +56,6 @@ class FingerprintSetupFragment : OnboardingFragment<FragmentFingerprintSetupBind
         })
     }
 
-    fun registerFingerprint() {
-        var executor: Executor = ContextCompat.getMainExecutor(requireContext())
-        var biometricPrompt = BiometricPrompt(this, executor,
-            object : BiometricPrompt.AuthenticationCallback() {
-                override fun onAuthenticationError(errorCode: Int,
-                                                   errString: CharSequence) {
-                    super.onAuthenticationError(errorCode, errString)
-                }
-
-                override fun onAuthenticationSucceeded(
-                    result: BiometricPrompt.AuthenticationResult) {
-                    super.onAuthenticationSucceeded(result)
-                    viewModel.biometricAuthenticationSuccessful()
-                }
-
-                override fun onAuthenticationFailed() {
-                    super.onAuthenticationFailed()
-                }
-            })
-
-        var promptInfo: BiometricPrompt.PromptInfo = BiometricPrompt.PromptInfo.Builder()
-            .setTitle("Use Biometric Authentication")
-            .setSubtitle("Use biometrics to add an additional layer of security to your wallet when signing transactions.")
-            .setNegativeButtonText("Skip for now")
-            .build()
-
-        biometricPrompt.authenticate(promptInfo)
-    }
 
     override fun showActionBar(): Boolean {
         return false
@@ -92,20 +63,6 @@ class FingerprintSetupFragment : OnboardingFragment<FragmentFingerprintSetupBind
 
     override fun actionBarTitle(): Int {
         return 0
-    }
-
-    fun navigateToSettings() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            requireActivity().startActivity(Intent(Settings.ACTION_BIOMETRIC_ENROLL));
-        }
-        else {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                requireActivity().startActivity(Intent(Settings.ACTION_FINGERPRINT_ENROLL));
-            }
-            else {
-                requireActivity().startActivity(Intent(Settings.ACTION_SECURITY_SETTINGS));
-            }
-        }
     }
 
 
