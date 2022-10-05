@@ -203,25 +203,42 @@ class SettingsFragment : PinProtectedFragment<FragmentSettingsBinding>() {
         })
 
         binding.enableFingerprintSetting.onSwitchClicked {
-            if(!viewModel.isFingerprintEnabled() && it) {
-                binding.enableFingerprintSetting.setSwitchChecked(false)
+            when {
+                !viewModel.isFingerprintEnabled() && it -> {
+                    binding.enableFingerprintSetting.setSwitchChecked(false)
 
-                viewModel.validateOrRegisterFingerprintSupport(
-                    onCheck = { supported ->
-                        if(supported) {
-                            validateFingerprint {
-                                viewModel.saveFingerprintRegistered(true)
-                                binding.enableFingerprintSetting.setSwitchChecked(true)
+                    viewModel.validateOrRegisterFingerprintSupport(
+                        onCheck = { supported ->
+                            if(supported) {
+                                validateFingerprint {
+                                    viewModel.saveFingerprintRegistered(true)
+                                    binding.enableFingerprintSetting.setSwitchChecked(true)
+                                }
                             }
-                        }
-                    },
+                        },
 
-                    onEnroll = {
-                        viewModel.navigateToFingerprintSettings(requireActivity())
-                    }
-                )
-            } else {
-                viewModel.saveFingerprintRegistered(it)
+                        onEnroll = {
+                            viewModel.navigateToFingerprintSettings(requireActivity())
+                        }
+                    )
+                }
+
+                viewModel.isFingerprintEnabled() && !it -> {
+                    binding.enableFingerprintSetting.setSwitchChecked(true)
+
+                    validateFingerprint(
+                        title = Constants.Strings.DISABLE_BIOMETRIC_AUTH,
+                        subTitle = Constants.Strings.USE_BIOMETRIC_REASON_4,
+                        onSuccess = {
+                            viewModel.saveFingerprintRegistered(false)
+                            binding.enableFingerprintSetting.setSwitchChecked(false)
+                        }
+                    )
+                }
+
+                else -> {
+                    viewModel.saveFingerprintRegistered(it)
+                }
             }
         }
 
@@ -230,15 +247,20 @@ class SettingsFragment : PinProtectedFragment<FragmentSettingsBinding>() {
             builder.setTitle(R.string.wipe_data_title)
                 .setMessage(R.string.wipe_data_message)
                 .setPositiveButton(R.string.erase_data) { dialog, id ->
-                    viewModel.eraseAllData()
-                    findNavController().navigate(
-                        SettingsFragmentDirections.actionGlobalSplashFragment(),
-                        navOptions {
-                            popUpTo(R.id.pinFragment) {
-                                inclusive = true
+
+                    if(viewModel.isFingerprintEnabled()) {
+                        validateFingerprint(
+                            title = Constants.Strings.SCAN_TO_ERASE_DATA,
+                            subTitle = Constants.Strings.USE_BIOMETRIC_REASON_3,
+                            onSuccess = {
+                                wipeData()
                             }
-                        }
-                    )
+                        )
+                    } else {
+                        wipeData()
+                    }
+
+
                 }
                 .setNegativeButton(R.string.cancel) { dialog, id ->
                     // do nothing
@@ -297,6 +319,18 @@ class SettingsFragment : PinProtectedFragment<FragmentSettingsBinding>() {
                 Constants.Navigation.ANIMATED_ENTER_EXIT_RIGHT_NAV_OPTION
             )
         }
+    }
+
+    fun wipeData() {
+        viewModel.eraseAllData()
+        findNavController().navigate(
+            SettingsFragmentDirections.actionGlobalSplashFragment(),
+            navOptions {
+                popUpTo(R.id.pinFragment) {
+                    inclusive = true
+                }
+            }
+        )
     }
 
     override fun onResume() {

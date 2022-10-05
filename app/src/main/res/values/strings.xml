@@ -11,6 +11,7 @@
     <string name="settings_fragment_label">Settings</string>
     <string name="display_unit_fragment_label">Bitcoin Unit</string>
     <string name="appearance_fragment_label">Appearance</string>
+    <string name="create_wallet_fragment_label">Create A Wallet</string>
     <string name="about_us_fragment_label">About Us</string>
     <string name="pin_fragment_label">Pin</string>
     <string name="splash_fragment_label">Splash</string>
@@ -38,4 +39,5 @@
     <string name="pin_check_success_tip_message">Pin is correct</string>
     <string name="enter_pin_to_unlock_message">Enter pin to unlock</string>
     <string name="enter_pin_to_reset_message">Enter current pin to update</string>
+    <string name="switch_bitcoin_network_description">This setting allows you to switch the network the wallet you are creating points to.\n\nIf you do not know what this means then leave this setting unchanged.</string>
 </resources>

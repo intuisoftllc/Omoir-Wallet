@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingHorizontal="20sp"
+    android:paddingTop="20dp"
+    android:paddingBottom="0dp"
+    android:orientation="vertical">
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/use_cases_viewpager"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
+
+    <com.google.android.material.tabs.TabLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:id="@+id/tab_layout"
+        app:tabBackground="@drawable/tab_selector"
+        app:tabGravity="center"
+        android:layout_weight="0.04"
+        app:tabIndicatorHeight="0dp"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.02"/>
+
+    <com.intuisoft.plaid.androidwrappers.SettingsItemView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:item_subtitle="Advanced Options"
+        app:show_chevron="true"
+        android:id="@+id/advancedOptions"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center_vertical"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.02"/>
+
+    <com.intuisoft.plaid.androidwrappers.RoundedButtonView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:button_style="rounded"
+        app:btn_text="Create a new wallet"
+        app:text_position="center"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Import an existing wallet"
+        style="@style/H6.Bold"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center_horizontal"
+        android:padding="10dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:background="?android:selectableItemBackground"
+        android:layout_marginBottom="10dp"/>
+
+</LinearLayout>

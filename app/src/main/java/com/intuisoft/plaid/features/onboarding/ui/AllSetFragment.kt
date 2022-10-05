@@ -17,6 +17,7 @@ import com.intuisoft.plaid.androidwrappers.BindingFragment
 import com.intuisoft.plaid.databinding.FragmentAllSetBinding
 import com.intuisoft.plaid.databinding.FragmentWelcomeBinding
 import com.intuisoft.plaid.features.onboarding.viewmodel.OnboardingViewModel
+import com.intuisoft.plaid.features.pin.ui.PinFragmentDirections
 import com.intuisoft.plaid.util.Constants
 import com.intuisoft.plaid.util.Constants.Limit.MAX_ALIAS_LENGTH
 import com.intuisoft.plaid.util.entensions.hideSoftKeyboard
@@ -48,6 +49,14 @@ class AllSetFragment : BindingFragment<FragmentAllSetBinding>() {
             findNavController().navigate(AllSetFragmentDirections.actionAllSetFragmentToHomeScreenFragment(),
                 Constants.Navigation.ANIMATED_FADE_IN_NAV_OPTION
             )
+        }
+
+        binding.createWallet.onClick {
+            findNavController().navigate(AllSetFragmentDirections.actionAllSetFragmentToCreateWalletFragment(), navOptions {
+                popUpTo(R.id.allSetFragment) {
+                    inclusive = true
+                }
+            })
         }
     }
 

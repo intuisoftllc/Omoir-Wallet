@@ -77,13 +77,14 @@
             android:id="@+id/noWalletsImg"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_bitcoin_wallet"
-            android:alpha=".3"
+            android:src="@drawable/ic_piggy_bank_320"
+            android:alpha=".9"
+            app:layout_constraintVertical_bias="0.2"
             android:tintMode="multiply"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/add_wallet"
-            android:layout_marginTop="90dp"/>
+            app:layout_constraintBottom_toBottomOf="parent"/>
 
         <TextView
             android:id="@+id/noWalletsMessage"
@@ -95,7 +96,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/noWalletsImg"
-            android:layout_marginTop="20dp"
             style="@style/Subtitle"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

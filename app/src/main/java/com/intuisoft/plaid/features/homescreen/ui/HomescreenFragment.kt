@@ -14,10 +14,12 @@ import androidx.core.widget.addTextChangedListener
 import androidx.core.widget.doAfterTextChanged
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.navOptions
 import com.intuisoft.plaid.androidwrappers.BindingFragment
 import com.intuisoft.plaid.databinding.FragmentHomescreenBinding
 import com.intuisoft.plaid.databinding.FragmentWelcomeBinding
 import com.intuisoft.plaid.features.homescreen.viewmodel.HomeScreenViewModel
+import com.intuisoft.plaid.features.onboarding.ui.AllSetFragmentDirections
 import com.intuisoft.plaid.features.onboarding.viewmodel.OnboardingViewModel
 import com.intuisoft.plaid.features.pin.ui.PinProtectedFragment
 import com.intuisoft.plaid.features.pin.viewmodel.PinViewModel
@@ -57,6 +59,13 @@ class HomescreenFragment : PinProtectedFragment<FragmentHomescreenBinding>() {
         binding.settings.setOnClickListener {
             findNavController().navigate(
                 HomescreenFragmentDirections.actionHomescreenFragmentToSettingsFragment(),
+                Constants.Navigation.ANIMATED_FADE_IN_EXIT_NAV_OPTION
+            )
+        }
+
+        binding.addWallet.setOnClickListener {
+            findNavController().navigate(
+                HomescreenFragmentDirections.actionHomescreenFragmentToCreateWalletFragment(),
                 Constants.Navigation.ANIMATED_FADE_IN_EXIT_NAV_OPTION
             )
         }

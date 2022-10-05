@@ -6,6 +6,9 @@
     app:startDestination="@+id/welcomeFragment">
 
     <include app:graph="@navigation/homescreen_flow_graph" />
+    <include app:graph="@navigation/settings_flow_graph" />
+    <include app:graph="@navigation/create_wallet_flow_graph" />
+
 
     <fragment
         android:id="@+id/welcomeFragment"
@@ -55,6 +58,9 @@
             app:destination="@+id/homescreen_flow_graph"
             app:popUpTo="@id/homescreen_flow_graph"
             app:popUpToInclusive="true"/>
+        <action
+            android:id="@+id/action_AllSetFragment_to_CreateWalletFragment"
+            app:destination="@+id/create_wallet_flow_graph" />
     </fragment>
 
     <action

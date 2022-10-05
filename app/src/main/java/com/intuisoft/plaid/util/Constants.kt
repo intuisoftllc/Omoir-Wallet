@@ -59,8 +59,12 @@ class Constants {
         const val STRING_5_MINUTE_TIMEOUT = "5 Minutes"
         const val STRING_10_MINUTE_TIMEOUT = "10 Minutes"
         const val USE_BIOMETRIC_AUTH = "Use Biometric Authentication"
-        const val USE_BIOMETRIC_REASON_1 = "Use biometrics to add an additional layer of security to your wallet when signing transactions."
+        const val DISABLE_BIOMETRIC_AUTH = "Disable Biometric Authentication"
+        const val SCAN_TO_ERASE_DATA = "Scan To Erase Data"
+        const val USE_BIOMETRIC_REASON_1 = "Use biometrics to add an additional layer of security to your wallet. You will be asked to scan your fingerprint when signing transactions or interacting with sensitive app data."
         const val USE_BIOMETRIC_REASON_2 = "Unlock Plaid Crypto Wallet™ using biometrics."
+        const val USE_BIOMETRIC_REASON_3 = "Scan your fingerprint to reset app data."
+        const val USE_BIOMETRIC_REASON_4 = "Scan your fingerprint to remove biometric authentication."
         const val SKIP_FOR_NOW = "Skip for now"
         const val USE_PIN = "Use pin"
     }

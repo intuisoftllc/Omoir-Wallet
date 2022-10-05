@@ -5,11 +5,13 @@ buildscript {
         nav_version = "2.5.2"
         okhttp_version = "4.9.0"
         retrofit_version = "2.9.0"
+        bitcoin_library_version = "0.16.1"
     }
 
     repositories {
         google()
         mavenCentral()
+        maven { url 'https://jitpack.io' }
     }
     dependencies {
         classpath "com.android.tools.build:gradle:7.0.4"

@@ -5,6 +5,7 @@
     android:id="@+id/homescreen_flow_graph"
     app:startDestination="@+id/homescreenFragment">
 
+    <include app:graph="@navigation/create_wallet_flow_graph" />
     <include app:graph="@navigation/settings_flow_graph" />
 
     <fragment
@@ -16,6 +17,9 @@
         <action
             android:id="@+id/action_HomescreenFragment_to_SettingsFragment"
             app:destination="@+id/settings_flow_graph" />
+        <action
+            android:id="@+id/action_HomescreenFragment_to_CreateWalletFragment"
+            app:destination="@+id/create_wallet_flow_graph" />
     </fragment>
 
 
