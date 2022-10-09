@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
+import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.BindingFragment
 import com.intuisoft.plaid.databinding.FragmentSplashBinding
 import com.intuisoft.plaid.features.splash.viewmodel.SplashViewModel
@@ -43,6 +44,10 @@ class SplashFragment : BindingFragment<FragmentSplashBinding>() {
 
     override fun actionBarTitle(): Int {
         return 0
+    }
+
+    override fun navigationId(): Int {
+        return R.id.splashFragment
     }
 
     fun animateLogo() {

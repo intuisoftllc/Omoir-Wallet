@@ -9,6 +9,8 @@
     <color name="success_color">#84BF68</color>
     <color name="viridian">#1d874c</color>
     <color name="error_color">#EA4159</color>
+    <color name="soft_error_color">#F6B0BA</color>
+    <color name="alt_error_color">#A33242</color>
     <color name="black">#FF000000</color>
     <color name="alt_black">#222222</color>
     <color name="grey_white">#F1F0F0</color>
@@ -16,6 +18,7 @@
     <color name="grey">#A8AFBF</color>
     <color name="light_grey">#A8AFBF</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="bitcoin_color">#F7931A</color>
 
     <!--    Brand Colors    -->
     <color name="brand_color_blue">#104686</color>

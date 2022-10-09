@@ -3,16 +3,12 @@ package com.intuisoft.plaid
 import android.app.Activity
 import android.app.Application
 import android.os.Bundle
-import com.intuisoft.plaid.di.okhttpModule
-import com.intuisoft.plaid.di.preferencesModule
-import com.intuisoft.plaid.di.retrofitModule
-import com.intuisoft.plaid.di.viewModelModule
-import com.intuisoft.plaid.features.pin.viewmodel.PinViewModel
+import com.intuisoft.plaid.di.*
 import com.intuisoft.plaid.local.UserPreferences
 import com.intuisoft.plaid.util.Constants
+import com.intuisoft.plaid.walletmanager.WalletManager
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
-import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.koin.core.context.startKoin
@@ -32,7 +28,13 @@ class PlaidApp : Application(), Application.ActivityLifecycleCallbacks, KoinComp
                     viewModelModule,
                     preferencesModule,
                     okhttpModule,
-                    retrofitModule
+                    retrofitModule,
+                    databaseModule,
+                    InterceptorModule,
+                    localRepositoriesModule,
+                    walletManagerModule,
+                    syncModule,
+                    aesEncryptionModule
                 )
             )
         }

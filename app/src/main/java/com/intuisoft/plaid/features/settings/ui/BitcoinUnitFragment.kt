@@ -58,4 +58,8 @@ class BitcoinUnitFragment : PinProtectedFragment<FragmentBitcoinUnitBinding>() {
     override fun actionBarTitle(): Int {
         return R.string.display_unit_fragment_label
     }
+
+    override fun navigationId(): Int {
+        return R.id.displayUnitFragment
+    }
 }

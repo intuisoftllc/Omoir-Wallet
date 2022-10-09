@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.intuisoft.plaid.R
 import com.intuisoft.plaid.databinding.FragmentCreateImportEscapePodProtocolBinding
 import com.intuisoft.plaid.databinding.FragmentCreateImportNonCustodialBinding
 import com.intuisoft.plaid.features.createwallet.viewmodel.CreateWalletViewModel
@@ -32,6 +33,10 @@ class EscapePodProtocolIntroFragment : PinProtectedFragment<FragmentCreateImport
     }
 
     override fun actionBarTitle(): Int {
+        return 0
+    }
+
+    override fun navigationId(): Int {
         return 0
     }
 

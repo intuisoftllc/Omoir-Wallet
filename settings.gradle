@@ -12,5 +12,10 @@ dependencyResolutionManagement {
         mavenCentral()
     }
 }
+
 rootProject.name = "Plaid"
 include ':app'
+include ':hodler'
+include ':bitcoincore'
+include ':bitcoinkit'
+include ':hd-wallet-kit'

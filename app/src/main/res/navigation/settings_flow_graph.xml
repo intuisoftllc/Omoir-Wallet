@@ -22,6 +22,10 @@
         <action
             android:id="@+id/action_SettingsFragment_to_AboutUsFragment"
             app:destination="@+id/aboutUsFragment" />
+
+        <action
+            android:id="@+id/action_SettingsFragment_to_MemeFragment"
+            app:destination="@+id/memeFragment" />
     </fragment>
 
     <fragment
@@ -37,6 +41,14 @@
         android:name="com.intuisoft.plaid.features.settings.ui.AppearanceFragment"
         android:label="@string/appearance_fragment_label"
         tools:layout="@layout/fragment_appearance">
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/memeFragment"
+        android:name="com.intuisoft.plaid.features.settings.ui.MemeFragment"
+        android:label="@string/meme_fragment_label"
+        tools:layout="@layout/fragment_easter_egg">
 
     </fragment>
 

@@ -1,6 +1,5 @@
 package com.intuisoft.plaid.features.onboarding.ui
 
-import android.R
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -12,18 +11,23 @@ import androidx.activity.OnBackPressedCallback
 import androidx.core.widget.addTextChangedListener
 import androidx.core.widget.doAfterTextChanged
 import androidx.navigation.fragment.findNavController
+import com.intuisoft.plaid.R
+import com.intuisoft.plaid.androidwrappers.hideSoftKeyboard
+import com.intuisoft.plaid.androidwrappers.ignoreOnBackPressed
 import com.intuisoft.plaid.databinding.FragmentWelcomeBinding
 import com.intuisoft.plaid.features.onboarding.viewmodel.OnboardingViewModel
 import com.intuisoft.plaid.util.Constants
 import com.intuisoft.plaid.util.Constants.Limit.MAX_ALIAS_LENGTH
-import com.intuisoft.plaid.util.entensions.hideSoftKeyboard
-import com.intuisoft.plaid.util.entensions.ignoreOnBackPressed
+import com.intuisoft.plaid.walletmanager.WalletManager
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import org.koin.core.component.inject
 
 
 class WelcomeFragment : OnboardingFragment<FragmentWelcomeBinding>() {
     private val viewModel: OnboardingViewModel by sharedViewModel()
     override val onboardingStep = 1
+    private val walletManager: WalletManager by inject()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -38,6 +42,7 @@ class WelcomeFragment : OnboardingFragment<FragmentWelcomeBinding>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        walletManager.initialize()
         binding.name.setOnKeyListener(object : View.OnKeyListener {
             override fun onKey(v: View?, keyCode: Int, event: KeyEvent): Boolean {
                 // if the event is a key down event on the enter button
@@ -75,6 +80,10 @@ class WelcomeFragment : OnboardingFragment<FragmentWelcomeBinding>() {
 
     override fun actionBarTitle(): Int {
         return 0
+    }
+
+    override fun navigationId(): Int {
+        return R.id.welcomeFragment
     }
 
 

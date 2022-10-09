@@ -1,11 +1,15 @@
 package com.intuisoft.plaid.di
 
-import android.annotation.SuppressLint
+import android.content.Context
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.intuisoft.plaid.BuildConfig
 import com.intuisoft.plaid.network.adapters.LocalDateAdapter
+import com.intuisoft.plaid.network.interceptors.ApiKeyInterceptor
+import com.intuisoft.plaid.network.interceptors.AppConnectionMonitor
 import com.intuisoft.plaid.network.interceptors.ConnectivityInterceptor
+import com.intuisoft.plaid.network.sync.api.SyncApi
+import com.intuisoft.plaid.network.sync.repository.SyncRepository
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.core.qualifier.named
@@ -21,18 +25,30 @@ val okhttpModule = module {
     single(named("BaseHttpClient")) { provideBaseHttpClient(get()) }
     single(named("AuthenticatedHttpClient")) {
         provideAuthenticatedHttpClient(
-            get(named("BaseHttpClient"))
+            get(named("BaseHttpClient")),
+            get()
         )
     }
+}
+
+val InterceptorModule = module {
+    factory { ConnectivityInterceptor(get(), get()) }
+    factory { provideConnectionMonitor(get()) }
+    factory { ApiKeyInterceptor() }
 }
 
 val retrofitModule = module {
     single(named("BaseRetrofit")) {
         provideBaseRetrofit(get(named("BaseHttpClient")), get())
     }
-    single(named("Retrofit")) {
-        provideConsumerRetrofit(get(named("AuthenticatedHttpClient")), get())
+    single(named("NowNodesRetrofit")) {
+        provideNowNodesRetrofit(get(named("AuthenticatedHttpClient")), get())
     }
+}
+
+val syncModule = module {
+    factory { provideSyncApi(get(named("NowNodesRetrofit"))) }
+    factory { SyncRepository.create(get()) }
 }
 
 fun provideGson(): Gson {
@@ -42,14 +58,14 @@ fun provideGson(): Gson {
         .create()
 }
 
-fun provideConsumerRetrofit(
+fun provideNowNodesRetrofit(
     okHttpClient: OkHttpClient,
     gson: Gson
 ): Retrofit {
     return Retrofit.Builder()
         .client(okHttpClient)
         .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
-        .baseUrl(BuildConfig.BASE_SERVER_URL)
+        .baseUrl(BuildConfig.BLOCK_BOOK_SERVER_URL)
 //        .addConverterFactory(NullOnEmptyBodyConverterFactory())
         .addConverterFactory(GsonConverterFactory.create(gson))
         .build()
@@ -58,18 +74,20 @@ fun provideConsumerRetrofit(
 fun provideBaseRetrofit(baseHttpClient: OkHttpClient, gson: Gson): Retrofit {
     return Retrofit.Builder()
         .client(baseHttpClient)
-        .baseUrl(BuildConfig.BASE_SERVER_URL)
+        .baseUrl(BuildConfig.BLOCK_BOOK_SERVER_URL)
         .addConverterFactory(GsonConverterFactory.create(gson))
         .build()
 }
 
 fun provideAuthenticatedHttpClient(
-    baseHttpClient: OkHttpClient
+    baseHttpClient: OkHttpClient,
+    apiKeyInterceptor: ApiKeyInterceptor
 ): OkHttpClient {
     val logging = HttpLoggingInterceptor()
     logging.setLevel(HttpLoggingInterceptor.Level.BODY)
     val httpClient = baseHttpClient.newBuilder()
     httpClient.addInterceptor(logging)
+    httpClient.addInterceptor(apiKeyInterceptor)
 
     return httpClient
         .build()
@@ -90,3 +108,9 @@ fun provideBaseHttpClient(
 
     return clientBuilder.build()
 }
+
+fun provideConnectionMonitor(context: Context): ConnectivityInterceptor.ConnectionMonitor =
+    AppConnectionMonitor(context)
+
+fun provideSyncApi(manager: Retrofit): SyncApi =
+    manager.create(SyncApi::class.java)

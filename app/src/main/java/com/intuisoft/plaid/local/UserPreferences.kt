@@ -5,7 +5,7 @@ import com.google.gson.Gson
 import com.intuisoft.plaid.model.AppTheme
 import com.intuisoft.plaid.model.BitcoinDisplayUnit
 import com.intuisoft.plaid.util.Constants
-import com.intuisoft.plaid.util.Constants.Limit.MAX_PIN_ATTEMPTS
+import com.intuisoft.plaid.util.Constants.Limit.DEFAULT_MAX_PIN_ATTEMPTS
 
 class UserPreferences(
     private val securePrefs: SharedPreferences,
@@ -22,6 +22,9 @@ class UserPreferences(
         const val BITCOIN_UNIT_KEY = "BITCOIN_UNIT_KEY"
         const val APP_THEME_KEY = "APP_THEME_KEY"
         const val PIN_TIMEOUT_KEY = "PIN_TIMEOUT_KEY"
+        const val VERSION_TAPPED_COUNT_KEY = "VERSION_TAPPED_COUNT_KEY"
+        const val USER_SALT_KEY = "USER_SALT_KEY"
+        const val LAST_SYNC_TIME_KEY = "LAST_SYNC_TIME_KEY"
     }
 
     var incorrectPinAttempts: Int
@@ -34,7 +37,7 @@ class UserPreferences(
 
     var maxPinAttempts: Int
         get() {
-            return getInt(MAX_PIN_ATTEMPTS_KEY, MAX_PIN_ATTEMPTS)
+            return getInt(MAX_PIN_ATTEMPTS_KEY, DEFAULT_MAX_PIN_ATTEMPTS)
         }
         set(attempts) {
             putInt(MAX_PIN_ATTEMPTS_KEY, attempts)
@@ -66,12 +69,28 @@ class UserPreferences(
             putInt(LAST_CHECKED_PIN_KEY, attempts)
         }
 
+    var walletSyncTime: Int
+        get() {
+            return getInt(LAST_SYNC_TIME_KEY, 0)
+        }
+        set(time) {
+            putInt(LAST_SYNC_TIME_KEY, time)
+        }
+
     var pinTimeout: Int
         get() {
             return getInt(PIN_TIMEOUT_KEY, Constants.Limit.DEFAULT_PIN_TIMEOUT)
         }
         set(timeout) {
             putInt(PIN_TIMEOUT_KEY, timeout)
+        }
+
+    var versionTappedCount: Int
+        get() {
+            return getInt(VERSION_TAPPED_COUNT_KEY, 0)
+        }
+        set(count) {
+            putInt(VERSION_TAPPED_COUNT_KEY, count)
         }
 
     var alias: String?
@@ -88,6 +107,14 @@ class UserPreferences(
         }
         set(pin) {
             putString(USER_PIN_KEY, pin)
+        }
+
+    var salt: String?
+        get() {
+            return getString(USER_SALT_KEY)
+        }
+        set(salt) {
+            putString(USER_SALT_KEY, salt)
         }
 
     var fingerprintSecurity: Boolean

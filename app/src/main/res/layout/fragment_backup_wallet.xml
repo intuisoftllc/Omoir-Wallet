@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:padding="10dp">
+
+    <TextView
+        android:id="@+id/backup_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Backup your seed phrase"
+        style="@style/H4.Bold"
+        android:layout_marginTop="20dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:textColor="@color/black"/>
+
+    <TextView
+        android:id="@+id/backup_subtitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:gravity="center_horizontal"
+        android:paddingHorizontal="20dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/backup_title"
+        android:text="In the next step you will see your seed phrase (12 words) that will allow you to recover your wallet in the future in case you loose access to this wallet." />
+
+    <ImageView
+        android:id="@+id/backup_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_file_cabinet_220"
+        android:layout_gravity="center_horizontal"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/ackowledgement_1"
+        app:layout_constraintTop_toBottomOf="@id/backup_subtitle"/>
+
+    <RadioButton
+        android:id="@+id/ackowledgement_1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="If I do not backup my seed phrase I understand that I could risk loosing all my funds."
+        android:padding="10dp"
+        android:layout_marginTop="10dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/ackowledgement_2"
+        android:background="?android:selectableItemBackground"/>
+
+    <RadioButton
+        android:id="@+id/ackowledgement_2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="I understand if I expose my seed phrase to anyone, at any point my funds can be stolen."
+        android:padding="10dp"
+        android:layout_marginTop="10dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/ackowledgement_3"
+        android:background="?android:selectableItemBackground"/>
+
+    <RadioButton
+        android:id="@+id/ackowledgement_3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="I understand that it is solely my responsibility to keep my seed phrase secure."
+        android:padding="10dp"
+        android:layout_marginTop="10dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginBottom="10dp"
+        app:layout_constraintBottom_toTopOf="@id/confirm"
+        android:background="?android:selectableItemBackground"/>
+
+    <com.intuisoft.plaid.androidwrappers.RoundedButtonView
+        android:id="@+id/confirm"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:btn_text="Continue"
+        app:button_style="rounded"
+        app:text_position="center"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

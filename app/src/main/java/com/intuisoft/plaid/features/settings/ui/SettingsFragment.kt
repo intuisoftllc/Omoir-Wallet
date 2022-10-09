@@ -1,6 +1,7 @@
 package com.intuisoft.plaid.features.settings.ui
 
 import android.app.AlertDialog
+import android.app.ProgressDialog
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.os.Build
@@ -14,14 +15,16 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navOptions
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
 import com.intuisoft.plaid.R
+import com.intuisoft.plaid.androidwrappers.styledSnackBar
+import com.intuisoft.plaid.androidwrappers.validateFingerprint
 import com.intuisoft.plaid.databinding.FragmentSettingsBinding
 import com.intuisoft.plaid.features.pin.ui.PinProtectedFragment
 import com.intuisoft.plaid.features.settings.viewmodel.SettingsViewModel
 import com.intuisoft.plaid.model.BitcoinDisplayUnit
 import com.intuisoft.plaid.util.Constants
-import com.intuisoft.plaid.util.entensions.validateFingerprint
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 
@@ -279,6 +282,19 @@ class SettingsFragment : PinProtectedFragment<FragmentSettingsBinding>() {
             binding.appVersionSetting.setSubTitleText(it)
         })
 
+        viewModel.showEasterEgg.observe(viewLifecycleOwner, Observer {
+            styledSnackBar(view, "You have unleashed the memes!") {
+                findNavController().navigate(
+                    SettingsFragmentDirections.actionSettingsFragmentToMemeFragment(),
+                    Constants.Navigation.ANIMATED_ENTER_EXIT_RIGHT_NAV_OPTION
+                )
+            }
+        })
+
+        binding.appVersionSetting.onClick {
+            viewModel.onVersionTapped()
+        }
+
         binding.helpSetting.onClick {
             val emailIntent = Intent(Intent.ACTION_SEND);
             emailIntent.setType("text/plain");
@@ -304,13 +320,16 @@ class SettingsFragment : PinProtectedFragment<FragmentSettingsBinding>() {
                 startActivity(
                     Intent.createChooser(emailIntent, "Send email using..."));
             } catch (ex: ActivityNotFoundException) {
-                Snackbar.make(
-                    view,
-                    "No email clients installed.",
-                    Snackbar.LENGTH_LONG
-                ).show()
+                styledSnackBar(view, "No email clients installed.")
             }
 
+        }
+
+        binding.aboutUsSetting.onClick {
+            findNavController().navigate(
+                SettingsFragmentDirections.actionSettingsFragmentToAboutUsFragment(),
+                Constants.Navigation.ANIMATED_ENTER_EXIT_RIGHT_NAV_OPTION
+            )
         }
 
         binding.aboutUsSetting.onClick {
@@ -322,15 +341,21 @@ class SettingsFragment : PinProtectedFragment<FragmentSettingsBinding>() {
     }
 
     fun wipeData() {
-        viewModel.eraseAllData()
-        findNavController().navigate(
-            SettingsFragmentDirections.actionGlobalSplashFragment(),
-            navOptions {
-                popUpTo(R.id.pinFragment) {
-                    inclusive = true
+        val progressDialog = ProgressDialog.show(requireContext(), getString(R.string.wiping_data_title), getString(R.string.wiping_data_message))
+        progressDialog.setCancelable(false)
+
+        viewModel.eraseAllData {
+            progressDialog.cancel()
+
+            findNavController().navigate(
+                SettingsFragmentDirections.actionGlobalSplashFragment(),
+                navOptions {
+                    popUpTo(R.id.pinFragment) {
+                        inclusive = true
+                    }
                 }
-            }
-        )
+            )
+        }
     }
 
     override fun onResume() {
@@ -350,5 +375,9 @@ class SettingsFragment : PinProtectedFragment<FragmentSettingsBinding>() {
 
     override fun actionBarTitle(): Int {
         return R.string.settings_fragment_label
+    }
+
+    override fun navigationId(): Int {
+        return R.id.settingsFragment
     }
 }

@@ -14,14 +14,13 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.navOptions
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.BindingFragment
+import com.intuisoft.plaid.androidwrappers.ignoreOnBackPressed
 import com.intuisoft.plaid.databinding.FragmentAllSetBinding
 import com.intuisoft.plaid.databinding.FragmentWelcomeBinding
 import com.intuisoft.plaid.features.onboarding.viewmodel.OnboardingViewModel
 import com.intuisoft.plaid.features.pin.ui.PinFragmentDirections
 import com.intuisoft.plaid.util.Constants
 import com.intuisoft.plaid.util.Constants.Limit.MAX_ALIAS_LENGTH
-import com.intuisoft.plaid.util.entensions.hideSoftKeyboard
-import com.intuisoft.plaid.util.entensions.ignoreOnBackPressed
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 
@@ -52,11 +51,9 @@ class AllSetFragment : BindingFragment<FragmentAllSetBinding>() {
         }
 
         binding.createWallet.onClick {
-            findNavController().navigate(AllSetFragmentDirections.actionAllSetFragmentToCreateWalletFragment(), navOptions {
-                popUpTo(R.id.allSetFragment) {
-                    inclusive = true
-                }
-            })
+            findNavController().navigate(AllSetFragmentDirections.actionAllSetFragmentToCreateWalletFragment(),
+                Constants.Navigation.ANIMATED_FADE_IN_NAV_OPTION
+            )
         }
     }
 
@@ -66,6 +63,10 @@ class AllSetFragment : BindingFragment<FragmentAllSetBinding>() {
 
     override fun actionBarTitle(): Int {
         return 0
+    }
+
+    override fun navigationId(): Int {
+        return R.id.allSetFragment
     }
 
 

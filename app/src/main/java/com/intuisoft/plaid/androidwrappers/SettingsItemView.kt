@@ -3,14 +3,12 @@ package com.intuisoft.plaid.androidwrappers
 import android.content.Context
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
-import android.view.SoundEffectConstants
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.Switch
 import android.widget.TextView
 import androidx.core.view.isVisible
 import com.intuisoft.plaid.R
-import com.intuisoft.plaid.util.entensions.getColorFromAttr
 
 class SettingsItemView(context: Context, attrs: AttributeSet?) : LinearLayout(context, attrs) {
 
@@ -68,7 +66,7 @@ class SettingsItemView(context: Context, attrs: AttributeSet?) : LinearLayout(co
     }
 
     fun setSwitchChecked(checked: Boolean) {
-        switch?.isChecked = checked
+        switch?.isActivated = checked
     }
 
     fun showCheck(show: Boolean) {
@@ -93,7 +91,7 @@ class SettingsItemView(context: Context, attrs: AttributeSet?) : LinearLayout(co
         isClickable = !disable
 
         if(disable) {
-            chevron?.background = context.getDrawable(R.drawable.ic_chevron_right)
+            chevron?.background = context.getDrawable(R.drawable.ic_white_chevron_right)
             titleTv?.setTextColor(context.getColor(R.color.color_disabled))
             subtitleTv?.setTextColor(context.getColor(R.color.color_disabled))
         } else {

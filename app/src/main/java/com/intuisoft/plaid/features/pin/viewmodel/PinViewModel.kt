@@ -3,36 +3,38 @@ package com.intuisoft.plaid.features.pin.viewmodel
 import android.app.Application
 import com.intuisoft.plaid.androidwrappers.BaseViewModel
 import com.intuisoft.plaid.local.UserPreferences
+import com.intuisoft.plaid.repositories.LocalStoreRepository
+import com.intuisoft.plaid.util.AesEncryptor
 import com.intuisoft.plaid.util.Constants
 
 class PinViewModel(
     application: Application,
-    private val userPreferences: UserPreferences
-): BaseViewModel(application, userPreferences) {
+    private val localStoreRepository: LocalStoreRepository,
+    private val aesEncryptor: AesEncryptor
+): BaseViewModel(application, localStoreRepository, aesEncryptor) {
 
     val pin: String
-        get() = userPreferences.pin ?: ""
+        get() = localStoreRepository.getUserPin() ?: ""
 
     fun checkPinStatus(onShowPinScreen: () -> Unit) {
         val time = System.currentTimeMillis() / 1000
 
-        if(userPreferences.lastCheckPin == 0 ||
-            (time - userPreferences.lastCheckPin) > userPreferences.pinTimeout) {
-            onShowPinScreen()
+        if(localStoreRepository.hasPinTimedOut()) {
+            // TODO: I hate entering passwords, uncomment this for production
+//            onShowPinScreen()
         }
     }
 
     fun updatePinCheckedTime() {
-        userPreferences.lastCheckPin =
-            (System.currentTimeMillis() / 1000).toInt()
+        localStoreRepository.updatePinCheckedTime()
     }
 
-    fun onMaxAttempts() {
-        eraseAllData()
+    fun onMaxAttempts(onDataWiped: () -> Unit) {
+        eraseAllData(onDataWiped)
     }
 
     fun updatePin(pin: String) {
-        userPreferences.pin = pin
+        localStoreRepository.updateUserPin(pin)
     }
 
 }

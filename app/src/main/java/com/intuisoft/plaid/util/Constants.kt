@@ -7,7 +7,11 @@ class Constants {
 
     object Database {
         const val DB_NAME = "plaid.db"
-        const val DB_VERSION = 0
+        const val DB_VERSION = 2
+    }
+
+    object Files {
+        const val CHECKPOINTS_ASSET = "checkpoints.txt"
     }
 
     object Navigation {
@@ -67,6 +71,17 @@ class Constants {
         const val USE_BIOMETRIC_REASON_4 = "Scan your fingerprint to remove biometric authentication."
         const val SKIP_FOR_NOW = "Skip for now"
         const val USE_PIN = "Use pin"
+        const val USER_WALLET_FILENAME_PREFIX = "usr_wallet_"
+        const val MAIN_NET_BLOCK_FILE = "main_net_chain"
+        const val TEST_NET_BLOCK_FILE = "test_net_chain"
+        const val WALLET_EXTENSION_NAME = "addition_info_wallet_extension"
+        const val SYNCING = "Syncing..."
+    }
+
+    object ServerStrings {
+        const val TRANSACTION_DETAILS = "txs"
+        const val TOKEN_BALANCES = "tokenBalances"
+        const val TOKENS = "tokens"
     }
 
     object Time {
@@ -81,8 +96,13 @@ class Constants {
     object Limit {
         const val MAX_ONBOARDING_STEPS = 3
         const val MAX_ALIAS_LENGTH = 25
-        const val MAX_PIN_ATTEMPTS = 10
+        const val DEFAULT_MAX_PIN_ATTEMPTS = 15
         const val MIN_RECOMMENDED_PIN_ATTEMPTS = 4
-        const val DEFAULT_PIN_TIMEOUT = 5 * 60 // check for pin every 5 minutes
+        const val VERSION_CODE_TAPPED_LIMIT = 4
+        const val MIN_WALLET_UPDATE_TIME = 5L
+        const val MAX_WALLET_UPDATE_LIMIT = 10L
+        const val SATS_PER_BTC = 100000000
+        const val PAGE_LIMIT = 50
+        const val DEFAULT_PIN_TIMEOUT = Time.INSTANT_TIME_OFFSET // check for pin only when user leaves the app by default
     }
 }

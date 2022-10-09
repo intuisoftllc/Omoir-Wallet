@@ -1,6 +1,5 @@
 package com.intuisoft.plaid.features.onboarding.ui
 
-import android.R
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -13,6 +12,7 @@ import androidx.core.widget.addTextChangedListener
 import androidx.core.widget.doAfterTextChanged
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
+import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.FingerprintScanResponse
 import com.intuisoft.plaid.androidwrappers.PasscodeView
 import com.intuisoft.plaid.databinding.FragmentOnboardingPinBinding
@@ -21,8 +21,6 @@ import com.intuisoft.plaid.features.onboarding.viewmodel.OnboardingViewModel
 import com.intuisoft.plaid.features.pin.viewmodel.PinViewModel
 import com.intuisoft.plaid.util.Constants
 import com.intuisoft.plaid.util.Constants.Limit.MAX_ALIAS_LENGTH
-import com.intuisoft.plaid.util.entensions.hideSoftKeyboard
-import com.intuisoft.plaid.util.entensions.ignoreOnBackPressed
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
@@ -51,7 +49,7 @@ class OnboardingPinFragment : OnboardingFragment<FragmentOnboardingPinBinding>()
             }
 
             override fun onSuccess(number: String?) {
-                viewModel.savePin(number)
+                viewModel.savePin(number!!)
                 pinViewModel.updatePinCheckedTime()
                 onNextStep()
             }
@@ -105,6 +103,10 @@ class OnboardingPinFragment : OnboardingFragment<FragmentOnboardingPinBinding>()
                 )
             }
         )
+    }
+
+    override fun navigationId(): Int {
+        return R.id.onboardingPinSetupFragment
     }
 
     override fun onPrevStep() {

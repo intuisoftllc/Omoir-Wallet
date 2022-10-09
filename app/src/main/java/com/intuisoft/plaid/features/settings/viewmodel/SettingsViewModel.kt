@@ -9,12 +9,15 @@ import com.intuisoft.plaid.androidwrappers.SingleLiveData
 import com.intuisoft.plaid.local.UserPreferences
 import com.intuisoft.plaid.model.AppTheme
 import com.intuisoft.plaid.model.BitcoinDisplayUnit
+import com.intuisoft.plaid.repositories.LocalStoreRepository
+import com.intuisoft.plaid.util.AesEncryptor
 import com.intuisoft.plaid.util.Constants
 
 class SettingsViewModel(
     application: Application,
-    private val userPreferences: UserPreferences
-): BaseViewModel(application, userPreferences) {
+    private val localStoreRepository: LocalStoreRepository,
+    private val aesEncryptor: AesEncryptor
+): BaseViewModel(application, localStoreRepository, aesEncryptor) {
 
     private val _bitcoinDisplayUnitSetting = SingleLiveData<BitcoinDisplayUnit>()
     val bitcoinDisplayUnitSetting: LiveData<BitcoinDisplayUnit> = _bitcoinDisplayUnitSetting
@@ -31,9 +34,12 @@ class SettingsViewModel(
     private val _appVersionSetting = SingleLiveData<String>()
     val appVersionSetting: LiveData<String> = _appVersionSetting
 
-    fun getMaxPinAttempts() = userPreferences.maxPinAttempts
-    fun getPinTimeout() = userPreferences.pinTimeout
-    fun isFingerprintEnabled() = userPreferences.fingerprintSecurity
+    private val _showEasterEgg = SingleLiveData<Unit>()
+    val showEasterEgg: LiveData<Unit> = _showEasterEgg
+
+    fun getMaxPinAttempts() = localStoreRepository.getPinEntryLimit()
+    fun getPinTimeout() = localStoreRepository.getPinTimeout()
+    fun isFingerprintEnabled() = localStoreRepository.isFingerprintEnabled()
 
     fun updateSettingsScreen() {
         updateDisplayUnitSetting()
@@ -62,20 +68,28 @@ class SettingsViewModel(
             }
         }
 
+    fun onVersionTapped() {
+        if(localStoreRepository.versionTapLimitReached()) {
+            _showEasterEgg.postValue(Unit)
+        } else {
+            localStoreRepository.updateVersionTappedCount()
+        }
+    }
+
     fun updateDisplayUnitSetting() {
-        _bitcoinDisplayUnitSetting.postValue(userPreferences.bitcoinDisplayUnit)
+        _bitcoinDisplayUnitSetting.postValue(localStoreRepository.getBitcoinDisplayUnit())
     }
 
     fun updateFingerprintRegisteredSetting() {
-        _fingerprintRegistered.postValue(userPreferences.fingerprintSecurity)
+        _fingerprintRegistered.postValue(localStoreRepository.isFingerprintEnabled())
     }
 
     fun updateAppThemeSetting() {
-        _appThemeSetting.postValue(userPreferences.appTheme)
+        _appThemeSetting.postValue(localStoreRepository.getAppTheme())
     }
 
     fun updatePinTimeoutSetting() {
-        _pinTimeoutSetting.postValue(userPreferences.pinTimeout)
+        _pinTimeoutSetting.postValue(localStoreRepository.getPinTimeout())
     }
 
     fun updateAppVersionSetting() {
@@ -83,30 +97,25 @@ class SettingsViewModel(
     }
 
     fun saveAppTheme(theme: AppTheme) {
-        userPreferences.appTheme = theme
+        localStoreRepository.updateAppTheme(theme)
         updateAppThemeSetting()
     }
 
     fun savePinTimeout(timeout: Int) {
-        if(timeout == Constants.Time.INSTANT) {
-            userPreferences.pinTimeout = Constants.Time.INSTANT_TIME_OFFSET
-        } else {
-            userPreferences.pinTimeout = timeout
-        }
-
+        localStoreRepository.updatePinTimeout(timeout)
         updatePinTimeoutSetting()
     }
 
     fun saveDisplayUnit(unit: BitcoinDisplayUnit) {
-        userPreferences.bitcoinDisplayUnit = unit
+        localStoreRepository.updateBitcoinDisplayUnit(unit)
         updateDisplayUnitSetting()
     }
 
     fun saveMaxPinAttempts(limit: Int) {
-        userPreferences.maxPinAttempts = limit
+        localStoreRepository.setMaxPinEntryLimit(limit)
     }
 
     fun saveFingerprintRegistered(registered: Boolean) {
-        userPreferences.fingerprintSecurity = registered
+        localStoreRepository.setFingerprintEnabled(registered)
     }
 }

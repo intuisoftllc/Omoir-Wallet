@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.intuisoft.plaid.R
 import com.intuisoft.plaid.databinding.FragmentCreateImportNonCustodialBinding
 import com.intuisoft.plaid.databinding.FragmentCreateImportPrivateAndSecureBinding
 import com.intuisoft.plaid.databinding.FragmentCreateImportSwapCurrenciesBinding
@@ -33,6 +34,10 @@ class SwapCurrenciesWalletFragment : PinProtectedFragment<FragmentCreateImportSw
     }
 
     override fun actionBarTitle(): Int {
+        return 0
+    }
+
+    override fun navigationId(): Int {
         return 0
     }
 

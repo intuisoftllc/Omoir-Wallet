@@ -1,5 +1,6 @@
 package com.intuisoft.plaid.features.pin.ui
 
+import android.app.ProgressDialog
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -13,9 +14,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.navigation.navOptions
 import com.intuisoft.plaid.R
-import com.intuisoft.plaid.androidwrappers.BindingFragment
-import com.intuisoft.plaid.androidwrappers.FingerprintScanResponse
-import com.intuisoft.plaid.androidwrappers.PasscodeView
+import com.intuisoft.plaid.androidwrappers.*
 import com.intuisoft.plaid.databinding.FragmentPinEntryBinding
 import com.intuisoft.plaid.databinding.FragmentWelcomeBinding
 import com.intuisoft.plaid.features.onboarding.ui.OnboardingFragment
@@ -23,9 +22,6 @@ import com.intuisoft.plaid.features.onboarding.ui.WelcomeFragmentDirections
 import com.intuisoft.plaid.features.onboarding.viewmodel.OnboardingViewModel
 import com.intuisoft.plaid.features.pin.viewmodel.PinViewModel
 import com.intuisoft.plaid.util.Constants
-import com.intuisoft.plaid.util.entensions.hideSoftKeyboard
-import com.intuisoft.plaid.util.entensions.ignoreOnBackPressed
-import com.intuisoft.plaid.util.entensions.validateFingerprint
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -83,13 +79,21 @@ class PinFragment: BindingFragment<FragmentPinEntryBinding>() {
             }
 
             override fun onMaxAttempts() {
-                this@PinFragment.pinViewModel.onMaxAttempts()
-                findNavController().navigate(PinFragmentDirections.actionPinFragmentToSplashFragment(), navOptions {
-                    popUpTo(R.id.pinFragment) {
-                        inclusive = true
-                    }
+                val progressDialog = ProgressDialog.show(requireContext(), getString(R.string.wiping_data_title), getString(R.string.wiping_data_message))
+                progressDialog.setCancelable(false)
 
-                })
+                this@PinFragment.pinViewModel.onMaxAttempts {
+                    progressDialog.cancel()
+
+                    findNavController().navigate(
+                        PinFragmentDirections.actionPinFragmentToSplashFragment(),
+                        navOptions {
+                            popUpTo(R.id.pinFragment) {
+                                inclusive = true
+                            }
+                        }
+                    )
+                }
             }
 
             override fun onScanFingerprint(listener: FingerprintScanResponse) {
@@ -116,6 +120,10 @@ class PinFragment: BindingFragment<FragmentPinEntryBinding>() {
 
     override fun actionBarTitle(): Int {
         return 0
+    }
+
+    override fun navigationId(): Int {
+        return R.id.pinFragment
     }
 
     override fun onDestroyView() {

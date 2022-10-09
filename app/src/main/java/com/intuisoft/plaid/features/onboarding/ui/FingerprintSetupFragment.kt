@@ -10,8 +10,9 @@ import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
+import com.intuisoft.plaid.R
+import com.intuisoft.plaid.androidwrappers.validateFingerprint
 import com.intuisoft.plaid.util.Constants
-import com.intuisoft.plaid.util.entensions.validateFingerprint
 
 
 class FingerprintSetupFragment : OnboardingFragment<FragmentFingerprintSetupBinding>() {
@@ -63,6 +64,10 @@ class FingerprintSetupFragment : OnboardingFragment<FragmentFingerprintSetupBind
 
     override fun actionBarTitle(): Int {
         return 0
+    }
+
+    override fun navigationId(): Int {
+        return R.id.fingerprintSetupFragment
     }
 
 

@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -16,7 +17,9 @@ import com.intuisoft.plaid.databinding.FragmentCreateImportWalletBinding
 import com.intuisoft.plaid.features.createwallet.ZoomOutPageTransformer
 import com.intuisoft.plaid.features.createwallet.adapters.WalletBenefitsAdapter
 import com.intuisoft.plaid.features.createwallet.viewmodel.CreateWalletViewModel
+import com.intuisoft.plaid.features.homescreen.ui.HomescreenFragmentDirections
 import com.intuisoft.plaid.features.pin.ui.PinProtectedFragment
+import com.intuisoft.plaid.util.Constants
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 
@@ -42,21 +45,19 @@ class CreateWalletFragment : PinProtectedFragment<FragmentCreateImportWalletBind
             val mainNet = bottomSheetDialog.findViewById<SettingsItemView>(R.id.mainNetOption)
             val testNet = bottomSheetDialog.findViewById<SettingsItemView>(R.id.testNetOption)
 
-            viewModel.setUseTestNet(viewModel.useTestNet)
-            viewModel.testNetEnabled.observe(viewLifecycleOwner, Observer {
-                testNet?.setSwitchChecked(it)
-            })
+            testNet?.showCheck(viewModel.useTestNet)
+            mainNet?.showCheck(!viewModel.useTestNet)
 
-            viewModel.mainNetEnabled.observe(viewLifecycleOwner, Observer {
-                mainNet?.setSwitchChecked(it)
-            })
-
-            mainNet?.onSwitchClicked {
-                viewModel.setUseTestNet(!it)
+            mainNet?.onClick {
+                viewModel.setUseTestNet(false)
+                testNet?.showCheck(false)
+                mainNet.showCheck(true)
             }
 
-            testNet?.onSwitchClicked {
-                viewModel.setUseTestNet(it)
+            testNet?.onClick {
+                viewModel.setUseTestNet(true)
+                testNet.showCheck(true)
+                mainNet?.showCheck(false)
             }
 
             bottomSheetDialog.show()
@@ -65,6 +66,13 @@ class CreateWalletFragment : PinProtectedFragment<FragmentCreateImportWalletBind
         val adapter = WalletBenefitsAdapter(
             requireActivity()
         )
+
+        binding.createNewWallet.onClick {
+            findNavController().navigate(
+                CreateWalletFragmentDirections.actionCreateWalletFragmentToBackupWalletFragment(),
+                Constants.Navigation.ANIMATED_ENTER_EXIT_RIGHT_NAV_OPTION
+            )
+        }
 
         binding.useCasesViewpager.adapter = adapter
         TabLayoutMediator(binding.tabLayout, binding.useCasesViewpager) { tab, position ->
@@ -79,6 +87,10 @@ class CreateWalletFragment : PinProtectedFragment<FragmentCreateImportWalletBind
 
     override fun actionBarTitle(): Int {
         return 0
+    }
+
+    override fun navigationId(): Int {
+        return R.id.createWalletFragment
     }
 
     override fun onDestroyView() {

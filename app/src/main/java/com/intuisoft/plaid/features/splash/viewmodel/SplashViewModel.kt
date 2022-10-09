@@ -10,13 +10,16 @@ import com.intuisoft.plaid.androidwrappers.BaseViewModel
 import com.intuisoft.plaid.features.splash.ui.SplashFragment
 import com.intuisoft.plaid.features.splash.ui.SplashFragmentDirections
 import com.intuisoft.plaid.local.UserPreferences
+import com.intuisoft.plaid.repositories.LocalStoreRepository
+import com.intuisoft.plaid.util.AesEncryptor
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class SplashViewModel(
     application: Application,
-    private val userPreferences: UserPreferences
-): BaseViewModel(application, userPreferences) {
+    private val localStoreRepository: LocalStoreRepository,
+    private val aesEncryptor: AesEncryptor
+): BaseViewModel(application, localStoreRepository, aesEncryptor) {
 
     private val _nextDestination = MutableLiveData<NavDirections>()
     val nextDestination: LiveData<NavDirections> = _nextDestination
@@ -26,7 +29,7 @@ class SplashViewModel(
         viewModelScope.launch {
             delay(SPLASH_DURATION.toLong())
 
-            if(userPreferences.pin != null && userPreferences.alias != null) {
+            if(localStoreRepository.getUserPin() != null && localStoreRepository.getUserAlias() != null) {
                 _nextDestination.postValue(SplashFragmentDirections.actionSplashFragmentToHomescreenFragment())
             } else {
                 _nextDestination.postValue(SplashFragmentDirections.actionSplashFragmentToOnboardingFragment())
@@ -35,7 +38,7 @@ class SplashViewModel(
     }
 
     fun resetPinCheckedTime() {
-        userPreferences.lastCheckPin = 0
+        localStoreRepository.resetPinCheckedTime()
     }
 
     companion object {

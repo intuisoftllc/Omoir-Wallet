@@ -11,6 +11,9 @@ import androidx.navigation.ui.navigateUp
 import com.intuisoft.plaid.androidwrappers.ActionBarDelegate
 import com.intuisoft.plaid.androidwrappers.BindingActivity
 import com.intuisoft.plaid.databinding.ActivityMainBinding
+import com.intuisoft.plaid.walletmanager.WalletManager
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
 class MainActivity : BindingActivity<ActivityMainBinding>(), ActionBarDelegate {
 
@@ -31,7 +34,6 @@ class MainActivity : BindingActivity<ActivityMainBinding>(), ActionBarDelegate {
         setSupportActionBar(binding.toolbar)
         getSupportActionBar()?.setDisplayHomeAsUpEnabled(true);
         getSupportActionBar()?.setDisplayShowHomeEnabled(true);
-
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
     }
 

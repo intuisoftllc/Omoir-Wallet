@@ -59,4 +59,8 @@ class AboutUsFragment : PinProtectedFragment<FragmentAboutUsBinding>() {
     override fun actionBarTitle(): Int {
         return R.string.about_us_fragment_label
     }
+
+    override fun navigationId(): Int {
+        return R.id.aboutUsFragment
+    }
 }

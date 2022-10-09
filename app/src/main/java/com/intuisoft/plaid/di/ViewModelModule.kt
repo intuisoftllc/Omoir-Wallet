@@ -13,26 +13,26 @@ import org.koin.dsl.module
 
 val viewModelModule = module {
     viewModel {
-        OnboardingViewModel(get(), get())
+        OnboardingViewModel(get(), get(), get())
     }
 
     viewModel {
-        SplashViewModel(get(), get())
+        SplashViewModel(get(), get(), get())
     }
 
     viewModel {
-        PinViewModel(get(), get())
+        PinViewModel(get(), get(), get())
     }
 
     viewModel {
-        HomeScreenViewModel(get(), get())
+        HomeScreenViewModel(get(), get(), get(), get())
     }
 
     viewModel {
-        SettingsViewModel(get(), get())
+        SettingsViewModel(get(), get(), get())
     }
 
     viewModel {
-        CreateWalletViewModel(get(), get())
+        CreateWalletViewModel(get(), get(), get())
     }
 }

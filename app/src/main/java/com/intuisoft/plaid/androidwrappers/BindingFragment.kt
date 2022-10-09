@@ -24,6 +24,8 @@ abstract class BindingFragment<T: ViewBinding> : Fragment(), FragmentActionBarDe
         }
     }
 
+    abstract fun navigationId() : Int
+
     override fun onDestroy() {
         super.onDestroy()
         _binding = null

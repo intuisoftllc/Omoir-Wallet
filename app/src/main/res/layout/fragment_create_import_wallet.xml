@@ -48,6 +48,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:button_style="rounded"
+        android:id="@+id/createNewWallet"
         app:btn_text="Create a new wallet"
         app:text_position="center"/>
 

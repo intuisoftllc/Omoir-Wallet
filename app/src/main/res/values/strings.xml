@@ -11,7 +11,12 @@
     <string name="settings_fragment_label">Settings</string>
     <string name="display_unit_fragment_label">Bitcoin Unit</string>
     <string name="appearance_fragment_label">Appearance</string>
+    <string name="meme_fragment_label">You Have Unleashed The Memes!</string>
     <string name="create_wallet_fragment_label">Create A Wallet</string>
+    <string name="backup_wallet_fragment_label">Backup Your Wallet</string>
+    <string name="seed_phrase_fragment_label">Your Seed Phrase</string>
+    <string name="name_wallet_fragment_label">Name Your Wallet</string>
+    <string name="wallet_created_fragment_label">Wallet Created</string>
     <string name="about_us_fragment_label">About Us</string>
     <string name="pin_fragment_label">Pin</string>
     <string name="splash_fragment_label">Splash</string>
@@ -24,9 +29,12 @@
     <string name="low_pin_limit_risk_message">Setting your invalid pin entry limit below 5 may result in you losing access to your funds if not properly backed up.</string>
     <string name="satoshi">Satoshi</string>
     <string name="cancel">Cancel</string>
+    <string name="easter_egg_screen_title">HODL! 1 BTC = 1 BTC</string>
     <string name="low_pin_limit_title">Low Pin Entry Limit</string>
     <string name="wipe_data_title">Delete All Data</string>
+    <string name="wiping_data_title">Wiping App Data</string>
     <string name="wipe_data_message">Are you sure you want to wipe all data from Plaid Crypto Wallet™? This action is irreversible, please be sure you have backed up all your seed phrases.</string>
+    <string name="wiping_data_message">Wiping all app data, this may take some time.</string>
     <string name="risk_acknowledgement_1">I Understand The Risks</string>
     <string name="erase_data">Erase Data</string>
     <string name="no_connection_message">No internet connection</string>

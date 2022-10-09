@@ -71,4 +71,8 @@ class AppearanceFragment : PinProtectedFragment<FragmentAppearanceBinding>() {
     override fun actionBarTitle(): Int {
         return R.string.appearance_fragment_label
     }
+
+    override fun navigationId(): Int {
+        return R.id.appearanceFragment
+    }
 }

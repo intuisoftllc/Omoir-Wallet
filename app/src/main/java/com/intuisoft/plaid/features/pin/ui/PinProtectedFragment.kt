@@ -26,9 +26,14 @@ abstract class PinProtectedFragment<T : ViewBinding> : BindingFragment<T>() {
     override fun onResume() {
         super.onResume()
 
-        pinViewModel.checkPinStatus {
-            findNavController().navigate(ActionOnlyNavDirections(R.id.action_global_pinFragment),
-                Constants.Navigation.ANIMATED_FADE_IN_EXIT_NAV_OPTION)
+        // this prevents other threads that may be resuming in paralell to generate multiple pin screens
+        if(findNavController().currentDestination?.id == navigationId()) {
+            pinViewModel.checkPinStatus {
+                findNavController().navigate(
+                    ActionOnlyNavDirections(R.id.action_global_pinFragment),
+                    Constants.Navigation.ANIMATED_FADE_IN_EXIT_NAV_OPTION
+                )
+            }
         }
     }
 

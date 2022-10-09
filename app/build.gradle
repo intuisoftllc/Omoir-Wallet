@@ -6,13 +6,17 @@ plugins {
     id 'androidx.navigation.safeargs'
 }
 
+def apikeyPropertiesFile = rootProject.file("api_keys.properties")
+def apikeyProps = new Properties()
+apikeyProps.load(new FileInputStream(apikeyPropertiesFile))
+
 android {
-    compileSdk 31
+    compileSdk 33
 
     defaultConfig {
         applicationId "com.intuisoft.plaid"
         minSdk 26
-        targetSdk 31
+        targetSdk 33
         versionCode 1
         versionName "1.0"
 
@@ -31,13 +35,15 @@ android {
         dev {
             versionNameSuffix = "-dev"
             applicationIdSuffix ".dev"
-            buildConfigField("String", "BASE_SERVER_URL", "\"https://google.com\"")
+            buildConfigField("String", "BLOCK_BOOK_SERVER_URL", "\"https://btcbook.nownodes.io/api/v2/\"")
+            buildConfigField("String", "NOW_NODES_CLIENT_SECRET", "\"${apikeyProps['NOW_NODES_TEST_CLIENT_SECRET']}\"")
         }
 
         prod {
             versionNameSuffix = "-prod"
             applicationIdSuffix ".prod"
-            buildConfigField("String", "BASE_SERVER_URL", "\"https://google.com\"")
+            buildConfigField("String", "BLOCK_BOOK_SERVER_URL", "\"https://btcbook.nownodes.io/api/v2/\"")
+            buildConfigField("String", "NOW_NODES_CLIENT_SECRET", "\"${apikeyProps['NOW_NODES_CLIENT_SECRET']}\"")
         }
     }
     compileOptions {
@@ -78,7 +84,13 @@ dependencies {
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
     implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
     implementation "com.squareup.retrofit2:adapter-rxjava3:$retrofit_version"
-    implementation "org.bitcoinj:bitcoinj-core:$bitcoin_library_version"
+    implementation "androidx.swiperefreshlayout:swiperefreshlayout:$swipe_refresh_version"
+
+    implementation "androidx.room:room-runtime:$room_version"
+    kapt "androidx.room:room-compiler:$room_version" // For Kotlin use kapt instead of annotationProcessor
+    implementation "androidx.room:room-ktx:$room_version"
+    implementation "androidx.paging:paging-runtime-ktx:3.1.1"
+    implementation "androidx.paging:paging-runtime:3.1.1"
 
 // Java Compatibility
     implementation "io.insert-koin:koin-android-compat:$koin_version"
