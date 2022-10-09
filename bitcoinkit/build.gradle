@@ -3,11 +3,10 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 
 android {
-    compileSdkVersion 29
+    compileSdkVersion 33
 
     defaultConfig {
-        minSdkVersion 23
-        targetSdkVersion 29
+        minSdkVersion 26
         versionCode 1
         versionName "0.4.1"
 
@@ -41,6 +40,7 @@ dependencies {
     // Room
     implementation 'androidx.room:room-runtime:2.2.5'
     implementation 'androidx.room:room-rxjava2:2.2.5'
+    implementation project(path: ':hd-wallet-kit')
     kapt 'androidx.room:room-compiler:2.2.5'
 
     api project(':bitcoincore')
