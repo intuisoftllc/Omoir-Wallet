@@ -1,33 +1,61 @@
 package com.intuisoft.plaid.util
 
+import java.text.DecimalFormat
+
 object SimpleCoinNumberFormat {
 
     fun format(number: Long) : String {
         if(number <= 0) return "0"
 
-        val compactPatterns = arrayOf(
-            "", "", "K", "K", "K", "Mil", "Mil", "Mil",
-            "Bil", "Bil", "Bil", "Trill", "Tril", "Tril"
-        )
-
-        val divisor = arrayOf(
-            1, 1, 1000, 10000, 100000, 1000000, 10000000,
-            100000000, 1000000000, 10000000000, 100000000000,
-            1000000000000, 10000000000000, 100000000000000
-        )
-
-        var notation = 10
-        var divisorIndex = 0
-        while(number > notation) {
-            if(notation >= 1_000_000_000_000) {
-                divisorIndex = divisor.size - 1
-                break
+        val df = DecimalFormat("###,###.##")
+        when {
+            (0..999).contains(number) -> {
+                return "" + number
             }
-
-            divisorIndex++
-            notation *= 10
+            (1000..9_999).contains(number) -> {
+                return "" + df.format(number.toDouble() / 1000) + " K"
+            }
+            (10_000..99_999).contains(number) -> {
+                return "" + df.format(number.toDouble() / 10_000) + " K"
+            }
+            (100_000..999_999).contains(number) -> {
+                return "" + df.format(number.toDouble() / 100_000) + " K"
+            }
+            (1_000_000..9_999_999).contains(number) -> {
+                return "" + df.format(number.toDouble() / 1_000_000) + " M"
+            }
+            (10_000_000..99_999_999).contains(number) -> {
+                return "" + df.format(number.toDouble() / 10_000_000) + " M"
+            }
+            (100_000_000..999_999_999).contains(number) -> {
+                return "" + df.format(number.toDouble() / 100_000_000) + " M"
+            }
+            (1_000_000_000..9_999_999_999).contains(number) -> {
+                return "" + df.format(number.toDouble() / 1_000_000_000) + " Bil"
+            }
+            (10_000_000_000..99_999_999_999).contains(number) -> {
+                return "" + df.format(number.toDouble() / 10_000_000_000) + " Bil"
+            }
+            (100_000_000_000..999_999_999_999).contains(number) -> {
+                return "" + df.format(number.toDouble() / 100_000_000_000) + " Bil"
+            }
+            (1_000_000_000_000..9_999_999_999_999).contains(number) -> {
+                return "" + df.format(number.toDouble() / 1_000_000_000_000) + " Tril"
+            }
+            (10_000_000_000_000..99_999_999_999_999).contains(number) -> {
+                return "" + df.format(number.toDouble() / 10_000_000_000_000) + " Tril"
+            }
+            (100_000_000_000_000..999_999_999_999_999).contains(number) -> {
+                return "" + df.format(number.toDouble() / 100_000_000_000_000) + " Tril"
+            }
+            else -> {
+                return "" + number
+            }
         }
+    }
 
-        return "${number.toDouble() / divisorIndex.toDouble()} ${compactPatterns[divisorIndex]}"
+    fun format(value: Double): String? {
+        val df = DecimalFormat("###,###.########")
+        return df.format(value)
     }
 }

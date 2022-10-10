@@ -71,7 +71,11 @@ class WalletManager(
         state = ManagerState.NONE
     }
 
-   private suspend fun synchronize(wallet: LocalWalletModel, forceSync: Boolean) {
+    suspend fun synchronize(wallet: LocalWalletModel) {
+       synchronize(wallet, false)
+    }
+
+    suspend fun synchronize(wallet: LocalWalletModel, forceSync: Boolean) {
         loadingScope {
             val time = System.currentTimeMillis() / 1000
 

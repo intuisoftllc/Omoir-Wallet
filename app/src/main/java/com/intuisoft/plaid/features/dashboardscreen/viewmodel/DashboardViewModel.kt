@@ -12,7 +12,9 @@ import com.intuisoft.plaid.walletmanager.WalletManager
 import io.horizontalsystems.bitcoincore.models.Transaction
 import io.horizontalsystems.bitcoincore.models.TransactionInfo
 import io.reactivex.disposables.CompositeDisposable
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.*
 
 
@@ -39,7 +41,7 @@ class DashboardViewModel(
         }
     }
 
-    fun getTransactions() {
+    fun createSubscriptions() {
         wallet!!.walletKit!!.transactions(type = null).subscribe { txList: List<TransactionInfo> ->
             _transactions.postValue(txList)
         }.let {
@@ -47,6 +49,13 @@ class DashboardViewModel(
         }
     }
 
+    fun syncWallet() {
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                walletManager.synchronize(wallet!!, true)
+            }
+        }
+    }
 
     override fun onCleared() {
         super.onCleared()

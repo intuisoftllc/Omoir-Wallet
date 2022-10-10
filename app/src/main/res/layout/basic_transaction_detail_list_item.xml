@@ -2,8 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:padding="10dp">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/walletContainer"
@@ -14,11 +13,13 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:cardCornerRadius="12dp"
         app:cardElevation="0dp"
+        android:background="?android:selectableItemBackground"
         app:layout_constraintHorizontal_bias="0">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:padding="10dp"
             android:background="?android:selectableItemBackground"
             android:minHeight="50dp">
 
@@ -35,8 +36,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="2 days ago"
-                style="@style/H5"
-                android:id="@+id/walletBalance"
+                style="@style/H6.LightBold"
+                android:id="@+id/transactionTime"
                 android:layout_marginStart="15dp"
                 android:textColor="@color/black"
                 app:layout_constraintBottom_toBottomOf="@+id/sendReceiveIndicator"
@@ -47,7 +48,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="125.8 Mil Sats"
-                style="@style/H5"
+                style="@style/H6"
+                android:id="@+id/transactionAmount"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/sendReceiveIndicator"
                 app:layout_constraintBottom_toBottomOf="@+id/sendReceiveIndicator"
