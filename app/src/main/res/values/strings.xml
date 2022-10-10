@@ -7,6 +7,7 @@
     <string name="support_request_message">Device: %1$s\nApi Level: %2$s\nOS Version: %3$s\nModel: %4$s\nProduct: %5$s\n----------------------------------------\n\nHello Intuisoft team, I would like to request more information regarding your app.</string>
 
     <string name="homescreen_fragment_label">Home</string>
+    <string name="wallet_dashboard_fragment_label">Wallet Dashboard</string>
     <string name="welcome_fragment_label">Welcome</string>
     <string name="settings_fragment_label">Settings</string>
     <string name="display_unit_fragment_label">Bitcoin Unit</string>
@@ -47,5 +48,6 @@
     <string name="pin_check_success_tip_message">Pin is correct</string>
     <string name="enter_pin_to_unlock_message">Enter pin to unlock</string>
     <string name="enter_pin_to_reset_message">Enter current pin to update</string>
-    <string name="switch_bitcoin_network_description">This setting allows you to switch the network the wallet you are creating points to.\n\nIf you do not know what this means then leave this setting unchanged.</string>
+    <string name="wallet_passphrase_warning">Please Keep in mind that wallets created with a passphrase may be unrecoverable if the passphrase has not been backed up.\n\nTo recover this wallet in the future, the passphrase entered must be entered EXACTLY as it was (case sensitive) when the wallet was first created.</string>
+    <string name="switch_bitcoin_network_description">This above settings allow you to change specific properties of your wallet.\n\nIf you do not know what they mean, it\'s best to leave them unchanged.</string>
 </resources>

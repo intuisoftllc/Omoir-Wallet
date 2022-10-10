@@ -11,15 +11,15 @@ import com.intuisoft.plaid.features.splash.ui.SplashFragment
 import com.intuisoft.plaid.features.splash.ui.SplashFragmentDirections
 import com.intuisoft.plaid.local.UserPreferences
 import com.intuisoft.plaid.repositories.LocalStoreRepository
-import com.intuisoft.plaid.util.AesEncryptor
+import com.intuisoft.plaid.walletmanager.WalletManager
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class SplashViewModel(
     application: Application,
     private val localStoreRepository: LocalStoreRepository,
-    private val aesEncryptor: AesEncryptor
-): BaseViewModel(application, localStoreRepository, aesEncryptor) {
+    private val walletManager: WalletManager
+): BaseViewModel(application, localStoreRepository, walletManager) {
 
     private val _nextDestination = MutableLiveData<NavDirections>()
     val nextDestination: LiveData<NavDirections> = _nextDestination

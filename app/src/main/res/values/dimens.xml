@@ -1,3 +1,4 @@
 <resources>
     <dimen name="edit_text_text_size">20sp</dimen>
+    <dimen name="edit_text_text_size_small">16sp</dimen>
 </resources>

@@ -28,7 +28,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/name_wallet_title"
-        android:text="Finally, let's give your wallet a name" />
+        android:text="Finally, let\'s give your wallet a name" />
 
 
 

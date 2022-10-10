@@ -43,6 +43,27 @@
         app:layout_constraintTop_toBottomOf="@id/backup_subtitle"/>
 
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="With Passphrase"
+        android:id="@+id/passphraseTitle"
+        app:layout_constraintTop_toBottomOf="@+id/seedPhrase"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        style="@style/H6.Bold"
+        android:layout_marginTop="10dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/passphrase"
+        android:text="wwwwwwwwww wwwwwwwwww wwwwwwwwww wwwwwwwwww wwwwwwwwww"
+        app:layout_constraintTop_toBottomOf="@+id/passphraseTitle"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:gravity="center"/>
+
     <LinearLayout
         android:id="@+id/warning"
         android:layout_width="match_parent"

@@ -131,7 +131,6 @@ class SettingsFragment : PinProtectedFragment<FragmentSettingsBinding>() {
 
             numberPicker?.minValue = 0
             numberPicker?.maxValue = 4
-            numberPicker?.value = 4
             numberPicker?.displayedValues = arrayOf(
                 Constants.Strings.STRING_IMMEDIATE_TIMEOUT,
                 Constants.Strings.STRING_1_MINUTE_TIMEOUT,

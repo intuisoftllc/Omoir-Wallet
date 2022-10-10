@@ -10,10 +10,16 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.addCallback
+import androidx.core.app.ActivityOptionsCompat
+import androidx.core.os.bundleOf
+import androidx.core.util.Pair
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.core.widget.doAfterTextChanged
 import androidx.lifecycle.Observer
+import androidx.navigation.ActivityNavigatorExtras
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navOptions
 import com.docformative.docformative.toArrayList
@@ -74,6 +80,8 @@ class HomescreenFragment : PinProtectedFragment<FragmentHomescreenBinding>() {
         binding.swipeContainer.setOnRefreshListener {
             if(binding.swipeContainer.isRefreshing) {
                 walletManager.synchronizeAll()
+            } else {
+                viewModel.showWallets()
             }
         }
 
@@ -107,7 +115,14 @@ class HomescreenFragment : PinProtectedFragment<FragmentHomescreenBinding>() {
     }
 
     fun onWalletSelected(wallet: LocalWalletModel) {
-        styledSnackBar(this.requireView(), "Wallet: ${wallet.name} selected")
+
+
+        val bundle = bundleOf(Constants.Navigation.WALLET_NAME_BUNDLE_ID to wallet.name)
+        findNavController().navigate(
+            R.id.wallet_dashboard_flow_graph,
+            bundle,
+            Constants.Navigation.ANIMATED_FADE_IN_EXIT_NAV_OPTION
+        )
     }
 
     override fun showActionBar(): Boolean {

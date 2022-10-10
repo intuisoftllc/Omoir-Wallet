@@ -7,14 +7,9 @@ import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
-import com.intuisoft.emojiigame.framework.db.LocalWalletDao
-import com.intuisoft.emojiigame.framework.db.PlaidDatabase
 import com.intuisoft.plaid.local.UserPreferences
 import com.intuisoft.plaid.repositories.LocalStoreRepository
 import com.intuisoft.plaid.repositories.LocalStoreRepository_Impl
-import com.intuisoft.plaid.repositories.db.DatabaseRepository
-import com.intuisoft.plaid.repositories.db.DatabaseRepository_Impl
-import com.intuisoft.plaid.util.AesEncryptor
 import com.intuisoft.plaid.walletmanager.WalletManager
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.Module
@@ -26,16 +21,9 @@ val preferencesModule = module {
     factory { UserPreferences(get(named("userPreferences")), get()) }
 }
 
-val databaseModule = module {
-
-    single { provideDatabase(get()) }
-    single { get<PlaidDatabase>().walletDao() }
-}
-
 val localRepositoriesModule = module {
 
-    single { provideDatabaseRepository(get(), get()) }
-    single { provideLocalRepository(get(), get(), get()) }
+    single { provideLocalRepository(get()) }
 }
 
 val walletManagerModule = module {
@@ -43,30 +31,10 @@ val walletManagerModule = module {
     single { WalletManager(get(), get(), get()) }
 }
 
-val aesEncryptionModule = module {
-
-    single { AesEncryptor(get()) }
-}
-
-fun provideDatabase(
-    context: Context
-): PlaidDatabase {
-    return PlaidDatabase.getInstance(context)
-}
-
-fun provideDatabaseRepository(
-    database: PlaidDatabase,
-    localWalletDao: LocalWalletDao
-): DatabaseRepository {
-    return DatabaseRepository_Impl(database, localWalletDao)
-}
-
 fun provideLocalRepository(
-    application: Application,
-    databaseRepository: DatabaseRepository,
     userPreferences: UserPreferences
 ): LocalStoreRepository {
-    return LocalStoreRepository_Impl(application, databaseRepository, userPreferences)
+    return LocalStoreRepository_Impl(userPreferences)
 }
 
 fun provideUserPreferences(context: Context): SharedPreferences {

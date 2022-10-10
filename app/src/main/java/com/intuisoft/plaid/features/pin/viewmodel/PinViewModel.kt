@@ -4,14 +4,13 @@ import android.app.Application
 import com.intuisoft.plaid.androidwrappers.BaseViewModel
 import com.intuisoft.plaid.local.UserPreferences
 import com.intuisoft.plaid.repositories.LocalStoreRepository
-import com.intuisoft.plaid.util.AesEncryptor
-import com.intuisoft.plaid.util.Constants
+import com.intuisoft.plaid.walletmanager.WalletManager
 
 class PinViewModel(
     application: Application,
     private val localStoreRepository: LocalStoreRepository,
-    private val aesEncryptor: AesEncryptor
-): BaseViewModel(application, localStoreRepository, aesEncryptor) {
+    private val walletManager: WalletManager
+): BaseViewModel(application, localStoreRepository, walletManager) {
 
     val pin: String
         get() = localStoreRepository.getUserPin() ?: ""

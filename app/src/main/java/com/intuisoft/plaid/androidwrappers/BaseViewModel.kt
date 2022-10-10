@@ -11,11 +11,10 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.intuisoft.emojiigame.framework.db.LocalWalletDao
 import com.intuisoft.plaid.local.UserPreferences
 import com.intuisoft.plaid.repositories.LocalStoreRepository
-import com.intuisoft.plaid.util.AesEncryptor
 import com.intuisoft.plaid.util.Constants
+import com.intuisoft.plaid.walletmanager.WalletManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -28,7 +27,7 @@ import java.util.concurrent.TimeUnit
 open class BaseViewModel(
     application: Application,
     private val localStoreRepository: LocalStoreRepository,
-    private val aesEncryptor: AesEncryptor
+    private val walletManager: WalletManager
 ) : AndroidViewModel(application) {
 
     private val _fingerprintSupported = SingleLiveData<Boolean>()
@@ -109,12 +108,7 @@ open class BaseViewModel(
         }
     }
 
-    fun getWalletPassword() : String {
-        localStoreRepository.updateUserSalt(aesEncryptor.generateRandomBase64String())
-        return "${localStoreRepository.getUserPin()}${localStoreRepository.getUserSalt()}"
-    }
-
     suspend fun doesWalletExist(walletName: String) : Boolean {
-        return localStoreRepository.doesWalletExist(walletName)
+        return walletManager.doesWalletExist(walletName)
     }
 }

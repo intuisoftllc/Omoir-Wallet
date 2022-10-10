@@ -36,6 +36,7 @@ class BasicWalletDataDetail(
             view = this
 
             try {
+                this.transitionName = wallet.name
                 this.setOnClickListener {
                     onClick(wallet)
                 }
@@ -67,38 +68,15 @@ class BasicWalletDataDetail(
                 }
 
                 walletName.text = wallet.name
-                walletBalance.text = getWalletBalance()
+                walletBalance.text = wallet.getBalance(localStoreRepository)
 
                 lifecycleOwner?.let {
                     wallet.walletStateUpdated.observe(it, androidx.lifecycle.Observer {
-                        onWalletStateChanged()
+                        wallet.onWalletStateChanged(walletBalance, it, localStoreRepository)
                     })
                 }
             } catch (error: java.lang.Exception) {
                 styledSnackBar(this.rootView, "Oops an error occurred: ${error}")
-            }
-        }
-    }
-
-    private fun getWalletBalance(): String {
-        if(localStoreRepository.getBitcoinDisplayUnit() == BitcoinDisplayUnit.BTC) {
-            return "" //+ wallet.wallet!!.balance / Constants.Limit.SATS_PER_BTC + " BTC"
-        } else {
-            val balance = 0L//wallet.wallet?.balance?.value ?: 0L
-            val postfix = if(balance == 1L) "Sat" else "Sats"
-
-            return SimpleCoinNumberFormat.format(balance) + " " + postfix
-        }
-    }
-
-    private fun onWalletStateChanged() {
-        view.apply {
-            when(wallet.walletState) {
-                WalletState.SYNCING -> {
-                    walletBalance.text = Constants.Strings.SYNCING
-                } else -> {
-                    walletBalance.text = getWalletBalance()
-                }
             }
         }
     }

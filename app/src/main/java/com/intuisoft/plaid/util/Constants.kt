@@ -15,6 +15,8 @@ class Constants {
     }
 
     object Navigation {
+        const val WALLET_NAME_BUNDLE_ID = "wallet_name"
+
         val ANIMATED_SLIDE_UP_OPTION =
             navOptions {
                 anim {
@@ -71,11 +73,13 @@ class Constants {
         const val USE_BIOMETRIC_REASON_4 = "Scan your fingerprint to remove biometric authentication."
         const val SKIP_FOR_NOW = "Skip for now"
         const val USE_PIN = "Use pin"
-        const val USER_WALLET_FILENAME_PREFIX = "usr_wallet_"
-        const val MAIN_NET_BLOCK_FILE = "main_net_chain"
-        const val TEST_NET_BLOCK_FILE = "test_net_chain"
-        const val WALLET_EXTENSION_NAME = "addition_info_wallet_extension"
         const val SYNCING = "Syncing..."
+        const val WALLET_FILE = "local_wallets"
+        const val ENTROPY_STRENGTH_DEFAULT = "12 words"
+        const val ENTROPY_STRENGTH_LOW = "15 wordss"
+        const val ENTROPY_STRENGTH_MEDIUM = "18 wordss"
+        const val ENTROPY_STRENGTH_HIGH = "21 wordss"
+        const val ENTROPY_STRENGTH_VERY_HIGH = "24 wordss"
     }
 
     object ServerStrings {
@@ -102,6 +106,7 @@ class Constants {
         const val MIN_WALLET_UPDATE_TIME = 5L
         const val MAX_WALLET_UPDATE_LIMIT = 10L
         const val SATS_PER_BTC = 100000000
+        const val MAX_PEERS = 10
         const val PAGE_LIMIT = 50
         const val DEFAULT_PIN_TIMEOUT = Time.INSTANT_TIME_OFFSET // check for pin only when user leaves the app by default
     }

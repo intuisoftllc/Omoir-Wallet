@@ -34,6 +34,42 @@
         app:show_switch="false"/>
 
     <TextView
+        android:layout_marginTop="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Wallet Configuration"
+        android:layout_gravity="start"/>
+
+    <com.intuisoft.plaid.androidwrappers.SettingsItemView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:item_subtitle="Passphrase"
+        android:id="@+id/passphraseOption"
+        app:show_chevron="true"
+        app:title_text_color="@color/white"
+        app:show_switch="false"/>
+
+    <com.intuisoft.plaid.androidwrappers.SettingsItemView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:item_subtitle="Entropy Strength"
+        android:id="@+id/entropyOption"
+        app:show_chevron="true"
+        app:title_text_color="@color/white"
+        app:show_switch="false"/>
+
+    <com.intuisoft.plaid.androidwrappers.SettingsItemView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:item_subtitle="Bip Type"
+        android:visibility="gone"
+        android:id="@+id/bipTypeOption"
+        app:show_chevron="true"
+        app:title_text_color="@color/white"
+        app:show_switch="false"/>
+
+
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/switch_bitcoin_network_description"

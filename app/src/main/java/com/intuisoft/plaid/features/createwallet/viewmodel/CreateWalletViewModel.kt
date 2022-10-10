@@ -4,15 +4,12 @@ import android.app.Application
 import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
-import com.intuisoft.emojiigame.framework.db.LocalWalletDao
 import com.intuisoft.plaid.androidwrappers.BaseViewModel
 import com.intuisoft.plaid.androidwrappers.SingleLiveData
-import com.intuisoft.plaid.local.UserPreferences
-import com.intuisoft.plaid.model.LocalWalletModel
 import com.intuisoft.plaid.model.WalletType
 import com.intuisoft.plaid.repositories.LocalStoreRepository
-import com.intuisoft.plaid.util.AesEncryptor
-import com.intuisoft.plaid.util.Constants
+import com.intuisoft.plaid.walletmanager.WalletManager
+import io.horizontalsystems.hdwalletkit.Mnemonic
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -22,29 +19,38 @@ import java.util.concurrent.TimeUnit
 
 class CreateWalletViewModel(
     application: Application,
-    private val localStoreRepository: LocalStoreRepository,
-    private val aesEncryptor: AesEncryptor
-): BaseViewModel(application, localStoreRepository, aesEncryptor) {
+    localStoreRepository: LocalStoreRepository,
+    private val walletManager: WalletManager
+): BaseViewModel(application, localStoreRepository, walletManager) {
 
-//    private var wallet: Wallet? = null
+    private var seed: List<String>? = null
     private var walletType: WalletType? = null
 
     private val _walletAlreadyExists = SingleLiveData<Boolean>()
     val walletAlreadyExists: LiveData<Boolean> = _walletAlreadyExists
 
-    private val _seedPhrase = SingleLiveData<List<String>>()
-    val seedPhrase: LiveData<List<String>> = _seedPhrase
+    private val _seedPhraseGenerated = SingleLiveData<List<String>>()
+    val seedPhraseGenerated: LiveData<List<String>> = _seedPhraseGenerated
+
+    private val _userPassphrase = SingleLiveData<String>()
+    val userPassphrase: LiveData<String> = _userPassphrase
 
     var useTestNet = false
         private set
+
+    private var passphrase = ""
+
+    private var entropyStrength = Mnemonic.EntropyStrength.Default
+
 
     fun generateNewWallet() {
         viewModelScope.launch {
             walletType = WalletType.READ_WRITE
 
-            // Since we are not using Bitcoinj for network control we set it to the maintain regardless
-//            wallet = Wallet.createDeterministic(org.bitcoinj.core.Context(MainNetParams.get()), ScriptType.P2WPKH)
-//            _seedPhrase.postValue(wallet!!.getKeyChainSeed().mnemonicCode)
+//            seed = Mnemonic().generate(entropyStrength)
+            seed = "yard impulse luxury drive today throw farm pepper survey wreck glass federal".split(" ")
+            _seedPhraseGenerated.postValue(seed!!)
+            _userPassphrase.postValue(passphrase)
         }
     }
 
@@ -52,34 +58,36 @@ class CreateWalletViewModel(
         useTestNet = use
     }
 
+    fun setEntropyStrength(strength: Mnemonic.EntropyStrength) {
+        entropyStrength = strength
+    }
+
+    fun getPassphrase() = passphrase
+
+    fun getEntropyStrength() = entropyStrength
+
+    fun setPassphrase(p: String) {
+        passphrase = p
+    }
+
     /**
      * Save wallet to dick every 1 minute
      *
      */
-    fun commitWalletToDisk(context: Context, walletName: String) {
+    fun commitWalletToDisk(walletName: String) {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
                 if (doesWalletExist(walletName)) {
                     _walletAlreadyExists.postValue(true)
                 } else {
                     _walletAlreadyExists.postValue(false)
-
-//                    wallet?.let {
-//                        val file = File(
-//                            context.filesDir,
-//                            Constants.Strings.USER_WALLET_FILENAME_PREFIX + walletName
-//                        )
-
-//                        it.autosaveToFile(
-//                            file,
-//                            Constants.Limit.MIN_WALLET_UPDATE_TIME,
-//                            TimeUnit.MINUTES,
-//                            null
-//                        )
-//                        it.encrypt(getWalletPassword())
-//
-//                        localStoreRepository.createWallet(walletName, walletType!!, useTestNet)
-//                    }
+                    walletManager.createWallet(
+                        name = walletName,
+                        seed = seed!!,
+                        passphrase = passphrase,
+                        walletType = walletType!!,
+                        testnetWallet = useTestNet
+                    )
                 }
             }
         }

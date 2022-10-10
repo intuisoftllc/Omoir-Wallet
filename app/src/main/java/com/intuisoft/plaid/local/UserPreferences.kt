@@ -6,6 +6,7 @@ import com.intuisoft.plaid.model.AppTheme
 import com.intuisoft.plaid.model.BitcoinDisplayUnit
 import com.intuisoft.plaid.util.Constants
 import com.intuisoft.plaid.util.Constants.Limit.DEFAULT_MAX_PIN_ATTEMPTS
+import com.intuisoft.plaid.walletmanager.StoredWalletInfo
 
 class UserPreferences(
     private val securePrefs: SharedPreferences,
@@ -23,8 +24,8 @@ class UserPreferences(
         const val APP_THEME_KEY = "APP_THEME_KEY"
         const val PIN_TIMEOUT_KEY = "PIN_TIMEOUT_KEY"
         const val VERSION_TAPPED_COUNT_KEY = "VERSION_TAPPED_COUNT_KEY"
-        const val USER_SALT_KEY = "USER_SALT_KEY"
         const val LAST_SYNC_TIME_KEY = "LAST_SYNC_TIME_KEY"
+        const val WALLET_INFO = "WALLET_INFO"
     }
 
     var incorrectPinAttempts: Int
@@ -109,12 +110,31 @@ class UserPreferences(
             putString(USER_PIN_KEY, pin)
         }
 
-    var salt: String?
+    var storedWalletInfo: StoredWalletInfo
         get() {
-            return getString(USER_SALT_KEY)
+            val walletInfo = getString(WALLET_INFO, null)
+
+            if(walletInfo != null) {
+                return Gson().fromJson(
+                    walletInfo,
+                    StoredWalletInfo::class.java
+                )
+            }
+
+            return StoredWalletInfo(mutableListOf())
         }
-        set(salt) {
-            putString(USER_SALT_KEY, salt)
+        set(info) {
+            if(info == null) {
+                putString(
+                    WALLET_INFO,
+                    Gson().toJson(StoredWalletInfo(mutableListOf()))
+                )
+            } else {
+                putString(
+                    WALLET_INFO,
+                    Gson().toJson(info)
+                )
+            }
         }
 
     var fingerprintSecurity: Boolean

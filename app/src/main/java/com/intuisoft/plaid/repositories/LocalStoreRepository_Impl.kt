@@ -1,21 +1,20 @@
 package com.intuisoft.plaid.repositories
 
 import android.app.Application
-import com.intuisoft.emojiigame.framework.db.LocalWallet
 import com.intuisoft.plaid.local.UserPreferences
-import com.intuisoft.plaid.local.db.DatabaseListener
+import com.intuisoft.plaid.local.WipeDataListener
 import com.intuisoft.plaid.model.AppTheme
 import com.intuisoft.plaid.model.BitcoinDisplayUnit
-import com.intuisoft.plaid.model.WalletType
-import com.intuisoft.plaid.repositories.db.DatabaseRepository
 import com.intuisoft.plaid.util.Constants
+import com.intuisoft.plaid.walletmanager.StoredWalletInfo
 import java.io.File
 
 class LocalStoreRepository_Impl(
-    private val application: Application,
-    private val databaseRepository: DatabaseRepository,
     private val userPreferences: UserPreferences,
 ): LocalStoreRepository {
+
+    private var wipeDataListener: WipeDataListener? = null
+    private var cachedStoredWalletInfo: StoredWalletInfo? = null
 
     override fun increaseIncorrectPinAttempts() {
         userPreferences.incorrectPinAttempts = userPreferences.incorrectPinAttempts + 1
@@ -41,8 +40,8 @@ class LocalStoreRepository_Impl(
         return userPreferences.walletSyncTime
     }
 
-    override fun setDatabaseListener(databaseListener: DatabaseListener) {
-        databaseRepository.setDatabaseListener(databaseListener)
+    override fun setOnWipeDataListener(listener: WipeDataListener) {
+        wipeDataListener = listener
     }
 
     override fun updateBitcoinDisplayUnit(displayUnit: BitcoinDisplayUnit) {
@@ -115,14 +114,20 @@ class LocalStoreRepository_Impl(
         return userPreferences.pin
     }
 
-    override fun updateUserSalt(salt: String) {
-        if(userPreferences.salt == null) {
-            userPreferences.salt = salt // we ony want to set this one time
-        }
+    override fun getStoredWalletInfo(): StoredWalletInfo {
+        if(cachedStoredWalletInfo != null)
+            return cachedStoredWalletInfo!!
+
+        cachedStoredWalletInfo = userPreferences.storedWalletInfo
+        return cachedStoredWalletInfo!!
     }
 
-    override fun getUserSalt(): String? {
-        return userPreferences.salt
+    override fun setStoredWalletInfo(storedWalletInfo: StoredWalletInfo?) {
+        cachedStoredWalletInfo = null
+        userPreferences.storedWalletInfo =
+            if(storedWalletInfo == null)
+                StoredWalletInfo(mutableListOf())
+            else storedWalletInfo
     }
 
     override fun setFingerprintEnabled(enabled: Boolean) {
@@ -133,34 +138,9 @@ class LocalStoreRepository_Impl(
         return userPreferences.fingerprintSecurity
     }
 
-    override suspend fun doesWalletExist(name: String) : Boolean {
-        return databaseRepository.doesWalletExist(name)
-    }
-
-    override suspend fun createWallet(name: String, type: WalletType, testNetWallet: Boolean) {
-        databaseRepository.createNewWallet(name, type, testNetWallet)
-    }
-
-    override suspend fun getWallet(name: String): LocalWallet? {
-        return databaseRepository.getWallet(name)
-    }
-
-    override suspend fun getAllWallets(): List<LocalWallet>? {
-        return databaseRepository.getAllWallets()
-    }
-
     override suspend fun wipeAllData(onWipeFinished: suspend () -> Unit) {
         userPreferences.wipeData()
-
-        databaseRepository.getAllWallets()?.forEach {
-            File(
-                application.filesDir,
-                Constants.Strings.USER_WALLET_FILENAME_PREFIX + it.name
-            ).delete()
-        }
-
-        databaseRepository.deleteAllData()
-
+        wipeDataListener?.onWipeData()
         onWipeFinished()
     }
 }

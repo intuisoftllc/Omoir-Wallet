@@ -4,12 +4,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.intuisoft.plaid.R
-import com.intuisoft.plaid.databinding.FragmentBackupWalletBinding
-import com.intuisoft.plaid.databinding.FragmentCreateImportNonCustodialBinding
-import com.intuisoft.plaid.databinding.FragmentCreateImportPrivateAndSecureBinding
 import com.intuisoft.plaid.databinding.FragmentSeedPhraseBinding
 import com.intuisoft.plaid.features.createwallet.viewmodel.CreateWalletViewModel
 import com.intuisoft.plaid.features.pin.ui.PinProtectedFragment
@@ -35,7 +33,7 @@ class SeedPhraseFragment : PinProtectedFragment<FragmentSeedPhraseBinding>() {
         binding.seedPhrase.resetView()
         viewModel.generateNewWallet()
 
-        viewModel.seedPhrase.observe(viewLifecycleOwner, Observer {
+        viewModel.seedPhraseGenerated.observe(viewLifecycleOwner, Observer {
             it.forEach {  word ->
                 binding.seedPhrase.nextWord(word)
             }
@@ -47,6 +45,13 @@ class SeedPhraseFragment : PinProtectedFragment<FragmentSeedPhraseBinding>() {
                 Constants.Navigation.ANIMATED_ENTER_EXIT_RIGHT_NAV_OPTION
             )
         }
+
+        viewModel.userPassphrase.observe(viewLifecycleOwner, Observer {
+            binding.passphrase.isVisible = it.isNotEmpty()
+            binding.passphraseTitle.isVisible = it.isNotEmpty()
+
+            binding.passphrase.text = it
+        })
     }
 
     override fun showActionBar(): Boolean {

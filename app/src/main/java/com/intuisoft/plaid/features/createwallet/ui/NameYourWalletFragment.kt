@@ -68,7 +68,7 @@ class NameYourWalletFragment : PinProtectedFragment<FragmentNameWalletBinding>()
         })
 
         binding.confirm.onClick {
-            viewModel.commitWalletToDisk(requireContext(), binding.name.text.toString())
+            viewModel.commitWalletToDisk(binding.name.text.toString())
         }
 
         viewModel.walletAlreadyExists.observe(viewLifecycleOwner, Observer {

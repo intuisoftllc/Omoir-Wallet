@@ -42,7 +42,6 @@ class WelcomeFragment : OnboardingFragment<FragmentWelcomeBinding>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        walletManager.initialize()
         binding.name.setOnKeyListener(object : View.OnKeyListener {
             override fun onKey(v: View?, keyCode: Int, event: KeyEvent): Boolean {
                 // if the event is a key down event on the enter button

@@ -31,7 +31,7 @@
         style="@style/Subtitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Let's get you setup,\nwhat shall I call you?"
+        android:text="Let\'s get you setup,\nwhat shall I call you?"
         android:textColor="@color/black"
         app:layout_constraintStart_toStartOf="@+id/textContainer"
         app:layout_constraintTop_toBottomOf="@+id/welcome" />
