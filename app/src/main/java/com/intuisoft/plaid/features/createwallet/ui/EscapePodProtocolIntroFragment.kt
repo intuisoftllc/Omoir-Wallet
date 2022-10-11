@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.intuisoft.plaid.R
+import com.intuisoft.plaid.androidwrappers.FragmentConfiguration
 import com.intuisoft.plaid.databinding.FragmentCreateImportEscapePodProtocolBinding
 import com.intuisoft.plaid.databinding.FragmentCreateImportNonCustodialBinding
 import com.intuisoft.plaid.features.createwallet.viewmodel.CreateWalletViewModel
@@ -24,8 +25,8 @@ class EscapePodProtocolIntroFragment : PinProtectedFragment<FragmentCreateImport
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun onConfiguration(configuration: FragmentConfiguration?) {
+        // do nothing
     }
 
     override fun showActionBar(): Boolean {

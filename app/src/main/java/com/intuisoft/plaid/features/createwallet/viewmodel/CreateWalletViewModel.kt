@@ -5,10 +5,12 @@ import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
 import com.intuisoft.plaid.androidwrappers.BaseViewModel
+import com.intuisoft.plaid.androidwrappers.FragmentConfiguration
 import com.intuisoft.plaid.androidwrappers.SingleLiveData
-import com.intuisoft.plaid.model.WalletType
+import com.intuisoft.plaid.androidwrappers.WalletViewModel
 import com.intuisoft.plaid.repositories.LocalStoreRepository
 import com.intuisoft.plaid.walletmanager.WalletManager
+import io.horizontalsystems.bitcoincore.core.Bip
 import io.horizontalsystems.hdwalletkit.Mnemonic
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -21,37 +23,18 @@ class CreateWalletViewModel(
     application: Application,
     localStoreRepository: LocalStoreRepository,
     private val walletManager: WalletManager
-): BaseViewModel(application, localStoreRepository, walletManager) {
+): WalletViewModel(application, localStoreRepository, walletManager) {
 
     private var seed: List<String>? = null
-    private var walletType: WalletType? = null
-
-    private val _walletAlreadyExists = SingleLiveData<Boolean>()
-    val walletAlreadyExists: LiveData<Boolean> = _walletAlreadyExists
-
-    private val _seedPhraseGenerated = SingleLiveData<List<String>>()
-    val seedPhraseGenerated: LiveData<List<String>> = _seedPhraseGenerated
-
-    private val _userPassphrase = SingleLiveData<String>()
-    val userPassphrase: LiveData<String> = _userPassphrase
+    private var bip: Bip = Bip.BIP84
+    private var passphrase = ""
+    private var entropyStrength = Mnemonic.EntropyStrength.Default
 
     var useTestNet = false
         private set
 
-    private var passphrase = ""
-
-    private var entropyStrength = Mnemonic.EntropyStrength.Default
-
-
     fun generateNewWallet() {
-        viewModelScope.launch {
-            walletType = WalletType.READ_WRITE
-
-//            seed = Mnemonic().generate(entropyStrength)
-            seed = "yard impulse luxury drive today throw farm pepper survey wreck glass federal".split(" ")
-            _seedPhraseGenerated.postValue(seed!!)
-            _userPassphrase.postValue(passphrase)
-        }
+        generateNewWallet(passphrase)
     }
 
     fun setUseTestNet(use: Boolean) {
@@ -62,12 +45,28 @@ class CreateWalletViewModel(
         entropyStrength = strength
     }
 
-    fun getPassphrase() = passphrase
+    fun setBip(bip: Bip) {
+        this.bip = bip
+    }
 
     fun getEntropyStrength() = entropyStrength
 
+    fun getBipType() = bip
+
     fun setPassphrase(p: String) {
         passphrase = p
+    }
+
+    fun setSeedPhrase(p: List<String>) {
+        seed = p
+    }
+
+    fun showLocalSeedPhrase() {
+        _seedPhraseGenerated.postValue(seed)
+    }
+
+    fun showLocalPassPhrase() {
+        _userPassphrase.postValue(passphrase)
     }
 
     /**
@@ -75,21 +74,12 @@ class CreateWalletViewModel(
      *
      */
     fun commitWalletToDisk(walletName: String) {
-        viewModelScope.launch {
-            withContext(Dispatchers.IO) {
-                if (doesWalletExist(walletName)) {
-                    _walletAlreadyExists.postValue(true)
-                } else {
-                    _walletAlreadyExists.postValue(false)
-                    walletManager.createWallet(
-                        name = walletName,
-                        seed = seed!!,
-                        passphrase = passphrase,
-                        walletType = walletType!!,
-                        testnetWallet = useTestNet
-                    )
-                }
-            }
-        }
+        commitWalletToDisk(
+            walletName = walletName,
+            seed = seed!!,
+            passphrase = passphrase,
+            bip = bip,
+            testNetWallet = useTestNet
+        )
     }
 }

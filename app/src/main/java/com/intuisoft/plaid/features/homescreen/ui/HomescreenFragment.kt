@@ -10,6 +10,8 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.docformative.docformative.toArrayList
 import com.intuisoft.plaid.R
+import com.intuisoft.plaid.androidwrappers.FragmentConfiguration
+import com.intuisoft.plaid.androidwrappers.navigate
 import com.intuisoft.plaid.androidwrappers.onBackPressedCallback
 import com.intuisoft.plaid.databinding.FragmentHomescreenBinding
 import com.intuisoft.plaid.features.homescreen.adapters.BasicTransactionAdapter
@@ -22,11 +24,11 @@ import com.intuisoft.plaid.util.Constants
 import com.intuisoft.plaid.walletmanager.ManagerState
 import com.intuisoft.plaid.walletmanager.WalletManager
 import org.koin.android.ext.android.inject
-import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
 class HomescreenFragment : PinProtectedFragment<FragmentHomescreenBinding>() {
-    protected val viewModel: HomeScreenViewModel by sharedViewModel()
+    protected val viewModel: HomeScreenViewModel by viewModel()
     protected val localStoreRepository: LocalStoreRepository by inject()
     protected val walletManager: WalletManager by inject()
 
@@ -44,8 +46,7 @@ class HomescreenFragment : PinProtectedFragment<FragmentHomescreenBinding>() {
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun onConfiguration(configuration: FragmentConfiguration?) {
 
         onBackPressedCallback {
             requireActivity().finish()
@@ -81,29 +82,16 @@ class HomescreenFragment : PinProtectedFragment<FragmentHomescreenBinding>() {
         })
 
         binding.settings.setOnClickListener {
-            findNavController().navigate(
-                HomescreenFragmentDirections.actionHomescreenFragmentToSettingsFragment(),
-                Constants.Navigation.ANIMATED_FADE_IN_EXIT_NAV_OPTION
-            )
+            navigate(R.id.settingsFragment)
         }
 
         binding.addWallet.setOnClickListener {
-            findNavController().navigate(
-                HomescreenFragmentDirections.actionHomescreenFragmentToCreateWalletFragment(),
-                Constants.Navigation.ANIMATED_FADE_IN_EXIT_NAV_OPTION
-            )
+            navigate(R.id.createWalletFragment)
         }
     }
 
     fun onWalletSelected(wallet: LocalWalletModel) {
-
-
-        val bundle = bundleOf(Constants.Navigation.WALLET_NAME_BUNDLE_ID to wallet.name)
-        findNavController().navigate(
-            R.id.wallet_dashboard_flow_graph,
-            bundle,
-            Constants.Navigation.ANIMATED_FADE_IN_EXIT_NAV_OPTION
-        )
+        navigate(R.id.walletDashboardFragment, wallet)
     }
 
     override fun showActionBar(): Boolean {

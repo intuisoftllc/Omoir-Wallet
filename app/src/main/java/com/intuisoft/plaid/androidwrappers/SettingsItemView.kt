@@ -66,7 +66,7 @@ class SettingsItemView(context: Context, attrs: AttributeSet?) : LinearLayout(co
     }
 
     fun setSwitchChecked(checked: Boolean) {
-        switch?.isActivated = checked
+        switch?.isChecked = checked
     }
 
     fun showCheck(show: Boolean) {

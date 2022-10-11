@@ -7,11 +7,15 @@ import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.intuisoft.plaid.R
+import com.intuisoft.plaid.androidwrappers.FragmentConfiguration
 import com.intuisoft.plaid.androidwrappers.hideSoftKeyboard
+import com.intuisoft.plaid.androidwrappers.navigate
+import com.intuisoft.plaid.androidwrappers.styledSnackBar
 import com.intuisoft.plaid.databinding.FragmentBackupWalletBinding
 import com.intuisoft.plaid.databinding.FragmentCreateImportNonCustodialBinding
 import com.intuisoft.plaid.databinding.FragmentCreateImportPrivateAndSecureBinding
@@ -34,9 +38,7 @@ class NameYourWalletFragment : PinProtectedFragment<FragmentNameWalletBinding>()
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
+    override fun onConfiguration(configuration: FragmentConfiguration?) {
         binding.confirm.enableButton(false)
         binding.name.setOnKeyListener(object : View.OnKeyListener {
             override fun onKey(v: View?, keyCode: Int, event: KeyEvent): Boolean {
@@ -71,15 +73,16 @@ class NameYourWalletFragment : PinProtectedFragment<FragmentNameWalletBinding>()
             viewModel.commitWalletToDisk(binding.name.text.toString())
         }
 
-        viewModel.walletAlreadyExists.observe(viewLifecycleOwner, Observer {
-            binding.walletExistsError.isVisible = it
+        viewModel.walletCreationError.observe(viewLifecycleOwner, Observer {
+            styledSnackBar(requireView(), "Oops, failed to create wallet, please try again.")
+        })
 
-            if(!it) {
-                findNavController().navigate(
-                    NameYourWalletFragmentDirections.actionNameWalletFragmentToWalletCreatedFragment(),
-                    Constants.Navigation.ANIMATED_ENTER_EXIT_RIGHT_NAV_OPTION
-                )
-            }
+        viewModel.walletCreated.observe(viewLifecycleOwner, Observer {
+            navigate(
+                R.id.walletCreatedFragment,
+                it,
+                Constants.Navigation.ANIMATED_ENTER_EXIT_RIGHT_NAV_OPTION
+            )
         })
     }
 

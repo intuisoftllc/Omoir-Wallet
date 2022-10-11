@@ -15,7 +15,8 @@ class Constants {
     }
 
     object Navigation {
-        const val WALLET_NAME_BUNDLE_ID = "wallet_name"
+        const val WALLET_UUID_BUNDLE_ID = "wallet_id"
+        const val FRAGMENT_CONFIG = "fragment_config"
 
         val ANIMATED_SLIDE_UP_OPTION =
             navOptions {
@@ -71,6 +72,7 @@ class Constants {
         const val USE_BIOMETRIC_REASON_2 = "Unlock Plaid Crypto Wallet™ using biometrics."
         const val USE_BIOMETRIC_REASON_3 = "Scan your fingerprint to reset app data."
         const val USE_BIOMETRIC_REASON_4 = "Scan your fingerprint to remove biometric authentication."
+        const val USE_BIOMETRIC_REASON_5 = "Scan your fingerprint to delete your wallet."
         const val SKIP_FOR_NOW = "Skip for now"
         const val USE_PIN = "Use pin"
         const val SYNCING = "Syncing..."
@@ -80,6 +82,11 @@ class Constants {
         const val ENTROPY_STRENGTH_MEDIUM = "18 wordss"
         const val ENTROPY_STRENGTH_HIGH = "21 wordss"
         const val ENTROPY_STRENGTH_VERY_HIGH = "24 wordss"
+        const val BIP_TYPE_44 = "Bip 44 Wallet (p2pkh)"
+        const val BIP_TYPE_49 = "Bip 49 Wallet (p2wpkhsh)"
+        const val BIP_TYPE_84 = "Bip 84 Wallet (p2wpkh bech32)"
+        const val TEST_NET_WALLET = "Test Net"
+        const val MAIN_NET_WALLET = "Main Net"
     }
 
     object ServerStrings {

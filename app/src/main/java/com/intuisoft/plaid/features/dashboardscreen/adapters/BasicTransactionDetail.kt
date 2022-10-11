@@ -9,7 +9,6 @@ import com.intuisoft.plaid.androidwrappers.ListItem
 import com.intuisoft.plaid.androidwrappers.styledSnackBar
 import com.intuisoft.plaid.model.BitcoinDisplayUnit
 import com.intuisoft.plaid.model.LocalWalletModel
-import com.intuisoft.plaid.model.WalletType
 import com.intuisoft.plaid.repositories.LocalStoreRepository
 import com.intuisoft.plaid.util.Constants
 import com.intuisoft.plaid.util.SimpleCoinNumberFormat

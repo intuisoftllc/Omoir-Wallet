@@ -61,6 +61,15 @@
     <com.intuisoft.plaid.androidwrappers.SettingsItemView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:item_subtitle="Bip"
+        android:id="@+id/bipOption"
+        app:show_chevron="true"
+        app:title_text_color="@color/white"
+        app:show_switch="false"/>
+
+    <com.intuisoft.plaid.androidwrappers.SettingsItemView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         app:item_subtitle="Bip Type"
         android:visibility="gone"
         android:id="@+id/bipTypeOption"

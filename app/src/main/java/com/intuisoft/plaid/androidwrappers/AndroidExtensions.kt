@@ -2,6 +2,7 @@ package com.intuisoft.plaid.androidwrappers
 
 import android.app.Activity
 import android.content.Context
+import android.os.Bundle
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
@@ -9,14 +10,20 @@ import androidx.activity.OnBackPressedCallback
 import androidx.annotation.IdRes
 import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
+import androidx.core.os.bundleOf
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelStore
+import androidx.navigation.NavDestination
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import com.intuisoft.plaid.MainActivity
+import com.intuisoft.plaid.NavGraphDirections
+import com.intuisoft.plaid.R
 import com.intuisoft.plaid.features.settings.ui.SettingsFragmentDirections
+import com.intuisoft.plaid.model.LocalWalletModel
 import com.intuisoft.plaid.util.Constants
 import com.intuisoft.plaid.util.entensions.getColorFromAttr
 import okhttp3.internal.concurrent.TaskRunner.Companion.logger
@@ -132,4 +139,38 @@ fun styledSnackBar(root: View, title: String, onDismissed: (() -> Unit)? = null)
             }
         })
         .show()
+}
+
+fun Fragment.navigate(navId: Int, wallet: LocalWalletModel, options: NavOptions = Constants.Navigation.ANIMATED_FADE_IN_EXIT_NAV_OPTION) {
+    val bundle = bundleOf(Constants.Navigation.WALLET_UUID_BUNDLE_ID to wallet.uuid)
+    findNavController().navigate(
+        navId,
+        bundle,
+        options
+    )
+}
+
+fun Fragment.navigate(navId: Int, uuid: String, options: NavOptions = Constants.Navigation.ANIMATED_FADE_IN_EXIT_NAV_OPTION) {
+    val bundle = bundleOf(Constants.Navigation.WALLET_UUID_BUNDLE_ID to uuid)
+    findNavController().navigate(
+        navId,
+        bundle,
+        options
+    )
+}
+
+fun Fragment.navigate(navId: Int, options: NavOptions = Constants.Navigation.ANIMATED_FADE_IN_EXIT_NAV_OPTION) {
+    findNavController().navigate(
+        navId,
+        null,
+        options
+    )
+}
+
+fun Fragment.navigate(navId: Int, bundle: Bundle) {
+    findNavController().navigate(
+        navId,
+        bundle,
+        null
+    )
 }

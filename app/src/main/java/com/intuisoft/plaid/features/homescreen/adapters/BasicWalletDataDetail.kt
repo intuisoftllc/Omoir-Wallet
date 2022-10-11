@@ -11,7 +11,6 @@ import com.intuisoft.plaid.androidwrappers.styledSnackBar
 import com.intuisoft.plaid.model.BitcoinDisplayUnit
 import com.intuisoft.plaid.model.LocalWalletModel
 import com.intuisoft.plaid.model.WalletState
-import com.intuisoft.plaid.model.WalletType
 import com.intuisoft.plaid.repositories.LocalStoreRepository
 import com.intuisoft.plaid.util.Constants
 import com.intuisoft.plaid.util.SimpleCoinNumberFormat
@@ -42,29 +41,15 @@ class BasicWalletDataDetail(
                 }
 
                 if(wallet.testNetWallet) {
-                    if (wallet.type == WalletType.READ_ONLY) {
-                        walletTypeImg.drawable.mutate().setColorFilter(
-                            context.getColor(R.color.brand_color_accent_3),
-                            PorterDuff.Mode.SRC_ATOP
-                        )
-                    } else {
-                        walletTypeImg.drawable.mutate().setColorFilter(
-                            context.getColor(R.color.viridian),
-                            PorterDuff.Mode.SRC_ATOP
-                        )
-                    }
+                    walletTypeImg.drawable.mutate().setColorFilter(
+                        context.getColor(R.color.viridian),
+                        PorterDuff.Mode.SRC_ATOP
+                    )
                 } else {
-                    if (wallet.type == WalletType.READ_ONLY) {
-                        walletTypeImg.drawable.mutate().setColorFilter(
-                            context.getColor(R.color.grey),
-                            PorterDuff.Mode.SRC_ATOP
-                        )
-                    } else {
-                        walletTypeImg.drawable.mutate().setColorFilter(
-                            context.getColor(R.color.bitcoin_color),
-                            PorterDuff.Mode.SRC_ATOP
-                        )
-                    }
+                    walletTypeImg.drawable.mutate().setColorFilter(
+                        context.getColor(R.color.bitcoin_color),
+                        PorterDuff.Mode.SRC_ATOP
+                    )
                 }
 
                 walletName.text = wallet.name

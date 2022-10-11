@@ -18,6 +18,8 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
 import com.intuisoft.plaid.R
+import com.intuisoft.plaid.androidwrappers.FragmentConfiguration
+import com.intuisoft.plaid.androidwrappers.navigate
 import com.intuisoft.plaid.androidwrappers.styledSnackBar
 import com.intuisoft.plaid.androidwrappers.validateFingerprint
 import com.intuisoft.plaid.databinding.FragmentSettingsBinding
@@ -38,11 +40,9 @@ class SettingsFragment : PinProtectedFragment<FragmentSettingsBinding>() {
 
         _binding = FragmentSettingsBinding.inflate(inflater, container, false)
         return binding.root
-
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun onConfiguration(configuration: FragmentConfiguration?) {
 
         viewModel.bitcoinDisplayUnitSetting.observe(viewLifecycleOwner, Observer {
             when(it) {
@@ -64,25 +64,23 @@ class SettingsFragment : PinProtectedFragment<FragmentSettingsBinding>() {
         })
 
         binding.bitcoinUnitSetting.onClick {
-            findNavController().navigate(
-                SettingsFragmentDirections.actionSettingsFragmentToDisplayUnitFragment(),
+            navigate(
+                R.id.displayUnitFragment,
                 Constants.Navigation.ANIMATED_ENTER_EXIT_RIGHT_NAV_OPTION
             )
         }
 
         binding.appearanceSetting.onClick {
-            findNavController().navigate(
-                SettingsFragmentDirections.actionSettingsFragmentToAppearanceFragment(),
+            navigate(
+                R.id.appearanceFragment,
                 Constants.Navigation.ANIMATED_ENTER_EXIT_RIGHT_NAV_OPTION
             )
         }
 
         binding.updatePinSetting.onClick {
-            val bundle = bundleOf("setupPin" to true)
-
-            findNavController().navigate(
+            navigate(
                 R.id.pinFragment,
-                bundle
+                bundleOf("setupPin" to true)
             )
         }
 
@@ -282,9 +280,9 @@ class SettingsFragment : PinProtectedFragment<FragmentSettingsBinding>() {
         })
 
         viewModel.showEasterEgg.observe(viewLifecycleOwner, Observer {
-            styledSnackBar(view, "You have unleashed the memes!") {
-                findNavController().navigate(
-                    SettingsFragmentDirections.actionSettingsFragmentToMemeFragment(),
+            styledSnackBar(requireView(), "You have unleashed the memes!") {
+                navigate(
+                    R.id.memeFragment,
                     Constants.Navigation.ANIMATED_ENTER_EXIT_RIGHT_NAV_OPTION
                 )
             }
@@ -319,21 +317,14 @@ class SettingsFragment : PinProtectedFragment<FragmentSettingsBinding>() {
                 startActivity(
                     Intent.createChooser(emailIntent, "Send email using..."));
             } catch (ex: ActivityNotFoundException) {
-                styledSnackBar(view, "No email clients installed.")
+                styledSnackBar(requireView(), "No email clients installed.")
             }
 
         }
 
         binding.aboutUsSetting.onClick {
-            findNavController().navigate(
-                SettingsFragmentDirections.actionSettingsFragmentToAboutUsFragment(),
-                Constants.Navigation.ANIMATED_ENTER_EXIT_RIGHT_NAV_OPTION
-            )
-        }
-
-        binding.aboutUsSetting.onClick {
-            findNavController().navigate(
-                SettingsFragmentDirections.actionSettingsFragmentToAboutUsFragment(),
+            navigate(
+                R.id.aboutUsFragment,
                 Constants.Navigation.ANIMATED_ENTER_EXIT_RIGHT_NAV_OPTION
             )
         }
@@ -346,10 +337,10 @@ class SettingsFragment : PinProtectedFragment<FragmentSettingsBinding>() {
         viewModel.eraseAllData {
             progressDialog.cancel()
 
-            findNavController().navigate(
-                SettingsFragmentDirections.actionGlobalSplashFragment(),
-                navOptions {
-                    popUpTo(R.id.pinFragment) {
+            navigate(
+                navId = R.id.splashFragment,
+                options = navOptions {
+                    popUpTo(R.id.settingsFragment) {
                         inclusive = true
                     }
                 }

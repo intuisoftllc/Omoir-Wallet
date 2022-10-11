@@ -9,23 +9,20 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.NumberPicker
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
-import androidx.viewpager.widget.PagerAdapter
-import androidx.viewpager.widget.ViewPager
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.intuisoft.plaid.R
+import com.intuisoft.plaid.androidwrappers.FragmentConfiguration
 import com.intuisoft.plaid.androidwrappers.SettingsItemView
 import com.intuisoft.plaid.androidwrappers.hideSoftKeyboard
 import com.intuisoft.plaid.databinding.FragmentCreateImportWalletBinding
 import com.intuisoft.plaid.features.createwallet.ZoomOutPageTransformer
 import com.intuisoft.plaid.features.createwallet.adapters.WalletBenefitsAdapter
 import com.intuisoft.plaid.features.createwallet.viewmodel.CreateWalletViewModel
-import com.intuisoft.plaid.features.homescreen.ui.HomescreenFragmentDirections
 import com.intuisoft.plaid.features.pin.ui.PinProtectedFragment
 import com.intuisoft.plaid.util.Constants
+import io.horizontalsystems.bitcoincore.core.Bip
 import io.horizontalsystems.hdwalletkit.Mnemonic
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
@@ -42,12 +39,12 @@ class CreateWalletFragment : PinProtectedFragment<FragmentCreateImportWalletBind
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
+    override fun onConfiguration(configuration: FragmentConfiguration?) {
         viewModel.setUseTestNet(false)
         viewModel.setPassphrase("")
         viewModel.setEntropyStrength(Mnemonic.EntropyStrength.Default)
+        viewModel.setBip(Bip.BIP84)
+
         binding.advancedOptions.onClick {
             showAdvancedOptionsDialog()
         }
@@ -72,11 +69,12 @@ class CreateWalletFragment : PinProtectedFragment<FragmentCreateImportWalletBind
 
     private fun showAdvancedOptionsDialog() {
         val bottomSheetDialog = BottomSheetDialog(requireContext())
-        bottomSheetDialog.setContentView(com.intuisoft.plaid.R.layout.create_import_advanced_options)
+        bottomSheetDialog.setContentView(com.intuisoft.plaid.R.layout.advanced_options_wallet_configuration)
         val mainNet = bottomSheetDialog.findViewById<SettingsItemView>(R.id.mainNetOption)
         val testNet = bottomSheetDialog.findViewById<SettingsItemView>(R.id.testNetOption)
         val passphrase = bottomSheetDialog.findViewById<SettingsItemView>(R.id.passphraseOption)
         val entropyStrength = bottomSheetDialog.findViewById<SettingsItemView>(R.id.entropyOption)
+        val bip = bottomSheetDialog.findViewById<SettingsItemView>(R.id.bipOption)
 
         testNet?.showCheck(viewModel.useTestNet)
         mainNet?.showCheck(!viewModel.useTestNet)
@@ -103,6 +101,11 @@ class CreateWalletFragment : PinProtectedFragment<FragmentCreateImportWalletBind
             showEntropyStrengthDialog()
         }
 
+        bip?.onClick {
+            bottomSheetDialog.cancel()
+            showBipDialog()
+        }
+
         bottomSheetDialog.show()
     }
 
@@ -110,7 +113,7 @@ class CreateWalletFragment : PinProtectedFragment<FragmentCreateImportWalletBind
         val bottomSheetDialog = BottomSheetDialog(requireContext())
         bottomSheetDialog.setContentView(R.layout.advanced_options_passphrase)
         val passphraseET = bottomSheetDialog.findViewById<EditText>(R.id.passphraseOption)
-        passphraseET?.setText(viewModel.getPassphrase())
+        passphraseET?.setText(viewModel.getWalletPassphrase())
 
         passphraseET?.setOnKeyListener(object : View.OnKeyListener {
             override fun onKey(v: View?, keyCode: Int, event: KeyEvent): Boolean {
@@ -193,6 +196,48 @@ class CreateWalletFragment : PinProtectedFragment<FragmentCreateImportWalletBind
                 }
                 4 -> {
                     viewModel.setEntropyStrength(Mnemonic.EntropyStrength.VeryHigh)
+                }
+            }
+        }
+
+        bottomSheetDialog.show()
+    }
+
+    private fun showBipDialog() {
+        val bottomSheetDialog = BottomSheetDialog(requireContext())
+        bottomSheetDialog.setContentView(R.layout.max_pin_attempts_bottom_sheet)
+        val numberPicker = bottomSheetDialog.findViewById<NumberPicker>(R.id.numberPicker)
+
+        numberPicker?.minValue = 0
+        numberPicker?.maxValue = 2
+        numberPicker?.displayedValues = arrayOf(
+            Constants.Strings.BIP_TYPE_84,
+            Constants.Strings.BIP_TYPE_49,
+            Constants.Strings.BIP_TYPE_44
+        )
+
+        when(viewModel.getBipType()) {
+            Bip.BIP84 -> {
+                numberPicker?.value = 0
+            }
+            Bip.BIP49 -> {
+                numberPicker?.value = 1
+            }
+            Bip.BIP44 -> {
+                numberPicker?.value = 2
+            }
+        }
+
+        numberPicker?.setOnValueChangedListener { picker, oldVal, newVal ->
+            when(newVal) {
+                0 -> {
+                    viewModel.setBip(Bip.BIP84)
+                }
+                1 -> {
+                    viewModel.setBip(Bip.BIP49)
+                }
+                2 -> {
+                    viewModel.setBip(Bip.BIP44)
                 }
             }
         }

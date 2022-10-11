@@ -12,6 +12,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.intuisoft.plaid.local.UserPreferences
+import com.intuisoft.plaid.model.LocalWalletModel
 import com.intuisoft.plaid.repositories.LocalStoreRepository
 import com.intuisoft.plaid.util.Constants
 import com.intuisoft.plaid.walletmanager.WalletManager
@@ -36,6 +37,12 @@ open class BaseViewModel(
     private val _loadng = MutableLiveData<Boolean>()
     val loadng: LiveData<Boolean> = _loadng
 
+    var currentConfig: FragmentConfiguration? = null
+
+    fun hasConfiguration(fragmentConfiguration: FragmentConfigurationType): Boolean {
+        return currentConfig != null && currentConfig!!.configurationType == fragmentConfiguration
+    }
+
     fun <T> execute(call: suspend () -> T,  onFinish: suspend (Result<T>) -> Unit) {
         _loadng.postValue(true)
         viewModelScope.launch {
@@ -54,6 +61,8 @@ open class BaseViewModel(
             }
         }
     }
+
+    fun isFingerprintEnabled() = localStoreRepository.isFingerprintEnabled()
 
     fun checkFingerprintSupport(onEnroll: () -> Unit) {
         validateOrRegisterFingerprintSupport(
@@ -106,9 +115,5 @@ open class BaseViewModel(
                 }
             }
         }
-    }
-
-    suspend fun doesWalletExist(walletName: String) : Boolean {
-        return walletManager.doesWalletExist(walletName)
     }
 }

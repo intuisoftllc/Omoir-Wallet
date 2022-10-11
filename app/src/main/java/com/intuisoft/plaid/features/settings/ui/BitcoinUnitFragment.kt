@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import com.intuisoft.plaid.R
+import com.intuisoft.plaid.androidwrappers.FragmentConfiguration
 import com.intuisoft.plaid.databinding.FragmentBitcoinUnitBinding
 import com.intuisoft.plaid.databinding.FragmentSettingsBinding
 import com.intuisoft.plaid.features.pin.ui.PinProtectedFragment
@@ -27,9 +28,7 @@ class BitcoinUnitFragment : PinProtectedFragment<FragmentBitcoinUnitBinding>() {
 
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
+    override fun onConfiguration(configuration: FragmentConfiguration?) {
         viewModel.updateSettingsScreen()
         viewModel.bitcoinDisplayUnitSetting.observe(viewLifecycleOwner, Observer {
             binding.btcUnit.showCheck(it == BitcoinDisplayUnit.BTC)

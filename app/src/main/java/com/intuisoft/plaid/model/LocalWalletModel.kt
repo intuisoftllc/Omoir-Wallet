@@ -15,7 +15,7 @@ import kotlinx.android.synthetic.main.basic_wallet_list_item.view.*
 
 data class LocalWalletModel(
     var name: String,
-    var type: WalletType,
+    var uuid: String,
     var testNetWallet: Boolean
 ) {
     var walletKit: BitcoinKit? = null
@@ -59,7 +59,7 @@ data class LocalWalletModel(
         fun consume(walletIdentifier: WalletIdentifier): LocalWalletModel =
             LocalWalletModel(
                 name = walletIdentifier.name,
-                type = WalletType.values().find { it.value == walletIdentifier.type } ?: WalletType.READ_WRITE,
+                uuid = walletIdentifier.walletUUID,
                 testNetWallet = walletIdentifier.isTestNet
             )
     }

@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.Observer
 import com.intuisoft.plaid.MainActivity
 import com.intuisoft.plaid.R
+import com.intuisoft.plaid.androidwrappers.FragmentConfiguration
 import com.intuisoft.plaid.databinding.FragmentAppearanceBinding
 import com.intuisoft.plaid.databinding.FragmentEasterEggBinding
 import com.intuisoft.plaid.features.pin.ui.PinProtectedFragment
@@ -29,8 +30,8 @@ class MemeFragment : PinProtectedFragment<FragmentEasterEggBinding>() {
 
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun onConfiguration(configuration: FragmentConfiguration?) {
+        // do nothing
     }
 
 

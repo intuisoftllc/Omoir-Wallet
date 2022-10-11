@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.Observer
 import com.intuisoft.plaid.MainActivity
 import com.intuisoft.plaid.R
+import com.intuisoft.plaid.androidwrappers.FragmentConfiguration
 import com.intuisoft.plaid.databinding.FragmentAppearanceBinding
 import com.intuisoft.plaid.features.pin.ui.PinProtectedFragment
 import com.intuisoft.plaid.features.settings.viewmodel.SettingsViewModel
@@ -29,9 +30,7 @@ class AppearanceFragment : PinProtectedFragment<FragmentAppearanceBinding>() {
 
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
+    override fun onConfiguration(configuration: FragmentConfiguration?) {
         viewModel.updateAppThemeSetting()
         viewModel.appThemeSetting.observe(viewLifecycleOwner, Observer {
             (requireActivity() as MainActivity).isActionBarShowing = showActionBar()

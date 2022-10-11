@@ -85,8 +85,8 @@ class PinFragment: BindingFragment<FragmentPinEntryBinding>() {
                 this@PinFragment.pinViewModel.onMaxAttempts {
                     progressDialog.cancel()
 
-                    findNavController().navigate(
-                        PinFragmentDirections.actionPinFragmentToSplashFragment(),
+                    navigate(
+                        R.id.splashFragment,
                         navOptions {
                             popUpTo(R.id.pinFragment) {
                                 inclusive = true

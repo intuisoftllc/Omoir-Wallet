@@ -9,21 +9,25 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.docformative.docformative.toArrayList
 import com.intuisoft.plaid.R
+import com.intuisoft.plaid.androidwrappers.FragmentConfiguration
+import com.intuisoft.plaid.androidwrappers.WalletViewModel
+import com.intuisoft.plaid.androidwrappers.navigate
 import com.intuisoft.plaid.databinding.FragmentWalletDashboardBinding
-import com.intuisoft.plaid.features.dashboardscreen.viewmodel.DashboardViewModel
+import com.intuisoft.plaid.features.createwallet.ui.BackupYourWalletFragmentDirections
 import com.intuisoft.plaid.features.homescreen.adapters.BasicTransactionAdapter
 import com.intuisoft.plaid.features.homescreen.adapters.BasicWalletDataAdapter
 import com.intuisoft.plaid.features.pin.ui.PinProtectedFragment
+import com.intuisoft.plaid.model.WalletState
 import com.intuisoft.plaid.repositories.LocalStoreRepository
 import com.intuisoft.plaid.util.Constants
 import com.intuisoft.plaid.walletmanager.ManagerState
 import com.intuisoft.plaid.walletmanager.WalletManager
 import io.horizontalsystems.bitcoincore.models.TransactionInfo
 import org.koin.android.ext.android.inject
-import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class DashboardFragment : PinProtectedFragment<FragmentWalletDashboardBinding>() {
-    protected val viewModel: DashboardViewModel by sharedViewModel()
+    protected val viewModel: WalletViewModel by viewModel()
     protected val localStoreRepository: LocalStoreRepository by inject()
     protected val walletManager: WalletManager by inject()
 
@@ -39,16 +43,13 @@ class DashboardFragment : PinProtectedFragment<FragmentWalletDashboardBinding>()
 
         _binding = FragmentWalletDashboardBinding.inflate(inflater, container, false)
 
-        if(arguments != null) {
-            viewModel.getWallet(requireArguments().getString(Constants.Navigation.WALLET_NAME_BUNDLE_ID) ?: "")
-        }
+        setupConfiguration(viewModel)
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        viewModel.createSubscriptions()
+    override fun onConfiguration(configuration: FragmentConfiguration?) {
+        viewModel.getTransactions()
+        viewModel.displayCurrentWallet()
         walletManager.stateChanged.observe(viewLifecycleOwner, Observer {
             binding.swipeContainer.isRefreshing = it == ManagerState.SYNCHRONIZING
         })
@@ -64,6 +65,9 @@ class DashboardFragment : PinProtectedFragment<FragmentWalletDashboardBinding>()
             binding.balance.text = wallet.getBalance(localStoreRepository)
             wallet.walletStateUpdated.observe(viewLifecycleOwner, Observer {
                 wallet.onWalletStateChanged(binding.balance, it, localStoreRepository)
+
+                if(wallet.walletState == WalletState.NONE)
+                    viewModel.getTransactions()
             })
 
         })
@@ -81,10 +85,17 @@ class DashboardFragment : PinProtectedFragment<FragmentWalletDashboardBinding>()
         binding.back.setOnClickListener {
             findNavController().popBackStack()
         }
+
+        binding.settings.setOnClickListener {
+            navigate(
+                R.id.walletSettingsFragment,
+                viewModel.getWalletId()
+            )
+        }
     }
 
     fun onTransactionSelected(transaction: TransactionInfo) {
-
+        // todo: impl
     }
 
     override fun showActionBar(): Boolean {

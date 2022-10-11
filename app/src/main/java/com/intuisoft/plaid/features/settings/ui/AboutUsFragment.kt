@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.Observer
 import com.intuisoft.plaid.MainActivity
 import com.intuisoft.plaid.R
+import com.intuisoft.plaid.androidwrappers.FragmentConfiguration
 import com.intuisoft.plaid.databinding.FragmentAboutUsBinding
 import com.intuisoft.plaid.databinding.FragmentAppearanceBinding
 import com.intuisoft.plaid.features.pin.ui.PinProtectedFragment
@@ -30,9 +31,7 @@ class AboutUsFragment : PinProtectedFragment<FragmentAboutUsBinding>() {
 
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
+    override fun onConfiguration(configuration: FragmentConfiguration?) {
         binding.security.setOnClickListener {
             // todo: impl -> navigate to fragment in app explaining our security model
         }

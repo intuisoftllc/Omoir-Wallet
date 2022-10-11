@@ -12,7 +12,9 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navOptions
 import com.intuisoft.plaid.R
+import com.intuisoft.plaid.androidwrappers.FragmentConfiguration
 import com.intuisoft.plaid.androidwrappers.ignoreOnBackPressed
+import com.intuisoft.plaid.androidwrappers.navigate
 import com.intuisoft.plaid.databinding.FragmentBackupWalletBinding
 import com.intuisoft.plaid.databinding.FragmentCreateImportNonCustodialBinding
 import com.intuisoft.plaid.databinding.FragmentCreateImportPrivateAndSecureBinding
@@ -33,28 +35,20 @@ class WalletCreatedFragment : PinProtectedFragment<FragmentWalletCreatedBinding>
     ): View? {
 
         _binding = FragmentWalletCreatedBinding.inflate(inflater, container, false)
+        setupConfiguration(viewModel)
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
+    override fun onConfiguration(configuration: FragmentConfiguration?) {
         binding.check.animate().alpha(1f).scaleX(1f).scaleY(1f).setDuration(800)
         ignoreOnBackPressed()
 
         binding.home.onClick {
-            findNavController().navigate(
-                WalletCreatedFragmentDirections.actionGlobalHomescreenFragment(),
-                navOptions {
-                    popUpTo(R.id.walletCreatedFragment) {
-                        inclusive = true
-                    }
-                }
-            )
+            navigate(R.id.homescreenFragment)
         }
 
         binding.gotoDashboard.onClick {
-
+            navigate(R.id.walletDashboardFragment, viewModel.getWalletId())
         }
     }
 

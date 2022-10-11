@@ -10,12 +10,14 @@
     <string name="wallet_dashboard_fragment_label">Wallet Dashboard</string>
     <string name="welcome_fragment_label">Welcome</string>
     <string name="settings_fragment_label">Settings</string>
+    <string name="wallet_settings_fragment_label">Wallet Settings</string>
     <string name="display_unit_fragment_label">Bitcoin Unit</string>
     <string name="appearance_fragment_label">Appearance</string>
     <string name="meme_fragment_label">You Have Unleashed The Memes!</string>
     <string name="create_wallet_fragment_label">Create A Wallet</string>
     <string name="backup_wallet_fragment_label">Backup Your Wallet</string>
     <string name="seed_phrase_fragment_label">Your Seed Phrase</string>
+    <string name="seed_phrase_basic_fragment_label">Seed Phrase</string>
     <string name="name_wallet_fragment_label">Name Your Wallet</string>
     <string name="wallet_created_fragment_label">Wallet Created</string>
     <string name="about_us_fragment_label">About Us</string>
@@ -32,12 +34,18 @@
     <string name="cancel">Cancel</string>
     <string name="easter_egg_screen_title">HODL! 1 BTC = 1 BTC</string>
     <string name="low_pin_limit_title">Low Pin Entry Limit</string>
-    <string name="wipe_data_title">Delete All Data</string>
+    <string name="wipe_data_title">Erase All Data</string>
+    <string name="delete_wallet_title">Erase Wallet Data</string>
     <string name="wiping_data_title">Wiping App Data</string>
+    <string name="wiping_wallet_title">Erasing Wallet</string>
+    <string name="reset_wallet_message">You will be directed back to the home screen to reflect the changes</string>
+    <string name="wipe_wallet_data_message">Are you sure you want to erase your wallet? This action is irreversible, please be sure you have backed up your seed phrase and passphrase (if applicable).</string>
     <string name="wipe_data_message">Are you sure you want to wipe all data from Plaid Crypto Wallet™? This action is irreversible, please be sure you have backed up all your seed phrases.</string>
-    <string name="wiping_data_message">Wiping all app data, this may take some time.</string>
+    <string name="wiping_data_message">Erasing all app data, this may take some time.</string>
+    <string name="wiping_wallet_message">Erasing wallet data, this may take some time.</string>
     <string name="risk_acknowledgement_1">I Understand The Risks</string>
     <string name="erase_data">Erase Data</string>
+    <string name="okay">Okay</string>
     <string name="no_connection_message">No internet connection</string>
     <string name="fingerprint_register_description_2">Add an additional layer of security to the app by requiring your fingerprint for signing transactions.\n\nYou can always skip this step and set it up later in settings.</string>
     <string name="fingerprint_register_description_1">Use your fingerprint for signing transactions</string>
@@ -48,6 +56,7 @@
     <string name="pin_check_success_tip_message">Pin is correct</string>
     <string name="enter_pin_to_unlock_message">Enter pin to unlock</string>
     <string name="enter_pin_to_reset_message">Enter current pin to update</string>
+    <string name="rename_wallet_message">Rename your wallet.</string>
     <string name="wallet_passphrase_warning">Please Keep in mind that wallets created with a passphrase may be unrecoverable if the passphrase has not been backed up.\n\nTo recover this wallet in the future, the passphrase entered must be entered EXACTLY as it was (case sensitive) when the wallet was first created.</string>
     <string name="switch_bitcoin_network_description">This above settings allow you to change specific properties of your wallet.\n\nIf you do not know what they mean, it\'s best to leave them unchanged.</string>
 </resources>

@@ -3,7 +3,6 @@ package com.intuisoft.plaid.repositories
 import com.intuisoft.plaid.local.WipeDataListener
 import com.intuisoft.plaid.model.AppTheme
 import com.intuisoft.plaid.model.BitcoinDisplayUnit
-import com.intuisoft.plaid.model.WalletType
 import com.intuisoft.plaid.util.Constants
 import com.intuisoft.plaid.walletmanager.StoredWalletInfo
 

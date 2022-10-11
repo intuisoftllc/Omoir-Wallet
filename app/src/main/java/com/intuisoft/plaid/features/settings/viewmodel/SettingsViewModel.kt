@@ -39,7 +39,6 @@ class SettingsViewModel(
 
     fun getMaxPinAttempts() = localStoreRepository.getPinEntryLimit()
     fun getPinTimeout() = localStoreRepository.getPinTimeout()
-    fun isFingerprintEnabled() = localStoreRepository.isFingerprintEnabled()
 
     fun updateSettingsScreen() {
         updateDisplayUnitSetting()

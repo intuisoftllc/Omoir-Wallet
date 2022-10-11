@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import com.intuisoft.plaid.R
+import com.intuisoft.plaid.androidwrappers.FragmentConfiguration
 import com.intuisoft.plaid.databinding.FragmentBackupWalletBinding
 import com.intuisoft.plaid.databinding.FragmentCreateImportNonCustodialBinding
 import com.intuisoft.plaid.databinding.FragmentCreateImportPrivateAndSecureBinding
@@ -27,9 +28,7 @@ class BackupYourWalletFragment : PinProtectedFragment<FragmentBackupWalletBindin
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
+    override fun onConfiguration(configuration: FragmentConfiguration?) {
         binding.confirm.enableButton(false)
         binding.ackowledgement1.setOnCheckedChangeListener { compoundButton, isChecked ->
             binding.confirm.enableButton(allAcknowledgementsChecked())

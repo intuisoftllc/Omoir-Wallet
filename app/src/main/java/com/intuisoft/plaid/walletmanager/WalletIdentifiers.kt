@@ -1,9 +1,10 @@
 package com.intuisoft.plaid.walletmanager
 
 data class WalletIdentifier(
-    val name: String,
+    var name: String,
+    val walletUUID: String,
     val seedPhrase: List<String>,
     val passphrase: String,
-    val type: Long,
-    val isTestNet: Boolean,
+    var bip: Int,
+    var isTestNet: Boolean,
 )
