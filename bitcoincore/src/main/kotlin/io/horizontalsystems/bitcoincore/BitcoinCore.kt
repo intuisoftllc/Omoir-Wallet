@@ -165,7 +165,7 @@ class BitcoinCoreBuilder {
 
         val hdWallet = HDWallet(seed, network.coinType, purpose = bip.purpose)
 
-        val wallet = Wallet(hdWallet)
+        val wallet = Wallet(hdWallet!!)
         val publicKeyManager = PublicKeyManager.create(storage, wallet, restoreKeyConverterChain)
         val pendingOutpointsProvider = PendingOutpointsProvider(storage)
 
@@ -221,7 +221,7 @@ class BitcoinCoreBuilder {
         val transactionDataSorterFactory = TransactionDataSorterFactory()
         val unspentOutputSelector = UnspentOutputSelectorChain()
         val transactionSizeCalculator = TransactionSizeCalculator()
-        val inputSigner = InputSigner(hdWallet, network)
+        val inputSigner = InputSigner(hdWallet!!, network)
         val outputSetter = OutputSetter(transactionDataSorterFactory)
         val dustCalculator = DustCalculator(network.dustRelayTxFee, transactionSizeCalculator)
         val inputSetter = InputSetter(unspentOutputSelector, publicKeyManager, addressConverter, bip.scriptType, transactionSizeCalculator, pluginManager, dustCalculator, transactionDataSorterFactory)
@@ -255,6 +255,7 @@ class BitcoinCoreBuilder {
                 paymentAddressParser,
                 syncManager,
                 bip,
+                hdWallet,
                 peerManager,
                 dustCalculator,
                 pluginManager,
@@ -345,6 +346,7 @@ class BitcoinCore(
         private val paymentAddressParser: PaymentAddressParser,
         private val syncManager: SyncManager,
         private val bip: Bip,
+        private val hdWallet: HDWallet,
         private var peerManager: PeerManager,
         private val dustCalculator: DustCalculator,
         private val pluginManager: PluginManager,
@@ -370,6 +372,8 @@ class BitcoinCore(
 
     val inventoryItemsHandlerChain = InventoryItemsHandlerChain()
     val peerTaskHandlerChain = PeerTaskHandlerChain()
+
+    fun getWallet() = hdWallet
 
     fun addPeerSyncListener(peerSyncListener: IPeerSyncListener): BitcoinCore {
         initialBlockDownload.addPeerSyncListener(peerSyncListener)

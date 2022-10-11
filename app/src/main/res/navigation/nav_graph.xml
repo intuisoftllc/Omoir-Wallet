@@ -195,6 +195,14 @@
     </fragment>
 
     <fragment
+        android:id="@+id/exportWalletFragment"
+        android:name="com.intuisoft.plaid.features.dashboardscreen.ui.WalletExportFragment"
+        android:label="@string/wallet_export_fragment_label"
+        tools:layout="@layout/fragment_export_wallet">
+
+    </fragment>
+
+    <fragment
         android:id="@+id/appearanceFragment"
         android:name="com.intuisoft.plaid.features.settings.ui.AppearanceFragment"
         android:label="@string/appearance_fragment_label"

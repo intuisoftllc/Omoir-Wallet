@@ -1,22 +1,11 @@
 package com.intuisoft.plaid.features.createwallet.viewmodel
 
 import android.app.Application
-import android.content.Context
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.viewModelScope
-import com.intuisoft.plaid.androidwrappers.BaseViewModel
-import com.intuisoft.plaid.androidwrappers.FragmentConfiguration
-import com.intuisoft.plaid.androidwrappers.SingleLiveData
 import com.intuisoft.plaid.androidwrappers.WalletViewModel
 import com.intuisoft.plaid.repositories.LocalStoreRepository
 import com.intuisoft.plaid.walletmanager.WalletManager
 import io.horizontalsystems.bitcoincore.core.Bip
 import io.horizontalsystems.hdwalletkit.Mnemonic
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import java.io.File
-import java.util.concurrent.TimeUnit
 
 
 class CreateWalletViewModel(
@@ -45,19 +34,21 @@ class CreateWalletViewModel(
         entropyStrength = strength
     }
 
-    fun setBip(bip: Bip) {
+    fun setLocalBip(bip: Bip) {
         this.bip = bip
     }
 
     fun getEntropyStrength() = entropyStrength
 
-    fun getBipType() = bip
+    fun getLocalBipType() = bip
 
-    fun setPassphrase(p: String) {
+    fun getLocalPassphrase() = passphrase
+
+    fun setLocalPassphrase(p: String) {
         passphrase = p
     }
 
-    fun setSeedPhrase(p: List<String>) {
+    fun setLocalSeedPhrase(p: List<String>) {
         seed = p
     }
 
@@ -70,7 +61,7 @@ class CreateWalletViewModel(
     }
 
     /**
-     * Save wallet to dick every 1 minute
+     * Save wallet to disk every 1 minute
      *
      */
     fun commitWalletToDisk(walletName: String) {

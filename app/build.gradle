@@ -92,6 +92,10 @@ dependencies {
     implementation "androidx.paging:paging-runtime-ktx:3.1.1"
     implementation "androidx.paging:paging-runtime:3.1.1"
 
+
+    implementation 'com.journeyapps:zxing-android-embedded:4.3.0'
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.1.5'
+
     implementation project(":bitcoinkit")
     implementation project(":hd-wallet-kit")
 

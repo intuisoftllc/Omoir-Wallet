@@ -41,9 +41,9 @@ class CreateWalletFragment : PinProtectedFragment<FragmentCreateImportWalletBind
 
     override fun onConfiguration(configuration: FragmentConfiguration?) {
         viewModel.setUseTestNet(false)
-        viewModel.setPassphrase("")
+        viewModel.setLocalPassphrase("")
         viewModel.setEntropyStrength(Mnemonic.EntropyStrength.Default)
-        viewModel.setBip(Bip.BIP84)
+        viewModel.setLocalBip(Bip.BIP84)
 
         binding.advancedOptions.onClick {
             showAdvancedOptionsDialog()
@@ -113,7 +113,7 @@ class CreateWalletFragment : PinProtectedFragment<FragmentCreateImportWalletBind
         val bottomSheetDialog = BottomSheetDialog(requireContext())
         bottomSheetDialog.setContentView(R.layout.advanced_options_passphrase)
         val passphraseET = bottomSheetDialog.findViewById<EditText>(R.id.passphraseOption)
-        passphraseET?.setText(viewModel.getWalletPassphrase())
+        passphraseET?.setText(viewModel.getLocalPassphrase())
 
         passphraseET?.setOnKeyListener(object : View.OnKeyListener {
             override fun onKey(v: View?, keyCode: Int, event: KeyEvent): Boolean {
@@ -133,7 +133,7 @@ class CreateWalletFragment : PinProtectedFragment<FragmentCreateImportWalletBind
 
         passphraseET?.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable) {
-                viewModel.setPassphrase(s.toString())
+                viewModel.setLocalPassphrase(s.toString())
             }
 
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
@@ -216,7 +216,7 @@ class CreateWalletFragment : PinProtectedFragment<FragmentCreateImportWalletBind
             Constants.Strings.BIP_TYPE_44
         )
 
-        when(viewModel.getBipType()) {
+        when(viewModel.getLocalBipType()) {
             Bip.BIP84 -> {
                 numberPicker?.value = 0
             }
@@ -231,13 +231,13 @@ class CreateWalletFragment : PinProtectedFragment<FragmentCreateImportWalletBind
         numberPicker?.setOnValueChangedListener { picker, oldVal, newVal ->
             when(newVal) {
                 0 -> {
-                    viewModel.setBip(Bip.BIP84)
+                    viewModel.setLocalBip(Bip.BIP84)
                 }
                 1 -> {
-                    viewModel.setBip(Bip.BIP49)
+                    viewModel.setLocalBip(Bip.BIP49)
                 }
                 2 -> {
-                    viewModel.setBip(Bip.BIP44)
+                    viewModel.setLocalBip(Bip.BIP44)
                 }
             }
         }

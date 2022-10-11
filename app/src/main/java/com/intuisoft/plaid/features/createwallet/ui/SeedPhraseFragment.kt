@@ -40,8 +40,8 @@ class SeedPhraseFragment : PinProtectedFragment<FragmentSeedPhraseBinding>() {
                 binding.confirm.isVisible = false
 
                 val config = viewModel.currentConfig!!.configData as ConfigSeedData
-                viewModel.setPassphrase(config.passphrase)
-                viewModel.setSeedPhrase(config.seedPhrase)
+                viewModel.setLocalPassphrase(config.passphrase)
+                viewModel.setLocalSeedPhrase(config.seedPhrase)
 
                 viewModel.showLocalSeedPhrase()
                 viewModel.showLocalPassPhrase()
@@ -56,6 +56,8 @@ class SeedPhraseFragment : PinProtectedFragment<FragmentSeedPhraseBinding>() {
             it.forEach {  word ->
                 binding.seedPhrase.nextWord(word)
             }
+
+            viewModel.setLocalSeedPhrase(it)
         })
 
         binding.confirm.onClick {
@@ -70,6 +72,7 @@ class SeedPhraseFragment : PinProtectedFragment<FragmentSeedPhraseBinding>() {
             binding.passphraseTitle.isVisible = it.isNotEmpty()
 
             binding.passphrase.text = it
+            viewModel.setLocalPassphrase(it)
         })
     }
 

@@ -15,6 +15,7 @@ import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.BindingFragment
 import com.intuisoft.plaid.androidwrappers.ConfigurableFragment
 import com.intuisoft.plaid.androidwrappers.RoundedButtonView
+import com.intuisoft.plaid.androidwrappers.navigate
 import com.intuisoft.plaid.features.onboarding.viewmodel.OnboardingViewModel
 import com.intuisoft.plaid.features.pin.viewmodel.PinViewModel
 import com.intuisoft.plaid.util.Constants
@@ -29,8 +30,8 @@ abstract class PinProtectedFragment<T : ViewBinding> : ConfigurableFragment<T>()
         // this prevents other threads that may be resuming in paralell to generate multiple pin screens
         if(findNavController().currentDestination?.id == navigationId()) {
             pinViewModel.checkPinStatus {
-                findNavController().navigate(
-                    ActionOnlyNavDirections(R.id.action_global_pinFragment),
+                navigate(
+                    R.id.pinFragment,
                     Constants.Navigation.ANIMATED_FADE_IN_EXIT_NAV_OPTION
                 )
             }

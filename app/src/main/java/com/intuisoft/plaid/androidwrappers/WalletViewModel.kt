@@ -1,25 +1,18 @@
 package com.intuisoft.plaid.androidwrappers
 
 import android.app.Application
-import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
-import com.intuisoft.plaid.androidwrappers.BaseViewModel
-import com.intuisoft.plaid.androidwrappers.FragmentConfiguration
-import com.intuisoft.plaid.androidwrappers.SingleLiveData
 import com.intuisoft.plaid.model.LocalWalletModel
 import com.intuisoft.plaid.repositories.LocalStoreRepository
 import com.intuisoft.plaid.walletmanager.WalletManager
 import io.horizontalsystems.bitcoincore.core.Bip
 import io.horizontalsystems.bitcoincore.models.TransactionInfo
 import io.horizontalsystems.bitcoinkit.BitcoinKit
-import io.horizontalsystems.hdwalletkit.Mnemonic
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.io.File
-import java.util.concurrent.TimeUnit
 
 
 open class WalletViewModel(
@@ -83,6 +76,7 @@ open class WalletViewModel(
     protected fun generateNewWallet(passphrase: String) {
         viewModelScope.launch {
 //            seed = Mnemonic().generate(entropyStrength)
+//            val seed = "wrong cousin spell stadium snake enact author piano venue outer question chair".split(" ")
             val seed = "yard impulse luxury drive today throw farm pepper survey wreck glass federal".split(" ")
             _seedPhraseGenerated.postValue(seed!!)
             _userPassphrase.postValue(passphrase)
@@ -96,6 +90,14 @@ open class WalletViewModel(
     fun getWalletPassphrase() = walletManager.findStoredWallet(localWallet!!.uuid)!!.passphrase
 
     fun getWalletSeedPhrase() = walletManager.findStoredWallet(localWallet!!.uuid)!!.seedPhrase
+
+    fun getMasterPublicKey() : String {
+        return localWallet!!.walletKit!!.getWallet().masterPublicKey()
+    }
+
+    fun getRecieveAddress() : String {
+        return localWallet!!.walletKit!!.receiveAddress()
+    }
 
     fun getWalletNetwork() =
         if(walletManager.findStoredWallet(localWallet!!.uuid)!!.isTestNet)

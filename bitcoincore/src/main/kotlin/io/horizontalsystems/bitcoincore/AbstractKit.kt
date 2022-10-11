@@ -72,6 +72,8 @@ abstract class AbstractKit {
         return bitcoinCore.receiveAddress()
     }
 
+    fun getWallet() = bitcoinCore.getWallet()
+
     fun receivePublicKey(): PublicKey {
         return bitcoinCore.receivePublicKey()
     }

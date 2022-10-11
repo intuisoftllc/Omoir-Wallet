@@ -115,13 +115,17 @@ public class HDKey extends ECKey {
      * Serialize public key to Base58 ("xpub" )
      * @return the key serialized as a Base58 address
      */
-    public String serializePubB58() {
-        return toBase58(serializePub());
+    public String serializePubB58(HDWallet.Purpose purpose) {
+        return toBase58(serializePub(purpose));
     }
 
-    private byte[] serializePub() {
+    // ScriptType.P2PKH -- xpub: 0x0488B21E -- xprv: 0x0488ADE4
+    // ScriptType.P2WPKHSH -- ypub: 0x049D7CB2 -- 0x049D7878
+    // ScriptType.P2WPKH -- zpub: 0x04B24746 -- zprv: 0x04B2430C
+
+    private byte[] serializePub(HDWallet.Purpose purpose) {
         ByteBuffer ser = ByteBuffer.allocate(78);
-        ser.putInt(0x0488b21e); //The 4 byte header that serializes in base58 to "xpub"
+        ser.putInt(purpose.getPubVersionBytes()); //The 4 byte header that serializes in base58 to "xpub"
         ser.put((byte) getDepth());
         ser.putInt(getParentFingerprint());
         ser.putInt(getChildNumberEncoded());
@@ -130,6 +134,7 @@ public class HDKey extends ECKey {
         if(ser.position() != 78){
             throw new IllegalStateException();
         }
+
         return ser.array();
     }
 

@@ -22,7 +22,6 @@ import com.google.android.material.snackbar.Snackbar
 import com.intuisoft.plaid.MainActivity
 import com.intuisoft.plaid.NavGraphDirections
 import com.intuisoft.plaid.R
-import com.intuisoft.plaid.features.settings.ui.SettingsFragmentDirections
 import com.intuisoft.plaid.model.LocalWalletModel
 import com.intuisoft.plaid.util.Constants
 import com.intuisoft.plaid.util.entensions.getColorFromAttr
@@ -167,10 +166,10 @@ fun Fragment.navigate(navId: Int, options: NavOptions = Constants.Navigation.ANI
     )
 }
 
-fun Fragment.navigate(navId: Int, bundle: Bundle) {
+fun Fragment.navigate(navId: Int, bundle: Bundle, options: NavOptions = Constants.Navigation.ANIMATED_FADE_IN_EXIT_NAV_OPTION) {
     findNavController().navigate(
         navId,
         bundle,
-        null
+        options
     )
 }

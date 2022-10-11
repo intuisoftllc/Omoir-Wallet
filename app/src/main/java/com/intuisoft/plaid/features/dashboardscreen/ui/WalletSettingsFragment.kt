@@ -2,13 +2,7 @@ package com.intuisoft.plaid.features.dashboardscreen.ui
 
 import android.app.AlertDialog
 import android.app.ProgressDialog
-import android.content.ActivityNotFoundException
-import android.content.Intent
-import android.os.Build
 import android.os.Bundle
-import android.os.Parcelable
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
@@ -16,7 +10,6 @@ import android.view.ViewGroup
 import android.widget.EditText
 import androidx.core.os.bundleOf
 import androidx.lifecycle.Observer
-import androidx.navigation.fragment.findNavController
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.*
@@ -87,9 +80,16 @@ class WalletSettingsFragment : PinProtectedFragment<FragmentWalletSettingsBindin
                 )
             )
 
-            findNavController().navigate(
+            navigate(
                 R.id.seedPhraseFragment,
                 bundle
+            )
+        }
+
+        binding.exportSetting.onClick {
+            navigate(
+                R.id.exportWalletFragment,
+                viewModel.getWalletId()
             )
         }
 
