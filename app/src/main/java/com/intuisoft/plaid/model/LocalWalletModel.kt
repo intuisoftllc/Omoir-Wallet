@@ -25,20 +25,25 @@ data class LocalWalletModel(
     var walletStateUpdated = MutableLiveData<Int>()
 
 
-    fun getBalance(localStoreRepository: LocalStoreRepository): String {
+    fun getBalance(localStoreRepository: LocalStoreRepository, fullValue: Boolean): String {
         if(localStoreRepository.getBitcoinDisplayUnit() == BitcoinDisplayUnit.BTC) {
-            return "" + this.walletKit!!.balance.spendable / Constants.Limit.SATS_PER_BTC + " BTC"
+            return SimpleCoinNumberFormat.format(this.walletKit!!.balance.spendable.toDouble() / Constants.Limit.SATS_PER_BTC) + " BTC"
         } else {
-            val balance = 0L//wallet.wallet?.balance?.value ?: 0L
+            val balance = walletKit!!.balance.spendable
             val postfix = if(balance == 1L) "Sat" else "Sats"
 
-            return SimpleCoinNumberFormat.format(balance) + " " + postfix
+            if(fullValue) {
+                return SimpleCoinNumberFormat.formatFullBalance(balance) + " " + postfix
+            } else {
+                return SimpleCoinNumberFormat.format(balance) + " " + postfix
+            }
         }
     }
 
     fun onWalletStateChanged(
         walletBalance: TextView,
         progress: Int,
+        showFullBalance: Boolean,
         localStoreRepository: LocalStoreRepository
     ) {
         when(walletState) {
@@ -49,7 +54,7 @@ data class LocalWalletModel(
                     walletBalance.text = Constants.Strings.SYNCING
                 }
             } else -> {
-                walletBalance.text = getBalance(localStoreRepository)
+                walletBalance.text = getBalance(localStoreRepository, showFullBalance)
             }
         }
     }

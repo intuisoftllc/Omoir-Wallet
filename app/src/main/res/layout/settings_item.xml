@@ -57,6 +57,13 @@
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:id="@+id/copy"
+        android:src="@drawable/ic_copy_32"
+        android:layout_gravity="center_vertical"/>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:id="@+id/chevron"
         android:src="@drawable/ic_black_chevron_right"
         android:layout_gravity="center_vertical"/>

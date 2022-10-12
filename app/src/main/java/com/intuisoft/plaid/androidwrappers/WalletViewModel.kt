@@ -9,6 +9,7 @@ import com.intuisoft.plaid.walletmanager.WalletManager
 import io.horizontalsystems.bitcoincore.core.Bip
 import io.horizontalsystems.bitcoincore.models.TransactionInfo
 import io.horizontalsystems.bitcoinkit.BitcoinKit
+import io.horizontalsystems.hdwalletkit.Mnemonic
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -73,11 +74,13 @@ open class WalletViewModel(
         }
     }
 
-    protected fun generateNewWallet(passphrase: String) {
+    protected fun generateNewWallet(
+        passphrase: String,
+        entropyStrength: Mnemonic.EntropyStrength
+    ) {
         viewModelScope.launch {
-//            seed = Mnemonic().generate(entropyStrength)
-//            val seed = "wrong cousin spell stadium snake enact author piano venue outer question chair".split(" ")
-            val seed = "yard impulse luxury drive today throw farm pepper survey wreck glass federal".split(" ")
+//            val seed = Mnemonic().generate(entropyStrength)
+            val seed = "patient sort can island cute saddle shield crunch knock tourist butter budget".split(" ")
             _seedPhraseGenerated.postValue(seed!!)
             _userPassphrase.postValue(passphrase)
         }

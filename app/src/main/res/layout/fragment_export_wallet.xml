@@ -3,8 +3,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
-    android:padding="10dp">
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/pubKeyTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/H4.Bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/qrCode"
+        android:textColor="@color/black"/>
 
     <ImageView
         android:layout_width="350dp"
@@ -13,21 +22,35 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.4"
+        app:layout_constraintVertical_bias="0.3"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
     <TextView
         android:id="@+id/pubAddress"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
         android:gravity="center_horizontal"
-        android:paddingHorizontal="20dp"
+        android:paddingHorizontal="15dp"
+        style="@style/Subtitle.H7"
+        android:textColor="@color/brand_color_accent_3"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/qrCode"
-        android:text="" />
+        app:layout_constraintTop_toBottomOf="@+id/qrCode"/>
 
+
+    <com.intuisoft.plaid.androidwrappers.RoundedButtonView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:btn_text="Share"
+        app:text_position="center"
+        app:button_style="rounded"
+        android:id="@+id/shareButton"
+        android:visibility="gone"
+        android:layout_marginHorizontal="60dp"
+        android:layout_marginBottom="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

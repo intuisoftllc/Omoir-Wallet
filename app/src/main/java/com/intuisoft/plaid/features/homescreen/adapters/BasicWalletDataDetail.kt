@@ -53,11 +53,11 @@ class BasicWalletDataDetail(
                 }
 
                 walletName.text = wallet.name
-                walletBalance.text = wallet.getBalance(localStoreRepository)
+                walletBalance.text = wallet.getBalance(localStoreRepository, false)
 
                 lifecycleOwner?.let {
                     wallet.walletStateUpdated.observe(it, androidx.lifecycle.Observer {
-                        wallet.onWalletStateChanged(walletBalance, it, localStoreRepository)
+                        wallet.onWalletStateChanged(walletBalance, it, false, localStoreRepository)
                     })
                 }
             } catch (error: java.lang.Exception) {

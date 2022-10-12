@@ -33,17 +33,21 @@ class BasicTransactionDetail(
                 onClick(transaction)
             }
 
-            when(transaction.type) {
-                TransactionType.Incoming -> {
-                    sendReceiveIndicator.setImageResource(R.drawable.ic_recieve_coins_48)
-                }
+            if(transaction.blockHeight == null) {
+                sendReceiveIndicator.setImageResource(R.drawable.ic_pending_48)
+            } else {
+                when (transaction.type) {
+                    TransactionType.Incoming -> {
+                        sendReceiveIndicator.setImageResource(R.drawable.ic_recieve_coins_48)
+                    }
 
-                TransactionType.Outgoing -> {
-                    sendReceiveIndicator.setImageResource(R.drawable.ic_send_coins_48)
-                }
+                    TransactionType.Outgoing -> {
+                        sendReceiveIndicator.setImageResource(R.drawable.ic_send_coins_48)
+                    }
 
-                TransactionType.SentToSelf -> {
-                    sendReceiveIndicator.setImageResource(R.drawable.ic_sent_coins_to_self_48)
+                    TransactionType.SentToSelf -> {
+                        sendReceiveIndicator.setImageResource(R.drawable.ic_sent_coins_to_self_48)
+                    }
                 }
             }
 

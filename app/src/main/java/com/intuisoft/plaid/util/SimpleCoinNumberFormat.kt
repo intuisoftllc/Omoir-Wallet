@@ -22,13 +22,13 @@ object SimpleCoinNumberFormat {
                 return "" + df.format(number.toDouble() / 100_000) + " K"
             }
             (1_000_000..9_999_999).contains(number) -> {
-                return "" + df.format(number.toDouble() / 1_000_000) + " M"
+                return "" + df.format(number.toDouble() / 1_000_000) + " Mil"
             }
             (10_000_000..99_999_999).contains(number) -> {
-                return "" + df.format(number.toDouble() / 10_000_000) + " M"
+                return "" + df.format(number.toDouble() / 10_000_000) + " Mil"
             }
             (100_000_000..999_999_999).contains(number) -> {
-                return "" + df.format(number.toDouble() / 100_000_000) + " M"
+                return "" + df.format(number.toDouble() / 100_000_000) + " Mil"
             }
             (1_000_000_000..9_999_999_999).contains(number) -> {
                 return "" + df.format(number.toDouble() / 1_000_000_000) + " Bil"
@@ -56,6 +56,11 @@ object SimpleCoinNumberFormat {
 
     fun format(value: Double): String? {
         val df = DecimalFormat("###,###.########")
+        return df.format(value)
+    }
+
+    fun formatFullBalance(value: Long): String? {
+        val df = DecimalFormat("###,###,###,###,###")
         return df.format(value)
     }
 }

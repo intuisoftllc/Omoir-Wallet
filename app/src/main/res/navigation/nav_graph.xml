@@ -227,6 +227,14 @@
     </fragment>
 
     <fragment
+        android:id="@+id/transactionDetailsFragment"
+        android:name="com.intuisoft.plaid.features.dashboardscreen.ui.TransactionDetailsFragment"
+        android:label="@string/transaction_details_fragment_label"
+        tools:layout="@layout/fragment_transaction_details">
+
+    </fragment>
+
+    <fragment
         android:id="@+id/walletDashboardFragment"
         android:name="com.intuisoft.plaid.features.dashboardscreen.ui.DashboardFragment"
         android:label="@string/wallet_dashboard_fragment_label"

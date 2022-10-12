@@ -3,6 +3,7 @@ package com.intuisoft.plaid.di
 import com.intuisoft.plaid.androidwrappers.SettingsItemView
 import com.intuisoft.plaid.androidwrappers.WalletViewModel
 import com.intuisoft.plaid.features.createwallet.viewmodel.CreateWalletViewModel
+import com.intuisoft.plaid.features.dashboardscreen.viewmodel.WalletExportViewModel
 import com.intuisoft.plaid.features.dashboardscreen.viewmodel.WalletSettingsViewModel
 import com.intuisoft.plaid.features.homescreen.viewmodel.HomeScreenViewModel
 import com.intuisoft.plaid.features.onboarding.viewmodel.OnboardingViewModel
@@ -44,5 +45,9 @@ val viewModelModule = module {
 
     viewModel {
         WalletSettingsViewModel(get(), get(), get())
+    }
+
+    viewModel {
+        WalletExportViewModel(get(), get(), get())
     }
 }

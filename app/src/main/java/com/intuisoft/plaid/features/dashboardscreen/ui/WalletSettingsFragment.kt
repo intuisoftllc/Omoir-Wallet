@@ -17,6 +17,7 @@ import com.intuisoft.plaid.databinding.FragmentWalletSettingsBinding
 import com.intuisoft.plaid.features.dashboardscreen.viewmodel.WalletSettingsViewModel
 import com.intuisoft.plaid.features.pin.ui.PinProtectedFragment
 import com.intuisoft.plaid.util.Constants
+import com.intuisoft.plaid.util.fragmentconfig.ConfigQrDisplayData
 import com.intuisoft.plaid.util.fragmentconfig.ConfigSeedData
 import io.horizontalsystems.bitcoincore.core.Bip
 import io.horizontalsystems.bitcoinkit.BitcoinKit
@@ -87,9 +88,22 @@ class WalletSettingsFragment : PinProtectedFragment<FragmentWalletSettingsBindin
         }
 
         binding.exportSetting.onClick {
+            var bundle = bundleOf(
+                Constants.Navigation.FRAGMENT_CONFIG to FragmentConfiguration(
+                    actionBarTitle = R.string.wallet_export_fragment_label,
+                    showActionBar = true,
+                    configurationType = FragmentConfigurationType.CONFIGURATION_DISPLAY_QR,
+                    configData = ConfigQrDisplayData(
+                        payload = viewModel.getRecieveAddress(),
+                        qrTitle = "Your Public Key"
+                    )
+                ),
+                Constants.Navigation.WALLET_UUID_BUNDLE_ID to viewModel.getWalletId()
+            )
+
             navigate(
                 R.id.exportWalletFragment,
-                viewModel.getWalletId()
+                bundle
             )
         }
 

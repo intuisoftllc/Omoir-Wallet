@@ -23,7 +23,7 @@ class CreateWalletViewModel(
         private set
 
     fun generateNewWallet() {
-        generateNewWallet(passphrase)
+        generateNewWallet(passphrase, entropyStrength)
     }
 
     fun setUseTestNet(use: Boolean) {

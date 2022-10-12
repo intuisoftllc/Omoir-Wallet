@@ -15,6 +15,7 @@ class HDWallet(seed: ByteArray, private val coinType: Int, val gapLimit: Int = 2
         BIP49(49, 0x049D7CB2, 0x049D7878),
         BIP84(84, 0x04B24746, 0x04B2430C);
 
+        // this is used by HDKey.serializePubB58() DO Not remove
         fun getPublicVersionBytes(): Int =
             pubVersionBytes
     }

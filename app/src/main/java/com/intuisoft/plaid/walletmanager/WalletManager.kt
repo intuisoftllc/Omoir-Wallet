@@ -200,6 +200,10 @@ class WalletManager(
        return uuid
    }
 
+    private fun restart() {
+        // todo: impl for when app needs a restart
+    }
+
    private fun updateWallets() {
        _wallets.forEach {
            it.walletKit?.stop()
@@ -218,7 +222,7 @@ class WalletManager(
                    networkType = getWalletNetwork(model),
                    peerSize = Constants.Limit.MAX_PEERS,
                    syncMode = BitcoinCore.SyncMode.Api(),
-                   confirmationsThreshold = 3, // todo: make this configurable
+                   confirmationsThreshold = Constants.Limit.MIN_CONFIRMATIONS,
                    bip = Bip.values().find {  it.ordinal == identifier.bip }!!
                )
 
@@ -227,9 +231,7 @@ class WalletManager(
                    override fun onBalanceUpdate(balance: BalanceInfo) {
                        super.onBalanceUpdate(balance)
                        CoroutineScope(Dispatchers.IO).launch {
-                           loadingScope {
-                               synchronize(model)
-                           }
+                           synchronize(model, true)
                        }
                    }
 

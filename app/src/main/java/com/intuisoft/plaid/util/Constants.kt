@@ -87,6 +87,8 @@ class Constants {
         const val BIP_TYPE_84 = "Bip 84 Wallet (p2wpkh bech32)"
         const val TEST_NET_WALLET = "Test Net"
         const val MAIN_NET_WALLET = "Main Net"
+        const val TEST_WALLET_1 = "yard impulse luxury drive today throw farm pepper survey wreck glass federal"
+        const val TEST_WALLET_2 = "wrong cousin spell stadium snake enact author piano venue outer question chair"
     }
 
     object ServerStrings {
@@ -115,6 +117,7 @@ class Constants {
         const val SATS_PER_BTC = 100000000
         const val MAX_PEERS = 10
         const val PAGE_LIMIT = 50
+        const val MIN_CONFIRMATIONS = 1
         const val DEFAULT_PIN_TIMEOUT = Time.INSTANT_TIME_OFFSET // check for pin only when user leaves the app by default
     }
 }

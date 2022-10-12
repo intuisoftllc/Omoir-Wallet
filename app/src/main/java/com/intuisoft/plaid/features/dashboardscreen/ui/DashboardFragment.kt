@@ -62,9 +62,9 @@ class DashboardFragment : PinProtectedFragment<FragmentWalletDashboardBinding>()
 
         viewModel.displayWallet.observe(viewLifecycleOwner, Observer { wallet ->
             binding.walletNameView.text = wallet.name
-            binding.balance.text = wallet.getBalance(localStoreRepository)
+            binding.balance.text = wallet.getBalance(localStoreRepository, true)
             wallet.walletStateUpdated.observe(viewLifecycleOwner, Observer {
-                wallet.onWalletStateChanged(binding.balance, it, localStoreRepository)
+                wallet.onWalletStateChanged(binding.balance, it, true, localStoreRepository)
 
                 if(wallet.walletState == WalletState.NONE)
                     viewModel.getTransactions()
@@ -95,7 +95,11 @@ class DashboardFragment : PinProtectedFragment<FragmentWalletDashboardBinding>()
     }
 
     fun onTransactionSelected(transaction: TransactionInfo) {
-        // todo: impl
+        navigate(
+            R.id.transactionDetailsFragment,
+            viewModel.getWalletId(),
+            Constants.Navigation.ANIMATED_FADE_IN_NAV_OPTION
+        )
     }
 
     override fun showActionBar(): Boolean {

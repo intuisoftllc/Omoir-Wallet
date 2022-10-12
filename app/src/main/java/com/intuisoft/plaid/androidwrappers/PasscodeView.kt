@@ -372,7 +372,7 @@ class PasscodeView @JvmOverloads constructor(
     }
 
     private fun tintImageView(imageView: ImageView?, color: Int) {
-        imageView!!.drawable.mutate().setColorFilter(color, PorterDuff.Mode.SRC_ATOP)
+        imageView!!.tint(color)
     }
 
     private fun clearChar() {
