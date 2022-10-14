@@ -6,6 +6,7 @@ import android.os.Bundle
 import com.intuisoft.plaid.di.*
 import com.intuisoft.plaid.local.UserPreferences
 import com.intuisoft.plaid.util.Constants
+import com.intuisoft.plaid.util.SimpleCoinNumberFormat
 import com.intuisoft.plaid.walletmanager.WalletManager
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger

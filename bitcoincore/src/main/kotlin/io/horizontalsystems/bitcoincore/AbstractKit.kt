@@ -86,6 +86,9 @@ abstract class AbstractKit {
         bitcoinCore.validateAddress(address, pluginData)
     }
 
+    fun isAddressValid(address: String) : Boolean =
+        bitcoinCore.isAddressValid(address)
+
     fun parsePaymentAddress(paymentAddress: String): BitcoinPaymentData {
         return bitcoinCore.parsePaymentAddress(paymentAddress)
     }

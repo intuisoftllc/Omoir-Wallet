@@ -73,6 +73,9 @@ open class TransactionInfo {
                         value = if (it.get("value")?.isNull == false) it.get("value")?.asLong() else null,
                         address = if (it.get("address")?.isNull == false) it.get("address")?.asString() else null)
 
+                if(input.address == null || input.address == "") {
+                    var r = 0
+                }
                 inputs.add(input)
             }
         }

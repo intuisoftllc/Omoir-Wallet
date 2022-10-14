@@ -36,6 +36,10 @@ class HomeScreenViewModel(
         }
     }
 
+    fun syncWallets() {
+        walletManager.synchronizeAll()
+    }
+
     fun getGreetingPrefix(): String {
         val c = Calendar.getInstance()
         val timeOfDay = c.get(Calendar.HOUR_OF_DAY)

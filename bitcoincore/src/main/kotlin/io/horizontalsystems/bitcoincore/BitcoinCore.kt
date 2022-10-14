@@ -4,13 +4,17 @@ import android.content.Context
 import io.horizontalsystems.bitcoincore.blocks.*
 import io.horizontalsystems.bitcoincore.blocks.validators.IBlockValidator
 import io.horizontalsystems.bitcoincore.core.*
+import io.horizontalsystems.bitcoincore.extensions.hexToByteArray
 import io.horizontalsystems.bitcoincore.extensions.toHexString
+import io.horizontalsystems.bitcoincore.extensions.toReversedHex
+import io.horizontalsystems.bitcoincore.io.BitcoinInputMarkable
 import io.horizontalsystems.bitcoincore.managers.*
 import io.horizontalsystems.bitcoincore.models.*
 import io.horizontalsystems.bitcoincore.network.Network
 import io.horizontalsystems.bitcoincore.network.messages.*
 import io.horizontalsystems.bitcoincore.network.peer.*
 import io.horizontalsystems.bitcoincore.serializers.BlockHeaderParser
+import io.horizontalsystems.bitcoincore.serializers.TransactionSerializer
 import io.horizontalsystems.bitcoincore.storage.FullTransaction
 import io.horizontalsystems.bitcoincore.storage.UnspentOutput
 import io.horizontalsystems.bitcoincore.transactions.*
@@ -400,6 +404,15 @@ class BitcoinCore(
 
     fun addPeerTaskHandler(handler: IPeerTaskHandler) {
         peerTaskHandlerChain.addHandler(handler)
+    }
+
+    fun isAddressValid(address: String) : Boolean {
+        try {
+            addressConverter.convert(address)
+            return true
+        } catch(e: Exception) {
+            return false
+        }
     }
 
     fun addPeerGroupListener(listener: PeerGroup.Listener) {

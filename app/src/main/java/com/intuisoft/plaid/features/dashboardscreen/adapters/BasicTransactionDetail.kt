@@ -14,6 +14,7 @@ import com.intuisoft.plaid.util.Constants
 import com.intuisoft.plaid.util.SimpleCoinNumberFormat
 import com.intuisoft.plaid.util.SimpleTimeFormat
 import io.horizontalsystems.bitcoincore.models.TransactionInfo
+import io.horizontalsystems.bitcoincore.models.TransactionStatus
 import io.horizontalsystems.bitcoincore.models.TransactionType
 import kotlinx.android.synthetic.main.basic_transaction_detail_list_item.view.*
 import java.text.NumberFormat
@@ -34,7 +35,11 @@ class BasicTransactionDetail(
             }
 
             if(transaction.blockHeight == null) {
-                sendReceiveIndicator.setImageResource(R.drawable.ic_pending_48)
+                if(transaction.status == TransactionStatus.INVALID) {
+                    sendReceiveIndicator.setImageResource(R.drawable.ic_error_invalid)
+                } else {
+                    sendReceiveIndicator.setImageResource(R.drawable.ic_pending_48)
+                }
             } else {
                 when (transaction.type) {
                     TransactionType.Incoming -> {
@@ -52,15 +57,7 @@ class BasicTransactionDetail(
             }
 
             transactionTime.text = SimpleTimeFormat.timeToString(transaction.timestamp)
-            when(localStoreRepository.getBitcoinDisplayUnit()) {
-                BitcoinDisplayUnit.BTC -> {
-                    transactionAmount.text = "" + SimpleCoinNumberFormat.format(transaction.amount.toDouble() / Constants.Limit.SATS_PER_BTC.toDouble()) + " BTC"
-                }
-
-                BitcoinDisplayUnit.SATS -> {
-                    transactionAmount.text = "" + SimpleCoinNumberFormat.format(transaction.amount) + " Sats"
-                }
-            }
+            transactionAmount.text = SimpleCoinNumberFormat.format(localStoreRepository, transaction.amount)
         }
     }
 }

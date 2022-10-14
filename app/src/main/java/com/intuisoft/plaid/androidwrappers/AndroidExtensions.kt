@@ -4,6 +4,8 @@ import android.app.Activity
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
+import android.content.Intent
+import android.content.res.Resources
 import android.graphics.PorterDuff
 import android.os.Bundle
 import android.util.TypedValue
@@ -124,7 +126,7 @@ fun Fragment.validateFingerprint(
 fun styledSnackBar(root: View, title: String, showTop: Boolean? = null, onDismissed: (() -> Unit)? = null) {
     val snack = Snackbar.make(root, title, Snackbar.LENGTH_LONG)
         .setBackgroundTint(root.context.getColorFromAttr(com.google.android.material.R.attr.colorSecondary))
-        .setActionTextColor(root.context.getColorFromAttr(com.google.android.material.R.attr.colorOnSecondary))
+        .setActionTextColor(root.context.getColorFromAttr(com.google.android.material.R.attr.colorOnPrimary))
         .addCallback(object : Snackbar.Callback() {
 
             override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
@@ -138,7 +140,7 @@ fun styledSnackBar(root: View, title: String, showTop: Boolean? = null, onDismis
             val view = snack.view
             val params: FrameLayout.LayoutParams = view.layoutParams as FrameLayout.LayoutParams
             params.gravity = Gravity.TOP
-            params.topMargin = 10
+            params.topMargin = root.resources.dpToPixels(10f).toInt()
             view.layoutParams = params
         }
     }
@@ -179,11 +181,11 @@ fun Fragment.navigate(navId: Int, bundle: Bundle, options: NavOptions = Constant
     )
 }
 
-fun Fragment.dpToPixels(dp: Float) : Float {
+fun Resources.dpToPixels(dp: Float) : Float {
     return TypedValue.applyDimension(
         TypedValue.COMPLEX_UNIT_DIP,
         dp,
-        resources.displayMetrics
+        displayMetrics
     )
 }
 
@@ -202,4 +204,15 @@ fun TextView.leftDrawable(@DrawableRes id: Int = 0, @DimenRes sizeRes: Int) {
 
 fun ImageView.tint(color: Int) {
     this.drawable.mutate().setColorFilter(color, PorterDuff.Mode.SRC_ATOP)
+}
+
+fun Activity.shareText(subject: String?, message: String) {
+    val txtIntent = Intent(Intent.ACTION_SEND)
+    txtIntent.type = "text/plain"
+    subject?.let {
+        txtIntent.putExtra(Intent.EXTRA_SUBJECT, it)
+    }
+
+    txtIntent.putExtra(Intent.EXTRA_TEXT, message)
+    startActivity(Intent.createChooser(txtIntent, "Share"))
 }

@@ -26,18 +26,7 @@ data class LocalWalletModel(
 
 
     fun getBalance(localStoreRepository: LocalStoreRepository, fullValue: Boolean): String {
-        if(localStoreRepository.getBitcoinDisplayUnit() == BitcoinDisplayUnit.BTC) {
-            return SimpleCoinNumberFormat.format(this.walletKit!!.balance.spendable.toDouble() / Constants.Limit.SATS_PER_BTC) + " BTC"
-        } else {
-            val balance = walletKit!!.balance.spendable
-            val postfix = if(balance == 1L) "Sat" else "Sats"
-
-            if(fullValue) {
-                return SimpleCoinNumberFormat.formatFullBalance(balance) + " " + postfix
-            } else {
-                return SimpleCoinNumberFormat.format(balance) + " " + postfix
-            }
-        }
+        return SimpleCoinNumberFormat.format(localStoreRepository, walletKit!!.balance.spendable, fullValue)
     }
 
     fun onWalletStateChanged(

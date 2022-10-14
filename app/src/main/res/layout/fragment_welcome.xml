@@ -33,11 +33,11 @@
         android:layout_height="wrap_content"
         android:text="Let\'s get you setup,\nwhat shall I call you?"
         android:textColor="@color/black"
-        app:layout_constraintStart_toStartOf="@+id/textContainer"
+        app:layout_constraintStart_toStartOf="@+id/feeContainer"
         app:layout_constraintTop_toBottomOf="@+id/welcome" />
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/textContainer"
+        android:id="@+id/feeContainer"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="40dp"

@@ -47,7 +47,6 @@
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="My Wallet"
                 android:textColor="@color/white"
                 android:maxLines="1"
                 android:ellipsize="end"
@@ -64,7 +63,6 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="125,463,382 Sats"
                 android:id="@+id/balance"
                 app:layout_constraintVertical_bias="1"
                 android:textColor="@color/white"
@@ -90,14 +88,33 @@
 
     </androidx.cardview.widget.CardView>
 
-    <com.intuisoft.plaid.androidwrappers.RoundedButtonView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:btn_text="Deposit/Widthdraw"
-        app:text_position="center"
-        app:button_style="outlined"
-        android:paddingHorizontal="20dp"
-        android:layout_marginTop="15dp"/>
+        android:orientation="horizontal"
+        android:paddingHorizontal="10dp"
+        android:layout_marginTop="15dp">
+
+        <com.intuisoft.plaid.androidwrappers.RoundedButtonView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:btn_text="Deposit"
+            android:id="@+id/deposit"
+            app:text_position="center"
+            app:button_style="outlined"
+            android:layout_weight="1"
+            android:paddingHorizontal="5dp"/>
+
+        <com.intuisoft.plaid.androidwrappers.RoundedButtonView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:btn_text="Withdraw"
+            android:id="@+id/withdraw"
+            app:text_position="center"
+            android:layout_weight="1"
+            app:button_style="white-rounded"
+            android:paddingHorizontal="5dp"/>
+    </LinearLayout>
 
     <TextView
         android:layout_width="wrap_content"

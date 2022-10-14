@@ -13,6 +13,7 @@ import com.intuisoft.plaid.util.Constants
 import io.horizontalsystems.bitcoincore.BitcoinCore
 import io.horizontalsystems.bitcoincore.core.Bip
 import io.horizontalsystems.bitcoincore.models.BalanceInfo
+import io.horizontalsystems.bitcoincore.models.TransactionDataSortType
 import io.horizontalsystems.bitcoincore.models.TransactionInfo
 import io.horizontalsystems.bitcoinkit.BitcoinKit
 import kotlinx.coroutines.CoroutineScope
@@ -242,10 +243,13 @@ class WalletManager(
                            is BitcoinCore.KitState.Synced,
                            is BitcoinCore.KitState.NotSynced -> {
                                updateWalletState(WalletState.NONE, model, -1)
+//                               val trans = _wallets[0].walletKit!!.send("bc1qs49s2vlmgk7ptr9kwfpqytn4ve0hu0sxz2vvtu", 1000, true, 1, TransactionDataSortType.None)
+//                               val r = 0
                            }
 
                            is BitcoinCore.KitState.Syncing -> {
                                updateWalletState(WalletState.SYNCING, model, (state.progress * 100).toInt())
+
                            }
 
                            is BitcoinCore.KitState.ApiSyncing -> {

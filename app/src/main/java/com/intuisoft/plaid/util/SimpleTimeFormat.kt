@@ -1,7 +1,5 @@
 package com.intuisoft.plaid.util
 
-import android.util.Log
-import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -38,5 +36,9 @@ object SimpleTimeFormat {
         }
 
         return convTime
+    }
+
+    fun getDateByLocale(timeInMills: Long, locale: String?): String? {
+        return SimpleDateFormat("MMM dd, yyyy hh:mm aa", Locale(locale)).format(Date(timeInMills))
     }
 }

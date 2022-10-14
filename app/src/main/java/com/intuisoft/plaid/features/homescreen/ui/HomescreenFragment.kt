@@ -54,6 +54,7 @@ class HomescreenFragment : PinProtectedFragment<FragmentHomescreenBinding>() {
 
         viewModel.updateGreeting()
         viewModel.showWallets()
+        viewModel.syncWallets()
 
         walletManager.stateChanged.observe(viewLifecycleOwner, Observer {
             binding.swipeContainer.isRefreshing = it == ManagerState.SYNCHRONIZING

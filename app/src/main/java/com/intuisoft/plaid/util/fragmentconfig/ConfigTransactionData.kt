@@ -4,8 +4,6 @@ import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-data class ConfigQrDisplayData(
-    val payload: String,
-    val qrTitle: String? = null,
-    val showClose: Boolean
+data class ConfigTransactionData(
+    val payload: String
 ): Parcelable

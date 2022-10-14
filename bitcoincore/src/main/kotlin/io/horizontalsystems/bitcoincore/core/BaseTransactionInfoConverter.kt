@@ -29,6 +29,9 @@ class BaseTransactionInfoConverter(private val pluginManager: PluginManager) {
                 }
             }
 
+            if(input.input.address === null || input.input.address == "") {
+                val r = 0
+            }
             inputsInfo.add(TransactionInputInfo(mine, value, input.input.address))
         }
 

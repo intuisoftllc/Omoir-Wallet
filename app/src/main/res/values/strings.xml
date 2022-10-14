@@ -14,6 +14,7 @@
     <string name="wallet_export_fragment_label">Export Wallet</string>
     <string name="display_unit_fragment_label">Bitcoin Unit</string>
     <string name="appearance_fragment_label">Appearance</string>
+    <string name="withdraw_fragment_label">Send BTC</string>
     <string name="transaction_details_fragment_label">Transaction Details</string>
     <string name="meme_fragment_label">You Have Unleashed The Memes!</string>
     <string name="create_wallet_fragment_label">Create A Wallet</string>

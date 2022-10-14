@@ -64,44 +64,45 @@ class TransactionExtractor(
             if (previousOutput != null) {
                 input.address = previousOutput.address
                 input.keyHash = previousOutput.keyHash
-                continue
-            }
+            } else {
 
-            val payload: ByteArray
-            val scriptType: ScriptType
-            val sigScript = input.sigScript
+                val payload: ByteArray
+                val scriptType: ScriptType
+                val sigScript = input.sigScript
 
-            //  P2SH script {push-sig}{signature}{push-redeem}{script}
-            val scriptHash = getScriptHash(sigScript)
-            if (scriptHash != null) {
-                payload = scriptHash
-                scriptType = ScriptType.P2SH
-            }
-            //  P2PKH {signature}{public-key} script is 107±1 bytes
-            else if (sigScript.size >= 106 && sigScript[0] in 71..74) {
-                val signOffset = sigScript[0].toInt()
-                val pubKeySize = sigScript[signOffset + 1].toInt()
+                //  P2SH script {push-sig}{signature}{push-redeem}{script}
+                val scriptHash = getScriptHash(sigScript)
+                if (scriptHash != null) {
+                    payload = scriptHash
+                    scriptType = ScriptType.P2SH
+                }
+                //  P2PKH {signature}{public-key} script is 107±1 bytes
+                else if (sigScript.size >= 106 && sigScript[0] in 71..74) {
+                    val signOffset = sigScript[0].toInt()
+                    val pubKeySize = sigScript[signOffset + 1].toInt()
 
-                if ((pubKeySize == 33 || pubKeySize == 65) && sigScript.size == signOffset + pubKeySize + 2) {
-                    scriptType = ScriptType.P2PKH
-                    payload = Arrays.copyOfRange(sigScript, signOffset + 2, sigScript.size)
-                } else continue
-            }
-            //  P2WPKHSH 0x16 00 14 {20-byte-key-hash}
-            else if (sigScript.size == 23 && sigScript[0] == 0x16.toByte() &&
+                    if ((pubKeySize == 33 || pubKeySize == 65) && sigScript.size == signOffset + pubKeySize + 2) {
+                        scriptType = ScriptType.P2PKH
+                        payload = Arrays.copyOfRange(sigScript, signOffset + 2, sigScript.size)
+                    } else continue
+                }
+                //  P2WPKHSH 0x16 00 14 {20-byte-key-hash}
+                else if (sigScript.size == 23 && sigScript[0] == 0x16.toByte() &&
                     (sigScript[1] == 0.toByte() || sigScript[1] in 0x50..0x61) &&
-                    sigScript[2] == 0x14.toByte()) {
-                payload = sigScript.drop(1).toByteArray()
-                scriptType = ScriptType.P2WPKHSH
-            } else continue
+                    sigScript[2] == 0x14.toByte()
+                ) {
+                    payload = sigScript.drop(1).toByteArray()
+                    scriptType = ScriptType.P2WPKHSH
+                } else continue
 
-            try {
-                val keyHash = Utils.sha256Hash160(payload)
-                val address = addressConverter.convert(keyHash, scriptType)
-                input.keyHash = address.hash
-                input.address = address.string
+                try {
+                    val keyHash = Utils.sha256Hash160(payload)
+                    val address = addressConverter.convert(keyHash, scriptType)
+                    input.keyHash = address.hash
+                    input.address = address.string
 
-            } catch (e: Exception) {
+                } catch (e: Exception) {
+                }
             }
         }
     }
@@ -120,6 +121,7 @@ class TransactionExtractor(
             try {
                 output.address = addressConverter.convert(pubkeyHash, scriptType).string
             } catch (e: Exception) {
+                println(e.printStackTrace())
             }
         }
     }
@@ -215,11 +217,11 @@ class TransactionExtractor(
         return null
     }
 
-    fun extract(transaction: FullTransaction) {
+    fun extract(transaction: FullTransaction) { // todo: fix this this is the reason addresses are not being populated
         extractOutputs(transaction)
         metadataExtractor.extract(transaction)
 
-        if (transaction.header.isMine) {
+        if(transaction.header.isMine) {
             extractAddress(transaction)
             extractInputs(transaction)
         }

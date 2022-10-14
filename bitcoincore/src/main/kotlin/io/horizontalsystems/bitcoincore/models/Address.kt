@@ -36,6 +36,10 @@ class LegacyAddress(addressString: String, bytes: ByteArray, type: AddressType) 
         this.type = type
         this.hash = bytes
         this.string = addressString
+
+        if(addressString.isEmpty() || addressString.isBlank()) {
+            val r = 0
+        }
     }
 }
 
@@ -44,6 +48,10 @@ class SegWitAddress(addressString: String, bytes: ByteArray, type: AddressType, 
         this.type = type
         this.hash = bytes
         this.string = addressString
+
+        if(addressString.isEmpty() || addressString.isBlank()) {
+            val r = 0
+        }
     }
 
     override val lockingScript: ByteArray

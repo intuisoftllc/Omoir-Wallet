@@ -59,6 +59,9 @@ class TransactionOutput() {
         this.lockingScript = script
         this.index = index
         this.scriptType = type
+        if(address == null || address == "") {
+            val r = 0
+        }
         this.address = address
         this.keyHash = keyHash
         publicKey?.let { setPublicKey(it) }

@@ -4,14 +4,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.docformative.docformative.toArrayList
+import com.google.gson.Gson
 import com.intuisoft.plaid.R
-import com.intuisoft.plaid.androidwrappers.FragmentConfiguration
-import com.intuisoft.plaid.androidwrappers.WalletViewModel
-import com.intuisoft.plaid.androidwrappers.navigate
+import com.intuisoft.plaid.androidwrappers.*
 import com.intuisoft.plaid.databinding.FragmentWalletDashboardBinding
 import com.intuisoft.plaid.features.createwallet.ui.BackupYourWalletFragmentDirections
 import com.intuisoft.plaid.features.homescreen.adapters.BasicTransactionAdapter
@@ -20,6 +20,9 @@ import com.intuisoft.plaid.features.pin.ui.PinProtectedFragment
 import com.intuisoft.plaid.model.WalletState
 import com.intuisoft.plaid.repositories.LocalStoreRepository
 import com.intuisoft.plaid.util.Constants
+import com.intuisoft.plaid.util.fragmentconfig.ConfigQrDisplayData
+import com.intuisoft.plaid.util.fragmentconfig.ConfigSeedData
+import com.intuisoft.plaid.util.fragmentconfig.ConfigTransactionData
 import com.intuisoft.plaid.walletmanager.ManagerState
 import com.intuisoft.plaid.walletmanager.WalletManager
 import io.horizontalsystems.bitcoincore.models.TransactionInfo
@@ -86,6 +89,34 @@ class DashboardFragment : PinProtectedFragment<FragmentWalletDashboardBinding>()
             findNavController().popBackStack()
         }
 
+        binding.deposit.onClick {
+            var bundle = bundleOf(
+                Constants.Navigation.FRAGMENT_CONFIG to FragmentConfiguration(
+                    actionBarTitle = 0,
+                    showActionBar = false,
+                    configurationType = FragmentConfigurationType.CONFIGURATION_DISPLAY_SHAREABLE_QR,
+                    configData = ConfigQrDisplayData(
+                        payload = viewModel.getRecieveAddress(),
+                        qrTitle = "Receive BTC",
+                        showClose = true
+                    )
+                ),
+                Constants.Navigation.WALLET_UUID_BUNDLE_ID to viewModel.getWalletId()
+            )
+
+            navigate(
+                R.id.exportWalletFragment,
+                bundle
+            )
+        }
+
+        binding.withdraw.onClick {
+            navigate(
+                R.id.withdrawalFragment,
+                viewModel.getWalletId()
+            )
+        }
+
         binding.settings.setOnClickListener {
             navigate(
                 R.id.walletSettingsFragment,
@@ -95,9 +126,20 @@ class DashboardFragment : PinProtectedFragment<FragmentWalletDashboardBinding>()
     }
 
     fun onTransactionSelected(transaction: TransactionInfo) {
+        var bundle = bundleOf(
+            Constants.Navigation.FRAGMENT_CONFIG to FragmentConfiguration(
+                actionBarTitle = 0,
+                showActionBar = false,
+                configurationType = FragmentConfigurationType.CONFIGURATION_TRANSACTION_DATA,
+                configData = ConfigTransactionData(
+                    payload = Gson().toJson(transaction)
+                )
+            )
+        )
+
         navigate(
             R.id.transactionDetailsFragment,
-            viewModel.getWalletId(),
+            bundle,
             Constants.Navigation.ANIMATED_FADE_IN_NAV_OPTION
         )
     }

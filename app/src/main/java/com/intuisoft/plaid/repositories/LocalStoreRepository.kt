@@ -3,6 +3,7 @@ package com.intuisoft.plaid.repositories
 import com.intuisoft.plaid.local.WipeDataListener
 import com.intuisoft.plaid.model.AppTheme
 import com.intuisoft.plaid.model.BitcoinDisplayUnit
+import com.intuisoft.plaid.model.FeeType
 import com.intuisoft.plaid.util.Constants
 import com.intuisoft.plaid.walletmanager.StoredWalletInfo
 
@@ -17,6 +18,10 @@ interface LocalStoreRepository {
     fun setMaxPinEntryLimit(limit: Int)
 
     fun resetPinEntries()
+
+    fun setDefaultFeeType(type: FeeType)
+
+    fun getDefaultFeeType(): FeeType
 
     fun getWalletSyncTime(): Int
 

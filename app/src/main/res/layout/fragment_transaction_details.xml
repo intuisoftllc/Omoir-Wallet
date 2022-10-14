@@ -4,7 +4,8 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:padding="15dp">
+    android:paddingTop="15dp"
+    android:paddingHorizontal="15dp">
 
     <ImageView
         android:id="@+id/close"
@@ -50,8 +51,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:item_title="Transaction Type"
-                    app:item_subtitle="Incoming"
-                    app:subtitle_icon="@drawable/ic_send_coins_48"
                     app:show_switch="false"
                     android:clickable="true"
                     android:paddingVertical="10dp"
@@ -64,7 +63,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:item_title="Amount"
-                    app:item_subtitle="0.000463 BTC"
                     app:show_switch="false"
                     android:clickable="true"
                     android:paddingVertical="10dp"
@@ -74,41 +72,10 @@
                     android:focusable="true" />
 
 
-
-                <com.intuisoft.plaid.androidwrappers.SettingsItemView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:item_title="Inputs"
-                    app:item_subtitle="2 Inputs"
-                    app:show_switch="false"
-                    android:clickable="true"
-                    android:paddingVertical="10dp"
-                    android:id="@+id/inputs"
-                    app:show_chevron="true"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0"
-                    android:focusable="true" />
-
-
-                <com.intuisoft.plaid.androidwrappers.SettingsItemView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:item_title="Outputs"
-                    app:item_subtitle="1 Output"
-                    app:show_switch="false"
-                    android:clickable="true"
-                    android:paddingVertical="10dp"
-                    android:id="@+id/outputs"
-                    app:show_chevron="true"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0"
-                    android:focusable="true" />
-
                 <com.intuisoft.plaid.androidwrappers.SettingsItemView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:item_title="Transaction Date"
-                    app:item_subtitle="Oct 7, 2022 9:32 AM"
                     app:show_switch="false"
                     android:clickable="true"
                     android:paddingVertical="10dp"
@@ -121,7 +88,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:item_title="Fee"
-                    app:item_subtitle="N/A"
                     app:show_switch="false"
                     android:clickable="true"
                     android:paddingVertical="10dp"
@@ -134,7 +100,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:item_title="Transaction ID"
-                    app:item_subtitle="efgued5d4fb6b4ddh88fb69efb4f"
                     app:show_switch="false"
                     android:clickable="true"
                     android:paddingVertical="10dp"
@@ -148,7 +113,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:item_title="Status"
-                    app:item_subtitle="Pending"
                     app:show_switch="false"
                     android:clickable="true"
                     android:paddingVertical="10dp"
@@ -163,6 +127,7 @@
                     app:btn_text="View on blockchain.com"
                     app:button_style="rounded"
                     app:text_position="center"
+                    android:id="@+id/viewOnBlockchain"
                     android:layout_marginHorizontal="25dp"
                     android:layout_marginTop="15dp"/>
 
@@ -172,8 +137,10 @@
                     app:btn_text="Share"
                     app:button_style="outlined"
                     app:text_position="center"
+                    android:id="@+id/share"
                     android:layout_marginHorizontal="25dp"
-                    android:layout_marginTop="5dp"/>
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="10dp"/>
 
             </LinearLayout>
     </ScrollView>

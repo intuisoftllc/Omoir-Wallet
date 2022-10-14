@@ -87,6 +87,10 @@ class Constants {
         const val BIP_TYPE_84 = "Bip 84 Wallet (p2wpkh bech32)"
         const val TEST_NET_WALLET = "Test Net"
         const val MAIN_NET_WALLET = "Main Net"
+        const val COPIED_TO_CLIPBOARD = "Copied To Clipboard!"
+        const val TRANSACTION_INPUTS_TITLE = "Transaction Inputs"
+        const val TRANSACTION_OUTPUTS_TITLE = "Transaction Outputs"
+        const val BLOCKCHAIN_COM_TX_URL = "https://www.blockchain.com/btc/tx/"
         const val TEST_WALLET_1 = "yard impulse luxury drive today throw farm pepper survey wreck glass federal"
         const val TEST_WALLET_2 = "wrong cousin spell stadium snake enact author piano venue outer question chair"
     }

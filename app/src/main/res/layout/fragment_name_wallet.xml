@@ -33,7 +33,7 @@
 
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/textContainer"
+        android:id="@+id/feeContainer"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="40dp"
@@ -64,8 +64,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="That wallet name is used by another wallet"
-        app:layout_constraintTop_toBottomOf="@id/textContainer"
-        app:layout_constraintStart_toStartOf="@id/textContainer"
+        app:layout_constraintTop_toBottomOf="@id/feeContainer"
+        app:layout_constraintStart_toStartOf="@id/feeContainer"
         android:layout_marginTop="20dp"
         android:visibility="gone"
         android:textColor="@color/error_color"/>

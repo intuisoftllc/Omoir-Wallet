@@ -1,10 +1,31 @@
 package com.intuisoft.plaid.util
 
+import com.intuisoft.plaid.model.BitcoinDisplayUnit
+import com.intuisoft.plaid.repositories.LocalStoreRepository
 import java.text.DecimalFormat
 
 object SimpleCoinNumberFormat {
 
-    fun format(number: Long) : String {
+    fun format(localStoreRepository: LocalStoreRepository, sats: Long, showFullBalance: Boolean = false) : String {
+        // todo: add usd checking support add showUSDIfEnabled: Boolean as a parmeter
+        when(localStoreRepository.getBitcoinDisplayUnit()) {
+            BitcoinDisplayUnit.BTC -> {
+                return "" + format(sats.toDouble() / Constants.Limit.SATS_PER_BTC.toDouble()) + " BTC"
+            }
+
+            BitcoinDisplayUnit.SATS -> {
+                val postfix = if(sats == 1L) "Sat" else "Sats"
+
+                if(showFullBalance) {
+                    return formatFullBalance(sats) + " " + postfix
+                } else {
+                    return format(sats) + " " + postfix
+                }
+            }
+        }
+    }
+
+    private fun format(number: Long) : String {
         if(number <= 0) return "0"
 
         val df = DecimalFormat("###,###.##")
@@ -16,37 +37,37 @@ object SimpleCoinNumberFormat {
                 return "" + df.format(number.toDouble() / 1000) + " K"
             }
             (10_000..99_999).contains(number) -> {
-                return "" + df.format(number.toDouble() / 10_000) + " K"
+                return "" + df.format(number.toDouble() / 1_000) + " K"
             }
             (100_000..999_999).contains(number) -> {
-                return "" + df.format(number.toDouble() / 100_000) + " K"
+                return "" + df.format(number.toDouble() / 1_000) + " K"
             }
             (1_000_000..9_999_999).contains(number) -> {
                 return "" + df.format(number.toDouble() / 1_000_000) + " Mil"
             }
             (10_000_000..99_999_999).contains(number) -> {
-                return "" + df.format(number.toDouble() / 10_000_000) + " Mil"
+                return "" + df.format(number.toDouble() / 1_000_000) + " Mil"
             }
             (100_000_000..999_999_999).contains(number) -> {
-                return "" + df.format(number.toDouble() / 100_000_000) + " Mil"
+                return "" + df.format(number.toDouble() / 1_000_000) + " Mil"
             }
             (1_000_000_000..9_999_999_999).contains(number) -> {
                 return "" + df.format(number.toDouble() / 1_000_000_000) + " Bil"
             }
             (10_000_000_000..99_999_999_999).contains(number) -> {
-                return "" + df.format(number.toDouble() / 10_000_000_000) + " Bil"
+                return "" + df.format(number.toDouble() / 1_000_000_000) + " Bil"
             }
             (100_000_000_000..999_999_999_999).contains(number) -> {
-                return "" + df.format(number.toDouble() / 100_000_000_000) + " Bil"
+                return "" + df.format(number.toDouble() / 1_000_000_000) + " Bil"
             }
             (1_000_000_000_000..9_999_999_999_999).contains(number) -> {
                 return "" + df.format(number.toDouble() / 1_000_000_000_000) + " Tril"
             }
             (10_000_000_000_000..99_999_999_999_999).contains(number) -> {
-                return "" + df.format(number.toDouble() / 10_000_000_000_000) + " Tril"
+                return "" + df.format(number.toDouble() / 1_000_000_000_000) + " Tril"
             }
             (100_000_000_000_000..999_999_999_999_999).contains(number) -> {
-                return "" + df.format(number.toDouble() / 100_000_000_000_000) + " Tril"
+                return "" + df.format(number.toDouble() / 1_000_000_000_000) + " Tril"
             }
             else -> {
                 return "" + number
@@ -55,7 +76,12 @@ object SimpleCoinNumberFormat {
     }
 
     fun format(value: Double): String? {
-        val df = DecimalFormat("###,###.########")
+        val df = DecimalFormat("###,###,###,###.########")
+        return df.format(value)
+    }
+
+    fun formatBasic(value: Double): String? {
+        val df = DecimalFormat("########.########")
         return df.format(value)
     }
 

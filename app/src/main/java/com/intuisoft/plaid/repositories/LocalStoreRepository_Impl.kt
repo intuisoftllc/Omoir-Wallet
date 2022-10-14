@@ -5,6 +5,7 @@ import com.intuisoft.plaid.local.UserPreferences
 import com.intuisoft.plaid.local.WipeDataListener
 import com.intuisoft.plaid.model.AppTheme
 import com.intuisoft.plaid.model.BitcoinDisplayUnit
+import com.intuisoft.plaid.model.FeeType
 import com.intuisoft.plaid.util.Constants
 import com.intuisoft.plaid.walletmanager.StoredWalletInfo
 import java.io.File
@@ -34,6 +35,14 @@ class LocalStoreRepository_Impl(
 
     override fun resetPinEntries() {
         userPreferences.incorrectPinAttempts = 0
+    }
+
+    override fun getDefaultFeeType(): FeeType {
+        return userPreferences.defaultFeeType
+    }
+
+    override fun setDefaultFeeType(type: FeeType) {
+        userPreferences.defaultFeeType = type
     }
 
     override fun getWalletSyncTime(): Int {

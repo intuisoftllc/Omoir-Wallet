@@ -176,6 +176,13 @@ open class Storage(protected open val store: CoreDatabase) : IStorage {
         val metadata = store.transactionMetadata.getTransactionMetadata(txHashes)
 
         return transactions.map { tx ->
+
+            inputs.forEachIndexed { index, inputWithPreviousOutput ->
+                if(inputWithPreviousOutput.input.address == null || inputWithPreviousOutput.input.address == "") {
+                    val r = 0
+                }
+            }
+
             FullTransactionInfo(
                     tx.block,
                     if (tx.transaction.status == Transaction.Status.INVALID) InvalidTransaction(tx.transaction, tx.transaction.serializedTxInfo, tx.transaction.rawTransaction) else tx.transaction,

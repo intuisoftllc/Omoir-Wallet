@@ -146,7 +146,22 @@ class RoundedButtonView(context: Context, attrs: AttributeSet?) : LinearLayout(c
     }
 
     fun onClick(click: (Button) -> Unit) {
-        button?.setOnClickListener {
+        findViewById<Button>(R.id.normal_button)?.setOnClickListener {
+            click(button!!)
+        }
+        findViewById<Button>(R.id.rounded_style_button)?.setOnClickListener {
+            click(button!!)
+        }
+        findViewById<Button>(R.id.grey_outlined_style_button)?.setOnClickListener {
+            click(button!!)
+        }
+        findViewById<Button>(R.id.rounded_outlined_style_button)?.setOnClickListener {
+            click(button!!)
+        }
+        findViewById<Button>(R.id.rounded_white_style_button)?.setOnClickListener {
+            click(button!!)
+        }
+        findViewById<Button>(R.id.normal_button)?.setOnClickListener {
             click(button!!)
         }
     }

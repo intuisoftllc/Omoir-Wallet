@@ -3,10 +3,13 @@ package com.intuisoft.plaid.androidwrappers
 import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
+import com.intuisoft.plaid.model.BitcoinDisplayUnit
 import com.intuisoft.plaid.model.LocalWalletModel
 import com.intuisoft.plaid.repositories.LocalStoreRepository
+import com.intuisoft.plaid.util.Constants
 import com.intuisoft.plaid.walletmanager.WalletManager
 import io.horizontalsystems.bitcoincore.core.Bip
+import io.horizontalsystems.bitcoincore.managers.SendValueErrors
 import io.horizontalsystems.bitcoincore.models.TransactionInfo
 import io.horizontalsystems.bitcoinkit.BitcoinKit
 import io.horizontalsystems.hdwalletkit.Mnemonic
@@ -18,7 +21,7 @@ import kotlinx.coroutines.withContext
 
 open class WalletViewModel(
     application: Application,
-    localStoreRepository: LocalStoreRepository,
+    private val localStoreRepository: LocalStoreRepository,
     private val walletManager: WalletManager
 ): BaseViewModel(application, localStoreRepository, walletManager) {
 
@@ -46,11 +49,31 @@ open class WalletViewModel(
     protected val _walletNetwork = SingleLiveData<BitcoinKit.NetworkType>()
     val walletNetwork: LiveData<BitcoinKit.NetworkType> = _walletNetwork
 
+    protected val _walletBalance = SingleLiveData<String>()
+    val walletBalance: LiveData<String> = _walletBalance
+
+    protected val _walletDisplayUnit = SingleLiveData<BitcoinDisplayUnit>()
+    val walletDisplayUnit: LiveData<BitcoinDisplayUnit> = _walletDisplayUnit
+
     protected val _walletBip = SingleLiveData<Bip>()
     val walletBip: LiveData<Bip> = _walletBip
 
     protected var localWallet: LocalWalletModel? = null
     private val disposables = CompositeDisposable()
+
+    fun showWalletBalance() {
+        _walletBalance.postValue(localWallet!!.getBalance(localStoreRepository, true))
+    }
+
+    fun calculateFee(sats: Long, feeRate: Int, address: String?) : Long {
+        try {
+            return localWallet!!.walletKit!!.fee(sats, address, true, feeRate)
+        } catch(e: SendValueErrors.InsufficientUnspentOutputs) {
+            return -1
+        } catch(e: Exception) {
+            return 0
+        }
+    }
 
     fun showWalletName() {
         _walletName.postValue(getWalletName())
@@ -58,6 +81,10 @@ open class WalletViewModel(
 
     fun showWalletNetwork() {
         _walletNetwork.postValue(getWalletNetwork())
+    }
+
+    fun showWalletDisplayUnit() {
+        _walletDisplayUnit.postValue(localStoreRepository.getBitcoinDisplayUnit())
     }
 
     fun showWalletBip() {
@@ -90,9 +117,19 @@ open class WalletViewModel(
         localWallet = walletManager.findLocalWallet(uuid)
     }
 
+    fun isAddressValid(address: String): Boolean {
+        return localWallet!!.walletKit!!.isAddressValid(address)
+    }
+
     fun getWalletPassphrase() = walletManager.findStoredWallet(localWallet!!.uuid)!!.passphrase
 
     fun getWalletSeedPhrase() = walletManager.findStoredWallet(localWallet!!.uuid)!!.seedPhrase
+
+    fun getDisplayUnit() = localStoreRepository.getBitcoinDisplayUnit()
+
+    fun setDisplayUnit(displayUnit: BitcoinDisplayUnit) {
+        localStoreRepository.updateBitcoinDisplayUnit(displayUnit)
+    }
 
     fun getMasterPublicKey() : String {
         return localWallet!!.walletKit!!.getWallet().masterPublicKey()
@@ -110,6 +147,8 @@ open class WalletViewModel(
     fun getWalletName() = localWallet!!.name
 
     fun getWalletId() = localWallet!!.uuid
+
+    fun getWalletBalance() = localWallet!!.walletKit!!.balance.spendable
 
     fun getWalletBip(): Bip {
         val bip = walletManager.findStoredWallet(localWallet!!.uuid)!!.bip

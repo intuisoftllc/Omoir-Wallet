@@ -94,8 +94,9 @@ class WalletSettingsFragment : PinProtectedFragment<FragmentWalletSettingsBindin
                     showActionBar = true,
                     configurationType = FragmentConfigurationType.CONFIGURATION_DISPLAY_QR,
                     configData = ConfigQrDisplayData(
-                        payload = viewModel.getRecieveAddress(),
-                        qrTitle = "Your Public Key"
+                        payload = viewModel.getMasterPublicKey(),
+                        qrTitle = "Your Public Key",
+                        showClose = false
                     )
                 ),
                 Constants.Navigation.WALLET_UUID_BUNDLE_ID to viewModel.getWalletId()

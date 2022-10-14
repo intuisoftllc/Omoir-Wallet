@@ -4,6 +4,7 @@ import android.content.SharedPreferences
 import com.google.gson.Gson
 import com.intuisoft.plaid.model.AppTheme
 import com.intuisoft.plaid.model.BitcoinDisplayUnit
+import com.intuisoft.plaid.model.FeeType
 import com.intuisoft.plaid.util.Constants
 import com.intuisoft.plaid.util.Constants.Limit.DEFAULT_MAX_PIN_ATTEMPTS
 import com.intuisoft.plaid.walletmanager.StoredWalletInfo
@@ -26,6 +27,7 @@ class UserPreferences(
         const val VERSION_TAPPED_COUNT_KEY = "VERSION_TAPPED_COUNT_KEY"
         const val LAST_SYNC_TIME_KEY = "LAST_SYNC_TIME_KEY"
         const val WALLET_INFO = "WALLET_INFO"
+        const val DEFAULT_FEE_TYPE = "DEFAULT_FEE_TYPE"
     }
 
     var incorrectPinAttempts: Int
@@ -76,6 +78,15 @@ class UserPreferences(
         }
         set(time) {
             putInt(LAST_SYNC_TIME_KEY, time)
+        }
+
+    var defaultFeeType: FeeType
+        get() {
+            val type = getInt(DEFAULT_FEE_TYPE, FeeType.MED.ordinal)
+            return FeeType.values().find { it.ordinal == type } ?: FeeType.MED
+        }
+        set(type) {
+            putInt(DEFAULT_FEE_TYPE, type.ordinal)
         }
 
     var pinTimeout: Int
