@@ -110,6 +110,12 @@ class Constants {
         const val INSTANT_TIME_OFFSET = ((ONE_MINUTE * 60) * 24) * 10000
     }
 
+    object ActivityResult {
+        const val BARCODE_RESULT = 120
+
+        const val BARCODE_EXTRA = "barcode_result"
+    }
+
     object Limit {
         const val MAX_ONBOARDING_STEPS = 3
         const val MAX_ALIAS_LENGTH = 25

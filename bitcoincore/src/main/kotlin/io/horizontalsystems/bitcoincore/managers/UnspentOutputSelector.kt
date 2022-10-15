@@ -6,12 +6,19 @@ import io.horizontalsystems.bitcoincore.transactions.scripts.ScriptType
 
 class UnspentOutputSelector(private val calculator: TransactionSizeCalculator, private val unspentOutputProvider: IUnspentOutputProvider, private val outputsLimit: Int? = null) : IUnspentOutputSelector {
 
-    override fun select(value: Long, feeRate: Int, outputType: ScriptType, changeType: ScriptType, senderPay: Boolean, dust: Int, pluginDataOutputSize: Int): SelectedUnspentOutputInfo {
+    override fun select(
+        unspentOutputs: List<UnspentOutput>,
+        value: Long,
+        feeRate: Int,
+        outputType: ScriptType,
+        changeType: ScriptType,
+        senderPay: Boolean,
+        dust: Int,
+        pluginDataOutputSize: Int
+    ): SelectedUnspentOutputInfo {
         if (value <= dust) {
             throw SendValueErrors.Dust
         }
-
-        val unspentOutputs = unspentOutputProvider.getSpendableUtxo()
 
         if (unspentOutputs.isEmpty()) {
             throw SendValueErrors.EmptyOutputs
@@ -77,5 +84,14 @@ class UnspentOutputSelector(private val calculator: TransactionSizeCalculator, p
 
         // No change needed
         return SelectedUnspentOutputInfo(selectedOutputs, recipientValue, null)
+    }
+
+    override fun select(value: Long, feeRate: Int, outputType: ScriptType, changeType: ScriptType, senderPay: Boolean, dust: Int, pluginDataOutputSize: Int): SelectedUnspentOutputInfo {
+        if (value <= dust) {
+            throw SendValueErrors.Dust
+        }
+
+        val unspentOutputs = unspentOutputProvider.getSpendableUtxo()
+        return select(unspentOutputs, value, feeRate, outputType, changeType, senderPay, dust, pluginDataOutputSize)
     }
 }

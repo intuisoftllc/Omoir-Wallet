@@ -1,12 +1,10 @@
 package com.intuisoft.plaid.androidwrappers
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.viewbinding.ViewBinding
-import com.intuisoft.plaid.MainActivity
+import com.intuisoft.plaid.activities.MainActivity
 
 abstract class BindingFragment<T: ViewBinding> : Fragment(), FragmentActionBarDelegate {
 

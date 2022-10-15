@@ -4,17 +4,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatDelegate
-import androidx.lifecycle.Observer
-import com.intuisoft.plaid.MainActivity
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.FragmentConfiguration
 import com.intuisoft.plaid.databinding.FragmentAboutUsBinding
-import com.intuisoft.plaid.databinding.FragmentAppearanceBinding
 import com.intuisoft.plaid.features.pin.ui.PinProtectedFragment
 import com.intuisoft.plaid.features.settings.viewmodel.SettingsViewModel
-import com.intuisoft.plaid.model.AppTheme
-import com.intuisoft.plaid.model.BitcoinDisplayUnit
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 

@@ -1,19 +1,24 @@
-package com.intuisoft.plaid
+package com.intuisoft.plaid.activities
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
+import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.ActionBarDelegate
 import com.intuisoft.plaid.androidwrappers.BindingActivity
+import com.intuisoft.plaid.androidwrappers.currentNavigationFragment
 import com.intuisoft.plaid.databinding.ActivityMainBinding
-import com.intuisoft.plaid.walletmanager.WalletManager
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
+import com.intuisoft.plaid.listeners.BarcodeResultListener
+import com.intuisoft.plaid.util.Constants
+
 
 class MainActivity : BindingActivity<ActivityMainBinding>(), ActionBarDelegate {
 
@@ -25,6 +30,17 @@ class MainActivity : BindingActivity<ActivityMainBinding>(), ActionBarDelegate {
         )
 
     }
+    private val barcodeLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+
+            if (result.resultCode == Activity.RESULT_OK) {
+                val bitcoinAddress = result.data?.getStringExtra(Constants.ActivityResult.BARCODE_EXTRA)
+                bitcoinAddress?.let {
+                    val listener = supportFragmentManager.currentNavigationFragment as? BarcodeResultListener
+                    listener?.onAddressReceived(it)
+                }
+            }
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,6 +51,10 @@ class MainActivity : BindingActivity<ActivityMainBinding>(), ActionBarDelegate {
         getSupportActionBar()?.setDisplayHomeAsUpEnabled(true);
         getSupportActionBar()?.setDisplayShowHomeEnabled(true);
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
+    }
+
+    fun scanBarcode() {
+        barcodeLauncher.launch(Intent(this, BarcodeScannerActivity::class.java))
     }
 
     override var isActionBarShowing: Boolean

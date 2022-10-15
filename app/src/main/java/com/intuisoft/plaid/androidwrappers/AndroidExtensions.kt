@@ -5,6 +5,7 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.content.res.Resources
 import android.graphics.PorterDuff
 import android.os.Bundle
@@ -20,14 +21,16 @@ import androidx.activity.OnBackPressedCallback
 import androidx.annotation.DimenRes
 import androidx.annotation.DrawableRes
 import androidx.biometric.BiometricPrompt
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
-import com.intuisoft.plaid.MainActivity
+import com.intuisoft.plaid.activities.MainActivity
 import com.intuisoft.plaid.model.LocalWalletModel
 import com.intuisoft.plaid.util.Constants
 import com.intuisoft.plaid.util.entensions.getColorFromAttr
@@ -56,6 +59,9 @@ fun Fragment.longToast(message: String) =
 
 fun Fragment.shortToast(message: String) =
     Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+
+val FragmentManager.currentNavigationFragment: Fragment?
+    get() = primaryNavigationFragment?.childFragmentManager?.fragments?.first()
 
 // extension function to hide soft keyboard programmatically
 fun Activity.hideSoftKeyboard(){
@@ -215,4 +221,13 @@ fun Activity.shareText(subject: String?, message: String) {
 
     txtIntent.putExtra(Intent.EXTRA_TEXT, message)
     startActivity(Intent.createChooser(txtIntent, "Share"))
+}
+
+fun Activity.checkAppPermission(permission: String, requestCode: Int, onAlreadyGranted: () -> Unit) {
+    if (ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_DENIED) {
+        // Requesting the permission
+        requestPermissions(arrayOf(permission), requestCode)
+    } else {
+        onAlreadyGranted()
+    }
 }

@@ -462,6 +462,9 @@ class BitcoinCore(
         connectionManager.onEnterBackground()
     }
 
+    fun getUnspentOutputs() =
+        dataProvider.getUnspentOutputs()
+
     fun transactions(fromUid: String? = null, type: TransactionFilterType? = null, limit: Int? = null): Single<List<TransactionInfo>> {
         return dataProvider.transactions(fromUid, type, limit)
     }
@@ -470,17 +473,29 @@ class BitcoinCore(
         return transactionFeeCalculator.fee(value, feeRate, senderPay, address, pluginData)
     }
 
-    fun send(address: String, value: Long, senderPay: Boolean = true, feeRate: Int, sortType: TransactionDataSortType, pluginData: Map<Byte, IPluginData>): FullTransaction {
-        return transactionCreator.create(address, value, feeRate, senderPay, sortType, pluginData)
+    fun fee(unspentOutputs: List<UnspentOutput>, value: Long, address: String? = null, senderPay: Boolean = true, feeRate: Int, pluginData: Map<Byte, IPluginData>): Long {
+        return transactionFeeCalculator.fee(unspentOutputs, value, feeRate, senderPay, address, pluginData)
     }
 
-    fun send(hash: ByteArray, scriptType: ScriptType, value: Long, senderPay: Boolean = true, feeRate: Int, sortType: TransactionDataSortType): FullTransaction {
+    fun send(address: String, value: Long, senderPay: Boolean = true, feeRate: Int, sortType: TransactionDataSortType, pluginData: Map<Byte, IPluginData>, createOnly: Boolean): FullTransaction {
+        return transactionCreator.create(address, value, feeRate, senderPay, sortType, pluginData, createOnly)
+    }
+
+    fun send(hash: ByteArray, scriptType: ScriptType, value: Long, senderPay: Boolean = true, feeRate: Int, sortType: TransactionDataSortType, createOnly: Boolean): FullTransaction {
         val address = addressConverter.convert(hash, scriptType)
-        return transactionCreator.create(address.string, value, feeRate, senderPay, sortType, mapOf())
+        return transactionCreator.create(address.string, value, feeRate, senderPay, sortType, mapOf(), createOnly)
     }
 
-    fun redeem(unspentOutput: UnspentOutput, address: String, feeRate: Int, sortType: TransactionDataSortType): FullTransaction {
-        return transactionCreator.create(unspentOutput, address, feeRate, sortType)
+    fun redeem(unspentOutput: UnspentOutput, address: String, feeRate: Int, sortType: TransactionDataSortType, createOnly: Boolean): FullTransaction {
+        return transactionCreator.create(unspentOutput, address, feeRate, sortType, createOnly)
+    }
+
+    fun broadcast(transaction: FullTransaction): FullTransaction {
+        return transactionCreator.broadcast(transaction)
+    }
+
+    fun redeem(unspentOutputs: List<UnspentOutput>, value: Long, address: String, feeRate: Int, sortType: TransactionDataSortType, createOnly: Boolean): FullTransaction {
+        return transactionCreator.create(unspentOutputs, value, address, feeRate, sortType, createOnly)
     }
 
     fun receiveAddress(): String {
@@ -609,6 +624,14 @@ class BitcoinCore(
 
     fun maximumSpendableValue(address: String?, feeRate: Int, pluginData: Map<Byte, IPluginData>): Long {
         return balance.spendable - transactionFeeCalculator.fee(balance.spendable, feeRate, false, address, pluginData)
+    }
+
+    fun maximumSpendableValue(unspentOutputs: List<UnspentOutput>, address: String?, feeRate: Int, pluginData: Map<Byte, IPluginData>): Long {
+        var maxSpend = 0L
+        unspentOutputs.forEach {
+            maxSpend += it.output.value
+        }
+        return maxSpend - transactionFeeCalculator.fee(unspentOutputs, maxSpend, feeRate, false, address, pluginData)
     }
 
     fun minimumSpendableValue(address: String?): Int {

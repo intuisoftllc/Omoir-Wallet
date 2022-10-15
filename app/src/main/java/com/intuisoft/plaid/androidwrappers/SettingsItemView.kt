@@ -1,7 +1,7 @@
 package com.intuisoft.plaid.androidwrappers
 
 import android.content.Context
-import android.graphics.drawable.Drawable
+import android.text.TextUtils
 import android.util.AttributeSet
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -24,6 +24,8 @@ class SettingsItemView(context: Context, attrs: AttributeSet?) : LinearLayout(co
     private var showCheck: Boolean = false
     private var showChevron: Boolean = false
     private var showCopy: Boolean = false
+    private var ellipsizeSubtitle: Boolean = false
+    private var subtitleMaxLines: Int = 0
     private var subtitleIcon: Int = 0
     private var titleColor: Int = 0
 
@@ -41,6 +43,8 @@ class SettingsItemView(context: Context, attrs: AttributeSet?) : LinearLayout(co
             showCheck = getBoolean(R.styleable.SettingsItemView_show_check, false)
             showChevron = getBoolean(R.styleable.SettingsItemView_show_chevron, false)
             showCopy = getBoolean(R.styleable.SettingsItemView_show_copy, false)
+            ellipsizeSubtitle = getBoolean(R.styleable.SettingsItemView_elipsize_subtitle, false)
+            subtitleMaxLines = getInteger(R.styleable.SettingsItemView_max_lines_subtitle, -1)
             titleColor = getColor(R.styleable.SettingsItemView_title_text_color, 0)
             subtitleIcon = getResourceId(R.styleable.SettingsItemView_subtitle_icon, 0)
 
@@ -93,6 +97,8 @@ class SettingsItemView(context: Context, attrs: AttributeSet?) : LinearLayout(co
         }
     }
 
+    fun isChecked() = check?.isVisible ?: false
+
     fun disableView(disable: Boolean) {
         switch?.isClickable = !disable
         copy?.isClickable = !disable
@@ -124,7 +130,21 @@ class SettingsItemView(context: Context, attrs: AttributeSet?) : LinearLayout(co
         }
     }
 
+    fun elipsizeSubtitle(elipsize: Boolean) {
+        if(elipsize) {
+            subtitleTv?.ellipsize = TextUtils.TruncateAt.END
+        }
+    }
+
+    fun subtitleMaxLines(maxLines: Int) {
+        if(maxLines != -1) {
+            subtitleTv?.maxLines = maxLines
+        }
+    }
+
     private fun setupView() {
+        subtitleMaxLines(subtitleMaxLines)
+        elipsizeSubtitle(ellipsizeSubtitle)
         setTitleText(title)
         setSubTitleText(subTitle)
         showSwitch(showSwitch)

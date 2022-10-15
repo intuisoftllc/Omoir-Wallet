@@ -47,6 +47,8 @@
         <attr name="title_text_color" format="color"/>
         <attr name="item_title" format="string"/>
         <attr name="item_subtitle" format="string"/>
+        <attr name="elipsize_subtitle" format="boolean"/>
+        <attr name="max_lines_subtitle" format="integer"/>
         <attr name="subtitle_icon" format="reference"/>
         <attr name="show_switch" format="boolean"/>
         <attr name="show_copy" format="boolean"/>

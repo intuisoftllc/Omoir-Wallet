@@ -7,10 +7,12 @@ import com.intuisoft.plaid.model.BitcoinDisplayUnit
 import com.intuisoft.plaid.model.LocalWalletModel
 import com.intuisoft.plaid.repositories.LocalStoreRepository
 import com.intuisoft.plaid.util.Constants
+import com.intuisoft.plaid.util.SimpleCoinNumberFormat
 import com.intuisoft.plaid.walletmanager.WalletManager
 import io.horizontalsystems.bitcoincore.core.Bip
 import io.horizontalsystems.bitcoincore.managers.SendValueErrors
 import io.horizontalsystems.bitcoincore.models.TransactionInfo
+import io.horizontalsystems.bitcoincore.storage.UnspentOutput
 import io.horizontalsystems.bitcoinkit.BitcoinKit
 import io.horizontalsystems.hdwalletkit.Mnemonic
 import io.reactivex.disposables.CompositeDisposable
@@ -62,14 +64,68 @@ open class WalletViewModel(
     private val disposables = CompositeDisposable()
 
     fun showWalletBalance() {
-        _walletBalance.postValue(localWallet!!.getBalance(localStoreRepository, true))
+        _walletBalance.postValue(SimpleCoinNumberFormat.format(localStoreRepository, getWalletBalance(), true))
     }
 
-    fun calculateFee(sats: Long, feeRate: Int, address: String?) : Long {
+    fun calculateFee(sats: Long, feeRate: Int, address: String?, retry: Boolean = true) : Long {
         try {
             return localWallet!!.walletKit!!.fee(sats, address, true, feeRate)
+        } catch(e: SendValueErrors.Dust) {
+            return -2
         } catch(e: SendValueErrors.InsufficientUnspentOutputs) {
-            return -1
+            if(retry) {
+                var max : Long
+                try {
+                    max = localWallet!!.walletKit!!.maximumSpendableValue(
+                        address,
+                        feeRate
+                    )
+
+                    return calculateFee(
+                        max,
+                        feeRate,
+                        address,
+                        false
+                    )
+                } catch (e: Exception) {
+                    return -1
+                }
+            } else {
+                return -1
+            }
+        } catch(e: Exception) {
+            return 0
+        }
+    }
+
+    fun calculateFee(unspentOutputs: List<UnspentOutput>, sats: Long, feeRate: Int, address: String?, retry: Boolean = true) : Long {
+        try {
+            return localWallet!!.walletKit!!.fee(unspentOutputs, sats, address, true, feeRate)
+        } catch(e: SendValueErrors.Dust) {
+            return -2
+        } catch(e: SendValueErrors.InsufficientUnspentOutputs) {
+            if(retry) {
+                var max : Long
+                try {
+                    max = localWallet!!.walletKit!!.maximumSpendableValue(
+                        unspentOutputs,
+                        address,
+                        feeRate
+                    )
+
+                    return calculateFee(
+                        unspentOutputs,
+                        max,
+                        feeRate,
+                        address,
+                        false
+                    )
+                } catch (e: Exception) {
+                    return -1
+                }
+            } else {
+                return -1
+            }
         } catch(e: Exception) {
             return 0
         }
@@ -148,7 +204,7 @@ open class WalletViewModel(
 
     fun getWalletId() = localWallet!!.uuid
 
-    fun getWalletBalance() = localWallet!!.walletKit!!.balance.spendable
+    open fun getWalletBalance() = localWallet!!.walletKit!!.balance.spendable
 
     fun getWalletBip(): Bip {
         val bip = walletManager.findStoredWallet(localWallet!!.uuid)!!.bip

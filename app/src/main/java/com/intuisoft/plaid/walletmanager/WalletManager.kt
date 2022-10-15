@@ -13,7 +13,6 @@ import com.intuisoft.plaid.util.Constants
 import io.horizontalsystems.bitcoincore.BitcoinCore
 import io.horizontalsystems.bitcoincore.core.Bip
 import io.horizontalsystems.bitcoincore.models.BalanceInfo
-import io.horizontalsystems.bitcoincore.models.TransactionDataSortType
 import io.horizontalsystems.bitcoincore.models.TransactionInfo
 import io.horizontalsystems.bitcoinkit.BitcoinKit
 import kotlinx.coroutines.CoroutineScope
@@ -74,6 +73,10 @@ class WalletManager(
             localWallet.name = newName
             localStoreRepository.setStoredWalletInfo(localStoreRepository.getStoredWalletInfo())
         }
+    }
+
+    fun validAddress(address: String) : Boolean {
+        return _wallets.first().walletKit!!.isAddressValid(address)
     }
 
     suspend fun deleteWallet(localWallet: LocalWalletModel, onDeleteFinished: suspend () -> Unit) {

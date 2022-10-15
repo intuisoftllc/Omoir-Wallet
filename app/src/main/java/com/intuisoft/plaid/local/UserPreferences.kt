@@ -49,7 +49,7 @@ class UserPreferences(
     var bitcoinDisplayUnit: BitcoinDisplayUnit
         get() {
             val unit = getInt(BITCOIN_UNIT_KEY, BitcoinDisplayUnit.BTC.typeId)
-            return BitcoinDisplayUnit.values().find { it.typeId == unit } ?: BitcoinDisplayUnit.BTC
+            return BitcoinDisplayUnit.values().find { it.typeId == unit } ?: BitcoinDisplayUnit.SATS
         }
         set(unit) {
             putInt(BITCOIN_UNIT_KEY, unit.typeId)

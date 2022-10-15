@@ -11,6 +11,9 @@ import com.intuisoft.plaid.repositories.LocalStoreRepository
 import com.intuisoft.plaid.util.Constants
 import com.intuisoft.plaid.util.RateConverter
 import com.intuisoft.plaid.walletmanager.WalletManager
+import io.horizontalsystems.bitcoincore.models.TransactionDataSortType
+import io.horizontalsystems.bitcoincore.storage.FullTransaction
+import io.horizontalsystems.bitcoincore.storage.UnspentOutput
 
 
 class WithdrawalViewModel(
@@ -22,8 +25,8 @@ class WithdrawalViewModel(
     protected val _onLocalSpendAmountUpdated = SingleLiveData<Long>()
     val onLocalAmountUpdated: LiveData<Long> = _onLocalSpendAmountUpdated
 
-    protected val _onNextStep = SingleLiveData<Unit>()
-    val onNextStep: LiveData<Unit> = _onNextStep
+    protected val _onConfirm = SingleLiveData<Unit>()
+    val onConfirm: LiveData<Unit> = _onConfirm
 
     protected val _onInvalidAddress = SingleLiveData<Unit>()
     val onInvalidAddress: LiveData<Unit> = _onInvalidAddress
@@ -34,11 +37,24 @@ class WithdrawalViewModel(
     protected val _onSpendFullBalance = SingleLiveData<Unit>()
     val onSpendFullBalance: LiveData<Unit> = _onSpendFullBalance
 
+    protected val _onNotEnoughFunds = SingleLiveData<Unit>()
+    val onNotEnoughFunds: LiveData<Unit> = _onNotEnoughFunds
+
+    protected val _somethingWentWrong = SingleLiveData<Unit>()
+    val somethingWentWrong: LiveData<Unit> = _somethingWentWrong
+
+    protected val _onTransactionCreationFailed = SingleLiveData<Unit>()
+    val onTransactionCreationFailed: LiveData<Unit> = _onTransactionCreationFailed
+
+    protected val _onTransactionSent = SingleLiveData<Unit>()
+    val onTransactionSent: LiveData<Unit> = _onTransactionSent
+
     private var localRate: RateConverter = RateConverter(19000.0)
     private var feeRate: Int = 0
     private var address: String? = null
     private var amountCurrencySwap: Boolean = false
     private var networkFeeRate: NetworkFeeRate = NetworkFeeRate(1, 2, 6)
+    private var selectedUTXOs: MutableList<UnspentOutput> = mutableListOf()
 
     fun swapCurrencyAndAmount() = amountCurrencySwap
 
@@ -48,8 +64,32 @@ class WithdrawalViewModel(
 
     fun getLocalRate() = localRate
 
+    fun getSelectedUTXOs() = selectedUTXOs
+
+    fun getLocalAddress() = address
+
+    fun updateUTXOs(utxos: MutableList<UnspentOutput>) {
+        selectedUTXOs = utxos
+        showWalletBalance()
+    }
+
     fun setLocalAddress(addr: String) {
         address = addr
+    }
+
+    fun getTotalFee(retry: Boolean = true): Long {
+        if(selectedUTXOs.isNotEmpty()) {
+            return calculateFee(selectedUTXOs, localRate.getRawRate(), feeRate, address, retry)
+        } else {
+            return calculateFee(localRate.getRawRate(), feeRate, address, retry)
+        }
+    }
+
+    fun getUnspentOutputs() = localWallet!!.walletKit!!.getUnspentOutputs()
+
+    fun broadcast(fullTransaction: FullTransaction) {
+        localWallet!!.walletKit!!.broadcast(fullTransaction)
+        _onTransactionSent.postValue(Unit)
     }
 
     fun setInitialFeeRate() {
@@ -59,6 +99,20 @@ class WithdrawalViewModel(
             feeRate = networkFeeRate.medFee
         } else {
             feeRate = networkFeeRate.highFee
+        }
+    }
+
+
+    override fun getWalletBalance() : Long {
+        if(selectedUTXOs.isEmpty())
+            return localWallet!!.walletKit!!.balance.spendable
+        else {
+            var balance = 0L
+            selectedUTXOs.forEach {
+                balance += it.output.value
+            }
+
+            return balance
         }
     }
 
@@ -72,19 +126,56 @@ class WithdrawalViewModel(
             return
         }
          else {
-             val feeResult = calculateFee(localRate.getRawRate(), feeRate, address)
+             val feeResult = getTotalFee()
 
-            if(feeResult == 0L) {
+            if(feeResult == -2L) {
                 _onLowPaymetAmount.postValue(Unit)
                 return
             }
             else if(feeResult == -1L) {
-                _onSpendFullBalance.postValue(Unit)
+                _onNotEnoughFunds.postValue(Unit)
+                return
+            }
+            else if(feeResult == 0L) {
+                _somethingWentWrong.postValue(Unit)
                 return
             }
         }
 
-        _onNextStep.postValue(Unit)
+        val feeResult = getTotalFee(false)
+        if(feeResult == -1L) {
+            _onSpendFullBalance.postValue(Unit)
+        } else {
+            _onConfirm.postValue(Unit)
+        }
+    }
+
+    fun createTransaction() : FullTransaction? {
+        try {
+            if(selectedUTXOs.isNotEmpty()) {
+                return localWallet!!.walletKit!!.redeem(
+                    unspentOutputs = selectedUTXOs,
+                    value = localRate.getRawRate(),
+                    address = address!!,
+                    feeRate = feeRate,
+                    sortType = TransactionDataSortType.Shuffle,
+                    createOnly = true
+                )
+            } else {
+                return localWallet!!.walletKit!!.send(
+                    address = address!!,
+                    value = localRate.getRawRate(),
+                    senderPay = true,
+                    feeRate = feeRate,
+                    sortType = TransactionDataSortType.Shuffle,
+                    pluginData = mapOf(),
+                    createOnly = true
+                )
+            }
+        } catch(e: Exception) {
+            _onTransactionCreationFailed.postValue(Unit)
+            return null
+        }
     }
 
     fun setLocalSpendAmount(amount: Double, type: RateConverter.RateType) {
@@ -92,8 +183,18 @@ class WithdrawalViewModel(
         _onLocalSpendAmountUpdated.postValue(localRate.getRawRate())
     }
 
+    fun adjustLocalSpendToFitFee() {
+        if(selectedUTXOs.isNotEmpty()) {
+            localRate.setLocalRate(RateConverter.RateType.SATOSHI_RATE, localWallet!!.walletKit!!.maximumSpendableValue(selectedUTXOs, address, feeRate).toDouble())
+        } else {
+            localRate.setLocalRate(RateConverter.RateType.SATOSHI_RATE, localWallet!!.walletKit!!.maximumSpendableValue(address, feeRate).toDouble())
+        }
+    }
+
     fun setFeeRate(rate: Int) {
-        feeRate = rate
+        if(rate <= 0) {
+            feeRate = 1
+        } else feeRate = rate
         _onLocalSpendAmountUpdated.postValue(localRate.getRawRate())
     }
 

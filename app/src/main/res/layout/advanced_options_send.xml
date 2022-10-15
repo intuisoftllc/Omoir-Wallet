@@ -102,14 +102,13 @@
     <com.intuisoft.plaid.androidwrappers.SettingsItemView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:item_subtitle="Coin Control"
+        app:item_title="Coin Control"
         android:id="@+id/coinControlOption"
         app:show_chevron="true"
         android:layout_marginTop="30dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/feeContainer"
-        app:title_text_color="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         android:layout_marginBottom="20dp"
         app:show_switch="false"/>

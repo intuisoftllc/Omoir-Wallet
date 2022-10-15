@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="10dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+    <TextView
+        android:id="@+id/advancedOptionsTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/H4.Bold"
+        android:text="Confirm Transaction"
+        app:layout_constraintHorizontal_bias=".1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="40dp"
+        android:textColor="@color/black"/>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:orientation="vertical"
+        android:layout_marginTop="20dp"
+        android:id="@+id/feeTypeContainer"
+        app:layout_constraintTop_toBottomOf="@+id/advancedOptionsTitle">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Note, this will spend your full balance!"
+            android:layout_gravity="center"
+            android:gravity="center"
+            style="@style/H7"
+            android:visibility="gone"
+            android:id="@+id/fullBalaceNotice"
+            android:textColor="@color/soft_error_color"/>
+
+        <com.intuisoft.plaid.androidwrappers.SettingsItemView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:item_title="Raw Transaction"
+            app:item_subtitle="0100000000010153159b2a077d8dfbe4dca4b6b3a9e0ccedb4962ca732e0ccedb4962ca732e0ccedb4962ca732"
+            android:id="@+id/rawTransaction"
+            app:show_copy="true"
+            app:elipsize_subtitle="true"
+            app:max_lines_subtitle="2"
+            android:layout_marginVertical="5dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/feeContainer"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:show_switch="false"/>
+
+        <com.intuisoft.plaid.androidwrappers.SettingsItemView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:item_title="Sending To"
+            app:item_subtitle="346vcZZ6QV4nr68fybMEuA7qxxQeyKWoPS"
+            android:id="@+id/sendingTo"
+            android:layout_marginVertical="5dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/feeContainer"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:show_switch="false"/>
+
+        <com.intuisoft.plaid.androidwrappers.SettingsItemView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:item_title="Amount"
+            app:item_subtitle="0.000557 BTC (adjusted to fit fee)"
+            android:id="@+id/txAmount"
+            android:layout_marginVertical="5dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/feeContainer"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:show_switch="false"/>
+
+        <com.intuisoft.plaid.androidwrappers.SettingsItemView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:item_title="Fee"
+            app:item_subtitle="0.00000557 BTC"
+            android:id="@+id/feeAmount"
+            android:layout_marginVertical="5dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/feeContainer"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:show_switch="false"/>
+
+        <com.intuisoft.plaid.androidwrappers.SettingsItemView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:item_title="Fee Rate"
+            app:item_subtitle="3 sat/vB"
+            android:id="@+id/feeRate"
+            android:layout_marginVertical="5dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/feeContainer"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:show_switch="false"/>
+
+        <com.intuisoft.plaid.androidwrappers.RoundedButtonView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/broadcastTransaction"
+            app:btn_text="Send"
+            app:text_position="center"
+            app:button_style="rounded"
+            android:layout_marginTop="20dp"
+            android:layout_marginHorizontal="35dp"
+            app:layout_constraintTop_toBottomOf="@+id/description_2"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <com.intuisoft.plaid.androidwrappers.RoundedButtonView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/cancel"
+            app:btn_text="Cancel"
+            app:text_position="center"
+            app:button_style="outlined"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="20dp"
+            android:layout_marginHorizontal="35dp"
+            app:layout_constraintTop_toBottomOf="@+id/description_2"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
