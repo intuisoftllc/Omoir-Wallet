@@ -1,5 +1,6 @@
 package io.horizontalsystems.bitcoincore.transactions
 
+import android.util.Log
 import io.horizontalsystems.bitcoincore.core.IPluginData
 import io.horizontalsystems.bitcoincore.managers.BloomFilterManager
 import io.horizontalsystems.bitcoincore.models.TransactionDataSortType
@@ -34,7 +35,7 @@ class TransactionCreator(
     }
 
     @Throws
-    fun create(unspentOutputs: List<UnspentOutput>, value: Long, toAddress: String, feeRate: Int, sortType: TransactionDataSortType, createOnly: Boolean): FullTransaction {
+    fun create(unspentOutputs: List<String>, value: Long, toAddress: String, feeRate: Int, sortType: TransactionDataSortType, createOnly: Boolean): FullTransaction {
         if(createOnly)
             return builder.buildTransaction(unspentOutputs, value, toAddress, feeRate, sortType)
 

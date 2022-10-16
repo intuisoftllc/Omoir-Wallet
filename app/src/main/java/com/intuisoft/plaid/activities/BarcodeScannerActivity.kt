@@ -74,11 +74,14 @@ class BarcodeScannerActivity : BindingActivity<ActivityScanBarcodeBinding>(), Ko
 
             override fun receiveDetections(detections: Detector.Detections<Barcode?>) {
                 val barcodes: SparseArray<Barcode?> = detections.getDetectedItems()
-                val address = barcodes.valueAt(0)?.rawValue
 
-                if (barcodes.size() != 0 && walletManager.validAddress(address ?: "")) {
-                    closeActivity(address!!)
-                }
+                try {
+                    val address = barcodes.valueAt(0)?.rawValue
+
+                    if (barcodes.size() != 0 && walletManager.validAddress(address ?: "")) {
+                        closeActivity(address!!)
+                    }
+                } catch (e: Exception) {}
             }
         })
 

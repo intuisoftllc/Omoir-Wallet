@@ -108,6 +108,9 @@ abstract class AbstractKit {
         return bitcoinCore.parsePaymentAddress(paymentAddress)
     }
 
+    fun isNetworkFullySynced() =
+        bitcoinCore.isNetworkFullySynced()
+
     fun showDebugInfo() {
         bitcoinCore.showDebugInfo()
     }

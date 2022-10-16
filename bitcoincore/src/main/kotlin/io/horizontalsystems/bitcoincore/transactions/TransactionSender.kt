@@ -1,5 +1,6 @@
 package io.horizontalsystems.bitcoincore.transactions
 
+import android.util.Log
 import io.horizontalsystems.bitcoincore.blocks.InitialBlockDownload
 import io.horizontalsystems.bitcoincore.core.IStorage
 import io.horizontalsystems.bitcoincore.models.SentTransaction
@@ -21,6 +22,7 @@ class TransactionSender(
         private val retriesPeriod: Int = 60)
     : IPeerTaskHandler, TransactionSendTimer.Listener {
 
+    @Synchronized
     fun sendPendingTransactions() {
         try {
             val transactions = transactionSyncer.getNewTransactions()

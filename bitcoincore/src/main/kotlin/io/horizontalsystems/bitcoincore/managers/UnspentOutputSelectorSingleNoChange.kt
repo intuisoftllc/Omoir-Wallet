@@ -12,10 +12,31 @@ class UnspentOutputSelectorSingleNoChange(private val calculator: TransactionSiz
         }
 
         val unspentOutputs = unspentOutputProvider.getSpendableUtxo()
-        return select(unspentOutputs, value, feeRate, outputType, changeType, senderPay, dust, pluginDataOutputSize)
+        return selectOutputs(unspentOutputs, value, feeRate, outputType, changeType, senderPay, dust, pluginDataOutputSize)
     }
 
     override fun select(
+        unspentOutputAddresses: List<String>,
+        value: Long,
+        feeRate: Int,
+        outputType: ScriptType,
+        changeType: ScriptType,
+        senderPay: Boolean,
+        dust: Int,
+        pluginDataOutputSize: Int
+    ): SelectedUnspentOutputInfo {
+        if (value <= dust) {
+            throw SendValueErrors.Dust
+        }
+
+
+        val spendableUTXOs = unspentOutputProvider.getSpendableUtxo()
+        val unspentOutputs = unspentOutputAddresses.map { spendableUTXOs.find { utxo -> utxo.output.address == it }!! }
+
+        return selectOutputs(unspentOutputs, value, feeRate, outputType, changeType, senderPay, dust, pluginDataOutputSize)
+    }
+
+    private fun selectOutputs(
         unspentOutputs: List<UnspentOutput>,
         value: Long,
         feeRate: Int,

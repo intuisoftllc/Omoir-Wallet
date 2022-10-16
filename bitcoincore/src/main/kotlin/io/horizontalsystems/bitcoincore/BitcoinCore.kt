@@ -4,17 +4,13 @@ import android.content.Context
 import io.horizontalsystems.bitcoincore.blocks.*
 import io.horizontalsystems.bitcoincore.blocks.validators.IBlockValidator
 import io.horizontalsystems.bitcoincore.core.*
-import io.horizontalsystems.bitcoincore.extensions.hexToByteArray
 import io.horizontalsystems.bitcoincore.extensions.toHexString
-import io.horizontalsystems.bitcoincore.extensions.toReversedHex
-import io.horizontalsystems.bitcoincore.io.BitcoinInputMarkable
 import io.horizontalsystems.bitcoincore.managers.*
 import io.horizontalsystems.bitcoincore.models.*
 import io.horizontalsystems.bitcoincore.network.Network
 import io.horizontalsystems.bitcoincore.network.messages.*
 import io.horizontalsystems.bitcoincore.network.peer.*
 import io.horizontalsystems.bitcoincore.serializers.BlockHeaderParser
-import io.horizontalsystems.bitcoincore.serializers.TransactionSerializer
 import io.horizontalsystems.bitcoincore.storage.FullTransaction
 import io.horizontalsystems.bitcoincore.storage.UnspentOutput
 import io.horizontalsystems.bitcoincore.transactions.*
@@ -393,6 +389,8 @@ class BitcoinCore(
         return this
     }
 
+    fun isNetworkFullySynced() = peerGroup.isNetworkFullySynced()
+
     fun addMessageSerializer(messageSerializer: IMessageSerializer): BitcoinCore {
         networkMessageSerializer.add(messageSerializer)
         return this
@@ -474,7 +472,7 @@ class BitcoinCore(
     }
 
     fun fee(unspentOutputs: List<UnspentOutput>, value: Long, address: String? = null, senderPay: Boolean = true, feeRate: Int, pluginData: Map<Byte, IPluginData>): Long {
-        return transactionFeeCalculator.fee(unspentOutputs, value, feeRate, senderPay, address, pluginData)
+        return transactionFeeCalculator.fee(unspentOutputs.map { it.output.address!! }, value, feeRate, senderPay, address, pluginData)
     }
 
     fun send(address: String, value: Long, senderPay: Boolean = true, feeRate: Int, sortType: TransactionDataSortType, pluginData: Map<Byte, IPluginData>, createOnly: Boolean): FullTransaction {
@@ -495,7 +493,7 @@ class BitcoinCore(
     }
 
     fun redeem(unspentOutputs: List<UnspentOutput>, value: Long, address: String, feeRate: Int, sortType: TransactionDataSortType, createOnly: Boolean): FullTransaction {
-        return transactionCreator.create(unspentOutputs, value, address, feeRate, sortType, createOnly)
+        return transactionCreator.create(unspentOutputs.map { it.output.address!! }, value, address, feeRate, sortType, createOnly)
     }
 
     fun receiveAddress(): String {
@@ -631,7 +629,8 @@ class BitcoinCore(
         unspentOutputs.forEach {
             maxSpend += it.output.value
         }
-        return maxSpend - transactionFeeCalculator.fee(unspentOutputs, maxSpend, feeRate, false, address, pluginData)
+
+        return maxSpend - transactionFeeCalculator.fee(unspentOutputs.map { it.output.address!! }, maxSpend, feeRate, false, address, pluginData)
     }
 
     fun minimumSpendableValue(address: String?): Int {

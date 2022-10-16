@@ -2,6 +2,7 @@ package com.intuisoft.plaid.activities
 
 import android.app.Activity
 import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -16,13 +17,18 @@ import com.intuisoft.plaid.androidwrappers.ActionBarDelegate
 import com.intuisoft.plaid.androidwrappers.BindingActivity
 import com.intuisoft.plaid.androidwrappers.currentNavigationFragment
 import com.intuisoft.plaid.databinding.ActivityMainBinding
+import com.intuisoft.plaid.features.splash.ui.SplashFragment
 import com.intuisoft.plaid.listeners.BarcodeResultListener
+import com.intuisoft.plaid.listeners.NetworkStateChangeListener
+import com.intuisoft.plaid.recievers.NetworkChangeReceiver
 import com.intuisoft.plaid.util.Constants
 
 
 class MainActivity : BindingActivity<ActivityMainBinding>(), ActionBarDelegate {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
+    lateinit var receiver: NetworkChangeReceiver
+    lateinit var intentFilter: IntentFilter
 
     companion object {
         private val TOP_LEVEL_DESTINATIONS = setOf(
@@ -30,6 +36,7 @@ class MainActivity : BindingActivity<ActivityMainBinding>(), ActionBarDelegate {
         )
 
     }
+
     private val barcodeLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
 
@@ -51,6 +58,26 @@ class MainActivity : BindingActivity<ActivityMainBinding>(), ActionBarDelegate {
         getSupportActionBar()?.setDisplayHomeAsUpEnabled(true);
         getSupportActionBar()?.setDisplayShowHomeEnabled(true);
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
+
+        receiver = NetworkChangeReceiver() {
+            val listener = supportFragmentManager.currentNavigationFragment as? NetworkStateChangeListener
+
+            if(supportFragmentManager.currentNavigationFragment !is SplashFragment) {
+                listener?.onStateChanged(it)
+            }
+        }
+
+        intentFilter = IntentFilter("android.net.conn.CONNECTIVITY_CHANGE")
+    }
+
+    override fun onResume() {
+        super.onResume()
+        registerReceiver(receiver, intentFilter);
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        unregisterReceiver(receiver)
     }
 
     fun scanBarcode() {

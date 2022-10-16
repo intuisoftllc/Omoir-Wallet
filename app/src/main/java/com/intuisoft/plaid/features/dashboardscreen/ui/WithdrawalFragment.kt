@@ -1,7 +1,6 @@
 package com.intuisoft.plaid.features.dashboardscreen.ui
 
 import android.Manifest
-import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -14,17 +13,16 @@ import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.view.isVisible
-import androidx.fragment.app.setFragmentResultListener
 import androidx.lifecycle.Observer
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.docformative.docformative.toArrayList
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetBehavior.BottomSheetCallback
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_EXPANDED
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.intuisoft.plaid.R
-import com.intuisoft.plaid.activities.BarcodeScannerActivity
 import com.intuisoft.plaid.activities.MainActivity
 import com.intuisoft.plaid.androidwrappers.*
 import com.intuisoft.plaid.databinding.FragmentWithdrawBinding
@@ -36,21 +34,15 @@ import com.intuisoft.plaid.listeners.BarcodeResultListener
 import com.intuisoft.plaid.model.BitcoinDisplayUnit
 import com.intuisoft.plaid.model.FeeType
 import com.intuisoft.plaid.repositories.LocalStoreRepository
-import com.intuisoft.plaid.util.Constants
-import com.intuisoft.plaid.util.Plural
-import com.intuisoft.plaid.util.RateConverter
-import com.intuisoft.plaid.util.SimpleCoinNumberFormat
+import com.intuisoft.plaid.util.*
 import io.horizontalsystems.bitcoincore.extensions.toHexString
-import io.horizontalsystems.bitcoincore.extensions.toReversedHex
 import io.horizontalsystems.bitcoincore.serializers.TransactionSerializer
-import io.horizontalsystems.bitcoincore.storage.FullTransaction
 import kotlinx.android.synthetic.main.advanced_options_send.*
 import kotlinx.android.synthetic.main.passcode_view.view.*
 import kotlinx.android.synthetic.main.settings_item.view.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
-import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
@@ -226,6 +218,10 @@ class WithdrawalFragment : PinProtectedFragment<FragmentWithdrawBinding>(), Barc
             styledSnackBar(requireView(), "Invalid Address", true)
         })
 
+        viewModel.notEnoughPeers.observe(viewLifecycleOwner, Observer {
+            Toast.makeText(requireContext(), "Reconnecting to bitcoin core, please wait...", Toast.LENGTH_LONG).show()
+        })
+
         viewModel.onSpendFullBalance.observe(viewLifecycleOwner, Observer {
             showConfirmTransactionDialog(true)
         })
@@ -257,6 +253,7 @@ class WithdrawalFragment : PinProtectedFragment<FragmentWithdrawBinding>(), Barc
             val bottomSheetDialog = BottomSheetDialog(requireContext())
             bottomSheetDialog.setContentView(R.layout.confirm_transaction)
             val rawTransaction = bottomSheetDialog.findViewById<SettingsItemView>(R.id.rawTransaction)!!
+            val txId = bottomSheetDialog.findViewById<SettingsItemView>(R.id.transactionId)!!
             val to = bottomSheetDialog.findViewById<SettingsItemView>(R.id.sendingTo)!!
             val amount = bottomSheetDialog.findViewById<SettingsItemView>(R.id.txAmount)!!
             val feeAmount = bottomSheetDialog.findViewById<SettingsItemView>(R.id.feeAmount)!!
@@ -266,8 +263,9 @@ class WithdrawalFragment : PinProtectedFragment<FragmentWithdrawBinding>(), Barc
             val broadcastTransaction = bottomSheetDialog.findViewById<RoundedButtonView>(R.id.broadcastTransaction)!!
             fullBalaceNotice.isVisible = fullSpend
 
-            val rawTx = TransactionSerializer.serialize(transaction, withWitness = false).toHexString()
+            val rawTx = TransactionSerializer.serialize(transaction).toHexString()
             rawTransaction.setSubTitleText(rawTx)
+            txId.setSubTitleText(transaction.header.hash.toHexString())
             to.setSubTitleText(viewModel.getLocalAddress() ?: "")
 
             var amountValue = SimpleCoinNumberFormat.format(localStoreRepository, viewModel.getLocalRate().getRawRate(), true)
@@ -277,7 +275,7 @@ class WithdrawalFragment : PinProtectedFragment<FragmentWithdrawBinding>(), Barc
 
             amount.setSubTitleText(amountValue)
             feeAmount.setSubTitleText(SimpleCoinNumberFormat.format(localStoreRepository, viewModel.getTotalFee(), true))
-            satPerByte.setSubTitleText("${Plural.of("sat", viewModel.getFeeRate().toLong())}/byte")
+            satPerByte.setSubTitleText("${Plural.of("sat", viewModel.getFeeRate().toLong())}/vbyte")
 
             rawTransaction.onClick {
                 requireContext().copyToClipboard(rawTx, "Raw Transaction")
@@ -296,11 +294,12 @@ class WithdrawalFragment : PinProtectedFragment<FragmentWithdrawBinding>(), Barc
             }
 
             broadcastTransaction.onClick {
-                bottomSheetDialog.dismiss()
-                viewModel.broadcast(transaction)
+                if(viewModel.broadcast(requireContext(), transaction)) {
+                    bottomSheetDialog.dismiss()
+                }
             }
 
-            bottomSheetDialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
+            bottomSheetDialog.behavior.state = STATE_EXPANDED
             bottomSheetDialog.show()
         }
     }

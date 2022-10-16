@@ -91,6 +91,7 @@
             android:background="@android:color/transparent"
             android:hint="Fee sat/byte"
             android:inputType="text"
+            android:maxLength="9"
             android:maxLines="1"
             android:lineHeight="18dp"
             android:digits="1234567890"

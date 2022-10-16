@@ -5,7 +5,7 @@ import io.horizontalsystems.bitcoincore.transactions.scripts.ScriptType
 
 interface IUnspentOutputSelector {
     fun select(value: Long, feeRate: Int, outputType: ScriptType = ScriptType.P2PKH, changeType: ScriptType = ScriptType.P2PKH, senderPay: Boolean, dust: Int, pluginDataOutputSize: Int): SelectedUnspentOutputInfo
-    fun select(unspentOutputs: List<UnspentOutput>, value: Long, feeRate: Int, outputType: ScriptType = ScriptType.P2PKH, changeType: ScriptType = ScriptType.P2PKH, senderPay: Boolean, dust: Int, pluginDataOutputSize: Int): SelectedUnspentOutputInfo
+    fun select(unspentOutputs: List<String>, value: Long, feeRate: Int, outputType: ScriptType = ScriptType.P2PKH, changeType: ScriptType = ScriptType.P2PKH, senderPay: Boolean, dust: Int, pluginDataOutputSize: Int): SelectedUnspentOutputInfo
 }
 
 data class SelectedUnspentOutputInfo(
@@ -39,7 +39,7 @@ class UnspentOutputSelectorChain : IUnspentOutputSelector {
     }
 
     override fun select(
-        unspentOutputs: List<UnspentOutput>,
+        unspentOutputs: List<String>,
         value: Long,
         feeRate: Int,
         outputType: ScriptType,

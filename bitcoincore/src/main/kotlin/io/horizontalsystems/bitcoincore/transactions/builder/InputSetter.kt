@@ -1,8 +1,10 @@
 package io.horizontalsystems.bitcoincore.transactions.builder
 
+import android.util.Log
 import io.horizontalsystems.bitcoincore.DustCalculator
 import io.horizontalsystems.bitcoincore.core.ITransactionDataSorterFactory
 import io.horizontalsystems.bitcoincore.core.PluginManager
+import io.horizontalsystems.bitcoincore.extensions.toHexString
 import io.horizontalsystems.bitcoincore.managers.IUnspentOutputSelector
 import io.horizontalsystems.bitcoincore.managers.PublicKeyManager
 import io.horizontalsystems.bitcoincore.models.TransactionDataSortType
@@ -56,7 +58,7 @@ class InputSetter(
         pluginManager.processInputs(mutableTransaction)
     }
 
-    fun setInputs(mutableTransaction: MutableTransaction, unspentOutputs: List<UnspentOutput>, feeRate: Int, senderPay: Boolean, sortType: TransactionDataSortType) {
+    fun setInputs(mutableTransaction: MutableTransaction, unspentOutputs: List<String>, feeRate: Int, senderPay: Boolean, sortType: TransactionDataSortType) {
         val value = mutableTransaction.recipientValue
         val dust = dustCalculator.dust(changeScriptType)
         val unspentOutputInfo = unspentOutputSelector.select(

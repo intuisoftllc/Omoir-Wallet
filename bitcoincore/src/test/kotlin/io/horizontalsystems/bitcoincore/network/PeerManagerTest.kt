@@ -116,7 +116,7 @@ object PeerManagerTest : Spek({
             addPeer(host = "0.0.0.3", connected = false, synced = false)
             addPeer(host = "0.0.0.4", connected = false, synced = false)
 
-            assertEquals(true, peerManager.hasSyncedPeer())
+            assertEquals(true, peerManager.hasSyncedPeers())
         }
 
         it("is false when no peer is synced") {
@@ -125,7 +125,7 @@ object PeerManagerTest : Spek({
             addPeer(host = "0.0.0.3", connected = false, synced = false)
             addPeer(host = "0.0.0.4", connected = false, synced = false)
 
-            assertEquals(false, peerManager.hasSyncedPeer())
+            assertEquals(false, peerManager.hasSyncedPeers())
         }
     }
 })

@@ -1,5 +1,6 @@
 package io.horizontalsystems.bitcoincore.network.messages
 
+import io.horizontalsystems.bitcoincore.extensions.toHexString
 import io.horizontalsystems.bitcoincore.extensions.toReversedHex
 import io.horizontalsystems.bitcoincore.io.BitcoinInputMarkable
 import io.horizontalsystems.bitcoincore.serializers.TransactionSerializer

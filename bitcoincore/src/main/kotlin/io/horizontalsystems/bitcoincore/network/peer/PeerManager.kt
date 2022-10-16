@@ -34,7 +34,7 @@ class PeerManager {
         return peers.values.filter { it.connected && it.ready }
     }
 
-    fun hasSyncedPeer(): Boolean {
+    fun hasSyncedPeers(): Boolean {
         return peers.values.any { it.connected && it.synced }
     }
 

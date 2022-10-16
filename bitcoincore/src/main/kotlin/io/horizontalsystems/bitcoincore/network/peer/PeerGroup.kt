@@ -68,6 +68,11 @@ class PeerGroup(
         peerGroupListeners.add(listener)
     }
 
+    fun isNetworkFullySynced() : Boolean {
+        return peerManager.readyPears().size == peerCountToHold
+                && peerManager.hasSyncedPeers()
+    }
+
     //
     // PeerListener implementations
     //

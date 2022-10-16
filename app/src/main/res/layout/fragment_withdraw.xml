@@ -103,7 +103,7 @@
             android:layout_height="wrap_content"
             android:background="@android:color/transparent"
             android:hint="Amount"
-            android:inputType="text"
+            android:inputType="phone"
             android:maxLines="1"
             android:lineHeight="18dp"
             android:digits="1234567890."

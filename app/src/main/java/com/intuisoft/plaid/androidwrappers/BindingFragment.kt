@@ -5,8 +5,10 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.viewbinding.ViewBinding
 import com.intuisoft.plaid.activities.MainActivity
+import com.intuisoft.plaid.listeners.NetworkStateChangeListener
+import com.intuisoft.plaid.util.Constants
 
-abstract class BindingFragment<T: ViewBinding> : Fragment(), FragmentActionBarDelegate {
+abstract class BindingFragment<T: ViewBinding> : Fragment(), FragmentActionBarDelegate, NetworkStateChangeListener {
 
     protected var _binding: T? = null
     protected val binding get() = _binding!!
@@ -19,6 +21,12 @@ abstract class BindingFragment<T: ViewBinding> : Fragment(), FragmentActionBarDe
         if(showActionBar()) {
             (requireActivity() as MainActivity).actionBarTitle =
                 getString(actionBarTitle())
+        }
+    }
+
+    override fun onStateChanged(hasNetwork: Boolean) {
+        if(!hasNetwork) {
+            styledSnackBar(requireView(), Constants.Strings.NO_INTERNET, true)
         }
     }
 

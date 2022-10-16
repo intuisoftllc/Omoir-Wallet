@@ -1,6 +1,9 @@
 package com.intuisoft.plaid.features.dashboardscreen.viewmodel
 
 import android.app.Application
+import android.content.Context
+import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.LiveData
 import com.intuisoft.plaid.androidwrappers.SingleLiveData
 import com.intuisoft.plaid.androidwrappers.WalletViewModel
@@ -9,9 +12,12 @@ import com.intuisoft.plaid.model.FeeType
 import com.intuisoft.plaid.model.NetworkFeeRate
 import com.intuisoft.plaid.repositories.LocalStoreRepository
 import com.intuisoft.plaid.util.Constants
+import com.intuisoft.plaid.util.NetworkUtil
 import com.intuisoft.plaid.util.RateConverter
 import com.intuisoft.plaid.walletmanager.WalletManager
+import io.horizontalsystems.bitcoincore.extensions.toHexString
 import io.horizontalsystems.bitcoincore.models.TransactionDataSortType
+import io.horizontalsystems.bitcoincore.serializers.TransactionSerializer
 import io.horizontalsystems.bitcoincore.storage.FullTransaction
 import io.horizontalsystems.bitcoincore.storage.UnspentOutput
 
@@ -42,6 +48,9 @@ class WithdrawalViewModel(
 
     protected val _somethingWentWrong = SingleLiveData<Unit>()
     val somethingWentWrong: LiveData<Unit> = _somethingWentWrong
+
+    protected val _notEnoughPeers = SingleLiveData<Unit>()
+    val notEnoughPeers: LiveData<Unit> = _notEnoughPeers
 
     protected val _onTransactionCreationFailed = SingleLiveData<Unit>()
     val onTransactionCreationFailed: LiveData<Unit> = _onTransactionCreationFailed
@@ -87,9 +96,23 @@ class WithdrawalViewModel(
 
     fun getUnspentOutputs() = localWallet!!.walletKit!!.getUnspentOutputs()
 
-    fun broadcast(fullTransaction: FullTransaction) {
-        localWallet!!.walletKit!!.broadcast(fullTransaction)
-        _onTransactionSent.postValue(Unit)
+    fun broadcast(context: Context, fullTransaction: FullTransaction): Boolean {
+        if(NetworkUtil.hasInternet(context)) {
+            if(walletManager.isNetworkFullySynced()) {
+                localWallet!!.walletKit!!.broadcast(fullTransaction)
+                _onTransactionSent.postValue(Unit)
+                return true
+            } else {
+
+                // this protection ensures that our transaction will most likely propagate to the network successfully
+                _notEnoughPeers.postValue(Unit)
+                return false
+            }
+        } else {
+            walletManager.isNetworkFullySynced()
+            Toast.makeText(context, Constants.Strings.NO_INTERNET, Toast.LENGTH_LONG).show()
+            return false
+        }
     }
 
     fun setInitialFeeRate() {
@@ -158,7 +181,7 @@ class WithdrawalViewModel(
                     value = localRate.getRawRate(),
                     address = address!!,
                     feeRate = feeRate,
-                    sortType = TransactionDataSortType.Shuffle,
+                    sortType = TransactionDataSortType.Bip69,
                     createOnly = true
                 )
             } else {
@@ -167,7 +190,7 @@ class WithdrawalViewModel(
                     value = localRate.getRawRate(),
                     senderPay = true,
                     feeRate = feeRate,
-                    sortType = TransactionDataSortType.Shuffle,
+                    sortType = TransactionDataSortType.Bip69,
                     pluginData = mapOf(),
                     createOnly = true
                 )

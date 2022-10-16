@@ -79,6 +79,10 @@ class WalletManager(
         return _wallets.first().walletKit!!.isAddressValid(address)
     }
 
+    fun isNetworkFullySynced() : Boolean {
+        return _wallets.first().walletKit!!.isNetworkFullySynced()
+    }
+
     suspend fun deleteWallet(localWallet: LocalWalletModel, onDeleteFinished: suspend () -> Unit) {
         localWallet.walletKit!!.stop()
         localStoreRepository.getStoredWalletInfo().walletIdentifiers.remove { it.walletUUID == localWallet.uuid }
