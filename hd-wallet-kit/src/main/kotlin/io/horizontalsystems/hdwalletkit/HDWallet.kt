@@ -8,16 +8,11 @@ class HDWallet(seed: ByteArray, private val coinType: Int, val gapLimit: Int = 2
 
     enum class Purpose(
         val value: Int,
-        val pubVersionBytes: Int,
-        val prvVersionBytes: Int
+        val pubAddressType: List<PublicAddressType> // format [mainNetType, testNetType]
     ) {
-        BIP44(44, 0x0488B21E, 0x0488ADE4),
-        BIP49(49, 0x049D7CB2, 0x049D7878),
-        BIP84(84, 0x04B24746, 0x04B2430C);
-
-        // this is used by HDKey.serializePubB58() DO Not remove
-        fun getPublicVersionBytes(): Int =
-            pubVersionBytes
+        BIP44(44, listOf(PublicAddressType.P2PKH, PublicAddressType.TEST_P2PKH)),
+        BIP49(49, listOf(PublicAddressType.P2WPKH_P2SH, PublicAddressType.TEST_P2WPKH_P2SH)),
+        BIP84(84, listOf(PublicAddressType.P2WPKH, PublicAddressType.TEST_P2WPKH));
     }
 
     private val hdKeychain: HDKeychain = HDKeychain(seed)
@@ -43,10 +38,10 @@ class HDWallet(seed: ByteArray, private val coinType: Int, val gapLimit: Int = 2
     fun hdPublicKeys(account: Int, indices: IntRange, external: Boolean): List<HDPublicKey> {
         val parentPrivateKey = privateKey("m/${purpose.value}'/$coinType'/$account'/${if (external) 0 else 1}") // todo: this may be a bug they are missing the last ' in the path same for others below
         return hdKeychain
-                .deriveNonHardenedChildKeys(parentPrivateKey, indices)
-                .map {
-                    HDPublicKey(it.childNumber, external, it)
-                }
+            .deriveNonHardenedChildKeys(parentPrivateKey, indices)
+            .map {
+                HDPublicKey(it.childNumber, external, it)
+            }
     }
 
     fun receiveHDPublicKey(account: Int, index: Int): HDPublicKey {
@@ -69,7 +64,7 @@ class HDWallet(seed: ByteArray, private val coinType: Int, val gapLimit: Int = 2
         return hdKeychain.getKeyByPath(path)
     }
 
-    fun masterPublicKey(): String {
-        return hdKeychain.getKeyByPath("m/${purpose.value}'/0'/0'").serializePubB58(purpose)
+    fun masterPublicKey(mainNet: Boolean = true): String {
+        return hdKeychain.getKeyByPath("m/${purpose.value}'/$coinType'/0'").serializePubB58(purpose, if(mainNet) purpose.pubAddressType[0] else purpose.pubAddressType[1])
     }
 }

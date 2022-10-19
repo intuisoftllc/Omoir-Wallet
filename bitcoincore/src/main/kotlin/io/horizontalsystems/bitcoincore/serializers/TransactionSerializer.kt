@@ -1,7 +1,5 @@
 package io.horizontalsystems.bitcoincore.serializers
 
-import android.util.Log
-import io.horizontalsystems.bitcoincore.extensions.toHexString
 import io.horizontalsystems.bitcoincore.io.BitcoinInputMarkable
 import io.horizontalsystems.bitcoincore.io.BitcoinOutput
 import io.horizontalsystems.bitcoincore.models.Transaction
@@ -83,7 +81,6 @@ object TransactionSerializer {
 
     fun serializeForSignature(transaction: Transaction, inputsToSign: List<InputToSign>, outputs: List<TransactionOutput>, inputIndex: Int, isWitness: Boolean = false): ByteArray {
         val buffer = BitcoinOutput().writeInt(transaction.version)
-
         if (isWitness) {
             val outpoints = BitcoinOutput()
             val sequences = BitcoinOutput()

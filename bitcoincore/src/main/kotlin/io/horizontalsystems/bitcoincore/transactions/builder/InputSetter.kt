@@ -1,10 +1,8 @@
 package io.horizontalsystems.bitcoincore.transactions.builder
 
-import android.util.Log
 import io.horizontalsystems.bitcoincore.DustCalculator
 import io.horizontalsystems.bitcoincore.core.ITransactionDataSorterFactory
 import io.horizontalsystems.bitcoincore.core.PluginManager
-import io.horizontalsystems.bitcoincore.extensions.toHexString
 import io.horizontalsystems.bitcoincore.managers.IUnspentOutputSelector
 import io.horizontalsystems.bitcoincore.managers.PublicKeyManager
 import io.horizontalsystems.bitcoincore.models.TransactionDataSortType
@@ -90,24 +88,6 @@ class InputSetter(
         }
 
         pluginManager.processInputs(mutableTransaction)
-    }
-
-    fun setInputs(mutableTransaction: MutableTransaction, unspentOutput: UnspentOutput, feeRate: Int) {
-        if (unspentOutput.output.scriptType != ScriptType.P2SH) {
-            throw TransactionBuilder.BuilderException.NotSupportedScriptType()
-        }
-
-        // Calculate fee
-        val transactionSize = transactionSizeCalculator.transactionSize(listOf(unspentOutput.output), listOf(mutableTransaction.recipientAddress.scriptType), 0)
-        val fee = transactionSize * feeRate
-
-        if (unspentOutput.output.value < fee) {
-            throw TransactionBuilder.BuilderException.FeeMoreThanValue()
-        }
-
-        // Add to mutable transaction
-        mutableTransaction.addInput(inputToSign(unspentOutput))
-        mutableTransaction.recipientValue = unspentOutput.output.value - fee
     }
 
     private fun inputToSign(unspentOutput: UnspentOutput): InputToSign {

@@ -1,7 +1,5 @@
 package io.horizontalsystems.bitcoincore.transactions.builder
 
-import android.util.Log
-import io.horizontalsystems.bitcoincore.extensions.toHexString
 import io.horizontalsystems.bitcoincore.models.Transaction
 import io.horizontalsystems.bitcoincore.models.TransactionOutput
 import io.horizontalsystems.bitcoincore.network.Network

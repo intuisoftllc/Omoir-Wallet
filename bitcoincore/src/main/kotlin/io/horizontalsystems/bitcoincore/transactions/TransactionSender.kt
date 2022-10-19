@@ -1,6 +1,5 @@
 package io.horizontalsystems.bitcoincore.transactions
 
-import android.util.Log
 import io.horizontalsystems.bitcoincore.blocks.InitialBlockDownload
 import io.horizontalsystems.bitcoincore.core.IStorage
 import io.horizontalsystems.bitcoincore.models.SentTransaction

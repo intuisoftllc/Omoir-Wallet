@@ -22,9 +22,6 @@ class BlockchainComApi(transactionApiUrl: String, blocksApiUrl: String) : IIniti
             val outputs = transaction["out"].asArray().map { outputJson ->
                 val output = outputJson.asObject()
 
-                if(output["addr"]?.asString() == null || output["addr"]?.asString() == "") {
-                    val r = 0
-                }
                 TransactionOutputResponse(
                     output["script"].asString(),
                     output["addr"]?.asString()

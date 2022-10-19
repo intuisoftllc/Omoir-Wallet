@@ -79,8 +79,8 @@ class WalletManager(
         return _wallets.first().walletKit!!.isAddressValid(address)
     }
 
-    fun isNetworkFullySynced() : Boolean {
-        return _wallets.first().walletKit!!.isNetworkFullySynced()
+    fun arePeersReady() : Boolean {
+        return _wallets.first().walletKit!!.arePeersReady()
     }
 
     suspend fun deleteWallet(localWallet: LocalWalletModel, onDeleteFinished: suspend () -> Unit) {

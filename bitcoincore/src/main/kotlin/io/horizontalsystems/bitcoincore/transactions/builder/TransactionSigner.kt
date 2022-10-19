@@ -1,7 +1,5 @@
 package io.horizontalsystems.bitcoincore.transactions.builder
 
-import android.util.Log
-import io.horizontalsystems.bitcoincore.extensions.toHexString
 import io.horizontalsystems.bitcoincore.transactions.scripts.OpCodes
 import io.horizontalsystems.bitcoincore.transactions.scripts.ScriptType
 

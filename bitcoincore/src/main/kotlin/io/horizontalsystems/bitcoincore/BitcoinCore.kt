@@ -389,7 +389,7 @@ class BitcoinCore(
         return this
     }
 
-    fun isNetworkFullySynced() = peerGroup.isNetworkFullySynced()
+    fun arePeersReady() = peerGroup.arePeersReady()
 
     fun addMessageSerializer(messageSerializer: IMessageSerializer): BitcoinCore {
         networkMessageSerializer.add(messageSerializer)
@@ -475,6 +475,10 @@ class BitcoinCore(
         return transactionFeeCalculator.fee(unspentOutputs.map { it.output.address!! }, value, feeRate, senderPay, address, pluginData)
     }
 
+    fun fee(unspentOutput: UnspentOutput, value: Long, address: String? = null, senderPay: Boolean = true, feeRate: Int, pluginData: Map<Byte, IPluginData>): Long {
+        return transactionFeeCalculator.fee(listOf(unspentOutput.output.address!!), value, feeRate, senderPay, address, pluginData)
+    }
+
     fun send(address: String, value: Long, senderPay: Boolean = true, feeRate: Int, sortType: TransactionDataSortType, pluginData: Map<Byte, IPluginData>, createOnly: Boolean): FullTransaction {
         return transactionCreator.create(address, value, feeRate, senderPay, sortType, pluginData, createOnly)
     }
@@ -484,8 +488,8 @@ class BitcoinCore(
         return transactionCreator.create(address.string, value, feeRate, senderPay, sortType, mapOf(), createOnly)
     }
 
-    fun redeem(unspentOutput: UnspentOutput, address: String, feeRate: Int, sortType: TransactionDataSortType, createOnly: Boolean): FullTransaction {
-        return transactionCreator.create(unspentOutput, address, feeRate, sortType, createOnly)
+    fun redeem(unspentOutput: UnspentOutput, value: Long, address: String, feeRate: Int, sortType: TransactionDataSortType, createOnly: Boolean): FullTransaction {
+        return transactionCreator.create(listOf(unspentOutput.output.address!!), value, address, feeRate, sortType, createOnly)
     }
 
     fun broadcast(transaction: FullTransaction): FullTransaction {

@@ -115,17 +115,19 @@ public class HDKey extends ECKey {
      * Serialize public key to Base58 ("xpub" )
      * @return the key serialized as a Base58 address
      */
-    public String serializePubB58(HDWallet.Purpose purpose) {
-        return toBase58(serializePub(purpose));
+    public String serializePubB58(HDWallet.Purpose purpose, PublicAddressType type) {
+        for(PublicAddressType addrType: purpose.getPubAddressType()) {
+            if(addrType == type) {
+                return toBase58(serializePub(addrType.getPublicMagicBytes()));
+            }
+        }
+
+        throw new IllegalArgumentException("Unsupported public address type: " + type);
     }
 
-    // ScriptType.P2PKH -- xpub: 0x0488B21E -- xprv: 0x0488ADE4
-    // ScriptType.P2WPKHSH -- ypub: 0x049D7CB2 -- 0x049D7878
-    // ScriptType.P2WPKH -- zpub: 0x04B24746 -- zprv: 0x04B2430C
-
-    private byte[] serializePub(HDWallet.Purpose purpose) {
+    private byte[] serializePub(int publicMagicBytes) {
         ByteBuffer ser = ByteBuffer.allocate(78);
-        ser.putInt(purpose.getPubVersionBytes()); //The 4 byte header that serializes in base58 to "xpub"
+        ser.putInt(publicMagicBytes);
         ser.put((byte) getDepth());
         ser.putInt(getParentFingerprint());
         ser.putInt(getChildNumberEncoded());

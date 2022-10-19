@@ -71,8 +71,8 @@ abstract class AbstractKit {
         return bitcoinCore.send(hash, scriptType, value, senderPay, feeRate, sortType, createOnly)
     }
 
-    fun redeem(unspentOutput: UnspentOutput, address: String, feeRate: Int, sortType: TransactionDataSortType, createOnly: Boolean = false): FullTransaction {
-        return bitcoinCore.redeem(unspentOutput, address, feeRate, sortType, createOnly)
+    fun redeem(unspentOutput: UnspentOutput, value: Long, address: String, feeRate: Int, sortType: TransactionDataSortType, createOnly: Boolean = false): FullTransaction {
+        return bitcoinCore.redeem(unspentOutput, value, address, feeRate, sortType, createOnly)
     }
 
     fun redeem(unspentOutputs: List<UnspentOutput>, value: Long, address: String, feeRate: Int, sortType: TransactionDataSortType = TransactionDataSortType.Shuffle, createOnly: Boolean = false): FullTransaction {
@@ -108,8 +108,8 @@ abstract class AbstractKit {
         return bitcoinCore.parsePaymentAddress(paymentAddress)
     }
 
-    fun isNetworkFullySynced() =
-        bitcoinCore.isNetworkFullySynced()
+    fun arePeersReady() =
+        bitcoinCore.arePeersReady()
 
     fun showDebugInfo() {
         bitcoinCore.showDebugInfo()

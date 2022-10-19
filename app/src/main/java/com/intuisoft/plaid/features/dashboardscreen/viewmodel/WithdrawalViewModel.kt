@@ -2,7 +2,6 @@ package com.intuisoft.plaid.features.dashboardscreen.viewmodel
 
 import android.app.Application
 import android.content.Context
-import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.LiveData
 import com.intuisoft.plaid.androidwrappers.SingleLiveData
@@ -15,9 +14,7 @@ import com.intuisoft.plaid.util.Constants
 import com.intuisoft.plaid.util.NetworkUtil
 import com.intuisoft.plaid.util.RateConverter
 import com.intuisoft.plaid.walletmanager.WalletManager
-import io.horizontalsystems.bitcoincore.extensions.toHexString
 import io.horizontalsystems.bitcoincore.models.TransactionDataSortType
-import io.horizontalsystems.bitcoincore.serializers.TransactionSerializer
 import io.horizontalsystems.bitcoincore.storage.FullTransaction
 import io.horizontalsystems.bitcoincore.storage.UnspentOutput
 
@@ -98,7 +95,7 @@ class WithdrawalViewModel(
 
     fun broadcast(context: Context, fullTransaction: FullTransaction): Boolean {
         if(NetworkUtil.hasInternet(context)) {
-            if(walletManager.isNetworkFullySynced()) {
+            if(walletManager.arePeersReady()) {
                 localWallet!!.walletKit!!.broadcast(fullTransaction)
                 _onTransactionSent.postValue(Unit)
                 return true
@@ -109,7 +106,7 @@ class WithdrawalViewModel(
                 return false
             }
         } else {
-            walletManager.isNetworkFullySynced()
+            walletManager.arePeersReady()
             Toast.makeText(context, Constants.Strings.NO_INTERNET, Toast.LENGTH_LONG).show()
             return false
         }
