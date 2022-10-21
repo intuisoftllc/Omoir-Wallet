@@ -41,7 +41,6 @@ class CreateWalletFragment : PinProtectedFragment<FragmentCreateImportWalletBind
 
     override fun onConfiguration(configuration: FragmentConfiguration?) {
         viewModel.setUseTestNet(false)
-        viewModel.setLocalPassphrase("")
         viewModel.setEntropyStrength(Mnemonic.EntropyStrength.Default)
         viewModel.setLocalBip(Bip.BIP84)
 
@@ -93,7 +92,6 @@ class CreateWalletFragment : PinProtectedFragment<FragmentCreateImportWalletBind
 
         passphrase?.onClick {
             bottomSheetDialog.cancel()
-            showPassphraseDialog()
         }
 
         entropyStrength?.onClick {
@@ -105,43 +103,6 @@ class CreateWalletFragment : PinProtectedFragment<FragmentCreateImportWalletBind
             bottomSheetDialog.cancel()
             showBipDialog()
         }
-
-        bottomSheetDialog.show()
-    }
-
-    private fun showPassphraseDialog() {
-        val bottomSheetDialog = BottomSheetDialog(requireContext())
-        bottomSheetDialog.setContentView(R.layout.advanced_options_passphrase)
-        val passphraseET = bottomSheetDialog.findViewById<EditText>(R.id.passphraseOption)
-        passphraseET?.setText(viewModel.getLocalPassphrase())
-
-        passphraseET?.setOnKeyListener(object : View.OnKeyListener {
-            override fun onKey(v: View?, keyCode: Int, event: KeyEvent): Boolean {
-                // if the event is a key down event on the enter button
-                if (event.action == KeyEvent.ACTION_DOWN &&
-                    keyCode == KeyEvent.KEYCODE_ENTER
-                ) {
-                    requireActivity().hideSoftKeyboard()
-                    passphraseET.clearFocus()
-                    passphraseET.isCursorVisible = false
-
-                    return true
-                }
-                return false
-            }
-        })
-
-        passphraseET?.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable) {
-                viewModel.setLocalPassphrase(s.toString())
-            }
-
-            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
-            }
-
-            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-            }
-        })
 
         bottomSheetDialog.show()
     }

@@ -8,8 +8,10 @@ import android.security.keystore.KeyProperties
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
 import com.intuisoft.plaid.local.UserPreferences
+import com.intuisoft.plaid.network.sync.repository.SyncRepository
 import com.intuisoft.plaid.repositories.LocalStoreRepository
 import com.intuisoft.plaid.repositories.LocalStoreRepository_Impl
+import com.intuisoft.plaid.walletmanager.AbstractWalletManager
 import com.intuisoft.plaid.walletmanager.WalletManager
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.Module
@@ -28,7 +30,15 @@ val localRepositoriesModule = module {
 
 val walletManagerModule = module {
 
-    single { WalletManager(get(), get(), get()) }
+    single { provideWalletManager(get(), get(), get()) }
+}
+
+fun provideWalletManager(
+    application: Application,
+    localStoreRepository: LocalStoreRepository,
+    syncRepository: SyncRepository
+): AbstractWalletManager {
+    return WalletManager(application, localStoreRepository, syncRepository)
 }
 
 fun provideLocalRepository(

@@ -15,6 +15,7 @@ import com.intuisoft.plaid.local.UserPreferences
 import com.intuisoft.plaid.model.LocalWalletModel
 import com.intuisoft.plaid.repositories.LocalStoreRepository
 import com.intuisoft.plaid.util.Constants
+import com.intuisoft.plaid.walletmanager.AbstractWalletManager
 import com.intuisoft.plaid.walletmanager.WalletManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -28,7 +29,7 @@ import java.util.concurrent.TimeUnit
 open class BaseViewModel(
     application: Application,
     private val localStoreRepository: LocalStoreRepository,
-    private val walletManager: WalletManager
+    private val walletManager: AbstractWalletManager
 ) : AndroidViewModel(application) {
 
     private val _fingerprintSupported = SingleLiveData<Boolean>()

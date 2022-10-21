@@ -39,6 +39,7 @@ class BitcoinCoreBuilder {
     private var seed: ByteArray? = null
     private var words: List<String>? = null
     private var network: Network? = null
+    private var gapLimit: Int = 20
     private var paymentAddressParser: PaymentAddressParser? = null
     private var storage: IStorage? = null
     private var initialSyncApi: IInitialSyncApi? = null
@@ -108,6 +109,11 @@ class BitcoinCoreBuilder {
         return this
     }
 
+    fun setGapLimit(limit: Int): BitcoinCoreBuilder {
+        this.gapLimit = limit
+        return this
+    }
+
     fun setBlockHeaderHasher(blockHeaderHasher: IHasher): BitcoinCoreBuilder {
         this.blockHeaderHasher = blockHeaderHasher
         return this
@@ -163,7 +169,7 @@ class BitcoinCoreBuilder {
 
         val connectionManager = ConnectionManager(context)
 
-        val hdWallet = HDWallet(seed, network.coinType, purpose = bip.purpose)
+        val hdWallet = HDWallet(seed, network.coinType, gapLimit = gapLimit, purpose = bip.purpose)
 
         val wallet = Wallet(hdWallet!!)
         val publicKeyManager = PublicKeyManager.create(storage, wallet, restoreKeyConverterChain)

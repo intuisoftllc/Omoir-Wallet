@@ -69,11 +69,12 @@ class BitcoinKit : AbstractKit {
             walletId: String,
             networkType: NetworkType = NetworkType.MainNet,
             peerSize: Int = 10,
+            gapLimit: Int = 20,
             syncMode: SyncMode = SyncMode.Api(),
             confirmationsThreshold: Int = 6,
             bip: Bip = Bip.BIP44
 
-    ) : this(context, Mnemonic().toSeed(words, passphrase), walletId, networkType, peerSize, syncMode, confirmationsThreshold, bip)
+    ) : this(context, Mnemonic().toSeed(words, passphrase), walletId, networkType, peerSize, gapLimit, syncMode, confirmationsThreshold, bip)
 
 
 
@@ -95,6 +96,7 @@ class BitcoinKit : AbstractKit {
             walletId: String,
             networkType: NetworkType = NetworkType.MainNet,
             peerSize: Int = 10,
+            gapLimit: Int = 20,
             syncMode: SyncMode = SyncMode.Api(),
             confirmationsThreshold: Int = 6,
             bip: Bip = Bip.BIP44
@@ -142,6 +144,7 @@ class BitcoinKit : AbstractKit {
         bitcoinCore = coreBuilder
                 .setContext(context)
                 .setSeed(seed)
+                .setGapLimit(gapLimit)
                 .setNetwork(network)
                 .setBip(bip)
                 .setPaymentAddressParser(paymentAddressParser)

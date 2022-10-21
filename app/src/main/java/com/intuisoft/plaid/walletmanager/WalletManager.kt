@@ -20,31 +20,25 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.*
+import kotlin.collections.HashMap
 
 
 class WalletManager(
     val application: Application,
     val localStoreRepository: LocalStoreRepository,
     val syncRepository: SyncRepository
-): WipeDataListener {
-    private var initialized = false
-    private val _wallets: MutableList<LocalWalletModel> = mutableListOf()
-    private val _stateChanged = SingleLiveData<ManagerState>()
-    val stateChanged: LiveData<ManagerState> = _stateChanged
-
-    var state = ManagerState.NONE
-        private set(value) {
-            field = value
-            _stateChanged.postValue(field)
-        }
+): AbstractWalletManager(), WipeDataListener {
+    protected var running = false
+    protected val _wallets: MutableList<LocalWalletModel> = mutableListOf()
+    protected val localPassphrases: MutableMap<String,String> = mutableMapOf()
 
     open class BitcoinEventListener: BitcoinKit.Listener {}
 
-    fun initialize() {
-        if(!initialized) {
-            initialized = true
+    override fun start() {
+        CoroutineScope(Dispatchers.IO).launch {
+            if(!running) {
+                running = true
 
-            CoroutineScope(Dispatchers.IO).launch {
                 loadingScope {
                     localStoreRepository.setOnWipeDataListener(this@WalletManager)
                     updateWallets()
@@ -53,7 +47,7 @@ class WalletManager(
         }
     }
 
-    private suspend fun loadingScope(scope: suspend () -> Unit) {
+    protected suspend fun loadingScope(scope: suspend () -> Unit) {
         var alreadySyncing = false
         if(state != ManagerState.SYNCHRONIZING) {
             state = ManagerState.SYNCHRONIZING
@@ -65,25 +59,52 @@ class WalletManager(
             state = ManagerState.NONE
     }
 
-    fun updateWalletName(localWallet: LocalWalletModel, newName: String) {
-        val storedWallet = findStoredWallet(localWallet.uuid)
-
-        storedWallet?.let {
+    override fun updateWalletName(localWallet: LocalWalletModel, newName: String) {
+        findStoredWallet(localWallet.uuid)?.let {
             it.name = newName
             localWallet.name = newName
             localStoreRepository.setStoredWalletInfo(localStoreRepository.getStoredWalletInfo())
         }
     }
 
-    fun validAddress(address: String) : Boolean {
+    private fun getWalletPassPhrase(walletId: String): String {
+        return localPassphrases.get(walletId) ?: ""
+    }
+
+    private fun setWalletPassphrase(walletId: String, passphrase: String) {
+        localPassphrases.put(walletId, passphrase)
+    }
+
+    override fun getWalletPassphrase(localWallet: LocalWalletModel): String {
+        return getWalletPassPhrase(localWallet.uuid)
+    }
+
+    override fun setWalletPassphrase(localWallet: LocalWalletModel, passphrase: String) {
+        setWalletPassphrase(localWallet.uuid, passphrase)
+    }
+
+    override fun validAddress(address: String) : Boolean {
         return _wallets.first().walletKit!!.isAddressValid(address)
     }
 
-    fun arePeersReady() : Boolean {
+    override fun arePeersReady() : Boolean {
         return _wallets.first().walletKit!!.arePeersReady()
     }
 
-    suspend fun deleteWallet(localWallet: LocalWalletModel, onDeleteFinished: suspend () -> Unit) {
+    private fun getTotalBalance(): Long {
+        var balance : Long = 0
+
+        _wallets.forEach {
+            balance += (it.walletKit?.balance?.spendable ?: 0L)
+        }
+
+        return balance
+    }
+
+    override suspend fun deleteWallet(
+        localWallet: LocalWalletModel,
+        onDeleteFinished: suspend () -> Unit
+    ) {
         localWallet.walletKit!!.stop()
         localStoreRepository.getStoredWalletInfo().walletIdentifiers.remove { it.walletUUID == localWallet.uuid }
         localStoreRepository.setStoredWalletInfo(localStoreRepository.getStoredWalletInfo())
@@ -97,32 +118,21 @@ class WalletManager(
             localWallet.name
         )
 
+        localPassphrases.remove(localWallet.uuid)
         _wallets.remove { it.uuid == localWallet.uuid }
         onDeleteFinished()
     }
 
-    suspend fun synchronize(wallet: LocalWalletModel) {
-       synchronize(wallet, false)
-    }
-
-    suspend fun synchronize(wallet: LocalWalletModel, forceSync: Boolean) {
+    override suspend fun synchronize(wallet: LocalWalletModel) {
         loadingScope {
-            val time = System.currentTimeMillis() / 1000
-
-            if(wallet.walletState == WalletState.NONE &&
-                (
-                   forceSync
-                   || wallet.lastSyncedTime == 0
-                   || (time - wallet.lastSyncedTime) > localStoreRepository.getWalletSyncTime()
-                )
-            ) {
+            if(wallet.walletState == WalletState.NONE) {
                 wallet.walletKit!!.refresh()
             }
         }
     }
 
-   fun doesWalletExist(uuid: String): Boolean {
-       localStoreRepository.getStoredWalletInfo()?.walletIdentifiers?.forEach {
+   override fun doesWalletExist(uuid: String): Boolean {
+       localStoreRepository.getStoredWalletInfo().walletIdentifiers.forEach {
            if(it.walletUUID == uuid)
                return true
        }
@@ -130,7 +140,7 @@ class WalletManager(
        return false
    }
 
-   suspend fun getWallets(): List<LocalWalletModel> {
+   override suspend fun getWallets(): List<LocalWalletModel> {
        waitForSynchronization()
        return _wallets
    }
@@ -140,6 +150,19 @@ class WalletManager(
            delay(1)
        }
    }
+
+    override fun stop() {
+        CoroutineScope(Dispatchers.IO).launch {
+            loadingScope {
+                _wallets.forEach {
+                    it.walletKit?.stop()
+                }
+
+                _wallets.clear()
+                running = false
+            }
+        }
+    }
 
    override fun onWipeData() {
        localStoreRepository.setStoredWalletInfo(null)
@@ -155,51 +178,52 @@ class WalletManager(
        }
 
        _wallets.clear()
+       localPassphrases.clear()
+       _balanceUpdated.postValue(0)
    }
 
-   fun synchronizeAll() {
+   override fun synchronizeAll() {
        CoroutineScope(Dispatchers.IO).launch {
            if(state == ManagerState.SYNCHRONIZING)
                return@launch
 
            loadingScope {
                _wallets.forEach {
-                   synchronize(it, true)
+                   synchronize(it)
                }
            }
        }
    }
 
-    fun findLocalWallet(uuid: String): LocalWalletModel? =
-        _wallets.find { it.uuid == uuid }
+    override fun findLocalWallet(hashId: String): LocalWalletModel? =
+        _wallets.find { it.hashId == hashId }
 
-    fun findStoredWallet(uuid: String): WalletIdentifier? =
+    override fun findStoredWallet(uuid: String): WalletIdentifier? =
         localStoreRepository.getStoredWalletInfo().walletIdentifiers.find { it.walletUUID == uuid }
 
-   fun addWalletIdentifier(wallet: WalletIdentifier) {
+   private fun saveWallet(wallet: WalletIdentifier) {
        localStoreRepository.getStoredWalletInfo().walletIdentifiers.add(wallet)
        localStoreRepository.setStoredWalletInfo(localStoreRepository.getStoredWalletInfo())
        updateWallets()
    }
 
-   fun createWallet(
+   override fun createWallet(
        name: String,
        seed: List<String>,
-       passphrase: String,
        bip: Bip,
        testnetWallet: Boolean
    ): String {
        val uuid = UUID.randomUUID().toString()
        CoroutineScope(Dispatchers.IO).launch {
            loadingScope {
-               addWalletIdentifier(
+               saveWallet(
                    WalletIdentifier(
                        name,
                        uuid,
                        seed,
-                       passphrase,
                        bip.ordinal,
-                       testnetWallet
+                       testnetWallet,
+                       true
                    )
                )
            }
@@ -208,10 +232,6 @@ class WalletManager(
        return uuid
    }
 
-    private fun restart() {
-        // todo: impl for when app needs a restart
-    }
-
    private fun updateWallets() {
        _wallets.forEach {
            it.walletKit?.stop()
@@ -219,17 +239,19 @@ class WalletManager(
 
        _wallets.clear()
        localStoreRepository.getStoredWalletInfo().walletIdentifiers.forEach { identifier ->
-           val model = LocalWalletModel.consume(identifier)
+           val passphrase = getWalletPassPhrase(identifier.walletUUID)
+           val model = LocalWalletModel.consume(identifier, passphrase)
 
            model.walletKit =
                BitcoinKit(
                    context = application,
                    words = identifier.seedPhrase,
-                   passphrase = identifier.passphrase,
-                   walletId = model.uuid,
+                   passphrase = passphrase,
+                   walletId = model.hashId,
                    networkType = getWalletNetwork(model),
                    peerSize = Constants.Limit.MAX_PEERS,
-                   syncMode = BitcoinCore.SyncMode.Api(),
+                   gapLimit = 50,
+                   syncMode = getWalletSyncMode(identifier.apiSyncMode),
                    confirmationsThreshold = Constants.Limit.MIN_CONFIRMATIONS,
                    bip = Bip.values().find {  it.ordinal == identifier.bip }!!
                )
@@ -239,7 +261,7 @@ class WalletManager(
                    override fun onBalanceUpdate(balance: BalanceInfo) {
                        super.onBalanceUpdate(balance)
                        CoroutineScope(Dispatchers.IO).launch {
-                           synchronize(model, true)
+                           synchronize(model)
                        }
                    }
 
@@ -250,8 +272,7 @@ class WalletManager(
                            is BitcoinCore.KitState.Synced,
                            is BitcoinCore.KitState.NotSynced -> {
                                updateWalletState(WalletState.NONE, model, -1)
-//                               val trans = _wallets[0].walletKit!!.send("bc1qs49s2vlmgk7ptr9kwfpqytn4ve0hu0sxz2vvtu", 1000, true, 1, TransactionDataSortType.None)
-//                               val r = 0
+                               _balanceUpdated.postValue(getTotalBalance())
                            }
 
                            is BitcoinCore.KitState.Syncing -> {
@@ -292,6 +313,12 @@ class WalletManager(
            if(wallet.testNetWallet)
                return BitcoinKit.NetworkType.TestNet
            else return BitcoinKit.NetworkType.MainNet
+       }
+
+       fun getWalletSyncMode(apiSync: Boolean): BitcoinCore.SyncMode {
+           if(apiSync)
+               return BitcoinCore.SyncMode.Api()
+           else return BitcoinCore.SyncMode.Full()
        }
    }
 }

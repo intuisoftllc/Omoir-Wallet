@@ -16,14 +16,13 @@ class CreateWalletViewModel(
 
     private var seed: List<String>? = null
     private var bip: Bip = Bip.BIP84
-    private var passphrase = ""
     private var entropyStrength = Mnemonic.EntropyStrength.Default
 
     var useTestNet = false
         private set
 
     fun generateNewWallet() {
-        generateNewWallet(passphrase, entropyStrength)
+        generateNewWallet(entropyStrength)
     }
 
     fun setUseTestNet(use: Boolean) {
@@ -42,22 +41,12 @@ class CreateWalletViewModel(
 
     fun getLocalBipType() = bip
 
-    fun getLocalPassphrase() = passphrase
-
-    fun setLocalPassphrase(p: String) {
-        passphrase = p
-    }
-
     fun setLocalSeedPhrase(p: List<String>) {
         seed = p
     }
 
     fun showLocalSeedPhrase() {
         _seedPhraseGenerated.postValue(seed)
-    }
-
-    fun showLocalPassPhrase() {
-        _userPassphrase.postValue(passphrase)
     }
 
     /**
@@ -68,7 +57,6 @@ class CreateWalletViewModel(
         commitWalletToDisk(
             walletName = walletName,
             seed = seed!!,
-            passphrase = passphrase,
             bip = bip,
             testNetWallet = useTestNet
         )

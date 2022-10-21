@@ -8,6 +8,7 @@ import com.intuisoft.plaid.model.LocalWalletModel
 import com.intuisoft.plaid.repositories.LocalStoreRepository
 import com.intuisoft.plaid.util.Constants
 import com.intuisoft.plaid.util.SimpleCoinNumberFormat
+import com.intuisoft.plaid.walletmanager.AbstractWalletManager
 import com.intuisoft.plaid.walletmanager.WalletManager
 import io.horizontalsystems.bitcoincore.core.Bip
 import io.horizontalsystems.bitcoincore.managers.SendValueErrors
@@ -24,7 +25,7 @@ import kotlinx.coroutines.withContext
 open class WalletViewModel(
     application: Application,
     private val localStoreRepository: LocalStoreRepository,
-    private val walletManager: WalletManager
+    private val walletManager: AbstractWalletManager
 ): BaseViewModel(application, localStoreRepository, walletManager) {
 
     protected val _seedPhraseGenerated = SingleLiveData<List<String>>()
@@ -158,14 +159,12 @@ open class WalletViewModel(
     }
 
     protected fun generateNewWallet(
-        passphrase: String,
         entropyStrength: Mnemonic.EntropyStrength
     ) {
         viewModelScope.launch {
 //            val seed = Mnemonic().generate(entropyStrength)
             val seed = "patient sort can island cute saddle shield crunch knock tourist butter budget".split(" ")
             _seedPhraseGenerated.postValue(seed!!)
-            _userPassphrase.postValue(passphrase)
         }
     }
 
@@ -177,7 +176,7 @@ open class WalletViewModel(
         return localWallet!!.walletKit!!.isAddressValid(address)
     }
 
-    fun getWalletPassphrase() = walletManager.findStoredWallet(localWallet!!.uuid)!!.passphrase
+    fun getWalletPassphrase() = walletManager.getWalletPassphrase(localWallet!!)
 
     fun getWalletSeedPhrase() = walletManager.findStoredWallet(localWallet!!.uuid)!!.seedPhrase
 
@@ -226,7 +225,7 @@ open class WalletViewModel(
     fun syncWallet() {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
-                walletManager.synchronize(localWallet!!, true)
+                walletManager.synchronize(localWallet!!)
             }
         }
     }
@@ -238,7 +237,6 @@ open class WalletViewModel(
     protected fun commitWalletToDisk(
         walletName: String,
         seed: List<String>,
-        passphrase: String,
         bip: Bip,
         testNetWallet: Boolean
     ) {
@@ -250,7 +248,6 @@ open class WalletViewModel(
                     val walletId = walletManager.createWallet(
                         name = walletName,
                         seed = seed!!,
-                        passphrase = passphrase,
                         bip = bip,
                         testnetWallet = testNetWallet
                     )
