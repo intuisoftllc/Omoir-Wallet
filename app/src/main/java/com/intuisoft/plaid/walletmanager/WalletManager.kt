@@ -11,10 +11,10 @@ import com.intuisoft.plaid.network.sync.repository.SyncRepository
 import com.intuisoft.plaid.repositories.LocalStoreRepository
 import com.intuisoft.plaid.util.Constants
 import io.horizontalsystems.bitcoincore.BitcoinCore
-import io.horizontalsystems.bitcoincore.core.Bip
 import io.horizontalsystems.bitcoincore.models.BalanceInfo
 import io.horizontalsystems.bitcoincore.models.TransactionInfo
 import io.horizontalsystems.bitcoinkit.BitcoinKit
+import io.horizontalsystems.hdwalletkit.HDWallet
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -31,6 +31,7 @@ class WalletManager(
     protected var running = false
     protected val _wallets: MutableList<LocalWalletModel> = mutableListOf()
     protected val localPassphrases: MutableMap<String,String> = mutableMapOf()
+    private var _baseWallet: BitcoinKit? = null
 
     open class BitcoinEventListener: BitcoinKit.Listener {}
 
@@ -40,6 +41,21 @@ class WalletManager(
                 running = true
 
                 loadingScope {
+                    if(_baseWallet == null) {
+                        _baseWallet = BitcoinKit(
+                            context = application,
+                            words = Constants.Strings.TEST_WALLET_1.split(" "),
+                            passphrase = "",
+                            walletId = Constants.Strings.BASE_WALLET,
+                            networkType = BitcoinKit.NetworkType.MainNet,
+                            peerSize = Constants.Limit.MAX_PEERS,
+                            gapLimit = 50,
+                            syncMode = BitcoinCore.SyncMode.Api(),
+                            confirmationsThreshold = Constants.Limit.MIN_CONFIRMATIONS,
+                            purpose = HDWallet.Purpose.BIP44
+                        )
+                    }
+
                     localStoreRepository.setOnWipeDataListener(this@WalletManager)
                     updateWallets()
                 }
@@ -101,22 +117,29 @@ class WalletManager(
         return balance
     }
 
+    private fun deleteWalletFromDatabase(localWallet: LocalWalletModel) {
+        localWallet.walletKit?.stop()
+
+        findStoredWallet(localWallet.uuid)?.let { walletIdentifier ->
+            walletIdentifier.walletHashIds?.forEach { hashId ->
+                BitcoinKit.clear(
+                    application,
+                    if(walletIdentifier.isTestNet)
+                        BitcoinKit.NetworkType.TestNet
+                    else BitcoinKit.NetworkType.MainNet,
+                    hashId
+                )
+            }
+        }
+    }
+
     override suspend fun deleteWallet(
         localWallet: LocalWalletModel,
         onDeleteFinished: suspend () -> Unit
     ) {
-        localWallet.walletKit!!.stop()
+        deleteWalletFromDatabase(localWallet)
         localStoreRepository.getStoredWalletInfo().walletIdentifiers.remove { it.walletUUID == localWallet.uuid }
         localStoreRepository.setStoredWalletInfo(localStoreRepository.getStoredWalletInfo())
-
-
-        BitcoinKit.clear(
-            application,
-            if(localWallet.testNetWallet)
-                BitcoinKit.NetworkType.TestNet
-            else BitcoinKit.NetworkType.MainNet,
-            localWallet.name
-        )
 
         localPassphrases.remove(localWallet.uuid)
         _wallets.remove { it.uuid == localWallet.uuid }
@@ -165,20 +188,13 @@ class WalletManager(
     }
 
    override fun onWipeData() {
-       localStoreRepository.setStoredWalletInfo(null)
        _wallets.forEach {
-           it.walletKit?.stop()
-           BitcoinKit.clear(
-               application,
-               if(it.testNetWallet)
-                   BitcoinKit.NetworkType.TestNet
-               else BitcoinKit.NetworkType.MainNet,
-               it.name
-           )
+           deleteWalletFromDatabase(it)
        }
 
        _wallets.clear()
        localPassphrases.clear()
+       localStoreRepository.setStoredWalletInfo(null)
        _balanceUpdated.postValue(0)
    }
 
@@ -191,12 +207,14 @@ class WalletManager(
                _wallets.forEach {
                    synchronize(it)
                }
+
+               _balanceUpdated.postValue(getTotalBalance())
            }
        }
    }
 
-    override fun findLocalWallet(hashId: String): LocalWalletModel? =
-        _wallets.find { it.hashId == hashId }
+    override fun findLocalWallet(uuid: String): LocalWalletModel? =
+        _wallets.find { it.uuid == uuid }
 
     override fun findStoredWallet(uuid: String): WalletIdentifier? =
         localStoreRepository.getStoredWalletInfo().walletIdentifiers.find { it.walletUUID == uuid }
@@ -207,10 +225,12 @@ class WalletManager(
        updateWallets()
    }
 
+   override fun getBaseWallet() = _baseWallet!!
+
    override fun createWallet(
        name: String,
        seed: List<String>,
-       bip: Bip,
+       bip: HDWallet.Purpose,
        testnetWallet: Boolean
    ): String {
        val uuid = UUID.randomUUID().toString()
@@ -221,6 +241,7 @@ class WalletManager(
                        name,
                        uuid,
                        seed,
+                       mutableListOf(),
                        bip.ordinal,
                        testnetWallet,
                        true
@@ -242,6 +263,12 @@ class WalletManager(
            val passphrase = getWalletPassPhrase(identifier.walletUUID)
            val model = LocalWalletModel.consume(identifier, passphrase)
 
+           // Store wallet hashes for passphrases
+           if(identifier.walletHashIds?.find { it == model.hashId } == null) {
+               identifier.walletHashIds!!.add(model.hashId)
+               localStoreRepository.setStoredWalletInfo(localStoreRepository.getStoredWalletInfo())
+           }
+
            model.walletKit =
                BitcoinKit(
                    context = application,
@@ -253,7 +280,7 @@ class WalletManager(
                    gapLimit = 50,
                    syncMode = getWalletSyncMode(identifier.apiSyncMode),
                    confirmationsThreshold = Constants.Limit.MIN_CONFIRMATIONS,
-                   bip = Bip.values().find {  it.ordinal == identifier.bip }!!
+                   purpose = HDWallet.Purpose.values().find {  it.ordinal == identifier.bip }!!
                )
 
            model.walletKit!!.listener =

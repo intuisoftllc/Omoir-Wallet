@@ -18,6 +18,8 @@ class RoundedButtonView(context: Context, attrs: AttributeSet?) : LinearLayout(c
     private var allCaps = false
     private var drawableRight = 0
     private var textSize = 16f
+    private var padding = 0f
+    private var tint = 0
 
     companion object {
         // button text positions
@@ -29,13 +31,13 @@ class RoundedButtonView(context: Context, attrs: AttributeSet?) : LinearLayout(c
     enum class ButtonStyle(val id: Int) {
         NO_STYLE(0),
         ROUNDED_STYLE(1),
-        LIGHT_GREY_OUTLINED_STYLE(2),
-        OUTLINED_STYLE(4),
-        WHITE_ROUNDED_STYLE(8);
+        OUTLINED_STYLE(2),
+        PILL_STYLE(4),
+        TRANSPARENT_STYLE(8);
     }
 
     init {
-        inflate(context, R.layout.rounded_button, this)
+        inflate(context, R.layout.custom_view_rounded_button, this)
         context.theme.obtainStyledAttributes(
             attrs,
             R.styleable.RoundedButtonView,
@@ -45,8 +47,10 @@ class RoundedButtonView(context: Context, attrs: AttributeSet?) : LinearLayout(c
             text = getString(R.styleable.RoundedButtonView_btn_text) ?: ""
             btnGravity = getInt(R.styleable.RoundedButtonView_text_position, LEFT)
             textSize = getInt(R.styleable.RoundedButtonView_text_size, 16).toFloat()
+            padding = getDimension(R.styleable.RoundedButtonView_button_padding, 0f)
             allCaps = getBoolean(R.styleable.RoundedButtonView_text_all_caps, false)
             drawableRight = getResourceId(R.styleable.RoundedButtonView_right_icon, 0)
+            tint = getColor(R.styleable.RoundedButtonView_button_tint, 0)
 
             setButtonStyle(getInt(R.styleable.RoundedButtonView_button_style, ButtonStyle.NO_STYLE.id))
         }
@@ -88,14 +92,14 @@ class RoundedButtonView(context: Context, attrs: AttributeSet?) : LinearLayout(c
             ButtonStyle.ROUNDED_STYLE.id -> {
                 button = findViewById(R.id.rounded_style_button)
             }
-            ButtonStyle.LIGHT_GREY_OUTLINED_STYLE.id -> {
-                button = findViewById(R.id.grey_outlined_style_button)
-            }
             ButtonStyle.OUTLINED_STYLE.id -> {
                 button = findViewById(R.id.rounded_outlined_style_button)
             }
-            ButtonStyle.WHITE_ROUNDED_STYLE.id -> {
-                button = findViewById(R.id.rounded_white_style_button)
+            ButtonStyle.PILL_STYLE.id -> {
+                button = findViewById(R.id.pill_style_button)
+            }
+            ButtonStyle.TRANSPARENT_STYLE.id -> {
+                button = findViewById(R.id.transparent_style_button)
             }
             else -> {
                 button = findViewById(R.id.normal_button)
@@ -111,6 +115,8 @@ class RoundedButtonView(context: Context, attrs: AttributeSet?) : LinearLayout(c
         setButtonTextPosition(btnGravity)
         setDrawableRight(drawableRight)
         setTextSize(textSize)
+        setPadding(padding)
+        setTint(tint)
         button?.isVisible = true
         button?.setOnTouchListener { v, event ->
             when (event.action) {
@@ -133,6 +139,18 @@ class RoundedButtonView(context: Context, attrs: AttributeSet?) : LinearLayout(c
         button?.isAllCaps = value
     }
 
+    private fun setPadding(value: Float) {
+        if(value != 0f) {
+            button?.setPadding(resources.dpToPixels(value).toInt(), 0, resources.dpToPixels(value).toInt(), 0)
+        }
+    }
+
+    private fun setTint(value: Int) {
+        if(value != 0) {
+            button?.tint(value)
+        }
+    }
+
     fun enableButton(enable: Boolean) {
         button?.isEnabled = enable
         if(enable)
@@ -152,16 +170,13 @@ class RoundedButtonView(context: Context, attrs: AttributeSet?) : LinearLayout(c
         findViewById<Button>(R.id.rounded_style_button)?.setOnClickListener {
             click(button!!)
         }
-        findViewById<Button>(R.id.grey_outlined_style_button)?.setOnClickListener {
-            click(button!!)
-        }
         findViewById<Button>(R.id.rounded_outlined_style_button)?.setOnClickListener {
             click(button!!)
         }
-        findViewById<Button>(R.id.rounded_white_style_button)?.setOnClickListener {
+        findViewById<Button>(R.id.pill_style_button)?.setOnClickListener {
             click(button!!)
         }
-        findViewById<Button>(R.id.normal_button)?.setOnClickListener {
+        findViewById<Button>(R.id.transparent_style_button)?.setOnClickListener {
             click(button!!)
         }
     }

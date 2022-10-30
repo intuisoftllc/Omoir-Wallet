@@ -10,7 +10,6 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.view.isVisible
 import com.intuisoft.plaid.R
-import kotlinx.android.synthetic.main.seed_word_view.view.*
 
 class SeedPhraseView(context: Context, attrs: AttributeSet?) : LinearLayout(context, attrs) {
 
@@ -24,7 +23,7 @@ class SeedPhraseView(context: Context, attrs: AttributeSet?) : LinearLayout(cont
     private var currentWord = 0
 
     init {
-        inflate(context, R.layout.seed_phrase_view, this)
+        inflate(context, R.layout.custom_view_seed_phrase, this)
         container1 = findViewById(R.id.seedWordContainer1)
         container2 = findViewById(R.id.seedWordContainer2)
         container3 = findViewById(R.id.seedWordContainer3)

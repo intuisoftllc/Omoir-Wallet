@@ -1,5 +1,2 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="io.horizontalsystems.hdwalletkit">
-
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-</manifest>
+<manifest package="io.horizontalsystems.hdwalletkit"
+    xmlns:android="http://schemas.android.com/apk/res/android" />

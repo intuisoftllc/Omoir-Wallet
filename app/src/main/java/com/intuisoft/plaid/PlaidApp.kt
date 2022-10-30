@@ -17,7 +17,6 @@ import org.koin.core.logger.Level
 
 class PlaidApp : Application(), Application.ActivityLifecycleCallbacks, KoinComponent {
     private val preferences: UserPreferences by inject()
-    protected val walletManager: WalletManager by inject()
 
     override fun onCreate() {
         super.onCreate()
@@ -40,7 +39,6 @@ class PlaidApp : Application(), Application.ActivityLifecycleCallbacks, KoinComp
         }
 
         registerActivityLifecycleCallbacks(this)
-        walletManager.initialize()
     }
 
     override fun onActivityCreated(p0: Activity, p1: Bundle?) {

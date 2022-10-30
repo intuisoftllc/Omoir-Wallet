@@ -5,8 +5,8 @@ import androidx.lifecycle.MutableLiveData
 import com.intuisoft.plaid.androidwrappers.SingleLiveData
 import com.intuisoft.plaid.local.WipeDataListener
 import com.intuisoft.plaid.model.LocalWalletModel
-import io.horizontalsystems.bitcoincore.core.Bip
 import io.horizontalsystems.bitcoinkit.BitcoinKit
+import io.horizontalsystems.hdwalletkit.HDWallet
 
 abstract class AbstractWalletManager {
     protected val _stateChanged = SingleLiveData<ManagerState>()
@@ -33,7 +33,8 @@ abstract class AbstractWalletManager {
     abstract fun synchronizeAll()
     abstract fun findLocalWallet(uuid: String): LocalWalletModel?
     abstract fun findStoredWallet(uuid: String): WalletIdentifier?
-    abstract fun createWallet(name: String, seed: List<String>, bip: Bip, testnetWallet: Boolean): String
+    abstract fun createWallet(name: String, seed: List<String>, bip: HDWallet.Purpose, testnetWallet: Boolean): String
     abstract fun setWalletPassphrase(localWallet: LocalWalletModel, passphrase: String)
     abstract fun getWalletPassphrase(localWallet: LocalWalletModel): String
+    abstract fun getBaseWallet(): BitcoinKit
 }

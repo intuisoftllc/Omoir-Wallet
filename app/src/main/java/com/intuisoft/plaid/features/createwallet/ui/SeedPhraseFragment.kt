@@ -33,54 +33,45 @@ class SeedPhraseFragment : PinProtectedFragment<FragmentSeedPhraseBinding>() {
     }
 
     override fun onConfiguration(configuration: FragmentConfiguration?) {
-        binding.seedPhrase.resetView()
-
-        when(configuration?.configurationType ?: FragmentConfigurationType.CONFIGURATION_NONE) {
-            FragmentConfigurationType.CONFIGURATION_BASIC_SEED_SCREEN -> {
-                binding.confirm.isVisible = false
-
-                val config = viewModel.currentConfig!!.configData as ConfigSeedData
-                viewModel.setLocalPassphrase(config.passphrase)
-                viewModel.setLocalSeedPhrase(config.seedPhrase)
-
-                viewModel.showLocalSeedPhrase()
-                viewModel.showLocalPassPhrase()
-            }
-
-            else  -> {
-                viewModel.generateNewWallet()
-            }
-        }
-
-        viewModel.seedPhraseGenerated.observe(viewLifecycleOwner, Observer {
-            it.forEach {  word ->
-                binding.seedPhrase.nextWord(word)
-            }
-
-            viewModel.setLocalSeedPhrase(it)
-        })
-
-        binding.confirm.onClick {
-            findNavController().navigate(
-                SeedPhraseFragmentDirections.actionSeedPhraseFragmentToNameWalletFragment(),
-                Constants.Navigation.ANIMATED_ENTER_EXIT_RIGHT_NAV_OPTION
-            )
-        }
-
-        viewModel.userPassphrase.observe(viewLifecycleOwner, Observer {
-            binding.passphrase.isVisible = it.isNotEmpty()
-            binding.passphraseTitle.isVisible = it.isNotEmpty()
-
-            binding.passphrase.text = it
-            viewModel.setLocalPassphrase(it)
-        })
-    }
-
-    override fun showActionBar(): Boolean {
-        if(configSet())
-            return super.showActionBar()
-
-        return false
+//        binding.seedPhrase.resetView()
+//
+//        when(configuration?.configurationType ?: FragmentConfigurationType.CONFIGURATION_NONE) {
+//            FragmentConfigurationType.CONFIGURATION_BASIC_SEED_SCREEN -> {
+//                binding.confirm.isVisible = false
+//
+//                val config = viewModel.currentConfig!!.configData as ConfigSeedData
+//                viewModel.setLocalSeedPhrase(config.seedPhrase)
+//                // todo: add back in showing passphrase
+//                viewModel.showLocalSeedPhrase()
+//            }
+//
+//            else  -> {
+//                viewModel.generateNewWallet()
+//            }
+//        }
+//
+//        viewModel.seedPhraseGenerated.observe(viewLifecycleOwner, Observer {
+//            it.forEach {  word ->
+//                binding.seedPhrase.nextWord(word)
+//            }
+//
+//            viewModel.setLocalSeedPhrase(it)
+//        })
+//
+//        binding.confirm.onClick {
+//            findNavController().navigate(
+//                SeedPhraseFragmentDirections.actionSeedPhraseFragmentToNameWalletFragment(),
+//                Constants.Navigation.ANIMATED_ENTER_EXIT_RIGHT_NAV_OPTION
+//            )
+//        }
+//
+//        viewModel.userPassphrase.observe(viewLifecycleOwner, Observer {
+//            binding.passphrase.isVisible = it.isNotEmpty()
+//            binding.passphraseTitle.isVisible = it.isNotEmpty()
+//
+//            binding.passphrase.text = it
+////            viewModel.setLocalPassphrase(it)
+//        })
     }
 
     override fun actionBarTitle(): Int {

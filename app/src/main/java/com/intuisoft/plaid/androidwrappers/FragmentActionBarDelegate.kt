@@ -1,8 +1,11 @@
 package com.intuisoft.plaid.androidwrappers
 
-import androidx.annotation.StringRes
-
 interface FragmentActionBarDelegate {
-    fun showActionBar() : Boolean
+    fun actionBarVariant() : Int
     fun actionBarTitle() : Int
+    fun actionBarSubtitle() : Int
+    fun actionBarActionLeft() : Int
+    fun actionBarActionRight() : Int
+    fun onActionLeft()
+    fun onActionRight()
 }

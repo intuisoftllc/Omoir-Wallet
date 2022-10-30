@@ -13,20 +13,17 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.navOptions
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.FragmentConfiguration
+import com.intuisoft.plaid.androidwrappers.TopBarView
 import com.intuisoft.plaid.androidwrappers.ignoreOnBackPressed
 import com.intuisoft.plaid.androidwrappers.navigate
-import com.intuisoft.plaid.databinding.FragmentBackupWalletBinding
-import com.intuisoft.plaid.databinding.FragmentCreateImportNonCustodialBinding
-import com.intuisoft.plaid.databinding.FragmentCreateImportPrivateAndSecureBinding
-import com.intuisoft.plaid.databinding.FragmentNameWalletBinding
-import com.intuisoft.plaid.databinding.FragmentWalletCreatedBinding
+import com.intuisoft.plaid.databinding.FragmentOnboardingAllSetBinding
 import com.intuisoft.plaid.features.createwallet.viewmodel.CreateWalletViewModel
 import com.intuisoft.plaid.features.pin.ui.PinProtectedFragment
 import com.intuisoft.plaid.util.Constants
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 
-class WalletCreatedFragment : PinProtectedFragment<FragmentWalletCreatedBinding>() {
+class WalletCreatedFragment : PinProtectedFragment<FragmentOnboardingAllSetBinding>() { // todo: remove make all set frag configurable
     protected val viewModel: CreateWalletViewModel by sharedViewModel()
 
     override fun onCreateView(
@@ -34,26 +31,22 @@ class WalletCreatedFragment : PinProtectedFragment<FragmentWalletCreatedBinding>
         savedInstanceState: Bundle?
     ): View? {
 
-        _binding = FragmentWalletCreatedBinding.inflate(inflater, container, false)
+        _binding = FragmentOnboardingAllSetBinding.inflate(inflater, container, false)
         setupConfiguration(viewModel)
         return binding.root
     }
 
     override fun onConfiguration(configuration: FragmentConfiguration?) {
-        binding.check.animate().alpha(1f).scaleX(1f).scaleY(1f).setDuration(800)
-        ignoreOnBackPressed()
-
-        binding.home.onClick {
-            navigate(R.id.homescreenFragment)
-        }
-
-        binding.gotoDashboard.onClick {
-            navigate(R.id.walletDashboardFragment, viewModel.getWalletId())
-        }
-    }
-
-    override fun showActionBar(): Boolean {
-        return false
+//        binding.check.animate().alpha(1f).scaleX(1f).scaleY(1f).setDuration(800)
+//        ignoreOnBackPressed()
+//
+//        binding.home.onClick {
+//            navigate(R.id.homescreenFragment)
+//        }
+//
+//        binding.gotoDashboard.onClick {
+//            navigate(R.id.walletDashboardFragment, viewModel.getWalletId())
+//        }
     }
 
     override fun actionBarTitle(): Int {

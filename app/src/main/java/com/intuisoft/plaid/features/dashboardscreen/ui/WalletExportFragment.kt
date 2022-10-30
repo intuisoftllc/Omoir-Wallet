@@ -16,7 +16,7 @@ import androidx.navigation.fragment.findNavController
 import com.google.zxing.BarcodeFormat
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.*
-import com.intuisoft.plaid.databinding.FragmentExportWalletBinding
+import com.intuisoft.plaid.databinding.FragmentWalletExportBinding
 import com.intuisoft.plaid.features.dashboardscreen.viewmodel.WalletExportViewModel
 import com.intuisoft.plaid.features.pin.ui.PinProtectedFragment
 import com.intuisoft.plaid.util.Constants
@@ -26,7 +26,7 @@ import com.journeyapps.barcodescanner.BarcodeEncoder
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
-class WalletExportFragment : PinProtectedFragment<FragmentExportWalletBinding>() {
+class WalletExportFragment : PinProtectedFragment<FragmentWalletExportBinding>() {
     private val viewModel: WalletExportViewModel by viewModel()
 
     override fun onCreateView(
@@ -34,7 +34,7 @@ class WalletExportFragment : PinProtectedFragment<FragmentExportWalletBinding>()
         savedInstanceState: Bundle?
     ): View? {
 
-        _binding = FragmentExportWalletBinding.inflate(inflater, container, false)
+        _binding = FragmentWalletExportBinding.inflate(inflater, container, false)
         setupConfiguration(viewModel,
             listOf(
                 FragmentConfigurationType.CONFIGURATION_DISPLAY_QR,
@@ -45,55 +45,55 @@ class WalletExportFragment : PinProtectedFragment<FragmentExportWalletBinding>()
     }
 
     override fun onConfiguration(configuration: FragmentConfiguration?) {
-        configuration?.let {
-            val configData = it.configData as ConfigQrDisplayData
-
-            binding.close.isVisible = configData.showClose
-            binding.pubKeyTitle.isVisible = configData.qrTitle != null
-            binding.pubKeyTitle.text = configData.qrTitle
-            binding.pubAddress.text = configData.payload
-            showQrCode(configData.payload)
-
-            when(it.configurationType) {
-
-                FragmentConfigurationType.CONFIGURATION_DISPLAY_QR -> {
-                    // do nothing
-                }
-
-                FragmentConfigurationType.CONFIGURATION_DISPLAY_SHAREABLE_QR -> {
-                    binding.shareButton.isVisible = true
-                }
-            }
-
-            viewModel.xpubClickable.observe(viewLifecycleOwner, Observer {
-                binding.pubAddress.isClickable = it
-            })
-
-            viewModel.xpubData.observe(viewLifecycleOwner, Observer {
-                binding.pubAddress.text = it
-            })
-
-            viewModel.copyXpub.observe(viewLifecycleOwner, Observer {
-                if(it) {
-                    binding.pubAddress.setTextColor(requireContext().getColor(R.color.success_color))
-                    requireContext().copyToClipboard((configuration!!.configData as ConfigQrDisplayData).payload, "address")
-                } else {
-                    binding.pubAddress.setTextColor(requireContext().getColor(R.color.alt_black))
-                }
-            })
-
-            binding.pubAddress.setOnClickListener {
-                viewModel.copyXpubToClipboard((configuration!!.configData as ConfigQrDisplayData).payload)
-            }
-
-            binding.shareButton.onClick {
-                requireActivity().shareText(null, configData.payload)
-            }
-
-            binding.close.setOnClickListener {
-                findNavController().popBackStack()
-            }
-        }
+//        configuration?.let {
+//            val configData = it.configData as ConfigQrDisplayData
+//
+//            binding.close.isVisible = configData.showClose
+//            binding.pubKeyTitle.isVisible = configData.qrTitle != null
+//            binding.pubKeyTitle.text = configData.qrTitle
+//            binding.pubAddress.text = configData.payload
+//            showQrCode(configData.payload)
+//
+//            when(it.configurationType) {
+//
+//                FragmentConfigurationType.CONFIGURATION_DISPLAY_QR -> {
+//                    // do nothing
+//                }
+//
+//                FragmentConfigurationType.CONFIGURATION_DISPLAY_SHAREABLE_QR -> {
+//                    binding.shareButton.isVisible = true
+//                }
+//            }
+//
+//            viewModel.xpubClickable.observe(viewLifecycleOwner, Observer {
+//                binding.pubAddress.isClickable = it
+//            })
+//
+//            viewModel.xpubData.observe(viewLifecycleOwner, Observer {
+//                binding.pubAddress.text = it
+//            })
+//
+//            viewModel.copyXpub.observe(viewLifecycleOwner, Observer {
+//                if(it) {
+//                    binding.pubAddress.setTextColor(requireContext().getColor(R.color.success_color))
+//                    requireContext().copyToClipboard((configuration!!.configData as ConfigQrDisplayData).payload, "address")
+//                } else {
+//                    binding.pubAddress.setTextColor(requireContext().getColor(R.color.alt_black))
+//                }
+//            })
+//
+//            binding.pubAddress.setOnClickListener {
+//                viewModel.copyXpubToClipboard((configuration!!.configData as ConfigQrDisplayData).payload)
+//            }
+//
+//            binding.shareButton.onClick {
+//                requireActivity().shareText(null, configData.payload)
+//            }
+//
+//            binding.close.setOnClickListener {
+//                findNavController().popBackStack()
+//            }
+//        }
     }
 
     fun mergeBitmaps(logo: Bitmap?, qrcode: Bitmap): Bitmap? {
@@ -120,7 +120,7 @@ class WalletExportFragment : PinProtectedFragment<FragmentExportWalletBinding>()
             )
             val logo: Bitmap = BitmapFactory.decodeResource(resources, R.mipmap.ic_launcher)
             val merge = mergeBitmaps(logo, bitmap)
-            binding.qrCode.setImageBitmap(merge)
+//            binding.qrCode.setImageBitmap(merge)
         } catch (e: Exception) {
         }
     }
@@ -130,11 +130,11 @@ class WalletExportFragment : PinProtectedFragment<FragmentExportWalletBinding>()
         _binding = null
     }
 
-    override fun showActionBar(): Boolean {
+    override fun actionBarVariant(): Int {
         if(configSet())
-            return super.showActionBar()
+            return super.actionBarVariant()
 
-        return true
+        return TopBarView.CENTER_ALIGN
     }
 
     override fun actionBarTitle(): Int {
@@ -142,6 +142,14 @@ class WalletExportFragment : PinProtectedFragment<FragmentExportWalletBinding>()
             return super.actionBarTitle()
 
         return R.string.wallet_export_fragment_label
+    }
+
+    override fun actionBarActionLeft(): Int {
+        return R.drawable.ic_arrow_left
+    }
+
+    override fun onActionLeft() {
+        findNavController().popBackStack()
     }
 
     override fun navigationId(): Int {

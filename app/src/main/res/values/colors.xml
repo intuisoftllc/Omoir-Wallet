@@ -19,6 +19,11 @@
     <color name="light_grey">#A8AFBF</color>
     <color name="white">#FFFFFFFF</color>
     <color name="bitcoin_color">#F7931A</color>
+    <color name="background_color">#FCFEFF</color>
+    <color name="text_black">#2B2D2F</color>
+    <color name="text_grey">#555759</color>
+    <color name="text_red">#D53E56</color>
+    <color name="settings_category_text_color">#6E7073</color>
 
     <!--    Brand Colors    -->
     <color name="brand_color_blue">#104686</color>
@@ -27,4 +32,6 @@
     <color name="brand_color_accent_2">#bacadc</color>
     <color name="brand_color_accent_3">#98afcb</color>
     <!--    Brand Colors End    -->
+
+
 </resources>

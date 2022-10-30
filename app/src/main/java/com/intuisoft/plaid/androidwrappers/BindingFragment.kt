@@ -16,12 +16,11 @@ abstract class BindingFragment<T: ViewBinding> : Fragment(), FragmentActionBarDe
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        (requireActivity() as MainActivity).isActionBarShowing = showActionBar()
-
-        if(showActionBar()) {
-            (requireActivity() as MainActivity).actionBarTitle =
-                getString(actionBarTitle())
-        }
+        (requireActivity() as MainActivity).setActionBarVariant(actionBarVariant())
+        (requireActivity() as MainActivity).setActionBarTitle(if(actionBarTitle() == 0) "" else resources.getString(actionBarTitle()))
+        (requireActivity() as MainActivity).setActionBarSubTitle(if(actionBarSubtitle() == 0) "" else resources.getString(actionBarSubtitle()))
+        (requireActivity() as MainActivity).setActionBarActionLeft(actionBarActionLeft())
+        (requireActivity() as MainActivity).setActionBarActionRight(actionBarActionRight())
     }
 
     override fun onStateChanged(hasNetwork: Boolean) {

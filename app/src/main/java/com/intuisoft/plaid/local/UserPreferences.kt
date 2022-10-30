@@ -2,9 +2,7 @@ package com.intuisoft.plaid.local
 
 import android.content.SharedPreferences
 import com.google.gson.Gson
-import com.intuisoft.plaid.model.AppTheme
-import com.intuisoft.plaid.model.BitcoinDisplayUnit
-import com.intuisoft.plaid.model.FeeType
+import com.intuisoft.plaid.model.*
 import com.intuisoft.plaid.util.Constants
 import com.intuisoft.plaid.util.Constants.Limit.DEFAULT_MAX_PIN_ATTEMPTS
 import com.intuisoft.plaid.walletmanager.StoredWalletInfo
@@ -28,6 +26,7 @@ class UserPreferences(
         const val LAST_SYNC_TIME_KEY = "LAST_SYNC_TIME_KEY"
         const val WALLET_INFO = "WALLET_INFO"
         const val DEFAULT_FEE_TYPE = "DEFAULT_FEE_TYPE"
+        const val SAVED_ADDRESSES = "SAVED_ADDRESSES"
     }
 
     var incorrectPinAttempts: Int
@@ -53,6 +52,33 @@ class UserPreferences(
         }
         set(unit) {
             putInt(BITCOIN_UNIT_KEY, unit.typeId)
+        }
+
+    var savedAddressInfo: SavedAddressInfo
+        get() {
+            val addresses = getString(SAVED_ADDRESSES, null)
+
+            if(addresses != null) {
+                return Gson().fromJson(
+                    addresses,
+                    SavedAddressInfo::class.java
+                )
+            }
+
+            return SavedAddressInfo(mutableListOf())
+        }
+        set(info) {
+            if(info == null) {
+                putString(
+                    SAVED_ADDRESSES,
+                    Gson().toJson(SavedAddressInfo(mutableListOf()))
+                )
+            } else {
+                putString(
+                    SAVED_ADDRESSES,
+                    Gson().toJson(info)
+                )
+            }
         }
 
     var appTheme: AppTheme

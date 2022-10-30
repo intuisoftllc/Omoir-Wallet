@@ -10,7 +10,9 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.docformative.docformative.toArrayList
 import com.intuisoft.plaid.R
+import com.intuisoft.plaid.activities.MainActivity
 import com.intuisoft.plaid.androidwrappers.FragmentConfiguration
+import com.intuisoft.plaid.androidwrappers.TopBarView
 import com.intuisoft.plaid.androidwrappers.navigate
 import com.intuisoft.plaid.androidwrappers.onBackPressedCallback
 import com.intuisoft.plaid.databinding.FragmentHomescreenBinding
@@ -21,6 +23,7 @@ import com.intuisoft.plaid.features.pin.ui.PinProtectedFragment
 import com.intuisoft.plaid.model.LocalWalletModel
 import com.intuisoft.plaid.repositories.LocalStoreRepository
 import com.intuisoft.plaid.util.Constants
+import com.intuisoft.plaid.walletmanager.AbstractWalletManager
 import com.intuisoft.plaid.walletmanager.ManagerState
 import com.intuisoft.plaid.walletmanager.WalletManager
 import org.koin.android.ext.android.inject
@@ -30,7 +33,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class HomescreenFragment : PinProtectedFragment<FragmentHomescreenBinding>() {
     protected val viewModel: HomeScreenViewModel by viewModel()
     protected val localStoreRepository: LocalStoreRepository by inject()
-    protected val walletManager: WalletManager by inject()
+    protected val walletManager: AbstractWalletManager by inject()
 
     private val adapter = BasicWalletDataAdapter(
         onWalletSelected = ::onWalletSelected,
@@ -68,25 +71,22 @@ class HomescreenFragment : PinProtectedFragment<FragmentHomescreenBinding>() {
             }
         }
 
-        binding.walletsList.adapter = adapter
+
+        binding.walletsView.walletsList.adapter = adapter
         viewModel.homeScreenGreeting.observe(viewLifecycleOwner, Observer {
-            binding.greetingMessage1.text = it.first
-            binding.greetingMessage2.text = it.second
+            (requireActivity() as MainActivity).setActionBarTitle(it.second)
+            (requireActivity() as MainActivity).setActionBarSubTitle(it.first + ",")
         })
 
         viewModel.wallets.observe(viewLifecycleOwner, Observer {
             adapter.addWallets(it.toArrayList())
 
-            binding.walletsList.isVisible = it.isNotEmpty()
-            binding.noWalletsImg.isVisible = it.isEmpty()
-            binding.noWalletsMessage.isVisible = it.isEmpty()
+            binding.walletsView.walletsList.isVisible = it.isNotEmpty()
+            binding.walletsView.noWalletsContainer.isVisible = it.isEmpty()
         })
 
-        binding.settings.setOnClickListener {
-            navigate(R.id.settingsFragment)
-        }
-
-        binding.addWallet.setOnClickListener {
+        binding.createWallet.setOnClickListener {
+            // todo: limit to 5 for free version
             navigate(R.id.createWalletFragment)
         }
     }
@@ -95,8 +95,8 @@ class HomescreenFragment : PinProtectedFragment<FragmentHomescreenBinding>() {
         navigate(R.id.walletDashboardFragment, wallet)
     }
 
-    override fun showActionBar(): Boolean {
-        return false
+    override fun actionBarVariant(): Int {
+        return TopBarView.LEFT_ALIGN
     }
 
     override fun actionBarTitle(): Int {
@@ -105,6 +105,14 @@ class HomescreenFragment : PinProtectedFragment<FragmentHomescreenBinding>() {
 
     override fun navigationId(): Int {
         return R.id.homescreenFragment
+    }
+
+    override fun actionBarActionRight(): Int {
+        return R.drawable.ic_settings
+    }
+
+    override fun onActionRight() {
+        navigate(R.id.settingsFragment)
     }
 
     override fun onDestroyView() {

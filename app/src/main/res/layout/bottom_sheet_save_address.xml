@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:paddingHorizontal="@dimen/margin_20"
+    android:paddingTop="@dimen/margin_28"
+    android:paddingBottom="@dimen/horizontal_padding_size"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <TextView
+        android:id="@+id/bottom_sheet_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/save_address_title"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        style="@style/TextStyle.Semibold.24"
+        android:textStyle="bold"
+        android:textColor="?attr/colorPrimaryVariant"/>
+
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/name_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/save"
+        app:layout_constraintTop_toBottomOf="@id/bottom_sheet_title"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="@dimen/margin_64"
+        android:layout_marginBottom="@dimen/horizontal_padding_size_large"
+        app:cardCornerRadius="@dimen/card_corner_radius"
+        android:layout_marginHorizontal="@dimen/margin_20"
+        app:layout_constraintVertical_bias="@dimen/vertical_bias_15">
+
+        <EditText
+            android:id="@+id/name"
+            style="@style/TextStyle.Medium.14"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:hint="@string/welcome_alias_suggestion"
+            android:maxLength="25"
+            android:maxLines="1"
+            android:padding="@dimen/horizontal_padding_size"
+            android:inputType="text"
+            android:textColorHint="@color/color_disabled"
+            android:textSize="14sp"
+            tools:ignore="TextContrastCheck,TouchTargetSizeCheck" />
+    </androidx.cardview.widget.CardView>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/save_address_info_1"
+        style="@style/TextStyle.Semibold.12"
+        app:layout_constraintStart_toStartOf="@id/name_container"
+        app:layout_constraintBottom_toTopOf="@id/name_container"
+        android:layout_marginBottom="@dimen/horizontal_padding_size"/>
+
+    <TextView
+        android:id="@+id/textLeft"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="0/50"
+        style="@style/TextStyle.Semibold.12"
+        app:layout_constraintEnd_toEndOf="@id/name_container"
+        app:layout_constraintBottom_toTopOf="@id/name_container"
+        android:layout_marginBottom="@dimen/horizontal_padding_size"/>
+
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/address_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/save"
+        app:layout_constraintTop_toBottomOf="@id/name_container"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="@dimen/margin_64"
+        android:layout_marginBottom="@dimen/horizontal_padding_size_large"
+        app:cardCornerRadius="@dimen/card_corner_radius"
+        android:layout_marginHorizontal="@dimen/margin_20"
+        app:layout_constraintVertical_bias="0.25">
+
+        <EditText
+            android:id="@+id/address"
+            style="@style/TextStyle.Medium.14"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:hint="@string/welcome_alias_suggestion"
+            android:maxLines="1"
+            android:padding="@dimen/horizontal_padding_size"
+            android:inputType="text"
+            android:textColorHint="@color/color_disabled"
+            android:textSize="14sp"
+            tools:ignore="TextContrastCheck,TouchTargetSizeCheck" />
+    </androidx.cardview.widget.CardView>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/save_address_info_2"
+        style="@style/TextStyle.Semibold.12"
+        app:layout_constraintStart_toStartOf="@id/address_container"
+        app:layout_constraintBottom_toTopOf="@id/address_container"
+        android:layout_marginBottom="@dimen/horizontal_padding_size"/>
+
+    <TextView
+        android:id="@+id/validation_error"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:text="@string/save_address_validation_error_already_exists"
+        android:gravity="center"
+        android:visibility="gone"
+        style="@style/TextStyle.Regular.14"
+        app:layout_constraintTop_toBottomOf="@id/address_container"
+        android:layout_marginTop="@dimen/margin_8"
+        android:textColor="@color/text_red"/>
+
+
+    <com.intuisoft.plaid.androidwrappers.RoundedButtonView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:text_position="center"
+        app:btn_text="@string/cancel"
+        app:button_style="transparent"
+        android:id="@+id/cancel"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="@dimen/margin_4"
+        android:layout_marginHorizontal="@dimen/horizontal_padding_size_large"/>
+
+    <com.intuisoft.plaid.androidwrappers.RoundedButtonView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:text_position="center"
+        app:btn_text="@string/save"
+        app:button_style="rounded"
+        android:id="@+id/save"
+        android:layout_marginTop="@dimen/margin_20"
+        app:layout_constraintTop_toBottomOf="@id/address_container"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/cancel"
+        android:layout_marginBottom="@dimen/margin_8"
+        android:layout_marginHorizontal="@dimen/horizontal_padding_size_large"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

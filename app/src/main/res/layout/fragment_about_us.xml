@@ -1,64 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:paddingTop="10dp">
+    android:padding="16dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <LinearLayout
+    <com.intuisoft.plaid.androidwrappers.SettingsItemView
+        android:id="@+id/appearance_light"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:paddingVertical="10dp"
-        android:layout_margin="10dp">
+        app:settings_variant="card"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:item_title="@string/about_us_option_security"
+        app:show_chevron="true"/>
 
-        <com.intuisoft.plaid.androidwrappers.SettingsItemView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:item_title="Security"
-            app:show_switch="false"
-            android:clickable="true"
-            android:paddingVertical="4dp"
-            android:id="@+id/security"
-            app:show_check="false"
-            app:show_chevron="true"
-            app:subtitle_icon="@drawable/ic_satoshi"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0"
-            android:focusable="true" />
+    <com.intuisoft.plaid.androidwrappers.SettingsItemView
+        android:id="@+id/appearance_dark"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:settings_variant="card"
+        android:layout_marginTop="@dimen/horizontal_padding_size"
+        app:layout_constraintTop_toBottomOf="@id/appearance_light"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:item_title="@string/about_us_option_privacy_policy"
+        app:show_chevron="true"/>
 
-        <com.intuisoft.plaid.androidwrappers.SettingsItemView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:item_title="Privacy Policy"
-            app:show_switch="false"
-            android:clickable="true"
-            android:id="@+id/privacyPolicy"
-            app:show_check="false"
-            app:show_chevron="true"
-            android:paddingVertical="4dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0"
-            android:focusable="true" />
+    <com.intuisoft.plaid.androidwrappers.SettingsItemView
+        android:id="@+id/appearance_auto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:settings_variant="card"
+        android:layout_marginTop="@dimen/horizontal_padding_size"
+        app:layout_constraintTop_toBottomOf="@id/appearance_dark"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:item_title="@string/about_us_option_terms_of_service"
+        app:show_chevron="true"/>
 
-
-        <com.intuisoft.plaid.androidwrappers.SettingsItemView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:item_title="Terms Of Service"
-            app:show_switch="false"
-            android:clickable="true"
-            android:id="@+id/termsOfService"
-            app:show_check="false"
-            app:show_chevron="true"
-            android:paddingVertical="4dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0"
-            android:focusable="true" />
-
-    </LinearLayout>
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+    <Button
+        android:visibility="gone"
+        android:id="@+id/normal_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:text="Get Started"
+        android:gravity="start|center_vertical"
+        android:textAllCaps="false"
+        android:fontFamily="@font/montserrat_regular"
+        android:textColor="@color/white"
+        android:letterSpacing="0.025"/>
+
+    <android.widget.Button
+        android:id="@+id/rounded_style_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:text="Get Started"
+        android:visibility="gone"
+        android:textAllCaps="false"
+        android:gravity="start|center_vertical"
+        android:paddingHorizontal="18dp"
+        android:background="@drawable/selector_rounded_button"
+        android:textColor="@color/white"
+        android:letterSpacing="0.025"
+        android:elevation="0dp"
+        style="?android:attr/borderlessButtonStyle"
+        android:fontFamily="@font/montserrat_regular"
+        app:cornerRadius="25dp" />
+
+    <android.widget.Button
+        android:id="@+id/transparent_style_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:text="Get Started"
+        android:textAllCaps="false"
+        android:visibility="gone"
+        android:gravity="start|center_vertical"
+        android:paddingHorizontal="18dp"
+        android:background="?android:selectableItemBackground"
+        android:textColor="@color/text_grey"
+        android:letterSpacing="0.025"
+        android:elevation="0dp"
+        style="?android:attr/borderlessButtonStyle"
+        android:fontFamily="@font/montserrat_regular"
+        app:cornerRadius="25dp" />
+
+    <android.widget.Button
+        android:id="@+id/pill_style_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:text="Get Started"
+        android:textAllCaps="false"
+        android:visibility="gone"
+        android:gravity="start|center_vertical"
+        android:paddingHorizontal="18dp"
+        android:background="@drawable/selector_pill_button"
+        android:textColor="@color/white"
+        android:letterSpacing="0.025"
+        android:elevation="0dp"
+        style="?android:attr/borderlessButtonStyle"
+        android:fontFamily="@font/montserrat_regular"
+        app:cornerRadius="25dp" />
+
+    <android.widget.Button
+        android:visibility="gone"
+        android:id="@+id/rounded_outlined_style_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:text="Day"
+        android:textAllCaps="false"
+        android:gravity="start|center_vertical"
+        android:paddingHorizontal="18dp"
+        android:background="@drawable/selector_rounded_outline_button"
+        android:textColor="?attr/colorPrimary"
+        android:letterSpacing="0.025"
+        android:elevation="0dp"
+        style="?android:attr/borderlessButtonStyle"
+        android:fontFamily="@font/montserrat_regular"
+        app:cornerRadius="25dp" />
+
+
+</LinearLayout>

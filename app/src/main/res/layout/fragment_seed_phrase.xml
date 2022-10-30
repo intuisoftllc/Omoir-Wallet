@@ -2,24 +2,26 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
-    android:padding="10dp">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
 
     <TextView
-        android:id="@+id/backup_title"
+        android:id="@+id/seed_phrase_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Your Seed Phrase"
-        style="@style/H4.Bold"
+        android:text="@string/seed_phrase_title"
         android:layout_marginTop="20dp"
+        style="@style/TextStyle.Semibold.24"
+        android:textStyle="bold"
+        app:layout_constraintVertical_bias="@dimen/parent_top_vertical_bias_small"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:textColor="@color/black"/>
+        android:textColor="?attr/colorPrimaryVariant"/>
 
     <TextView
-        android:id="@+id/backup_subtitle"
+        android:id="@+id/seed_phrase_subtitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
@@ -27,41 +29,19 @@
         android:paddingHorizontal="20dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/backup_title"
-        android:text="Jot down these words on a piece of paper in the order shown (the order matters).\n\nIt is not reccomended that you store these words unencrypted on a physical device like a laptop or phone. As you may run the risk of an attacker gaining access to your funds." />
+        app:layout_constraintTop_toBottomOf="@id/seed_phrase_title"
+        android:text="@string/seed_phrase_description" />
 
     <com.intuisoft.plaid.androidwrappers.SeedPhraseView
         android:id="@+id/seedPhrase"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_file_cabinet_220"
         android:layout_gravity="center_horizontal"
-        app:layout_constraintVertical_bias="0.2"
+        app:layout_constraintVertical_bias="@dimen/vertical_bias_25"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/warning"
-        app:layout_constraintTop_toBottomOf="@id/backup_subtitle"/>
-
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="With Passphrase"
-        android:id="@+id/passphraseTitle"
-        app:layout_constraintTop_toBottomOf="@+id/seedPhrase"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        style="@style/H6.Bold"
-        android:layout_marginTop="10dp"/>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/passphrase"
-        app:layout_constraintTop_toBottomOf="@+id/passphraseTitle"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:gravity="center"/>
+        app:layout_constraintTop_toBottomOf="@id/seed_phrase_subtitle"/>
 
     <LinearLayout
         android:id="@+id/warning"
@@ -71,23 +51,25 @@
         android:layout_marginTop="10dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginBottom="10dp"
+        android:layout_marginBottom="@dimen/parent_bottom_margin"
         android:orientation="vertical"
         android:paddingVertical="10dp"
-        app:layout_constraintBottom_toTopOf="@id/confirm"
-        android:background="@drawable/error_bg_shape">
+        android:layout_marginHorizontal="@dimen/horizontal_padding_size"
+        app:layout_constraintBottom_toTopOf="@id/continue_button"
+        android:background="@drawable/shape_error_background">
 
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Do not share your seed phrase!"
-            style="@style/H6.Bold"
+            android:text="@string/seed_phrase_alert_title"
             android:layout_gravity="center_horizontal"
+            android:drawableLeft="@drawable/ic_alert_red"
+            android:drawablePadding="@dimen/margin_4"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:textColor="@color/alt_error_color"/>
+            android:textColor="@color/text_red"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -97,20 +79,21 @@
             android:paddingHorizontal="20dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/backup_title"
-            android:textColor="@color/alt_error_color"
-            android:text="If someone has your secret phrase, they will have full control of your wallet." />
+            android:textColor="@color/text_red"
+            android:text="@string/seed_phrase_alert_description" />
 
 
     </LinearLayout>
 
     <com.intuisoft.plaid.androidwrappers.RoundedButtonView
-        android:id="@+id/confirm"
+        android:id="@+id/continue_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:btn_text="Continue"
+        app:btn_text="@string/continue_button"
         app:button_style="rounded"
         app:text_position="center"
+        android:layout_marginBottom="@dimen/parent_bottom_margin"
+        android:layout_marginHorizontal="@dimen/horizontal_padding_size_large"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>

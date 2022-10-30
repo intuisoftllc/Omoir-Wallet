@@ -545,7 +545,7 @@ class PasscodeView @JvmOverloads constructor(
     }
 
     init {
-        inflate(getContext(), R.layout.passcode_view, this)
+        inflate(getContext(), R.layout.custom_view_passcode_view, this)
         val typedArray = context.obtainStyledAttributes(attrs, R.styleable.PasscodeView)
         try {
             passcodeType =

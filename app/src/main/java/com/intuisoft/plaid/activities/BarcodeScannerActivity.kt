@@ -18,6 +18,7 @@ import com.intuisoft.plaid.androidwrappers.BindingActivity
 import com.intuisoft.plaid.androidwrappers.checkAppPermission
 import com.intuisoft.plaid.databinding.ActivityScanBarcodeBinding
 import com.intuisoft.plaid.util.Constants.ActivityResult.BARCODE_EXTRA
+import com.intuisoft.plaid.walletmanager.AbstractWalletManager
 import com.intuisoft.plaid.walletmanager.WalletManager
 import org.koin.android.ext.android.inject
 import org.koin.core.component.KoinComponent
@@ -28,7 +29,7 @@ class BarcodeScannerActivity : BindingActivity<ActivityScanBarcodeBinding>(), Ko
 
     private lateinit var barcodeDetector: BarcodeDetector
     private lateinit var cameraSource: CameraSource
-    private val walletManager: WalletManager by inject()
+    private val walletManager: AbstractWalletManager by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

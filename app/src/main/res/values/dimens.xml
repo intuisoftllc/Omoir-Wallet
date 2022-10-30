@@ -1,5 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="edit_text_text_size">20sp</dimen>
-    <dimen name="edit_text_text_size_small">16sp</dimen>
-    <dimen name="settings_item_subtitle_icon_size">14dp</dimen>
+    <dimen name="parent_top_margin">40dp</dimen>
+    <dimen name="parent_top_vertical_bias">0.2</dimen>
+    <dimen name="parent_top_vertical_bias_small">0.05</dimen>
+    <dimen name="rounded_edge_radius">16dp</dimen>
+    <dimen name="horizontal_padding_size">16dp</dimen>
+    <dimen name="horizontal_padding_size_large">40dp</dimen>
+    <dimen name="card_corner_radius">8dp</dimen>
+    <dimen name="parent_bottom_margin">32dp</dimen>
+    <dimen name="vertical_bias_25">0.25</dimen>
+    <dimen name="vertical_bias_15">0.15</dimen>
+    <dimen name="vertical_bias_40">0.4</dimen>
+    <dimen name="subtitle_icon_size">14dp</dimen>
+    <dimen name="card_view_corner_radius">12dp</dimen>
+    <dimen name="card_view_elevation">1dp</dimen>
+    <dimen name="qr_code_size">250dp</dimen>
+
+    <!--  margin dimens -->
+    <dimen name="margin_64">64dp</dimen>
+    <dimen name="margin_56">56dp</dimen>
+    <dimen name="margin_52">52dp</dimen>
+    <dimen name="margin_38">38dp</dimen>
+    <dimen name="margin_35">35dp</dimen>
+    <dimen name="margin_28">28dp</dimen>
+    <dimen name="margin_26">26dp</dimen>
+    <dimen name="margin_24">24dp</dimen>
+    <dimen name="margin_20">20dp</dimen>
+    <dimen name="margin_18">18dp</dimen>
+    <dimen name="margin_15">15dp</dimen>
+    <dimen name="margin_10">10dp</dimen>
+    <dimen name="margin_8">8dp</dimen>
+    <dimen name="margin_6">6dp</dimen>
+    <dimen name="margin_4">4dp</dimen>
+    <dimen name="margin_3">3dp</dimen>
+    <!--  Margin dimens end -->
 </resources>

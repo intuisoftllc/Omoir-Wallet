@@ -13,10 +13,7 @@ import android.util.TypedValue
 import android.view.Gravity
 import android.view.View
 import android.view.inputmethod.InputMethodManager
-import android.widget.FrameLayout
-import android.widget.ImageView
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.activity.OnBackPressedCallback
 import androidx.annotation.DimenRes
 import androidx.annotation.DrawableRes
@@ -210,6 +207,10 @@ fun TextView.leftDrawable(@DrawableRes id: Int = 0, @DimenRes sizeRes: Int) {
 
 fun ImageView.tint(color: Int) {
     this.drawable.mutate().setColorFilter(color, PorterDuff.Mode.SRC_ATOP)
+}
+
+fun Button.tint(color: Int) {
+    this.background.mutate().setColorFilter(color, PorterDuff.Mode.SRC_ATOP)
 }
 
 fun Activity.shareText(subject: String?, message: String) {

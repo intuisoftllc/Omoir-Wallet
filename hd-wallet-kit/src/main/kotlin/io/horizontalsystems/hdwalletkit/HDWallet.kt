@@ -1,27 +1,45 @@
 package io.horizontalsystems.hdwalletkit
 
-class HDWallet(seed: ByteArray, private val coinType: Int, val gapLimit: Int = 20, val purpose: Purpose = Purpose.BIP44) {
+import io.horizontalsystems.hdwalletkit.HDExtendedKey.Companion.getVersion
+
+class HDWallet(
+    private val hdKeychain: HDKeychain,
+    private val coinType: Int,
+    purpose: Purpose
+) {
+
+    constructor(
+        seed: ByteArray,
+        coinType: Int,
+        purpose: Purpose
+    ) : this(
+        HDKeychain(seed), coinType, purpose
+    )
+
+    constructor(
+        masterKey: HDKey,
+        coinType: Int,
+        purpose: Purpose
+    ) : this(
+        HDKeychain(masterKey), coinType, purpose
+    )
 
     enum class Chain {
         EXTERNAL, INTERNAL
     }
 
-    enum class Purpose(
-        val value: Int,
-        val pubAddressType: List<PublicAddressType> // format [mainNetType, testNetType]
-    ) {
-        BIP44(44, listOf(PublicAddressType.P2PKH, PublicAddressType.TEST_P2PKH)),
-        BIP49(49, listOf(PublicAddressType.P2WPKH_P2SH, PublicAddressType.TEST_P2WPKH_P2SH)),
-        BIP84(84, listOf(PublicAddressType.P2WPKH, PublicAddressType.TEST_P2WPKH));
+    enum class Purpose(val value: Int) {
+        BIP44(44),
+        BIP49(49),
+        BIP84(84)
     }
-
-    private val hdKeychain: HDKeychain = HDKeychain(seed)
 
     // m / purpose' / coin_type' / account' / change / address_index
     //
     // Purpose is a constant set to 44' (or 0x8000002C) following the BIP43 recommendation.
     // It indicates that the subtree of this node is used according to this specification.
     // Hardened derivation is used at this level.
+    private val purpose: Int = purpose.value
 
     // One master node (seed) can be used for unlimited number of independent cryptocoins such as Bitcoin, Litecoin or Namecoin. However, sharing the same space for various cryptocoins has some disadvantages.
     // This level creates a separate subtree for every cryptocoin, avoiding reusing addresses across cryptocoins and improving privacy issues.
@@ -32,32 +50,33 @@ class HDWallet(seed: ByteArray, private val coinType: Int, val gapLimit: Int = 2
     // private var coinType: Int = 0
 
     fun hdPublicKey(account: Int, index: Int, external: Boolean): HDPublicKey {
-        return HDPublicKey(index = index, external = external, key = privateKey(account = account, index = index, chain = if (external) 0 else 1))
+        return HDPublicKey(privateKey(account = account, index = index, chain = if (external) 0 else 1))
     }
 
     fun hdPublicKeys(account: Int, indices: IntRange, external: Boolean): List<HDPublicKey> {
-        val parentPrivateKey = privateKey("m/${purpose.value}'/$coinType'/$account'/${if (external) 0 else 1}") // todo: this may be a bug they are missing the last ' in the path same for others below
-        return hdKeychain
-            .deriveNonHardenedChildKeys(parentPrivateKey, indices)
-            .map {
-                HDPublicKey(it.childNumber, external, it)
-            }
+        val parentPrivateKey =
+            privateKey("m/$purpose'/$coinType'/$account'/${if (external) 0 else 1}")
+        return hdKeychain.deriveNonHardenedChildKeys(parentPrivateKey, indices).map {
+            HDPublicKey(it)
+        }
     }
 
     fun receiveHDPublicKey(account: Int, index: Int): HDPublicKey {
-        return HDPublicKey(index = index, external = true, key = privateKey(account = account, index = index, chain = 0))
+        return HDPublicKey(privateKey(account = account, index = index, chain = 0))
     }
 
     fun changeHDPublicKey(account: Int, index: Int): HDPublicKey {
-        return HDPublicKey(index = index, external = false, key = privateKey(account = account, index = index, chain = 1))
+        return HDPublicKey(privateKey(account = account, index = index, chain = 1))
     }
 
     fun privateKey(account: Int, index: Int, chain: Int): HDKey {
-        return privateKey(path = "m/${purpose.value}'/$coinType'/$account'/$chain/$index")
+        return privateKey(path = "m/$purpose'/$coinType'/$account'/$chain/$index")
     }
 
     fun privateKey(account: Int, index: Int, external: Boolean): HDKey {
-        return privateKey(account, index, if (external) Chain.EXTERNAL.ordinal else Chain.INTERNAL.ordinal)
+        return privateKey(
+            account, index, if (external) Chain.EXTERNAL.ordinal else Chain.INTERNAL.ordinal
+        )
     }
 
     fun privateKey(path: String): HDKey {
@@ -65,6 +84,7 @@ class HDWallet(seed: ByteArray, private val coinType: Int, val gapLimit: Int = 2
     }
 
     fun masterPublicKey(mainNet: Boolean = true): String {
-        return hdKeychain.getKeyByPath("m/${purpose.value}'/$coinType'/0'").serializePubB58(purpose, if(mainNet) purpose.pubAddressType[0] else purpose.pubAddressType[1])
+        return hdKeychain.getKeyByPath("m/${purpose}'/$coinType'/0'").serializePublic(getVersion(purpose, !mainNet).value)
     }
+
 }

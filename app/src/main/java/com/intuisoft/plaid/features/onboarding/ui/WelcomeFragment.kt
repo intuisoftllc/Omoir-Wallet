@@ -10,31 +10,34 @@ import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.core.widget.addTextChangedListener
 import androidx.core.widget.doAfterTextChanged
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.intuisoft.plaid.R
+import com.intuisoft.plaid.androidwrappers.BindingFragment
+import com.intuisoft.plaid.androidwrappers.TopBarView
 import com.intuisoft.plaid.androidwrappers.hideSoftKeyboard
 import com.intuisoft.plaid.androidwrappers.ignoreOnBackPressed
-import com.intuisoft.plaid.databinding.FragmentWelcomeBinding
+import com.intuisoft.plaid.databinding.FragmentOnboardingWelcomeBinding
 import com.intuisoft.plaid.features.onboarding.viewmodel.OnboardingViewModel
 import com.intuisoft.plaid.util.Constants
 import com.intuisoft.plaid.util.Constants.Limit.MAX_ALIAS_LENGTH
+import com.intuisoft.plaid.walletmanager.AbstractWalletManager
 import com.intuisoft.plaid.walletmanager.WalletManager
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.core.component.inject
 
 
-class WelcomeFragment : OnboardingFragment<FragmentWelcomeBinding>() {
+class WelcomeFragment : BindingFragment<FragmentOnboardingWelcomeBinding>() {
     private val viewModel: OnboardingViewModel by sharedViewModel()
-    override val onboardingStep = 1
-    private val walletManager: WalletManager by inject()
+    private val walletManager: AbstractWalletManager by inject()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
 
-        _binding = FragmentWelcomeBinding.inflate(inflater, container, false)
+        _binding = FragmentOnboardingWelcomeBinding.inflate(inflater, container, false)
         return binding.root
 
     }
@@ -42,6 +45,7 @@ class WelcomeFragment : OnboardingFragment<FragmentWelcomeBinding>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        binding.next.enableButton(false)
         binding.name.setOnKeyListener(object : View.OnKeyListener {
             override fun onKey(v: View?, keyCode: Int, event: KeyEvent): Boolean {
                 // if the event is a key down event on the enter button
@@ -61,6 +65,7 @@ class WelcomeFragment : OnboardingFragment<FragmentWelcomeBinding>() {
         binding.name.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable) {
                 viewModel.enableNextButton(s.length > 0 && s.length <= MAX_ALIAS_LENGTH)
+                binding.textLeft.text = "${s?.length}/25"
             }
 
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
@@ -70,15 +75,42 @@ class WelcomeFragment : OnboardingFragment<FragmentWelcomeBinding>() {
             }
         })
 
+        binding.next.onClick {
+            onNextStep()
+        }
+
+        viewModel.advanceAllowed.observe(viewLifecycleOwner, Observer {
+            binding.next.enableButton(it)
+        })
+
         ignoreOnBackPressed()
     }
-
-    override fun showActionBar(): Boolean {
-        return false
-    }
-
     override fun actionBarTitle(): Int {
         return 0
+    }
+
+    override fun actionBarVariant(): Int {
+        return TopBarView.NO_BAR
+    }
+
+    override fun actionBarSubtitle(): Int {
+        return 0
+    }
+
+    override fun actionBarActionLeft(): Int {
+        return 0
+    }
+
+    override fun actionBarActionRight(): Int {
+        return 0
+    }
+
+    override fun onActionLeft() {
+        // ignore
+    }
+
+    override fun onActionRight() {
+        // ignore
     }
 
     override fun navigationId(): Int {
@@ -91,14 +123,10 @@ class WelcomeFragment : OnboardingFragment<FragmentWelcomeBinding>() {
         _binding = null
     }
 
-    override fun onNextStep() {
+    fun onNextStep() {
         viewModel.updateAlias(binding.name.text.toString())
 
         findNavController().navigate(WelcomeFragmentDirections.actionWelcomeFragmentToOnboardingPinSetupFragment(),
             Constants.Navigation.ANIMATED_ENTER_EXIT_RIGHT_NAV_OPTION)
-    }
-
-    override fun onPrevStep() {
-        // do nothing
     }
 }

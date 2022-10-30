@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingTop="32dp">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
 
     <ScrollView
         android:layout_width="match_parent"
@@ -14,267 +13,346 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent">
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/settings_title_1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/brand_color_accent_3"
-                android:text="General"
-                android:layout_marginStart="10dp"
-                style="@style/H6.LightBold"/>
-
-            <com.intuisoft.plaid.androidwrappers.SettingsItemView
+            android:layout_height="match_parent">
+            <androidx.cardview.widget.CardView
+                android:id="@+id/settings_general"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:item_title="Bitcoin Unit"
-                app:item_subtitle="Satoshi"
-                app:show_switch="false"
-                android:clickable="true"
-                android:id="@+id/bitcoinUnitSetting"
-                app:subtitle_icon="@drawable/ic_satoshi"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0"
-                android:focusable="true" />
+                android:layout_marginBottom="@dimen/horizontal_padding_size"
+                app:cardCornerRadius="4dp"
+                android:layout_margin="10dp"
+                app:layout_constraintHorizontal_bias="0">
 
-            <com.intuisoft.plaid.androidwrappers.SettingsItemView
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        style="@style/TextStyle.Semibold.12"
+                        android:textColor="@color/settings_category_text_color"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="@dimen/horizontal_padding_size"
+                        android:text="@string/settings_category_general"/>
+
+                    <com.intuisoft.plaid.androidwrappers.SettingsItemView
+                        android:id="@+id/bitcoin_unit"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:settings_variant="normal"
+                        app:item_title="@string/settings_option_bitcoin_unit"
+                        android:layout_marginBottom="@dimen/horizontal_padding_size"
+                        app:subtitle_icon="@drawable/ic_satoshi"
+                        app:item_subtitle="Sats"/>
+
+                    <com.intuisoft.plaid.androidwrappers.SettingsItemView
+                        android:id="@+id/change_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:settings_variant="normal"
+                        android:layout_marginBottom="@dimen/horizontal_padding_size"
+                        app:item_title="@string/settings_option_set_name"
+                        app:item_subtitle="@string/welcome_alias_suggestion"/>
+
+                    <com.intuisoft.plaid.androidwrappers.SettingsItemView
+                        android:id="@+id/appearance"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:settings_variant="normal"
+                        app:item_title="@string/settings_option_appearance"
+                        app:item_subtitle="@string/settings_option_appearance_auto"/>
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/settings_security"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:item_title="Appearance"
-                app:item_subtitle="Determined by the system"
-                app:show_switch="false"
-                android:clickable="true"
-                android:id="@+id/appearanceSetting"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/settings_general"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0"
-                android:focusable="true" />
+                android:layout_marginBottom="@dimen/horizontal_padding_size"
+                app:cardCornerRadius="4dp"
+                android:layout_margin="10dp"
+                app:layout_constraintHorizontal_bias="0">
 
-            <View
-                android:layout_marginVertical="5dp"
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        style="@style/TextStyle.Semibold.12"
+                        android:textColor="@color/settings_category_text_color"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="@dimen/horizontal_padding_size"
+                        android:text="@string/settings_category_security"/>
+
+                    <com.intuisoft.plaid.androidwrappers.SettingsItemView
+                        android:id="@+id/update_pin"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:settings_variant="normal"
+                        android:paddingVertical="5dp"
+                        android:layout_marginBottom="@dimen/horizontal_padding_size"
+                        app:item_title="@string/settings_option_update_pin"/>
+
+                    <com.intuisoft.plaid.androidwrappers.SettingsItemView
+                        android:id="@+id/max_attempts"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:settings_variant="normal"
+                        android:layout_marginBottom="@dimen/horizontal_padding_size"
+                        app:item_title="@string/settings_option_max_pin_attempts"
+                        app:item_subtitle="@string/settings_option_max_pin_attempts_description"/>
+
+                    <com.intuisoft.plaid.androidwrappers.SettingsItemView
+                        android:id="@+id/pin_timeout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:settings_variant="normal"
+                        android:layout_marginBottom="@dimen/horizontal_padding_size"
+                        app:item_title="@string/settings_option_max_pin_timeout"
+                        app:item_subtitle="@string/settings_option_max_pin_timeout_variant_1"/>
+
+                    <com.intuisoft.plaid.androidwrappers.SettingsItemView
+                        android:id="@+id/fingerprint"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:settings_variant="normal"
+                        app:show_switch="true"
+                        app:item_title="@string/settings_option_enable_fingerprint"
+                        app:item_subtitle="@string/settings_option_enable_fingerprint_description"/>
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/settings_subscriptions"
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/grey"/>
-
-            <TextView
-                android:id="@+id/settings_title_2"
-                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/brand_color_accent_3"
-                android:text="Security"
-                android:layout_marginStart="10dp"
-                style="@style/H6.LightBold"/>
-
-            <com.intuisoft.plaid.androidwrappers.SettingsItemView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:item_title="Update Pin"
-                app:show_switch="false"
-                android:clickable="true"
-                android:paddingVertical="10dp"
-                android:id="@+id/updatePinSetting"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/settings_security"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0"
-                android:focusable="true" />
+                android:layout_marginBottom="@dimen/horizontal_padding_size"
+                app:cardCornerRadius="4dp"
+                android:layout_margin="10dp"
+                app:layout_constraintHorizontal_bias="0">
 
-            <com.intuisoft.plaid.androidwrappers.SettingsItemView
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        style="@style/TextStyle.Semibold.12"
+                        android:textColor="@color/settings_category_text_color"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="@dimen/horizontal_padding_size"
+                        android:text="@string/settings_category_subscriptions"/>
+
+                    <com.intuisoft.plaid.androidwrappers.SettingsItemView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:settings_variant="normal"
+                        app:item_title="@string/settings_option_plaid_crypto_wallet_pro"
+                        app:item_subtitle="@string/settings_option_plaid_crypto_wallet_pro_description"/>
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/settings_wallets"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:item_title="Set Max Pin Attempts"
-                app:item_subtitle="Set the max amount of times to enter a pin"
-                app:show_switch="false"
-                android:clickable="true"
-                android:id="@+id/maxPinSettings"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/settings_subscriptions"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0"
-                android:focusable="true" />
+                android:layout_marginBottom="@dimen/horizontal_padding_size"
+                app:cardCornerRadius="4dp"
+                android:layout_margin="10dp"
+                app:layout_constraintHorizontal_bias="0">
 
-            <com.intuisoft.plaid.androidwrappers.SettingsItemView
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        style="@style/TextStyle.Semibold.12"
+                        android:textColor="@color/settings_category_text_color"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="@dimen/horizontal_padding_size"
+                        android:text="@string/settings_category_wallets"/>
+
+                    <com.intuisoft.plaid.androidwrappers.SettingsItemView
+                        android:id="@+id/view_wallets"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:settings_variant="normal"
+                        android:layout_marginBottom="@dimen/horizontal_padding_size"
+                        app:item_title="@string/settings_option_view_wallets"
+                        app:item_subtitle="@string/settings_option_view_wallets_description"/>
+
+                    <com.intuisoft.plaid.androidwrappers.SettingsItemView
+                        android:id="@+id/address_book"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:settings_variant="normal"
+                        android:layout_marginBottom="@dimen/horizontal_padding_size"
+                        app:item_title="@string/settings_option_view_address_book"
+                        app:item_subtitle="@string/settings_option_view_address_book_description"/>
+
+                    <com.intuisoft.plaid.androidwrappers.SettingsItemView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:settings_variant="normal"
+                        android:layout_marginBottom="@dimen/horizontal_padding_size"
+                        app:item_title="@string/settings_option_view_address_min_confirmations"
+                        app:item_subtitle="@string/settings_option_view_address_min_confirmations_description"/>
+
+                    <com.intuisoft.plaid.androidwrappers.SettingsItemView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:settings_variant="normal"
+                        app:item_title="@string/settings_option_view_address_min_escape_pod_protocol"
+                        app:item_subtitle="@string/settings_option_view_address_min_escape_pod_protocol_description"/>
+
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/settings_misc"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:item_title="Pin Code Timeout"
-                app:item_subtitle="5 min"
-                app:show_switch="false"
-                android:clickable="true"
-                android:id="@+id/timeoutSetting"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/settings_wallets"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0"
-                android:focusable="true" />
+                android:layout_marginBottom="@dimen/horizontal_padding_size"
+                app:cardCornerRadius="4dp"
+                android:layout_margin="10dp"
+                app:layout_constraintHorizontal_bias="0">
 
-            <com.intuisoft.plaid.androidwrappers.SettingsItemView
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        style="@style/TextStyle.Semibold.12"
+                        android:textColor="@color/settings_category_text_color"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="@dimen/horizontal_padding_size"
+                        android:text="@string/settings_category_misc"/>
+
+                    <com.intuisoft.plaid.androidwrappers.SettingsItemView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:settings_variant="normal"
+                        android:layout_marginBottom="@dimen/horizontal_padding_size"
+                        app:item_title="@string/settings_option_view_about_us"
+                        app:item_subtitle="@string/settings_option_view_about_us_description"/>
+
+                    <com.intuisoft.plaid.androidwrappers.SettingsItemView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:settings_variant="normal"
+                        android:layout_marginBottom="@dimen/horizontal_padding_size"
+                        app:item_title="@string/settings_option_view_credits"
+                        app:item_subtitle="@string/settings_option_view_credits_description"/>
+
+                    <com.intuisoft.plaid.androidwrappers.SettingsItemView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:settings_variant="normal"
+                        app:item_title="@string/settings_option_view_help"
+                        app:item_subtitle="@string/settings_option_view_help_description"/>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/settings_wipe_data"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:item_title="Enable Fingerprint"
-                app:item_subtitle="Require fingerprint for signing transactions"
-                app:show_switch="true"
-                android:clickable="true"
-                android:id="@+id/enableFingerprintSetting"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/settings_misc"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0"
-                android:focusable="true" />
+                android:layout_marginBottom="@dimen/horizontal_padding_size"
+                app:cardCornerRadius="4dp"
+                android:layout_margin="10dp"
+                app:layout_constraintHorizontal_bias="0">
 
-            <View
-                android:layout_marginVertical="5dp"
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingHorizontal="10dp">
+                    <com.intuisoft.plaid.androidwrappers.SettingsItemView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:settings_variant="normal"
+                        android:paddingVertical="8dp"
+                        app:title_text_color="@color/error_color"
+                        app:item_title="@string/settings_option_view_wipe_data"/>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/settings_version"
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/grey"/>
-
-            <TextView
-                android:id="@+id/settings_title_3"
-                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/brand_color_accent_3"
-                android:text="Subscriptions"
-                android:layout_marginStart="10dp"
-                style="@style/H6.LightBold"/>
-
-            <com.intuisoft.plaid.androidwrappers.SettingsItemView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:item_title="Plaid Crypto Wallet™ Pro"
-                app:item_subtitle="Manage your subscription"
-                app:show_switch="false"
-                app:title_text_color="@color/brand_color_dark_blue"
-                android:clickable="true"
-                android:paddingVertical="10dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/settings_wipe_data"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0"
-                android:focusable="true" />
+                android:layout_marginBottom="@dimen/horizontal_padding_size"
+                app:cardCornerRadius="4dp"
+                android:layout_margin="10dp"
+                app:layout_goneMarginBottom="@dimen/horizontal_padding_size"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintHorizontal_bias="0">
 
-            <View
-                android:layout_marginVertical="5dp"
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/grey"/>
-
-            <TextView
-                android:id="@+id/settings_title_4"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/brand_color_accent_3"
-                android:text="Wallets"
-                android:layout_marginStart="10dp"
-                style="@style/H6.LightBold"/>
-
-
-            <com.intuisoft.plaid.androidwrappers.SettingsItemView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:item_title="View wallets"
-                app:item_subtitle="Manage your bitcoin wallets"
-                app:show_switch="false"
-                android:clickable="true"
-                android:paddingVertical="10dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0"
-                android:focusable="true" />
-
-
-            <com.intuisoft.plaid.androidwrappers.SettingsItemView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:item_title="Address Book"
-                app:item_subtitle="Save your frequently used addresses"
-                app:show_switch="false"
-                android:clickable="true"
-                android:paddingVertical="10dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0"
-                android:focusable="true" />
-
-
-            <com.intuisoft.plaid.androidwrappers.SettingsItemView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:item_title="Enable EPP"
-                app:item_subtitle="What is escape pod protocol?"
-                app:show_switch="true"
-                android:clickable="true"
-                android:paddingVertical="10dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0"
-                android:focusable="true" />
-            <View
-                android:layout_marginVertical="5dp"
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/grey"/>
-
-            <TextView
-                android:id="@+id/settings_title_5"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/brand_color_accent_3"
-                android:text="Miscellaneous"
-                android:layout_marginStart="10dp"
-                style="@style/H6.LightBold"/>
-
-            <com.intuisoft.plaid.androidwrappers.SettingsItemView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:item_title="About us"
-                app:item_subtitle="Privacy Policy and Terms of Service"
-                app:show_switch="false"
-                android:clickable="true"
-                android:id="@+id/aboutUsSetting"
-                android:paddingVertical="10dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0"
-                android:focusable="true" />
-
-            <com.intuisoft.plaid.androidwrappers.SettingsItemView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:item_title="Help"
-                app:item_subtitle="Get help and learn more"
-                app:show_switch="false"
-                android:clickable="true"
-                android:paddingVertical="10dp"
-                android:id="@+id/helpSetting"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0"
-                android:focusable="true" />
-
-            <View
-                android:layout_marginVertical="5dp"
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/grey"/>
-
-            <com.intuisoft.plaid.androidwrappers.SettingsItemView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:item_title="Wipe All Data"
-                android:paddingVertical="10dp"
-                app:show_switch="false"
-                android:clickable="true"
-                android:id="@+id/wipeDataSetting"
-                app:title_text_color="@color/error_color"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0"
-                android:focusable="true" />
-
-            <View
-                android:layout_marginVertical="5dp"
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/grey"/>
-
-            <com.intuisoft.plaid.androidwrappers.SettingsItemView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:item_title="Version"
-                app:item_subtitle="v1.0.2"
-                app:show_switch="false"
-                android:clickable="true"
-                android:id="@+id/appVersionSetting"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0"
-                android:focusable="true" />
-        </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingHorizontal="10dp">
+                    <com.intuisoft.plaid.androidwrappers.SettingsItemView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:settings_variant="normal"
+                        android:paddingVertical="8dp"
+                        app:item_title="@string/settings_option_view_build_version"
+                        app:item_subtitle="v0.1.20"/>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

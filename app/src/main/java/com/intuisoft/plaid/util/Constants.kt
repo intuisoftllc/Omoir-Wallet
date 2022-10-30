@@ -60,11 +60,6 @@ class Constants {
     }
 
     object Strings {
-        const val STRING_IMMEDIATE_TIMEOUT = "Immediately, once I leave the app"
-        const val STRING_1_MINUTE_TIMEOUT = "1 Minute"
-        const val STRING_2_MINUTE_TIMEOUT = "2 Minutes"
-        const val STRING_5_MINUTE_TIMEOUT = "5 Minutes"
-        const val STRING_10_MINUTE_TIMEOUT = "10 Minutes"
         const val USE_BIOMETRIC_AUTH = "Use Biometric Authentication"
         const val DISABLE_BIOMETRIC_AUTH = "Disable Biometric Authentication"
         const val SCAN_TO_ERASE_DATA = "Scan To Erase Data"
@@ -94,6 +89,7 @@ class Constants {
         const val TEST_WALLET_1 = "yard impulse luxury drive today throw farm pepper survey wreck glass federal"
         const val TEST_WALLET_2 = "wrong cousin spell stadium snake enact author piano venue outer question chair"
         const val NO_INTERNET = "No Internet Connection!"
+        const val BASE_WALLET = "BASE_WALLET"
     }
 
     object ServerStrings {
@@ -118,7 +114,6 @@ class Constants {
     }
 
     object Limit {
-        const val MAX_ONBOARDING_STEPS = 3
         const val MAX_ALIAS_LENGTH = 25
         const val DEFAULT_MAX_PIN_ATTEMPTS = 15
         const val MIN_RECOMMENDED_PIN_ATTEMPTS = 4

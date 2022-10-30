@@ -7,7 +7,8 @@ import android.view.animation.AnimationUtils
 import androidx.recyclerview.widget.RecyclerView
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.BindingViewHolder
-import com.intuisoft.plaid.databinding.BasicWalletListItemBinding
+import com.intuisoft.plaid.databinding.ListItemBasicWalletDetailBinding
+import com.intuisoft.plaid.features.homescreen.adapters.detail.BasicWalletDataDetail
 import com.intuisoft.plaid.model.LocalWalletModel
 import com.intuisoft.plaid.repositories.LocalStoreRepository
 
@@ -25,8 +26,8 @@ class BasicWalletDataAdapter(
         viewType: Int
     ): BindingViewHolder {
         return when (viewType) {
-            R.layout.basic_wallet_list_item -> {
-                BindingViewHolder.create(parent, BasicWalletListItemBinding::inflate)
+            R.layout.list_item_basic_wallet_detail -> {
+                BindingViewHolder.create(parent, ListItemBasicWalletDetailBinding::inflate)
             }
             else -> throw IllegalArgumentException("Invalid BindingViewHolder Type")
         }

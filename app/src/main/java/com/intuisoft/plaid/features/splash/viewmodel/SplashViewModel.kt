@@ -11,6 +11,7 @@ import com.intuisoft.plaid.features.splash.ui.SplashFragment
 import com.intuisoft.plaid.features.splash.ui.SplashFragmentDirections
 import com.intuisoft.plaid.local.UserPreferences
 import com.intuisoft.plaid.repositories.LocalStoreRepository
+import com.intuisoft.plaid.walletmanager.AbstractWalletManager
 import com.intuisoft.plaid.walletmanager.WalletManager
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -18,13 +19,12 @@ import kotlinx.coroutines.launch
 class SplashViewModel(
     application: Application,
     private val localStoreRepository: LocalStoreRepository,
-    private val walletManager: WalletManager
+    private val walletManager: AbstractWalletManager
 ): BaseViewModel(application, localStoreRepository, walletManager) {
 
     private val _nextDestination = MutableLiveData<NavDirections>()
     val nextDestination: LiveData<NavDirections> = _nextDestination
 
-    // todo: place logic here to navigate to the next screen
     fun nextScreen() {
         viewModelScope.launch {
             delay(SPLASH_DURATION.toLong())
@@ -35,6 +35,10 @@ class SplashViewModel(
                 _nextDestination.postValue(SplashFragmentDirections.actionSplashFragmentToOnboardingFragment())
             }
         }
+    }
+
+    fun startWalletManager() {
+        walletManager.start()
     }
 
     fun resetPinCheckedTime() {

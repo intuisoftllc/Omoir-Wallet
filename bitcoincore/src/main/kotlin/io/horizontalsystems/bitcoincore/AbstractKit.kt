@@ -24,6 +24,9 @@ abstract class AbstractKit {
 
     val syncState get() = bitcoinCore.syncState
 
+    val watchAccount: Boolean
+        get() = bitcoinCore.watchAccount
+
     fun start() {
         bitcoinCore.start()
     }
@@ -36,13 +39,16 @@ abstract class AbstractKit {
         bitcoinCore.refresh()
     }
 
-    fun onEnterForeground(){
+    fun onEnterForeground() {
         bitcoinCore.onEnterForeground()
     }
 
-    fun onEnterBackground(){
+    fun onEnterBackground() {
         bitcoinCore.onEnterBackground()
     }
+
+    fun getPurpose() =
+        bitcoinCore.getPurpose()
 
     fun getUnspentOutputs() =
         bitcoinCore.getUnspentOutputs()
@@ -71,7 +77,12 @@ abstract class AbstractKit {
         return bitcoinCore.send(hash, scriptType, value, senderPay, feeRate, sortType, createOnly)
     }
 
-    fun redeem(unspentOutput: UnspentOutput, value: Long, address: String, feeRate: Int, sortType: TransactionDataSortType, createOnly: Boolean = false): FullTransaction {
+    fun redeem(unspentOutput: UnspentOutput,
+        value: Long,
+        address: String,
+        feeRate: Int,
+        sortType: TransactionDataSortType
+    , createOnly: Boolean = false): FullTransaction {
         return bitcoinCore.redeem(unspentOutput, value, address, feeRate, sortType, createOnly)
     }
 
@@ -87,7 +98,7 @@ abstract class AbstractKit {
         return bitcoinCore.receiveAddress()
     }
 
-    fun getWallet() = bitcoinCore.getWallet()
+    fun getMasterPublicKey(mainNet: Boolean = true) = bitcoinCore.getMasterPublicKey(mainNet)
 
     fun receivePublicKey(): PublicKey {
         return bitcoinCore.receivePublicKey()

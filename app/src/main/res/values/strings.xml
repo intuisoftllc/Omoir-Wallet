@@ -1,11 +1,212 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Plaid</string>
-    <string name="action_settings">Settings</string>
-    <!-- Strings used for fragments for navigation -->
-    <string name="business_email">intuisoftllc@gmail.com</string>
-    <string name="support_request_subject">Plaid Crypto Wallet Support</string>
-    <string name="support_request_message">Device: %1$s\nApi Level: %2$s\nOS Version: %3$s\nModel: %4$s\nProduct: %5$s\n----------------------------------------\n\nHello Intuisoft team, I would like to request more information regarding your app.</string>
 
+<!--    On-boarding Welcome Strings -->
+    <string name="welcome_setup_message">Let\’s get you setup\nWhat shall I call you?</string>
+    <string name="welcome_alias_suggestion">Joel Smith</string>
+<!--    On-boarding Welcome Strings End -->
+
+<!--    On-boarding Fingerprint Strings -->
+    <string name="fingerprint_use_title">Use your fingerprint for signing transactions</string>
+    <string name="fingerprint_use_description">Add an additional layer of security to the app by requiring your fingerprint for signing transactions.\n\nYou can always skip this step and set it up later in  settings.</string>
+<!--    On-boarding Fingerprint Strings End -->
+
+<!--    On-boarding All Set Strings -->
+    <string name="goto_homescreen">Go to Home Screen</string>
+    <string name="all_set_title">Your All Set!</string>
+    <string name="all_set_description">Congratulations on taking the first step towards your financial sovernty.\n\nPlaid Crypto Wallet™ gives you the tools you need to take your cryptocurrency journey to the next level. Get started by creating a new wallet or navigating to the main screen.</string>
+<!--    On-boarding All Set Strings End -->
+
+<!--  Pin Screen Strings -->
+    <string name="create_pin_tip_message">Create a pin up to 8 digits</string>
+    <string name="incorrect_pin_length_tip_message">Pin must be at least 4 digits</string>
+    <string name="re_enter_pin_tip_message">Re-enter new pin</string>
+    <string name="wrong_input_tip_message">Pin code does not match</string>
+    <string name="pin_check_success_tip_message">Pin is correct</string>
+<!--  Pin Screen Strings End -->
+
+<!--    Settings Strings -->
+    <string name="settings_category_general">General</string>
+    <string name="settings_category_security">Security</string>
+    <string name="settings_category_subscriptions">Subscriptions</string>
+    <string name="settings_category_wallets">Wallets</string>
+    <string name="settings_category_misc">Miscellaneous</string>
+    <string name="settings_option_bitcoin_unit">Bitcoin Unit</string>
+    <string name="settings_option_set_name">Change Name</string>
+    <string name="settings_option_update_pin">Update Pin</string>
+    <string name="settings_option_max_pin_attempts">Set Max Pin Attempts</string>
+    <string name="settings_option_view_wallets">View Wallets</string>
+    <string name="settings_option_view_wallets_description">Manage your bitcoin wallets</string>
+    <string name="settings_option_view_about_us">About us</string>
+    <string name="settings_option_view_about_us_description">Privacy Policy and Terms of Service</string>
+    <string name="settings_option_view_credits">Credits</string>
+    <string name="settings_option_view_credits_description">Libraries Used &amp; Notable Credits</string>
+    <string name="settings_option_view_help">Help</string>
+    <string name="settings_option_view_wipe_data">Wipe All Data</string>
+    <string name="settings_option_view_build_version">Build Version</string>
+    <string name="settings_option_view_help_description">Get Help and Learn More</string>
+    <string name="settings_option_view_address_book">Address Book</string>
+    <string name="settings_option_view_address_book_description">Save your frequently used addresses</string>
+    <string name="settings_option_view_address_min_confirmations">Minimum Confirmations</string>
+    <string name="settings_option_view_address_min_confirmations_description">Set the minimum confirmations needed for incoming/outgoing transactions</string>
+    <string name="settings_option_view_address_min_escape_pod_protocol">Escape Pod Protocol</string>
+    <string name="settings_option_view_address_min_escape_pod_protocol_description">Set default settings for epp</string>
+    <string name="settings_option_plaid_crypto_wallet_pro">Plaid Crypto Wallet<font color="#104686">™</font> Pro</string>
+    <string name="settings_option_plaid_crypto_wallet_pro_description">Manage your subscription</string>
+    <string name="settings_option_max_pin_timeout">Pin Code Timeout</string>
+    <string name="settings_option_max_pin_timeout_variant_1">Immediately, Once I Leave the app</string>
+    <string name="settings_option_max_pin_timeout_variant_2">1 minute</string>
+    <string name="settings_option_max_pin_timeout_variant_3">2 minutes</string>
+    <string name="settings_option_max_pin_timeout_variant_4">5 minutes</string>
+    <string name="settings_option_max_pin_timeout_variant_5">10 minutes</string>
+    <string name="settings_option_enable_fingerprint">Enable Fingerprint</string>
+    <string name="settings_option_enable_fingerprint_description">Require fingerprint for signing transactions</string>
+    <string name="settings_option_max_pin_attempts_description">Set the max amount of times to enter a pin</string>
+    <string name="settings_option_appearance">Appearance</string>
+    <string name="settings_option_appearance_light">Light mode</string>
+    <string name="settings_option_appearance_dark">Dark mode</string>
+    <string name="settings_option_appearance_auto">Determined by the system</string>
+<!--    Settings Strings End -->
+
+<!--    Bitcoin Unit Strings -->
+    <string name="bitcoin_unit_1">Bitcoin (BTC)</string>
+    <string name="bitcoin_unit_2">Satoshi (SAT)</string>
+<!--    Bitcoin Unit Strings End -->
+
+<!--    About Us Strings -->
+    <string name="about_us_option_security">Security</string>
+    <string name="about_us_option_privacy_policy">Privacy Policy</string>
+    <string name="about_us_option_terms_of_service">Terms Of Service</string>
+<!--    About Us Strings End -->
+
+<!--    View Wallets Strings -->
+    <string name="view_wallets_no_wallets_created">You have not created any\nwallets yet</string>
+<!--    View Wallets Strings End -->
+
+<!--    Create Import Wallet Strings -->
+    <string name="create_import_import_existing_wallet">Import An Existing Wallet</string>
+<!--    Create Import Wallet Strings End -->
+
+<!--    Non-Custodial Wallet Strings -->
+    <string name="non_custodial_wallet_title">Non-Custodial Wallet</string>
+    <string name="non_custodial_wallet_description">Not your keys, not your crypto! Your\nsecret pharse and private keys, never\nleave your device.</string>
+<!--    Non-Custodial Wallet Strings End -->
+
+<!--    Private & Secure Wallet Strings -->
+    <string name="private_secure_wallet_title">Private &amp; Secure Wallet</string>
+    <string name="private_secure_wallet_description">Your wallet is protected via a pin code\nand fingerprint if enabled. Your wallet\ndata stored on the device is also AES\nencrypted.</string>
+<!--    Private & Secure Wallet Strings End -->
+
+<!--    Escape Pod Protocol Intro Strings -->
+    <string name="escape_pod_protocol_intro_title">Escape Pod Protocol</string>
+    <string name="escape_pod_protocol_intro_description">Have concerns someone may have\ngained access to  your seed phrase?\nUse Escape pod  protocol (EPP) to send\nall your funds to a new wallet without\nsacrificing privacy.</string>
+<!--    Escape Pod Protocol Intro Strings End -->
+
+<!--    Exchange Assets Strings -->
+    <string name="exchange_assets_title">Exchange Assets</string>
+    <string name="exchange_assets_description">Effortlessly top your bitcoin wallet\nfrom other cryptocurrencies, without\nleaving the app.</string>
+<!--    Exchange Assets Strings End -->
+
+<!--    Backup Seed Phrase Strings -->
+    <string name="backup_seed_phrase_title">Backup Your Seed Phrase</string>
+    <string name="backup_seed_phrase_description">In the next step you will see your seed phrase (%1$s words) that will allow you to recover your wallet in the future in case you loose access to this wallet.</string>
+    <string name="backup_seed_phrase_acknowledgement_1">If I do not backup my seed phrase I understand that I could risk losing all my funds.</string>
+    <string name="backup_seed_phrase_acknowledgement_2">I Understand if I expose my seed phrase to anyone, at any point my funds can be stolen.</string>
+    <string name="backup_seed_phrase_acknowledgement_3">I Understand that it is solely my responsibility to keep my seed phrase secure.</string>
+<!--    Backup Seed Phrase Strings End -->
+
+<!--    Seed Phrase Strings -->
+    <string name="seed_phrase_alert_title">Do not share your phrase!</string>
+    <string name="seed_phrase_alert_description">If someone has your secret phrase, they will have full control of your wallet.</string>
+    <string name="seed_phrase_title">Your Seed Phrase</string>
+    <string name="seed_phrase_description">Jot down these words on a piece of paper in the order shown.\n\nIt is recommended that you write these words on a piece of paper and store them in a secure location to minimize the risk of an attacker gaining access to your funds.</string>
+<!--    Seed Phrase Strings End -->
+
+<!--    Name Wallet Strings -->
+    <string name="name_wallet_title">Name Your Wallet</string>
+    <string name="name_wallet_description">Finally, let\’s give your wallet a name</string>
+    <string name="name_wallet_hint">My First Wallet</string>
+<!--    Name Wallet Strings End -->
+
+<!--    Wallet Dashboard Strings -->
+    <string name="wallet_dashboard_no_transactions">No Transactions Yet</string>
+    <string name="wallet_dashboard_transactions_title">Transactions</string>
+<!--    Wallet Dashboard Strings End -->
+
+<!--    Export Wallet Strings -->
+    <string name="export_wallet_title">Your Public Key</string>
+<!--    Export Wallet Strings End -->
+
+<!--    Withdraw Strings -->
+
+<!--    Withdraw Strings End -->
+
+<!--    Easter Egg Strings -->
+    <string name="easter_egg_screen_title">HODL! 1 BTC = 1 BTC</string>
+<!--    Easter Egg Strings End -->
+
+<!--    Pin Strings -->
+    <string name="enter_pin_to_reset_message">Enter current pin to update</string>
+    <string name="wiping_data_title">Wiping App Data</string>
+    <string name="wiping_data_message">Erasing all app data, this may take some time.</string>
+<!--    Pin Strings End -->
+
+<!--    Change Name Bottom Sheet Strings -->
+    <string name="change_name_title">Change Name</string>
+<!--    Change Name Bottom Sheet Strings End -->
+
+<!--    Max Pin Attempts Bottom Sheet Strings -->
+    <string name="max_attempts_title">Max Pin Attempts</string>
+<!--    Max Pin Attempts Bottom Sheet Strings End -->
+
+<!--    Low Pin Entry Bottom Sheet Strings -->
+    <string name="low_pin_entry_title">Low Pin Entry Limit</string>
+    <string name="low_pin_entry_subtitle">Setting your invalid pin entry limit below 5 may result in you losing access to your funds if not properly backed up.</string>
+    <string name="low_pin_entry_positive_button">I Understand The Risks</string>
+<!--    Low Pin Entry Bottom Sheet Strings End -->
+
+<!--    Pin Timeout Bottom Sheet Strings -->
+    <string name="pin_timeout_title">Pin Timeout</string>
+<!--    Pin Timeout Bottom Sheet Strings End -->
+
+<!--    Address Book Strings -->
+    <string name="address_book_no_addresses">You have not saved any\naddresses yet</string>
+<!--    Address Book Strings End -->
+
+<!--    Save Address Strings -->
+    <string name="save_address_title">Save Address</string>
+    <string name="save_address_info_1">Address Name</string>
+    <string name="save_address_info_2">Address</string>
+    <string name="save_address_validation_error_already_exists">Address with that name already exists!</string>
+    <string name="save_address_validation_error_invalid_address">Not a valid bitcoin address!</string>
+    <string name="save_address_copy_message">Copied address for \"%1$s\"</string>
+    <string name="save_address_update_title">Update Address</string>
+    <string name="save_address_delete_title">Delete Address</string>
+    <string name="save_address_delete_subtitle">Are you sure you want to delete the saved address for \"%1$s\"?</string>
+<!--    Save Address Strings End -->
+
+<!--    Generic Use Strings -->
+    <string name="welcome">Welcome</string>
+    <string name="name">Name</string>
+    <string name="wallet_name">Wallet Name</string>
+    <string name="next">Next</string>
+    <string name="skip">Skip</string>
+    <string name="register">Register</string>
+    <string name="continue_button">Continue</string>
+    <string name="sats">Sats</string>
+    <string name="btc">BTC</string>
+    <string name="save">Save</string>
+    <string name="cancel">Cancel</string>
+    <string name="delete">Delete</string>
+    <string name="update">Update</string>
+    <string name="bitcoin">Bitcoin</string>
+    <string name="advanced_options">Advanced Options</string>
+    <string name="create_new_wallet">Create A New Wallet</string>
+    <string name="available_balance">Available Balance</string>
+<!--    Generic Use Strings End -->
+
+
+<!--  Fragment Labels -->
     <string name="homescreen_fragment_label">Home</string>
     <string name="wallet_dashboard_fragment_label">Wallet Dashboard</string>
     <string name="welcome_fragment_label">Welcome</string>
@@ -14,6 +215,8 @@
     <string name="wallet_export_fragment_label">Export Wallet</string>
     <string name="display_unit_fragment_label">Bitcoin Unit</string>
     <string name="appearance_fragment_label">Appearance</string>
+    <string name="address_book_fragment_label">Address Book</string>
+    <string name="manage_wallets_fragment_label">Manage Wallets</string>
     <string name="withdraw_fragment_label">Send BTC</string>
     <string name="transaction_details_fragment_label">Transaction Details</string>
     <string name="meme_fragment_label">You Have Unleashed The Memes!</string>
@@ -29,37 +232,6 @@
     <string name="setup_pin_fragment_label">Onboarding Pin Setup</string>
     <string name="fingerprint_fragment_label">Setup Fingerprint</string>
     <string name="fingerprint_all_set_label">All Set</string>
-    <string name="onboarding_greeting_1">Welcome</string>
-    <string name="onboarding_back_button_text">Back</string>
-    <string name="bitcoin">Bitcoin</string>
-    <string name="low_pin_limit_risk_message">Setting your invalid pin entry limit below 5 may result in you losing access to your funds if not properly backed up.</string>
-    <string name="satoshi">Satoshi</string>
-    <string name="cancel">Cancel</string>
-    <string name="easter_egg_screen_title">HODL! 1 BTC = 1 BTC</string>
-    <string name="low_pin_limit_title">Low Pin Entry Limit</string>
-    <string name="wipe_data_title">Erase All Data</string>
-    <string name="delete_wallet_title">Erase Wallet Data</string>
-    <string name="wiping_data_title">Wiping App Data</string>
-    <string name="wiping_wallet_title">Erasing Wallet</string>
-    <string name="reset_wallet_message">You will be directed back to the home screen to reflect the changes</string>
-    <string name="wipe_wallet_data_message">Are you sure you want to erase your wallet? This action is irreversible, please be sure you have backed up your seed phrase and passphrase (if applicable).</string>
-    <string name="wipe_data_message">Are you sure you want to wipe all data from Plaid Crypto Wallet™? This action is irreversible, please be sure you have backed up all your seed phrases.</string>
-    <string name="wiping_data_message">Erasing all app data, this may take some time.</string>
-    <string name="wiping_wallet_message">Erasing wallet data, this may take some time.</string>
-    <string name="risk_acknowledgement_1">I Understand The Risks</string>
-    <string name="erase_data">Erase Data</string>
-    <string name="okay">Okay</string>
-    <string name="no_connection_message">No internet connection</string>
-    <string name="fingerprint_register_description_2">Add an additional layer of security to the app by requiring your fingerprint for signing transactions.\n\nYou can always skip this step and set it up later in settings.</string>
-    <string name="fingerprint_register_description_1">Use your fingerprint for signing transactions</string>
-    <string name="create_pin_tip_message">Create a pin up to 8 digits</string>
-    <string name="incorrect_pin_length_tip_message">Pin must be at least 4 digits</string>
-    <string name="re_enter_pin_tip_message">Re-enter new pin</string>
-    <string name="wrong_input_tip_message">Pin code does not match</string>
-    <string name="pin_check_success_tip_message">Pin is correct</string>
-    <string name="enter_pin_to_unlock_message">Enter pin to unlock</string>
-    <string name="enter_pin_to_reset_message">Enter current pin to update</string>
-    <string name="rename_wallet_message">Rename your wallet.</string>
-    <string name="wallet_passphrase_warning">Please Keep in mind that wallets created with a passphrase may be unrecoverable if the passphrase has not been backed up.\n\nTo recover this wallet in the future, the passphrase entered must be entered EXACTLY as it was (case sensitive) when the wallet was first created.</string>
-    <string name="switch_bitcoin_network_description">This above settings allow you to change specific properties of your wallet.\n\nIf you do not know what they mean, it\'s best to leave them unchanged.</string>
+<!--  Fragment Labels End -->
+
 </resources>

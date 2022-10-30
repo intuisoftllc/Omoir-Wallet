@@ -4,7 +4,7 @@ import com.intuisoft.plaid.local.WipeDataListener
 import com.intuisoft.plaid.model.AppTheme
 import com.intuisoft.plaid.model.BitcoinDisplayUnit
 import com.intuisoft.plaid.model.FeeType
-import com.intuisoft.plaid.util.Constants
+import com.intuisoft.plaid.model.SavedAddressModel
 import com.intuisoft.plaid.walletmanager.StoredWalletInfo
 
 interface LocalStoreRepository {
@@ -30,6 +30,14 @@ interface LocalStoreRepository {
     fun updateBitcoinDisplayUnit(displayUnit: BitcoinDisplayUnit)
 
     fun getBitcoinDisplayUnit(): BitcoinDisplayUnit
+
+    fun getSavedAddresses(): List<SavedAddressModel>
+
+    fun saveAddress(name: String, address: String)
+
+    fun updateSavedAddress(oldName: String, name: String, address: String)
+
+    fun deleteSavedAddress(name: String)
 
     fun updateAppTheme(theme: AppTheme)
 

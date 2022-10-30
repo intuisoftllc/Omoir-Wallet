@@ -14,9 +14,9 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.navOptions
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.BindingFragment
+import com.intuisoft.plaid.androidwrappers.TopBarView
 import com.intuisoft.plaid.androidwrappers.ignoreOnBackPressed
-import com.intuisoft.plaid.databinding.FragmentAllSetBinding
-import com.intuisoft.plaid.databinding.FragmentWelcomeBinding
+import com.intuisoft.plaid.databinding.FragmentOnboardingAllSetBinding
 import com.intuisoft.plaid.features.onboarding.viewmodel.OnboardingViewModel
 import com.intuisoft.plaid.features.pin.ui.PinFragmentDirections
 import com.intuisoft.plaid.util.Constants
@@ -24,7 +24,7 @@ import com.intuisoft.plaid.util.Constants.Limit.MAX_ALIAS_LENGTH
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 
-class AllSetFragment : BindingFragment<FragmentAllSetBinding>() {
+class AllSetFragment : BindingFragment<FragmentOnboardingAllSetBinding>() {
     private val viewModel: OnboardingViewModel by sharedViewModel()
 
     override fun onCreateView(
@@ -32,7 +32,7 @@ class AllSetFragment : BindingFragment<FragmentAllSetBinding>() {
         savedInstanceState: Bundle?
     ): View? {
 
-        _binding = FragmentAllSetBinding.inflate(inflater, container, false)
+        _binding = FragmentOnboardingAllSetBinding.inflate(inflater, container, false)
         return binding.root
 
     }
@@ -41,10 +41,10 @@ class AllSetFragment : BindingFragment<FragmentAllSetBinding>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.check.animate().alpha(1f).scaleX(1f).scaleY(1f).setDuration(800)
+        binding.successIcon.animate().alpha(1f).scaleX(1f).scaleY(1f).setDuration(800)
         ignoreOnBackPressed()
 
-        binding.home.onClick {
+        binding.gotoHomescreen.onClick {
             findNavController().navigate(AllSetFragmentDirections.actionAllSetFragmentToHomeScreenFragment(),
                 Constants.Navigation.ANIMATED_FADE_IN_NAV_OPTION
             )
@@ -57,12 +57,32 @@ class AllSetFragment : BindingFragment<FragmentAllSetBinding>() {
         }
     }
 
-    override fun showActionBar(): Boolean {
-        return false
-    }
-
     override fun actionBarTitle(): Int {
         return 0
+    }
+
+    override fun actionBarVariant(): Int {
+        return TopBarView.NO_BAR
+    }
+
+    override fun actionBarSubtitle(): Int {
+        return 0
+    }
+
+    override fun actionBarActionLeft(): Int {
+        return 0
+    }
+
+    override fun actionBarActionRight(): Int {
+        return 0
+    }
+
+    override fun onActionLeft() {
+        // ignore
+    }
+
+    override fun onActionRight() {
+        // ignore
     }
 
     override fun navigationId(): Int {

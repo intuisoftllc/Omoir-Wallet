@@ -1,15 +1,17 @@
 package io.horizontalsystems.bitcoincore.managers
 
+import io.horizontalsystems.bitcoincore.core.IPublicKeyManager
 import io.horizontalsystems.bitcoincore.core.IStorage
 import io.horizontalsystems.bitcoincore.core.Wallet
 import io.horizontalsystems.bitcoincore.models.PublicKey
 import io.horizontalsystems.bitcoincore.storage.PublicKeyWithUsedState
+import io.horizontalsystems.hdwalletkit.HDWallet
 
 class PublicKeyManager(
         private val storage: IStorage,
         private val wallet: Wallet,
         private val restoreKeyConverter: RestoreKeyConverterChain
-) : IBloomFilterProvider {
+) : IBloomFilterProvider, IPublicKeyManager {
 
     // IBloomFilterProvider
 
@@ -25,23 +27,29 @@ class PublicKeyManager(
         return elements
     }
 
+    // purpose is ignored since we derive this from the wallet itself
+    override fun masterPublicKey(purpose: HDWallet.Purpose, mainNet: Boolean) =
+        wallet.masterPublicKey(mainNet)
+
     @Throws
-    fun receivePublicKey(): PublicKey {
+    override fun receivePublicKey(): PublicKey {
         return getPublicKey(true)
     }
 
     @Throws
-    fun changePublicKey(): PublicKey {
+    override fun changePublicKey(): PublicKey {
         return getPublicKey(external = false)
     }
 
-    fun getPublicKeyByPath(path: String): PublicKey {
+    override fun getPublicKeyByPath(path: String): PublicKey {
         val parts = path.split("/").map { it.toInt() }
 
-        return wallet.publicKey(parts[0], parts[2], parts[1] == 1)
+        if (parts.size != 3) throw Error.InvalidPath
+
+        return wallet.publicKey(parts[0], parts[2], parts[1] == 0)
     }
 
-    fun fillGap() {
+    override fun fillGap() {
         val lastUsedAccount = storage.getPublicKeysUsed().map { it.account }.max()
 
         val requiredAccountsCount = if (lastUsedAccount != null) {
@@ -58,13 +66,13 @@ class PublicKeyManager(
         bloomFilterManager?.regenerateBloomFilter()
     }
 
-    fun addKeys(keys: List<PublicKey>) {
+    override fun addKeys(keys: List<PublicKey>) {
         if (keys.isEmpty()) return
 
         storage.savePublicKeys(keys)
     }
 
-    fun gapShifts(): Boolean {
+    override fun gapShifts(): Boolean {
         val publicKeys = storage.getPublicKeysWithUsedState()
         val lastAccount = publicKeys.map { it.publicKey.account }.max() ?: return false
 
@@ -126,6 +134,7 @@ class PublicKeyManager(
 
     object Error {
         object NoUnusedPublicKey : Exception()
+        object InvalidPath: Exception()
     }
 
 }

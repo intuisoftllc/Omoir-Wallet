@@ -16,28 +16,41 @@
         android:layout_height="0dp"
         android:layout_weight="1"/>
 
-    <com.google.android.material.tabs.TabLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:id="@+id/tab_layout"
-        app:tabBackground="@drawable/tab_selector"
-        app:tabGravity="center"
-        android:layout_weight="0.04"
-        app:tabIndicatorHeight="0dp"/>
+    <com.tbuonomo.viewpagerdotsindicator.DotsIndicator
+        android:id="@+id/dots_indicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:dotsColor="?attr/colorOnSecondary"
+        app:dotsCornerRadius="8dp"
+        app:dotsSize="8dp"
+        app:dotsClickable="true"
+        android:layout_marginVertical="@dimen/margin_4"
+        android:layout_gravity="center_horizontal"
+        app:dotsSpacing="4dp"
+        app:dotsWidthFactor="2.5"
+        app:selectedDotColor="?attr/colorPrimary"
+        app:progressMode="true"
+        />
 
     <View
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="0.02"/>
 
-    <com.intuisoft.plaid.androidwrappers.SettingsItemView
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:item_subtitle="Advanced Options"
-        app:show_chevron="true"
+        android:text="@string/advanced_options"
+        android:drawableRight="@drawable/ic_chevron_right"
+        android:drawablePadding="@dimen/margin_10"
+        android:background="?android:selectableItemBackground"
         android:id="@+id/advancedOptions"
-        android:layout_gravity="center_horizontal"
-        android:gravity="center_vertical"/>
+        android:layout_gravity="center"
+        style="@style/TextStyle.Semibold.16"
+        android:textStyle="bold"
+        android:padding="@dimen/margin_10"
+        android:textColor="?attr/colorPrimary"
+        android:gravity="center"/>
 
     <View
         android:layout_width="match_parent"
@@ -48,21 +61,18 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:button_style="rounded"
-        android:id="@+id/createNewWallet"
-        app:btn_text="Create a new wallet"
+        android:id="@+id/create_new_wallet"
+        app:btn_text="@string/create_new_wallet"
         app:text_position="center"/>
 
-    <TextView
+    <com.intuisoft.plaid.androidwrappers.RoundedButtonView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Import an existing wallet"
-        style="@style/H6.Bold"
-        android:layout_gravity="center_horizontal"
-        android:gravity="center_horizontal"
-        android:padding="10dp"
-        android:clickable="true"
-        android:focusable="true"
-        android:background="?android:selectableItemBackground"
-        android:layout_marginBottom="10dp"/>
+        app:button_style="outlined"
+        android:id="@+id/import_wallet"
+        android:layout_marginTop="@dimen/horizontal_padding_size"
+        android:layout_marginBottom="@dimen/margin_35"
+        app:btn_text="@string/create_import_import_existing_wallet"
+        app:text_position="center"/>
 
 </LinearLayout>

@@ -1,9 +1,11 @@
 package com.intuisoft.plaid.features.settings.viewmodel
 
 import android.app.Application
+import android.content.Context
 import android.os.Build
 import androidx.lifecycle.LiveData
 import com.intuisoft.plaid.BuildConfig
+import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.BaseViewModel
 import com.intuisoft.plaid.androidwrappers.SingleLiveData
 import com.intuisoft.plaid.local.UserPreferences
@@ -11,12 +13,13 @@ import com.intuisoft.plaid.model.AppTheme
 import com.intuisoft.plaid.model.BitcoinDisplayUnit
 import com.intuisoft.plaid.repositories.LocalStoreRepository
 import com.intuisoft.plaid.util.Constants
+import com.intuisoft.plaid.walletmanager.AbstractWalletManager
 import com.intuisoft.plaid.walletmanager.WalletManager
 
 class SettingsViewModel(
     application: Application,
     private val localStoreRepository: LocalStoreRepository,
-    private val walletManager: WalletManager
+    private val walletManager: AbstractWalletManager
 ): BaseViewModel(application, localStoreRepository, walletManager) {
 
     private val _bitcoinDisplayUnitSetting = SingleLiveData<BitcoinDisplayUnit>()
@@ -34,11 +37,16 @@ class SettingsViewModel(
     private val _appVersionSetting = SingleLiveData<String>()
     val appVersionSetting: LiveData<String> = _appVersionSetting
 
+    private val _nameSetting = SingleLiveData<String>()
+    val nameSetting: LiveData<String> = _nameSetting
+
     private val _showEasterEgg = SingleLiveData<Unit>()
     val showEasterEgg: LiveData<Unit> = _showEasterEgg
 
     fun getMaxPinAttempts() = localStoreRepository.getPinEntryLimit()
     fun getPinTimeout() = localStoreRepository.getPinTimeout()
+    fun getDisplayUnit() = localStoreRepository.getBitcoinDisplayUnit()
+    fun getName() = localStoreRepository.getUserAlias()
 
     fun updateSettingsScreen() {
         updateDisplayUnitSetting()
@@ -46,24 +54,25 @@ class SettingsViewModel(
         updatePinTimeoutSetting()
         updateFingerprintRegisteredSetting()
         updateAppVersionSetting()
+        updateNameSetting()
     }
 
-    fun pinTimeoutToString(timeout: Int) : String =
+    fun pinTimeoutToString(context: Context, timeout: Int) : String =
         when(timeout) {
             Constants.Time.ONE_MINUTE -> {
-                Constants.Strings.STRING_1_MINUTE_TIMEOUT
+                context.getString(R.string.settings_option_max_pin_timeout_variant_2)
             }
             Constants.Time.TWO_MINUTES -> {
-                Constants.Strings.STRING_2_MINUTE_TIMEOUT
+                context.getString(R.string.settings_option_max_pin_timeout_variant_3)
             }
             Constants.Time.FIVE_MINUTES -> {
-                Constants.Strings.STRING_5_MINUTE_TIMEOUT
+                context.getString(R.string.settings_option_max_pin_timeout_variant_4)
             }
             Constants.Time.TEN_MINUTES -> {
-                Constants.Strings.STRING_10_MINUTE_TIMEOUT
+                context.getString(R.string.settings_option_max_pin_timeout_variant_5)
             }
             else -> {
-                Constants.Strings.STRING_IMMEDIATE_TIMEOUT
+                context.getString(R.string.settings_option_max_pin_timeout_variant_1)
             }
         }
 
@@ -91,8 +100,17 @@ class SettingsViewModel(
         _pinTimeoutSetting.postValue(localStoreRepository.getPinTimeout())
     }
 
+    fun updateNameSetting() {
+        _nameSetting.postValue(localStoreRepository.getUserAlias())
+    }
+
     fun updateAppVersionSetting() {
         _appVersionSetting.postValue("v${BuildConfig.VERSION_NAME}")
+    }
+
+    fun saveName(name: String) {
+        localStoreRepository.updateUserAlias(name)
+        updateNameSetting()
     }
 
     fun saveAppTheme(theme: AppTheme) {

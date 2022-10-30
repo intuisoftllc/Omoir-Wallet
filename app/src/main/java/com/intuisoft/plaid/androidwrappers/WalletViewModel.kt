@@ -10,11 +10,11 @@ import com.intuisoft.plaid.util.Constants
 import com.intuisoft.plaid.util.SimpleCoinNumberFormat
 import com.intuisoft.plaid.walletmanager.AbstractWalletManager
 import com.intuisoft.plaid.walletmanager.WalletManager
-import io.horizontalsystems.bitcoincore.core.Bip
 import io.horizontalsystems.bitcoincore.managers.SendValueErrors
 import io.horizontalsystems.bitcoincore.models.TransactionInfo
 import io.horizontalsystems.bitcoincore.storage.UnspentOutput
 import io.horizontalsystems.bitcoinkit.BitcoinKit
+import io.horizontalsystems.hdwalletkit.HDWallet
 import io.horizontalsystems.hdwalletkit.Mnemonic
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.coroutines.Dispatchers
@@ -58,8 +58,8 @@ open class WalletViewModel(
     protected val _walletDisplayUnit = SingleLiveData<BitcoinDisplayUnit>()
     val walletDisplayUnit: LiveData<BitcoinDisplayUnit> = _walletDisplayUnit
 
-    protected val _walletBip = SingleLiveData<Bip>()
-    val walletBip: LiveData<Bip> = _walletBip
+    protected val _walletBip = SingleLiveData<HDWallet.Purpose>()
+    val walletBip: LiveData<HDWallet.Purpose> = _walletBip
 
     protected var localWallet: LocalWalletModel? = null
     private val disposables = CompositeDisposable()
@@ -173,7 +173,7 @@ open class WalletViewModel(
     }
 
     fun isAddressValid(address: String): Boolean {
-        return localWallet!!.walletKit!!.isAddressValid(address)
+        return walletManager.getBaseWallet().isAddressValid(address)
     }
 
     fun getWalletPassphrase() = walletManager.getWalletPassphrase(localWallet!!)
@@ -187,7 +187,7 @@ open class WalletViewModel(
     }
 
     fun getMasterPublicKey() : String {
-        return localWallet!!.walletKit!!.getWallet().masterPublicKey()
+        return localWallet!!.walletKit!!.getMasterPublicKey()
     }
 
     fun getRecieveAddress() : String {
@@ -205,9 +205,9 @@ open class WalletViewModel(
 
     open fun getWalletBalance() = localWallet!!.walletKit!!.balance.spendable
 
-    fun getWalletBip(): Bip {
+    fun getWalletBip(): HDWallet.Purpose {
         val bip = walletManager.findStoredWallet(localWallet!!.uuid)!!.bip
-        return Bip.values().find { it.ordinal == bip }!!
+        return HDWallet.Purpose.values().find { it.ordinal == bip }!!
     }
 
     fun updateWalletName(name: String) {
@@ -237,7 +237,7 @@ open class WalletViewModel(
     protected fun commitWalletToDisk(
         walletName: String,
         seed: List<String>,
-        bip: Bip,
+        bip: HDWallet.Purpose,
         testNetWallet: Boolean
     ) {
         viewModelScope.launch {

@@ -6,6 +6,8 @@
         <attr name="text_all_caps" format="boolean"/>
         <attr name="right_icon" format="reference"/>
         <attr name="text_size" format="integer"/>
+        <attr name="button_padding" format="dimension"/>
+        <attr name="button_tint" format="color"/>
 
         <attr name="text_position">
             <flag name="center" value="0" />
@@ -16,9 +18,9 @@
         <attr name="button_style">
             <flag name="none" value="0" />
             <flag name="rounded" value="1" />
-            <flag name="light-grey-outlined" value="2" />
-            <flag name="outlined" value="4" />
-            <flag name="white-rounded" value="8" />
+            <flag name="outlined" value="2" />
+            <flag name="pill" value="4" />
+            <flag name="transparent" value="8" />
         </attr>
     </declare-styleable>
 
@@ -45,6 +47,7 @@
 
     <declare-styleable name="SettingsItemView">
         <attr name="title_text_color" format="color"/>
+        <attr name="subtitle_text_color" format="color"/>
         <attr name="item_title" format="string"/>
         <attr name="item_subtitle" format="string"/>
         <attr name="elipsize_subtitle" format="boolean"/>
@@ -54,5 +57,25 @@
         <attr name="show_copy" format="boolean"/>
         <attr name="show_check" format="boolean"/>
         <attr name="show_chevron" format="boolean"/>
+        <attr name="show_radio" format="boolean"/>
+
+
+        <attr name="settings_variant">
+            <flag name="card" value="0" />
+            <flag name="normal" value="1" />
+            <flag name="radio" value="2" />
+        </attr>
+    </declare-styleable>
+
+    <declare-styleable name="TopBarView">
+        <attr name="top_bar_variant">
+            <flag name="no_bar" value="0" />
+            <flag name="left_align" value="1" />
+            <flag name="center_align" value="2" />
+        </attr>
+        <attr name="primary_text" format="string"/>
+        <attr name="secondary_text" format="string"/>
+        <attr name="right_action" format="reference"/>
+        <attr name="left_action" format="reference"/>
     </declare-styleable>
 </resources>

@@ -6,9 +6,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import com.intuisoft.plaid.activities.MainActivity
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.FragmentConfiguration
+import com.intuisoft.plaid.androidwrappers.TopBarView
 import com.intuisoft.plaid.databinding.FragmentAppearanceBinding
 import com.intuisoft.plaid.features.pin.ui.PinProtectedFragment
 import com.intuisoft.plaid.features.settings.viewmodel.SettingsViewModel
@@ -32,25 +34,22 @@ class AppearanceFragment : PinProtectedFragment<FragmentAppearanceBinding>() {
     override fun onConfiguration(configuration: FragmentConfiguration?) {
         viewModel.updateAppThemeSetting()
         viewModel.appThemeSetting.observe(viewLifecycleOwner, Observer {
-            (requireActivity() as MainActivity).isActionBarShowing = showActionBar()
-            (requireActivity() as MainActivity).actionBarTitle = getString(actionBarTitle())
-
-            binding.lightMode.showCheck(it == AppTheme.LIGHT)
-            binding.darkMode.showCheck(it == AppTheme.DARK)
-            binding.autoTheme.showCheck(it == AppTheme.AUTO)
+            binding.appearanceLight.checkRadio(it == AppTheme.LIGHT)
+            binding.appearanceDark.checkRadio(it == AppTheme.DARK)
+            binding.appearanceAuto.checkRadio(it == AppTheme.AUTO)
         })
 
-        binding.lightMode.setOnClickListener {
+        binding.appearanceLight.setOnClickListener {
             viewModel.saveAppTheme(AppTheme.LIGHT)
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         }
 
-        binding.darkMode.setOnClickListener {
+        binding.appearanceDark.setOnClickListener {
             viewModel.saveAppTheme(AppTheme.DARK)
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
         }
 
-        binding.autoTheme.setOnClickListener {
+        binding.appearanceAuto.setOnClickListener {
             viewModel.saveAppTheme(AppTheme.AUTO)
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
         }
@@ -62,12 +61,20 @@ class AppearanceFragment : PinProtectedFragment<FragmentAppearanceBinding>() {
         _binding = null
     }
 
-    override fun showActionBar(): Boolean {
-        return true
+    override fun actionBarVariant(): Int {
+        return TopBarView.CENTER_ALIGN
     }
 
     override fun actionBarTitle(): Int {
         return R.string.appearance_fragment_label
+    }
+
+    override fun actionBarActionLeft(): Int {
+        return R.drawable.ic_arrow_left
+    }
+
+    override fun onActionLeft() {
+        findNavController().popBackStack()
     }
 
     override fun navigationId(): Int {

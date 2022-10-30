@@ -1,11 +1,13 @@
 package com.intuisoft.plaid.androidwrappers
 
+import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 
 interface ActionBarDelegate {
-    var isActionBarShowing: Boolean
-    fun showActionBarTitle()
-    fun hideActionBarTitle()
-    var actionBarTitle: CharSequence?
-    fun setActionBarTitle(@StringRes title: Int)
+    val isActionBarShowing: Boolean
+    fun setActionBarTitle(title: String)
+    fun setActionBarSubTitle(title: String)
+    fun setActionBarActionLeft(@DrawableRes action: Int)
+    fun setActionBarActionRight(@DrawableRes action: Int)
+    fun setActionBarVariant(variant: Int)
 }

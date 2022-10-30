@@ -4,8 +4,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.fragment.findNavController
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.FragmentConfiguration
+import com.intuisoft.plaid.androidwrappers.TopBarView
 import com.intuisoft.plaid.databinding.FragmentEasterEggBinding
 import com.intuisoft.plaid.features.pin.ui.PinProtectedFragment
 
@@ -32,15 +34,23 @@ class MemeFragment : PinProtectedFragment<FragmentEasterEggBinding>() {
         _binding = null
     }
 
-    override fun showActionBar(): Boolean {
-        return true
+    override fun actionBarVariant(): Int {
+        return TopBarView.CENTER_ALIGN
     }
 
     override fun actionBarTitle(): Int {
         return R.string.easter_egg_screen_title
     }
 
+    override fun actionBarActionLeft(): Int {
+        return R.drawable.ic_arrow_left
+    }
+
+    override fun onActionLeft() {
+        findNavController().popBackStack()
+    }
+
     override fun navigationId(): Int {
-        return R.id.appearanceFragment
+        return R.id.memeFragment
     }
 }

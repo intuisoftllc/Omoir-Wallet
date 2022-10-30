@@ -16,9 +16,6 @@ import com.intuisoft.plaid.androidwrappers.FragmentConfiguration
 import com.intuisoft.plaid.androidwrappers.hideSoftKeyboard
 import com.intuisoft.plaid.androidwrappers.navigate
 import com.intuisoft.plaid.androidwrappers.styledSnackBar
-import com.intuisoft.plaid.databinding.FragmentBackupWalletBinding
-import com.intuisoft.plaid.databinding.FragmentCreateImportNonCustodialBinding
-import com.intuisoft.plaid.databinding.FragmentCreateImportPrivateAndSecureBinding
 import com.intuisoft.plaid.databinding.FragmentNameWalletBinding
 import com.intuisoft.plaid.features.createwallet.viewmodel.CreateWalletViewModel
 import com.intuisoft.plaid.features.pin.ui.PinProtectedFragment
@@ -39,55 +36,51 @@ class NameYourWalletFragment : PinProtectedFragment<FragmentNameWalletBinding>()
     }
 
     override fun onConfiguration(configuration: FragmentConfiguration?) {
-        binding.confirm.enableButton(false)
-        binding.name.setOnKeyListener(object : View.OnKeyListener {
-            override fun onKey(v: View?, keyCode: Int, event: KeyEvent): Boolean {
-                // if the event is a key down event on the enter button
-                if (event.action == KeyEvent.ACTION_DOWN &&
-                    keyCode == KeyEvent.KEYCODE_ENTER
-                ) {
-                    requireActivity().hideSoftKeyboard()
-                    binding.name.clearFocus()
-                    binding.name.isCursorVisible = false
-
-                    binding.confirm.requestFocus()
-                    return true
-                }
-                return false
-            }
-        })
-
-        binding.name.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable) {
-                binding.confirm.enableButton(s.length > 0 && s.length <= Constants.Limit.MAX_ALIAS_LENGTH)
-            }
-
-            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
-            }
-
-            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-            }
-        })
-
-        binding.confirm.onClick {
-            viewModel.commitWalletToDisk(binding.name.text.toString())
-        }
-
-        viewModel.walletCreationError.observe(viewLifecycleOwner, Observer {
-            styledSnackBar(requireView(), "Oops, failed to create wallet, please try again.")
-        })
-
-        viewModel.walletCreated.observe(viewLifecycleOwner, Observer {
-            navigate(
-                R.id.walletCreatedFragment,
-                it,
-                Constants.Navigation.ANIMATED_ENTER_EXIT_RIGHT_NAV_OPTION
-            )
-        })
-    }
-
-    override fun showActionBar(): Boolean {
-        return false
+//        binding.confirm.enableButton(false)
+//        binding.name.setOnKeyListener(object : View.OnKeyListener {
+//            override fun onKey(v: View?, keyCode: Int, event: KeyEvent): Boolean {
+//                // if the event is a key down event on the enter button
+//                if (event.action == KeyEvent.ACTION_DOWN &&
+//                    keyCode == KeyEvent.KEYCODE_ENTER
+//                ) {
+//                    requireActivity().hideSoftKeyboard()
+//                    binding.name.clearFocus()
+//                    binding.name.isCursorVisible = false
+//
+//                    binding.confirm.requestFocus()
+//                    return true
+//                }
+//                return false
+//            }
+//        })
+//
+//        binding.name.addTextChangedListener(object : TextWatcher {
+//            override fun afterTextChanged(s: Editable) {
+//                binding.confirm.enableButton(s.length > 0 && s.length <= Constants.Limit.MAX_ALIAS_LENGTH)
+//            }
+//
+//            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
+//            }
+//
+//            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+//            }
+//        })
+//
+//        binding.confirm.onClick {
+//            viewModel.commitWalletToDisk(binding.name.text.toString())
+//        }
+//
+//        viewModel.walletCreationError.observe(viewLifecycleOwner, Observer {
+//            styledSnackBar(requireView(), "Oops, failed to create wallet, please try again.")
+//        })
+//
+//        viewModel.walletCreated.observe(viewLifecycleOwner, Observer {
+//            navigate(
+//                R.id.walletCreatedFragment,
+//                it,
+//                Constants.Navigation.ANIMATED_ENTER_EXIT_RIGHT_NAV_OPTION
+//            )
+//        })
     }
 
     override fun actionBarTitle(): Int {

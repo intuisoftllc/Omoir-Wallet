@@ -13,6 +13,7 @@ import com.intuisoft.plaid.repositories.LocalStoreRepository
 import com.intuisoft.plaid.util.Constants
 import com.intuisoft.plaid.util.NetworkUtil
 import com.intuisoft.plaid.util.RateConverter
+import com.intuisoft.plaid.walletmanager.AbstractWalletManager
 import com.intuisoft.plaid.walletmanager.WalletManager
 import io.horizontalsystems.bitcoincore.models.TransactionDataSortType
 import io.horizontalsystems.bitcoincore.storage.FullTransaction
@@ -22,7 +23,7 @@ import io.horizontalsystems.bitcoincore.storage.UnspentOutput
 class WithdrawalViewModel(
     application: Application,
     private val localStoreRepository: LocalStoreRepository,
-    private val walletManager: WalletManager
+    private val walletManager: AbstractWalletManager
 ): WalletViewModel(application, localStoreRepository, walletManager) {
 
     protected val _onLocalSpendAmountUpdated = SingleLiveData<Long>()

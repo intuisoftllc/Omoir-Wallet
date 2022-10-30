@@ -1,187 +1,243 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
-    android:layout_marginHorizontal="15dp">
-
-    <ImageView
-        android:id="@+id/close"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_close_32"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="15dp"/>
-
-    <TextView
-        android:id="@+id/sendBTC"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        style="@style/H4.Bold"
-        android:text="Send BTC"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/close"
-        android:layout_marginTop="10dp"
-        android:textColor="@color/black"/>
-
-    <TextView
-        android:id="@+id/availableBalanceTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/sendBTC"
-        app:layout_constraintStart_toStartOf="parent"
-        android:text="Available Balance"
-        android:textColor="@color/alt_black"
-        android:textStyle="bold"
-        android:layout_marginTop="60dp"
-        android:layout_marginStart="15dp"/>
-
-    <TextView
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:id="@+id/balance"
-        app:layout_constraintStart_toEndOf="@+id/availableBalanceTitle"
-        app:layout_constraintTop_toTopOf="@+id/availableBalanceTitle"
-        app:layout_constraintBottom_toBottomOf="@+id/availableBalanceTitle"
-        android:text="0 Sats"
-        android:layout_marginStart="15dp"
-        app:layout_constraintEnd_toEndOf="parent"/>
-
-    <ImageView
-        android:id="@+id/display_unit"
-        android:layout_width="25dp"
-        android:layout_height="25dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="10dp"
-        app:layout_constraintBottom_toBottomOf="@+id/amountContainer"
-        app:layout_constraintTop_toBottomOf="@+id/addressContainer"
-        android:layout_marginBottom="10dp"/>
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/addressContainer"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/display_unit"
-        android:layout_marginStart="15dp"
-        android:layout_marginEnd="10dp"
-        app:layout_constraintTop_toBottomOf="@+id/availableBalanceTitle">
-
-        <EditText
-            android:id="@+id/address"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@android:color/transparent"
-            android:hint="Address"
-            android:inputType="text"
-            android:maxLines="1"
-            android:lineHeight="18dp"
-            android:paddingStart="0dp"
-            android:textSize="@dimen/edit_text_text_size_small" />
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/amountContainer"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/display_unit"
-        android:layout_marginStart="15dp"
-        android:layout_marginEnd="10dp"
-        android:layout_marginTop="10dp"
-        app:layout_constraintTop_toBottomOf="@+id/addressContainer">
-
-        <EditText
-            android:id="@+id/amount"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@android:color/transparent"
-            android:hint="Amount"
-            android:inputType="phone"
-            android:maxLines="1"
-            android:lineHeight="18dp"
-            android:digits="1234567890."
-            android:paddingStart="0dp"
-            android:textSize="@dimen/edit_text_text_size_small" />
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <LinearLayout
-        android:id="@+id/currencyAndFeeContainer"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="@+id/amountContainer"
-        app:layout_constraintTop_toBottomOf="@+id/amountContainer"
-        app:layout_constraintStart_toStartOf="@+id/amountContainer"
-        android:layout_marginTop="15dp"
-        android:weightSum="1">
-
-        <TextView
-            android:id="@+id/currencyAmount"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:textStyle="bold"
-            android:layout_weight=".4"
-            android:layout_marginRight="10dp"
-            tools:text="$ 500.46"/>
-
-        <TextView
-            android:id="@+id/transactionFee"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:textStyle="bold"
-            android:layout_weight=".6"
-            android:layout_gravity="end"
-            android:gravity="end"
-            tools:text="Fee: 1,460 Sats"/>
-    </LinearLayout>
-
-    <com.intuisoft.plaid.androidwrappers.RoundedButtonView
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:btn_text="Confirm"
-        app:text_position="center"
-        app:button_style="rounded"
-        android:id="@+id/confirm"
-        android:layout_marginHorizontal="60dp"
-        android:layout_marginBottom="10dp"
-        android:layout_marginTop="90dp"
-        app:layout_constraintTop_toBottomOf="@+id/amountContainer"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
-
-    <com.intuisoft.plaid.androidwrappers.RoundedButtonView
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:btn_text="Scan"
-        app:text_position="center"
-        app:button_style="white-rounded"
-        android:id="@+id/scanButton"
-        android:layout_marginHorizontal="60dp"
-        android:layout_marginBottom="10dp"
-        android:layout_marginTop="5dp"
-        app:layout_constraintTop_toBottomOf="@+id/confirm"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+    xmlns:tools="http://schemas.android.com/tools">
 
 
     <com.intuisoft.plaid.androidwrappers.SettingsItemView
-        android:layout_width="wrap_content"
+        android:id="@+id/available_balance"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:item_subtitle="Advanced Options"
+        app:settings_variant="card"
         app:show_chevron="true"
-        android:id="@+id/advancedOptions"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="50dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginHorizontal="@dimen/horizontal_padding_size"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:gravity="center_vertical"/>
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="@dimen/horizontal_padding_size_large"
+        android:layout_marginBottom="@dimen/horizontal_padding_size"
+        app:item_title="@string/available_balance"
+        app:subtitle_text_color="@color/brand_color_dark_blue"
+        app:item_subtitle="163,437 Sats"/>
+
+    <TextView
+        android:id="@+id/amount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="388,500 Sats"
+        android:gravity="center"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintVertical_bias="@dimen/vertical_bias_25"
+        android:layout_marginTop="@dimen/horizontal_padding_size_large"
+        style="@style/TextStyle.Semibold.40"
+        android:textStyle="bold"
+        android:textColor="?attr/colorPrimaryVariant"/>
+
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/settings_general"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/amount"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginBottom="@dimen/horizontal_padding_size"
+        app:cardCornerRadius="24dp"
+        android:layout_marginTop="@dimen/margin_24"
+        android:layout_marginHorizontal="@dimen/margin_20"
+        app:layout_constraintHorizontal_bias="0">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="@dimen/margin_3">
+
+                <com.intuisoft.plaid.androidwrappers.RoundedButtonView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    app:text_position="center"
+                    app:btn_text="@string/sats"
+                    app:button_style="pill"
+                    android:id="@+id/sats"
+                    android:layout_weight="1"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toTopOf="@id/goto_homescreen"/>
+
+                <com.intuisoft.plaid.androidwrappers.RoundedButtonView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    app:text_position="center"
+                    app:btn_text="@string/btc"
+                    app:button_style="transparent"
+                    android:id="@+id/btc"
+                    android:layout_weight="1"
+                    android:layout_marginHorizontal="@dimen/margin_10"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toTopOf="@id/goto_homescreen"/>
+
+                <com.intuisoft.plaid.androidwrappers.RoundedButtonView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    app:text_position="center"
+                    app:btn_text="$"
+                    app:button_style="transparent"
+                    android:id="@+id/currency"
+                    android:layout_weight="1"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toTopOf="@id/goto_homescreen"/>
+            </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:paddingStart="48dp"
+        android:paddingEnd="48dp"
+        android:paddingTop="48dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:paddingBottom="10dp">
+
+        <TextView
+            android:id="@+id/number1"
+            style="@style/NumberInPasscode"
+            android:layout_alignParentLeft="true"
+            android:text="1"/>
+
+        <TextView
+            android:id="@+id/number2"
+            style="@style/NumberInPasscode"
+            android:layout_centerHorizontal="true"
+            android:text="2"/>
+
+        <TextView
+            android:id="@+id/number3"
+            style="@style/NumberInPasscode"
+            android:layout_alignParentRight="true"
+            android:text="3"/>
+
+        <TextView
+            android:id="@+id/number4"
+            style="@style/NumberInPasscode"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@id/number1"
+            android:text="4"
+            />
+
+        <TextView
+            android:id="@+id/number5"
+            style="@style/NumberInPasscode"
+            android:layout_below="@id/number1"
+            android:layout_centerHorizontal="true"
+            android:text="5"/>
+
+        <TextView
+            android:id="@+id/number6"
+            style="@style/NumberInPasscode"
+            android:layout_alignParentRight="true"
+            android:layout_below="@id/number1"
+            android:text="6"/>
+
+        <TextView
+            android:id="@+id/number7"
+            style="@style/NumberInPasscode"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@id/number4"
+            android:text="7"/>
+
+        <TextView
+            android:id="@+id/number8"
+            style="@style/NumberInPasscode"
+            android:layout_below="@id/number4"
+            android:layout_centerHorizontal="true"
+            android:text="8"/>
+
+        <TextView
+            android:id="@+id/number9"
+            style="@style/NumberInPasscode"
+            android:layout_alignParentRight="true"
+            android:layout_below="@id/number4"
+            android:text="9"/>
+
+        <ImageView
+            android:id="@+id/back"
+            style="@style/NumberInPasscode"
+            android:layout_below="@id/number7"
+            android:layout_alignParentRight="true"
+            android:scaleType="centerInside"
+            app:srcCompat="@drawable/ic_arrow_left"/>
+
+        <TextView
+            android:id="@+id/number0"
+            style="@style/NumberInPasscode"
+            android:layout_below="@id/number7"
+            android:layout_centerHorizontal="true"
+            android:text="0" />
+
+        <TextView
+            android:id="@+id/dot"
+            style="@style/NumberInPasscode"
+            android:layout_below="@id/number7"
+            android:layout_alignParentLeft="true"
+            android:scaleType="centerInside"
+            app:srcCompat="@drawable/ic_check_bold"
+            android:textColor="?attr/colorPrimary"
+            android:text="."/>
+
+
+        <ImageView
+            android:id="@+id/fingerprintIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/number0"
+            android:layout_alignStart="@+id/number0"
+            android:layout_alignEnd="@+id/number0"
+            android:src="@drawable/ic_fingerprint"
+            android:clickable="true"
+            android:visibility="gone"
+            android:background="?android:selectableItemBackground"
+            android:textColor="@color/black"
+            android:layout_marginTop="10dp"
+            android:focusable="true" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@id/dot"
+            android:layout_alignEnd="@id/back"
+            android:layout_below="@id/dot"
+            android:layout_marginTop="@dimen/horizontal_padding_size"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.5"
+                android:layout_marginRight="@dimen/margin_10"
+                android:src="@drawable/ic_close"/>
+
+            <com.intuisoft.plaid.androidwrappers.RoundedButtonView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:btn_text="@string/next"
+                android:layout_weight="3"
+                app:button_style="rounded"
+                app:text_position="center"/>
+            
+        </LinearLayout>
+
+    </RelativeLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

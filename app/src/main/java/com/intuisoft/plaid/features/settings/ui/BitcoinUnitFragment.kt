@@ -5,8 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.FragmentConfiguration
+import com.intuisoft.plaid.androidwrappers.TopBarView
 import com.intuisoft.plaid.databinding.FragmentBitcoinUnitBinding
 import com.intuisoft.plaid.databinding.FragmentSettingsBinding
 import com.intuisoft.plaid.features.pin.ui.PinProtectedFragment
@@ -31,16 +33,22 @@ class BitcoinUnitFragment : PinProtectedFragment<FragmentBitcoinUnitBinding>() {
     override fun onConfiguration(configuration: FragmentConfiguration?) {
         viewModel.updateSettingsScreen()
         viewModel.bitcoinDisplayUnitSetting.observe(viewLifecycleOwner, Observer {
-            binding.btcUnit.showCheck(it == BitcoinDisplayUnit.BTC)
-            binding.satUnit.showCheck(it == BitcoinDisplayUnit.SATS)
+            binding.btcUnit1.checkRadio(it == BitcoinDisplayUnit.BTC)
+            binding.btcUnit2.checkRadio(it == BitcoinDisplayUnit.SATS)
         })
 
-        binding.btcUnit.setOnClickListener {
-            viewModel.saveDisplayUnit(BitcoinDisplayUnit.BTC)
+        binding.btcUnit1.onRadioClicked { view, checked ->
+
+            if(checked || viewModel.getDisplayUnit() == BitcoinDisplayUnit.BTC) {
+                viewModel.saveDisplayUnit(BitcoinDisplayUnit.BTC)
+            }
         }
 
-        binding.satUnit.setOnClickListener {
-            viewModel.saveDisplayUnit(BitcoinDisplayUnit.SATS)
+        binding.btcUnit2.onRadioClicked { view, checked ->
+
+            if(checked || viewModel.getDisplayUnit() == BitcoinDisplayUnit.SATS) {
+                viewModel.saveDisplayUnit(BitcoinDisplayUnit.SATS)
+            }
         }
     }
 
@@ -50,12 +58,20 @@ class BitcoinUnitFragment : PinProtectedFragment<FragmentBitcoinUnitBinding>() {
         _binding = null
     }
 
-    override fun showActionBar(): Boolean {
-        return true
+    override fun actionBarVariant(): Int {
+        return TopBarView.CENTER_ALIGN
     }
 
     override fun actionBarTitle(): Int {
         return R.string.display_unit_fragment_label
+    }
+
+    override fun actionBarActionLeft(): Int {
+        return R.drawable.ic_arrow_left
+    }
+
+    override fun onActionLeft() {
+        findNavController().popBackStack()
     }
 
     override fun navigationId(): Int {

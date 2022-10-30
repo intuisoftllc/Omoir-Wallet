@@ -17,7 +17,7 @@ class SeedWordView(context: Context, attrs: AttributeSet?) : LinearLayout(contex
     private var index_tv: TextView? = null
 
     init {
-        inflate(context, R.layout.seed_word_view, this)
+        inflate(context, R.layout.custom_view_seed_word, this)
         word_tv = findViewById(R.id.seedWord)
         index_tv = findViewById(R.id.wordIndex)
     }

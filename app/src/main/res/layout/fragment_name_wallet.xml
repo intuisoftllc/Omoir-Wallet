@@ -3,71 +3,95 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
-    android:padding="10dp">
+    xmlns:tools="http://schemas.android.com/tools">
 
     <TextView
         android:id="@+id/name_wallet_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Name Your Wallet"
-        style="@style/H4.Bold"
-        android:layout_marginTop="50dp"
+        android:text="@string/name_wallet_title"
+        style="@style/TextStyle.Semibold.24"
+        android:textStyle="bold"
+        app:layout_constraintVertical_bias="@dimen/vertical_bias_15"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:textColor="@color/black"/>
+        android:textColor="?attr/colorPrimaryVariant"/>
 
     <TextView
         android:id="@+id/name_wallet_subtitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="@dimen/margin_24"
         android:gravity="center_horizontal"
         android:paddingHorizontal="20dp"
+        style="@style/TextStyle.Regular.16"
+        android:textColor="@color/text_grey"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/name_wallet_title"
-        android:text="Finally, let\'s give your wallet a name" />
+        android:text="@string/name_wallet_description" />
 
 
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/feeContainer"
-        android:layout_width="0dp"
+    <androidx.cardview.widget.CardView
+        android:id="@+id/name_container"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="40dp"
-        app:counterEnabled="true"
-        app:counterMaxLength="50"
-        app:layout_constraintVertical_bias="0.4"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/name_wallet_subtitle"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/name_wallet_subtitle">
+        app:cardCornerRadius="@dimen/card_corner_radius"
+        android:layout_marginHorizontal="@dimen/margin_20"
+        app:layout_constraintVertical_bias="@dimen/parent_top_vertical_bias">
 
         <EditText
             android:id="@+id/name"
+            style="@style/TextStyle.Medium.14"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:background="@android:color/transparent"
-            android:hint="Wallet Name"
-            android:inputType="text"
+            android:background="@color/white"
+            android:hint="@string/name_wallet_hint"
+            android:maxLength="50"
             android:maxLines="1"
-            android:digits="1234567890_ -abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-            android:paddingStart="0dp"
-            android:textSize="@dimen/edit_text_text_size" />
-    </com.google.android.material.textfield.TextInputLayout>
+            android:padding="@dimen/horizontal_padding_size"
+            android:textColorHint="@color/color_disabled"
+            android:textSize="14sp"
+            tools:ignore="TextContrastCheck,TouchTargetSizeCheck" />
+    </androidx.cardview.widget.CardView>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/wallet_name"
+        style="@style/TextStyle.Semibold.12"
+        app:layout_constraintStart_toStartOf="@id/name_container"
+        app:layout_constraintBottom_toTopOf="@id/name_container"
+        android:layout_marginBottom="@dimen/horizontal_padding_size"/>
+
+
+    <TextView
+        android:id="@+id/textLeft"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="0/50"
+        style="@style/TextStyle.Semibold.12"
+        app:layout_constraintEnd_toEndOf="@id/name_container"
+        app:layout_constraintBottom_toTopOf="@id/name_container"
+        android:layout_marginBottom="@dimen/horizontal_padding_size"/>
 
     <TextView
         android:id="@+id/walletExistsError"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="That wallet name is used by another wallet"
-        app:layout_constraintTop_toBottomOf="@id/feeContainer"
-        app:layout_constraintStart_toStartOf="@id/feeContainer"
-        android:layout_marginTop="20dp"
+        app:layout_constraintTop_toBottomOf="@id/name_container"
+        app:layout_constraintStart_toStartOf="@id/name_container"
+        app:layout_constraintEnd_toEndOf="parent"
         android:visibility="gone"
+        android:layout_marginTop="20dp"
         android:textColor="@color/error_color"/>
 
     <com.intuisoft.plaid.androidwrappers.RoundedButtonView
@@ -77,6 +101,8 @@
         app:btn_text="Continue"
         app:button_style="rounded"
         app:text_position="center"
+        android:layout_marginBottom="@dimen/parent_bottom_margin"
+        android:layout_marginHorizontal="@dimen/horizontal_padding_size_large"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>

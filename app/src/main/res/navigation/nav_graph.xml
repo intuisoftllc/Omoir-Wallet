@@ -25,7 +25,7 @@
         android:id="@+id/pinFragment"
         android:name="com.intuisoft.plaid.features.pin.ui.PinFragment"
         android:label="@string/pin_fragment_label"
-        tools:layout="@layout/fragment_pin_entry">
+        tools:layout="@layout/fragment_pin">
 
         <action
             android:id="@+id/action_PinFragment_to_SplashFragment"
@@ -66,7 +66,7 @@
         android:id="@+id/backupWalletFragment"
         android:name="com.intuisoft.plaid.features.createwallet.ui.BackupYourWalletFragment"
         android:label="@string/backup_wallet_fragment_label"
-        tools:layout="@layout/fragment_backup_wallet">
+        tools:layout="@layout/fragment_backup">
 
         <action
             android:id="@+id/action_BackupWalletFragment_to_SeedPhraseFragment"
@@ -98,23 +98,10 @@
     </fragment>
 
     <fragment
-        android:id="@+id/walletCreatedFragment"
-        android:name="com.intuisoft.plaid.features.createwallet.ui.WalletCreatedFragment"
-        android:label="@string/wallet_created_fragment_label"
-        tools:layout="@layout/fragment_wallet_created">
-
-        <action
-            android:id="@+id/action_WalletCreatedFragment_to_HomescreenFragment"
-            app:destination="@+id/homescreenFragment"
-            app:popUpTo="@id/walletCreatedFragment"
-            app:popUpToInclusive="true"/>
-    </fragment>
-
-    <fragment
         android:id="@+id/welcomeFragment"
         android:name="com.intuisoft.plaid.features.onboarding.ui.WelcomeFragment"
         android:label="@string/welcome_fragment_label"
-        tools:layout="@layout/fragment_welcome">
+        tools:layout="@layout/fragment_onboarding_welcome">
 
         <action
             android:id="@+id/action_WelcomeFragment_to_OnboardingPinSetupFragment"
@@ -140,7 +127,7 @@
         android:id="@+id/fingerprintSetupFragment"
         android:name="com.intuisoft.plaid.features.onboarding.ui.FingerprintSetupFragment"
         android:label="@string/fingerprint_fragment_label"
-        tools:layout="@layout/fragment_fingerprint_setup">
+        tools:layout="@layout/fragment_onboarding_fingerprint_registration">
 
         <action
             android:id="@+id/action_FingerprintSetupFragment_to_AllSetFragment"
@@ -151,7 +138,7 @@
         android:id="@+id/allSetFragment"
         android:name="com.intuisoft.plaid.features.onboarding.ui.AllSetFragment"
         android:label="@string/fingerprint_all_set_label"
-        tools:layout="@layout/fragment_all_set">
+        tools:layout="@layout/fragment_onboarding_all_set">
 
         <action
             android:id="@+id/action_AllSetFragment_to_HomeScreenFragment"
@@ -198,7 +185,7 @@
         android:id="@+id/exportWalletFragment"
         android:name="com.intuisoft.plaid.features.dashboardscreen.ui.WalletExportFragment"
         android:label="@string/wallet_export_fragment_label"
-        tools:layout="@layout/fragment_export_wallet">
+        tools:layout="@layout/fragment_wallet_export">
 
     </fragment>
 
@@ -207,6 +194,22 @@
         android:name="com.intuisoft.plaid.features.settings.ui.AppearanceFragment"
         android:label="@string/appearance_fragment_label"
         tools:layout="@layout/fragment_appearance">
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/viewWalletsFragment"
+        android:name="com.intuisoft.plaid.features.settings.ui.ViewWalletsFragment"
+        android:label="@string/manage_wallets_fragment_label"
+        tools:layout="@layout/fragment_manage_wallets">
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/addressBookFragment"
+        android:name="com.intuisoft.plaid.features.settings.ui.AddressBookFragment"
+        android:label="@string/address_book_fragment_label"
+        tools:layout="@layout/fragment_address_book">
 
     </fragment>
 

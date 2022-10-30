@@ -13,10 +13,11 @@ import androidx.core.widget.doAfterTextChanged
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.intuisoft.plaid.R
+import com.intuisoft.plaid.androidwrappers.BindingFragment
 import com.intuisoft.plaid.androidwrappers.FingerprintScanResponse
 import com.intuisoft.plaid.androidwrappers.PasscodeView
+import com.intuisoft.plaid.androidwrappers.TopBarView
 import com.intuisoft.plaid.databinding.FragmentOnboardingPinBinding
-import com.intuisoft.plaid.databinding.FragmentWelcomeBinding
 import com.intuisoft.plaid.features.onboarding.viewmodel.OnboardingViewModel
 import com.intuisoft.plaid.features.pin.viewmodel.PinViewModel
 import com.intuisoft.plaid.util.Constants
@@ -25,10 +26,9 @@ import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 
-class OnboardingPinFragment : OnboardingFragment<FragmentOnboardingPinBinding>() {
+class OnboardingPinFragment : BindingFragment<FragmentOnboardingPinBinding>() {
     private val viewModel: OnboardingViewModel by sharedViewModel()
     private val pinViewModel: PinViewModel by inject()
-    override val onboardingStep = 2
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -80,21 +80,40 @@ class OnboardingPinFragment : OnboardingFragment<FragmentOnboardingPinBinding>()
         })
     }
 
-    override fun showActionBar(): Boolean {
-        return false
-    }
-
     override fun actionBarTitle(): Int {
         return 0
     }
 
+    override fun actionBarVariant(): Int {
+        return TopBarView.NO_BAR
+    }
+
+    override fun actionBarSubtitle(): Int {
+        return 0
+    }
+
+    override fun actionBarActionLeft(): Int {
+        return 0
+    }
+
+    override fun actionBarActionRight(): Int {
+        return 0
+    }
+
+    override fun onActionLeft() {
+        // ignore
+    }
+
+    override fun onActionRight() {
+        // ignore
+    }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
 
-    override fun onNextStep() {
+    fun onNextStep() {
         viewModel.checkFingerprintSupport(
             onEnroll = {
                 findNavController().navigate(
@@ -107,9 +126,5 @@ class OnboardingPinFragment : OnboardingFragment<FragmentOnboardingPinBinding>()
 
     override fun navigationId(): Int {
         return R.id.onboardingPinSetupFragment
-    }
-
-    override fun onPrevStep() {
-        // do nothing
     }
 }

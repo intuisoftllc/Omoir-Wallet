@@ -4,12 +4,13 @@ import android.app.Application
 import com.intuisoft.plaid.androidwrappers.BaseViewModel
 import com.intuisoft.plaid.local.UserPreferences
 import com.intuisoft.plaid.repositories.LocalStoreRepository
+import com.intuisoft.plaid.walletmanager.AbstractWalletManager
 import com.intuisoft.plaid.walletmanager.WalletManager
 
 class PinViewModel(
     application: Application,
     private val localStoreRepository: LocalStoreRepository,
-    private val walletManager: WalletManager
+    private val walletManager: AbstractWalletManager
 ): BaseViewModel(application, localStoreRepository, walletManager) {
 
     val pin: String

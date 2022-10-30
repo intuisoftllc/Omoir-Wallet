@@ -1,14 +1,11 @@
 package com.intuisoft.plaid.repositories
 
-import android.app.Application
+import com.docformative.docformative.remove
 import com.intuisoft.plaid.local.UserPreferences
 import com.intuisoft.plaid.local.WipeDataListener
-import com.intuisoft.plaid.model.AppTheme
-import com.intuisoft.plaid.model.BitcoinDisplayUnit
-import com.intuisoft.plaid.model.FeeType
+import com.intuisoft.plaid.model.*
 import com.intuisoft.plaid.util.Constants
 import com.intuisoft.plaid.walletmanager.StoredWalletInfo
-import java.io.File
 
 class LocalStoreRepository_Impl(
     private val userPreferences: UserPreferences,
@@ -55,6 +52,34 @@ class LocalStoreRepository_Impl(
 
     override fun updateBitcoinDisplayUnit(displayUnit: BitcoinDisplayUnit) {
         userPreferences.bitcoinDisplayUnit = displayUnit
+    }
+
+    override fun getSavedAddresses(): List<SavedAddressModel> {
+        return userPreferences.savedAddressInfo.savedAddresses
+    }
+
+    override fun deleteSavedAddress(name: String) {
+        val addressess = userPreferences.savedAddressInfo.savedAddresses
+        addressess.remove { it.addressName == name }
+
+        userPreferences.savedAddressInfo = SavedAddressInfo(addressess)
+    }
+
+    override fun updateSavedAddress(oldName: String, name: String, address: String) {
+        val addressess = userPreferences.savedAddressInfo.savedAddresses
+        addressess.find { it.addressName == oldName }?.let {
+            it.addressName = name
+            it.address = address
+        }
+
+        userPreferences.savedAddressInfo = SavedAddressInfo(addressess)
+    }
+
+    override fun saveAddress(name: String, address: String) {
+        val addressess = userPreferences.savedAddressInfo.savedAddresses
+        addressess.add(SavedAddressModel(name, address))
+
+        userPreferences.savedAddressInfo = SavedAddressInfo(addressess)
     }
 
     override fun getBitcoinDisplayUnit(): BitcoinDisplayUnit {

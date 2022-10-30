@@ -6,15 +6,13 @@ import android.view.View
 import android.view.ViewGroup
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.FragmentConfiguration
-import com.intuisoft.plaid.databinding.FragmentCreateImportNonCustodialBinding
-import com.intuisoft.plaid.databinding.FragmentCreateImportPrivateAndSecureBinding
-import com.intuisoft.plaid.databinding.FragmentCreateImportSwapCurrenciesBinding
+import com.intuisoft.plaid.databinding.FragmentSwapCurrienciesBinding
 import com.intuisoft.plaid.features.createwallet.viewmodel.CreateWalletViewModel
 import com.intuisoft.plaid.features.pin.ui.PinProtectedFragment
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 
-class SwapCurrenciesWalletFragment : PinProtectedFragment<FragmentCreateImportSwapCurrenciesBinding>() {
+class SwapCurrenciesWalletFragment : PinProtectedFragment<FragmentSwapCurrienciesBinding>() {
     protected val viewModel: CreateWalletViewModel by sharedViewModel()
 
     override fun onCreateView(
@@ -22,16 +20,12 @@ class SwapCurrenciesWalletFragment : PinProtectedFragment<FragmentCreateImportSw
         savedInstanceState: Bundle?
     ): View? {
 
-        _binding = FragmentCreateImportSwapCurrenciesBinding.inflate(inflater, container, false)
+        _binding = FragmentSwapCurrienciesBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onConfiguration(configuration: FragmentConfiguration?) {
         // do nothing
-    }
-
-    override fun showActionBar(): Boolean {
-        return false
     }
 
     override fun actionBarTitle(): Int {

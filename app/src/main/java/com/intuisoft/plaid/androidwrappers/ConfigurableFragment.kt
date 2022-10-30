@@ -64,13 +64,40 @@ abstract class ConfigurableFragment<T: ViewBinding> : BindingFragment<T>() {
         return baseVM!!.currentConfig != null
     }
 
-    override fun showActionBar(): Boolean {
+    override fun actionBarSubtitle(): Int {
         configTypes.forEach {
             if(baseVM!!.hasConfiguration(it))
-                return baseVM!!.currentConfig!!.showActionBar
+                return baseVM!!.currentConfig!!.actionBarSubtitle
         }
 
-        return false
+        return 0
+    }
+
+    override fun actionBarActionLeft(): Int {
+        configTypes.forEach {
+            if(baseVM!!.hasConfiguration(it))
+                return baseVM!!.currentConfig!!.actionLeft
+        }
+
+        return 0
+    }
+
+    override fun actionBarActionRight(): Int {
+        configTypes.forEach {
+            if(baseVM!!.hasConfiguration(it))
+                return baseVM!!.currentConfig!!.actionRight
+        }
+
+        return 0
+    }
+
+    override fun actionBarVariant(): Int {
+        configTypes.forEach {
+            if(baseVM!!.hasConfiguration(it))
+                return baseVM!!.currentConfig!!.actionbarVariant
+        }
+
+        return TopBarView.NO_BAR
     }
 
     override fun actionBarTitle(): Int {
@@ -80,6 +107,14 @@ abstract class ConfigurableFragment<T: ViewBinding> : BindingFragment<T>() {
         }
 
         return 0
+    }
+
+    override fun onActionLeft() {
+        // do nothing
+    }
+
+    override fun onActionRight() {
+        // do nothing
     }
 
     override fun navigationId(): Int {

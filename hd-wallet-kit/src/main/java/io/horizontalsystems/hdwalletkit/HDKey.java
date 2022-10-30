@@ -62,16 +62,13 @@ public class HDKey extends ECKey {
      */
     private final int parentFingerprint;
 
-    /**
-     * Create a new HD key from a private key
-     *
-     * @param privKey     Private key
-     * @param chainCode   Chain code
-     * @param parent      Parent or null if no parent
-     * @param childNumber Child number (first child is 0)
-     * @param isHardened  TRUE if the child is hardened
-     */
-    public HDKey(BigInteger privKey, byte[] chainCode, HDKey parent, int childNumber, boolean isHardened) {
+    public HDKey(BigInteger privKey,
+                 byte[] chainCode,
+                 HDKey parent,
+                 int parentFingerprint,
+                 int depth,
+                 int childNumber,
+                 boolean isHardened) {
         super(privKey, true);
         if (getPrivKeyBytes().length > 33)
             throw new IllegalArgumentException("Private key is longer than 33 bytes");
@@ -83,21 +80,17 @@ public class HDKey extends ECKey {
         this.parent = parent;
         this.isHardened = isHardened;
         this.childNumber = childNumber;
-        this.depth = (parent != null ? parent.getDepth() + 1 : 0);
-        this.parentFingerprint = (parent != null ? parent.getFingerprint() : 0);
+        this.depth = depth;
+        this.parentFingerprint = parentFingerprint;
     }
 
-    /**
-     * Create a new HD key from a public key.  The HD key will not have a private
-     * key.
-     *
-     * @param pubKey      Public key
-     * @param chainCode   Chain code
-     * @param parent      Parent or null if no parent
-     * @param childNumber Child number (first child is 0)
-     * @param isHardened  TRUE if the child is hardened
-     */
-    public HDKey(byte[] pubKey, byte[] chainCode, HDKey parent, int childNumber, boolean isHardened) {
+    public HDKey(byte[] pubKey,
+                 byte[] chainCode,
+                 HDKey parent,
+                 int parentFingerprint,
+                 int depth,
+                 int childNumber,
+                 boolean isHardened) {
         super(pubKey);
         if (pubKey.length != 33)
             throw new IllegalArgumentException("Public key is not compressed");
@@ -107,40 +100,34 @@ public class HDKey extends ECKey {
         this.parent = parent;
         this.isHardened = isHardened;
         this.childNumber = childNumber;
-        this.depth = (parent != null ? parent.getDepth() + 1 : 0);
-        this.parentFingerprint = (parent != null ? parent.getFingerprint() : 0);
+        this.depth = depth;
+        this.parentFingerprint = parentFingerprint;
     }
 
-    /**
-     * Serialize public key to Base58 ("xpub" )
-     * @return the key serialized as a Base58 address
-     */
-    public String serializePubB58(HDWallet.Purpose purpose, PublicAddressType type) {
-        for(PublicAddressType addrType: purpose.getPubAddressType()) {
-            if(addrType == type) {
-                return toBase58(serializePub(addrType.getPublicMagicBytes()));
-            }
-        }
-
-        throw new IllegalArgumentException("Unsupported public address type: " + type);
+    public String serializePublic(int version) {
+        return toBase58(serialize(version, getPubKey()));
     }
 
-    private byte[] serializePub(int publicMagicBytes) {
+    public String serializePrivate(int version) {
+        return toBase58(serialize(version, getPaddedPrivKeyBytes()));
+    }
+
+    private byte[] serialize(int version, byte[] key) {
         ByteBuffer ser = ByteBuffer.allocate(78);
-        ser.putInt(publicMagicBytes);
+        ser.putInt(version);
         ser.put((byte) getDepth());
         ser.putInt(getParentFingerprint());
         ser.putInt(getChildNumberEncoded());
         ser.put(getChainCode());
-        ser.put(getPubKey());
-        if(ser.position() != 78){
+        ser.put(key);
+        if (ser.position() != 78) {
             throw new IllegalStateException();
         }
 
         return ser.array();
     }
 
-    static String toBase58(byte[] ser) {
+    private String toBase58(byte[] ser) {
         return Base58.encode(addChecksum(ser));
     }
 
@@ -163,7 +150,7 @@ public class HDKey extends ECKey {
         return childNumber;
     }
 
-    private int getChildNumberEncoded() {
+    public int getChildNumberEncoded() {
         return isHardened ? (childNumber | HARDENED_FLAG) : childNumber;
     }
 

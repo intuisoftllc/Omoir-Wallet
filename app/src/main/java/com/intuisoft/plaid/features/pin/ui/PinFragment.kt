@@ -15,9 +15,7 @@ import androidx.navigation.fragment.navArgs
 import androidx.navigation.navOptions
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.*
-import com.intuisoft.plaid.databinding.FragmentPinEntryBinding
-import com.intuisoft.plaid.databinding.FragmentWelcomeBinding
-import com.intuisoft.plaid.features.onboarding.ui.OnboardingFragment
+import com.intuisoft.plaid.databinding.FragmentPinBinding
 import com.intuisoft.plaid.features.onboarding.ui.WelcomeFragmentDirections
 import com.intuisoft.plaid.features.onboarding.viewmodel.OnboardingViewModel
 import com.intuisoft.plaid.features.pin.viewmodel.PinViewModel
@@ -27,7 +25,7 @@ import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.concurrent.Executor
 
-class PinFragment: BindingFragment<FragmentPinEntryBinding>() {
+class PinFragment: BindingFragment<FragmentPinBinding>() {
     private val pinViewModel: PinViewModel by inject()
 
     var setupPin = false
@@ -37,7 +35,7 @@ class PinFragment: BindingFragment<FragmentPinEntryBinding>() {
         savedInstanceState: Bundle?
     ): View? {
 
-        _binding = FragmentPinEntryBinding.inflate(inflater, container, false)
+        _binding = FragmentPinBinding.inflate(inflater, container, false)
         setupPin = arguments?.get("setupPin") as? Boolean ?: false
         return binding.root
     }
@@ -53,7 +51,6 @@ class PinFragment: BindingFragment<FragmentPinEntryBinding>() {
         }
 
         binding.passcodeView.setLocalPasscode(pinViewModel.pin)
-
         binding.passcodeView.setListener(object: PasscodeView.PasscodeViewListener {
             override fun onFail(wrongNumber: String?) {
                 // do nothing
@@ -114,12 +111,33 @@ class PinFragment: BindingFragment<FragmentPinEntryBinding>() {
         })
     }
 
-    override fun showActionBar(): Boolean {
-        return false
+    override fun actionBarVariant(): Int {
+        return TopBarView.NO_BAR
     }
+
 
     override fun actionBarTitle(): Int {
         return 0
+    }
+
+    override fun actionBarSubtitle(): Int {
+        return 0
+    }
+
+    override fun actionBarActionLeft(): Int {
+        return 0
+    }
+
+    override fun actionBarActionRight(): Int {
+        return 0
+    }
+
+    override fun onActionLeft() {
+        // ignore
+    }
+
+    override fun onActionRight() {
+        // ignore
     }
 
     override fun navigationId(): Int {

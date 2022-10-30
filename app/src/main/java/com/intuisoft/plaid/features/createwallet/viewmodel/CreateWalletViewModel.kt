@@ -3,19 +3,20 @@ package com.intuisoft.plaid.features.createwallet.viewmodel
 import android.app.Application
 import com.intuisoft.plaid.androidwrappers.WalletViewModel
 import com.intuisoft.plaid.repositories.LocalStoreRepository
+import com.intuisoft.plaid.walletmanager.AbstractWalletManager
 import com.intuisoft.plaid.walletmanager.WalletManager
-import io.horizontalsystems.bitcoincore.core.Bip
+import io.horizontalsystems.hdwalletkit.HDWallet
 import io.horizontalsystems.hdwalletkit.Mnemonic
 
 
 class CreateWalletViewModel(
     application: Application,
     localStoreRepository: LocalStoreRepository,
-    private val walletManager: WalletManager
+    private val walletManager: AbstractWalletManager
 ): WalletViewModel(application, localStoreRepository, walletManager) {
 
     private var seed: List<String>? = null
-    private var bip: Bip = Bip.BIP84
+    private var bip: HDWallet.Purpose = HDWallet.Purpose.BIP84
     private var entropyStrength = Mnemonic.EntropyStrength.Default
 
     var useTestNet = false
@@ -33,7 +34,7 @@ class CreateWalletViewModel(
         entropyStrength = strength
     }
 
-    fun setLocalBip(bip: Bip) {
+    fun setLocalBip(bip: HDWallet.Purpose) {
         this.bip = bip
     }
 

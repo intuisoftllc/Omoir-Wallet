@@ -39,7 +39,6 @@ class BlockchainComApi(transactionApiUrl: String, blocksApiUrl: String) : IIniti
         val joinedHeights = heights.sorted().joinToString(",") { it.toString() }
         val blocks = blocksApiManager.doOkHttpGet(false, "hashes?numbers=$joinedHeights").asArray()
 
-        println("requesting blocks: ${heights.size} - $joinedHeights")
         return blocks.map { blockJson ->
             val block = blockJson.asObject()
 

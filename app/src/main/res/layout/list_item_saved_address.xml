@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.intuisoft.plaid.androidwrappers.SettingsItemView
+        android:id="@+id/saved_address"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:settings_variant="card"
+        android:layout_marginHorizontal="@dimen/horizontal_padding_size"
+        android:layout_marginTop="@dimen/horizontal_padding_size"
+        app:elipsize_subtitle="true"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:item_title="FriendsAddress"
+        app:item_subtitle="bc1qmm8j5yzc8qmsdlfz7qg6yyvnpz7l22tqlr285k"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

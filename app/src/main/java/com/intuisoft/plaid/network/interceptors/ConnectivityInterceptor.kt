@@ -13,7 +13,7 @@ class ConnectivityInterceptor(
     override fun intercept(chain: Interceptor.Chain): Response {
 
         if (!connectionMonitor.isConnected()) {
-            throw NoInternetConnectionException(context.getString(R.string.no_connection_message))
+            throw NoInternetConnectionException(context.getString(0/*R.string.no_connection_message*/))
         } else {
             return chain.proceed(chain.request())
         }

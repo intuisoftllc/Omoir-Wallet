@@ -7,15 +7,13 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.annotation.StringRes
+import androidx.annotation.DrawableRes
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import com.intuisoft.plaid.R
-import com.intuisoft.plaid.androidwrappers.ActionBarDelegate
-import com.intuisoft.plaid.androidwrappers.BindingActivity
-import com.intuisoft.plaid.androidwrappers.currentNavigationFragment
+import com.intuisoft.plaid.androidwrappers.*
 import com.intuisoft.plaid.databinding.ActivityMainBinding
 import com.intuisoft.plaid.features.splash.ui.SplashFragment
 import com.intuisoft.plaid.listeners.BarcodeResultListener
@@ -54,9 +52,6 @@ class MainActivity : BindingActivity<ActivityMainBinding>(), ActionBarDelegate {
 
         _binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        setSupportActionBar(binding.toolbar)
-        getSupportActionBar()?.setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar()?.setDisplayShowHomeEnabled(true);
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
 
         receiver = NetworkChangeReceiver() {
@@ -84,32 +79,41 @@ class MainActivity : BindingActivity<ActivityMainBinding>(), ActionBarDelegate {
         barcodeLauncher.launch(Intent(this, BarcodeScannerActivity::class.java))
     }
 
-    override var isActionBarShowing: Boolean
-        get() = supportActionBar?.isShowing ?: false
-        set(value) {
-            if (value) {
-                supportActionBar?.show()
-            } else {
-                supportActionBar?.hide()
+    override val isActionBarShowing: Boolean
+        get() = binding.toolbar?.variant != TopBarView.NO_BAR
+
+    override fun setActionBarTitle(title: String) {
+        binding.toolbar.setPrimaryText(title)
+    }
+
+    override fun setActionBarSubTitle(title: String) {
+        binding.toolbar.setSecondaryText(title)
+    }
+
+    override fun setActionBarActionLeft(@DrawableRes action: Int) {
+        binding.toolbar.setActionLeft(action)
+    }
+
+    override fun setActionBarActionRight(@DrawableRes action: Int) {
+        binding.toolbar.setActionRight(action)
+    }
+
+    override fun setActionBarVariant(variant: Int) {
+        binding.toolbar.setBarStyle(variant)
+
+        binding.toolbar.setOnActionLeftClick {
+            if(supportFragmentManager.currentNavigationFragment is FragmentActionBarDelegate) {
+                (supportFragmentManager.currentNavigationFragment as? FragmentActionBarDelegate)
+                    ?.onActionLeft()
             }
         }
 
-    override var actionBarTitle: CharSequence?
-        get() = supportActionBar?.title
-        set(value) {
-            supportActionBar?.title = value
+        binding.toolbar.setOnActionRightClick {
+            if(supportFragmentManager.currentNavigationFragment is FragmentActionBarDelegate) {
+                (supportFragmentManager.currentNavigationFragment as? FragmentActionBarDelegate)
+                    ?.onActionRight()
+            }
         }
-
-    override fun showActionBarTitle() {
-        supportActionBar?.setDisplayShowTitleEnabled(true)
-    }
-
-    override fun hideActionBarTitle() {
-        supportActionBar?.setDisplayShowTitleEnabled(false)
-    }
-
-    override fun setActionBarTitle(@StringRes title: Int) {
-        supportActionBar?.setTitle(title)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

@@ -60,16 +60,6 @@ public class Utils {
         return doubleDigest(input, 0, input.length);
     }
 
-    public static byte[] singleDigest(byte[] input) {
-        byte[] bytes;
-        synchronized (digest) {
-            digest.reset();
-            digest.update(input, offset, length);
-            bytes = digest.digest();
-        }
-        return bytes;
-    }
-
     /**
      * Calculate the SHA-256 hash of the input and then hash the resulting hash again
      *
