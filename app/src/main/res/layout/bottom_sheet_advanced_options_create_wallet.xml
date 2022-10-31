@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingHorizontal="20sp"
+    android:paddingTop="20dp"
+    android:paddingBottom="0dp"
+    android:paddingVertical="40dp"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/TextStyle.Semibold.12"
+        android:textColor="@color/settings_category_text_color"
+        android:text="@string/create_wallet_advanced_options_title_1"
+        android:layout_gravity="start"/>
+
+    <com.intuisoft.plaid.androidwrappers.SettingsItemView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:item_title="Test Net"
+        app:settings_variant="radio"
+        app:show_radio="true"
+        android:layout_marginTop="@dimen/horizontal_padding_size"
+        android:id="@+id/testNetOption"/>
+
+    <com.intuisoft.plaid.androidwrappers.SettingsItemView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:item_title="Main Net"
+        app:settings_variant="radio"
+        app:show_radio="true"
+        android:layout_marginTop="@dimen/horizontal_padding_size"
+        android:id="@+id/mainNetOption"/>
+
+    <TextView
+        android:layout_marginTop="@dimen/margin_24"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/TextStyle.Semibold.12"
+        android:textColor="@color/settings_category_text_color"
+        android:text="@string/create_wallet_advanced_options_title_2"
+        android:layout_gravity="start"/>
+
+    <com.intuisoft.plaid.androidwrappers.SettingsItemView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:item_subtitle="Entropy Strength"
+        android:id="@+id/entropyOption"
+        android:layout_marginTop="@dimen/horizontal_padding_size"
+        app:show_chevron="true"
+        app:title_text_color="@color/white"
+        app:show_switch="false"/>
+
+    <com.intuisoft.plaid.androidwrappers.SettingsItemView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:item_subtitle="Bip"
+        android:layout_marginTop="@dimen/horizontal_padding_size"
+        android:id="@+id/bipOption"
+        app:show_chevron="true"
+        app:title_text_color="@color/white"
+        app:show_switch="false"/>
+
+    <com.intuisoft.plaid.androidwrappers.SettingsItemView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:item_subtitle="Bip Type"
+        android:visibility="gone"
+        android:id="@+id/bipTypeOption"
+        app:show_chevron="true"
+        app:title_text_color="@color/white"
+        app:show_switch="false"/>
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/create_wallet_advanced_options_disclaimer"
+        android:layout_marginTop="@dimen/margin_24"
+        android:textColor="@color/light_grey"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center_horizontal"/>
+
+
+</LinearLayout>

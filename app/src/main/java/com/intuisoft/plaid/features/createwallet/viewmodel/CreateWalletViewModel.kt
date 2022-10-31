@@ -1,6 +1,8 @@
 package com.intuisoft.plaid.features.createwallet.viewmodel
 
 import android.app.Application
+import android.content.Context
+import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.WalletViewModel
 import com.intuisoft.plaid.repositories.LocalStoreRepository
 import com.intuisoft.plaid.walletmanager.AbstractWalletManager
@@ -41,6 +43,29 @@ class CreateWalletViewModel(
     fun getEntropyStrength() = entropyStrength
 
     fun getLocalBipType() = bip
+
+    fun entropyStrengthToString(context: Context) : String {
+        when(getEntropyStrength()) {
+            Mnemonic.EntropyStrength.Default -> {
+                return context.getString(R.string.create_wallet_advanced_options_entropy_strength_1)
+            }
+            Mnemonic.EntropyStrength.Low -> {
+                return context.getString(R.string.create_wallet_advanced_options_entropy_strength_2)
+            }
+            Mnemonic.EntropyStrength.Medium -> {
+                return context.getString(R.string.create_wallet_advanced_options_entropy_strength_3)
+            }
+            Mnemonic.EntropyStrength.High -> {
+                return context.getString(R.string.create_wallet_advanced_options_entropy_strength_4)
+            }
+            Mnemonic.EntropyStrength.VeryHigh -> {
+                return context.getString(R.string.create_wallet_advanced_options_entropy_strength_5)
+            }
+            else -> {
+                return "unknown"
+            }
+        }
+    }
 
     fun setLocalSeedPhrase(p: List<String>) {
         seed = p

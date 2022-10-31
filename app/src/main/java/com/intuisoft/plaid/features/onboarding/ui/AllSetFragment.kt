@@ -8,23 +8,25 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
+import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.core.widget.doAfterTextChanged
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navOptions
 import com.intuisoft.plaid.R
-import com.intuisoft.plaid.androidwrappers.BindingFragment
-import com.intuisoft.plaid.androidwrappers.TopBarView
-import com.intuisoft.plaid.androidwrappers.ignoreOnBackPressed
+import com.intuisoft.plaid.androidwrappers.*
 import com.intuisoft.plaid.databinding.FragmentOnboardingAllSetBinding
 import com.intuisoft.plaid.features.onboarding.viewmodel.OnboardingViewModel
 import com.intuisoft.plaid.features.pin.ui.PinFragmentDirections
+import com.intuisoft.plaid.features.pin.ui.PinProtectedFragment
 import com.intuisoft.plaid.util.Constants
 import com.intuisoft.plaid.util.Constants.Limit.MAX_ALIAS_LENGTH
+import com.intuisoft.plaid.util.fragmentconfig.AllSetData
+import com.intuisoft.plaid.util.fragmentconfig.ConfigSeedData
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 
-class AllSetFragment : BindingFragment<FragmentOnboardingAllSetBinding>() {
+class AllSetFragment : PinProtectedFragment<FragmentOnboardingAllSetBinding>() {
     private val viewModel: OnboardingViewModel by sharedViewModel()
 
     override fun onCreateView(
@@ -33,62 +35,70 @@ class AllSetFragment : BindingFragment<FragmentOnboardingAllSetBinding>() {
     ): View? {
 
         _binding = FragmentOnboardingAllSetBinding.inflate(inflater, container, false)
+        setupConfiguration(viewModel,
+            listOf(
+                FragmentConfigurationType.CONFIGURATION_All_SET
+            )
+        )
         return binding.root
 
     }
 
     // todo: clear backstack when navigating here
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun onConfiguration(configuration: FragmentConfiguration?) {
+        when(configuration?.configurationType ?: FragmentConfigurationType.CONFIGURATION_NONE) {
+            FragmentConfigurationType.CONFIGURATION_All_SET -> {
+                val data = configuration!!.configData as AllSetData
 
-        binding.successIcon.animate().alpha(1f).scaleX(1f).scaleY(1f).setDuration(800)
-        ignoreOnBackPressed()
+                binding.successIcon.animate().alpha(1f).scaleX(1f).scaleY(1f).setDuration(800)
+                ignoreOnBackPressed()
 
-        binding.gotoHomescreen.onClick {
-            findNavController().navigate(AllSetFragmentDirections.actionAllSetFragmentToHomeScreenFragment(),
-                Constants.Navigation.ANIMATED_FADE_IN_NAV_OPTION
-            )
+                binding.allSetTitle.text = data.title
+                binding.allSetDescription.text = data.subtitle
+                binding.positiveButton.setButtonText(data.positiveText)
+                binding.negativeButton.setButtonText(data.negativeText)
+
+                binding.positiveButton.onClick {
+                    navigate(
+                        data.positiveDestination,
+                        navOptions {
+                            anim {
+                                enter = android.R.anim.fade_in
+                                popEnter = android.R.anim.slide_in_left
+                            }
+
+                            popUpTo(R.id.pinFragment) {
+                                inclusive = true
+                            }
+                        }
+                    )
+                }
+
+                binding.negativeButton.onClick {
+                    navigate(
+                        data.negativeDestination,
+                        navOptions {
+                            anim {
+                                enter = android.R.anim.fade_in
+                                popEnter = android.R.anim.slide_in_left
+                            }
+
+                            popUpTo(R.id.pinFragment) {
+                                inclusive = true
+                            }
+                        }
+                    )
+                }
+            }
+            else -> {
+                throw UnsupportedOperationException("Invalid configuration set ${configuration?.configurationType}")
+            }
         }
-
-        binding.createWallet.onClick {
-            findNavController().navigate(AllSetFragmentDirections.actionAllSetFragmentToCreateWalletFragment(),
-                Constants.Navigation.ANIMATED_FADE_IN_NAV_OPTION
-            )
-        }
-    }
-
-    override fun actionBarTitle(): Int {
-        return 0
-    }
-
-    override fun actionBarVariant(): Int {
-        return TopBarView.NO_BAR
-    }
-
-    override fun actionBarSubtitle(): Int {
-        return 0
-    }
-
-    override fun actionBarActionLeft(): Int {
-        return 0
-    }
-
-    override fun actionBarActionRight(): Int {
-        return 0
-    }
-
-    override fun onActionLeft() {
-        // ignore
-    }
-
-    override fun onActionRight() {
-        // ignore
     }
 
     override fun navigationId(): Int {
         return R.id.allSetFragment
     }
-
 
     override fun onDestroyView() {
         super.onDestroyView()

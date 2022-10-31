@@ -49,6 +49,8 @@ class SettingsViewModel(
     fun getName() = localStoreRepository.getUserAlias()
     fun getMinConfirmations() = localStoreRepository.getMinimumConfirmations()
 
+    var appRestartNeeded = false
+
     fun saveMinimumConfirmation(min: Int) {
         localStoreRepository.setMinConfirmations(min)
     }

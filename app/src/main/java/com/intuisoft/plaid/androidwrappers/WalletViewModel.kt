@@ -1,8 +1,10 @@
 package com.intuisoft.plaid.androidwrappers
 
 import android.app.Application
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
+import com.intuisoft.plaid.R
 import com.intuisoft.plaid.model.BitcoinDisplayUnit
 import com.intuisoft.plaid.model.LocalWalletModel
 import com.intuisoft.plaid.repositories.LocalStoreRepository
@@ -66,6 +68,11 @@ open class WalletViewModel(
 
     fun showWalletBalance() {
         _walletBalance.postValue(SimpleCoinNumberFormat.format(localStoreRepository, getWalletBalance(), true))
+    }
+
+    fun restartApp(fragment: Fragment) {
+        walletManager.stop()
+        fragment.navigate(R.id.splashFragment)
     }
 
     fun calculateFee(sats: Long, feeRate: Int, address: String?, retry: Boolean = true) : Long {

@@ -90,11 +90,6 @@
         android:label="@string/name_wallet_fragment_label"
         tools:layout="@layout/fragment_name_wallet">
 
-        <action
-            android:id="@+id/action_NameWalletFragment_to_WalletCreatedFragment"
-            app:destination="@+id/walletCreatedFragment"
-            app:popUpTo="@id/nameWalletFragment"
-            app:popUpToInclusive="true"/>
     </fragment>
 
     <fragment

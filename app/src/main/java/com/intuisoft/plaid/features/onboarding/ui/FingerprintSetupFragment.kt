@@ -4,17 +4,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import com.intuisoft.plaid.features.onboarding.viewmodel.OnboardingViewModel
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.intuisoft.plaid.R
-import com.intuisoft.plaid.androidwrappers.BindingFragment
-import com.intuisoft.plaid.androidwrappers.TopBarView
-import com.intuisoft.plaid.androidwrappers.validateFingerprint
+import com.intuisoft.plaid.androidwrappers.*
 import com.intuisoft.plaid.databinding.FragmentOnboardingFingerprintRegistrationBinding
 import com.intuisoft.plaid.util.Constants
+import com.intuisoft.plaid.util.fragmentconfig.AllSetData
 
 
 class FingerprintSetupFragment : BindingFragment<FragmentOnboardingFingerprintRegistrationBinding>() {
@@ -97,7 +97,28 @@ class FingerprintSetupFragment : BindingFragment<FragmentOnboardingFingerprintRe
     }
 
     fun onNextStep() {
-        findNavController().navigate(FingerprintSetupFragmentDirections.actionFingerprintSetupFragmentToAllSetFragment(),
-            Constants.Navigation.ANIMATED_FADE_IN_EXIT_NAV_OPTION)
+        var bundle = bundleOf(
+            Constants.Navigation.FRAGMENT_CONFIG to FragmentConfiguration(
+                actionBarTitle = 0,
+                actionBarSubtitle = 0,
+                actionbarVariant = 0,
+                actionLeft = 0,
+                actionRight = 0,
+                configurationType = FragmentConfigurationType.CONFIGURATION_All_SET,
+                configData = AllSetData(
+                    title = getString(R.string.all_set_title),
+                    subtitle = getString(R.string.all_set_description),
+                    positiveText = getString(R.string.create_new_wallet),
+                    negativeText = getString(R.string.goto_homescreen),
+                    positiveDestination = R.id.createWalletFragment,
+                    negativeDestination = R.id.homescreenFragment,
+                )
+            )
+        )
+
+        navigate(
+            R.id.allSetFragment,
+            bundle
+        )
     }
 }

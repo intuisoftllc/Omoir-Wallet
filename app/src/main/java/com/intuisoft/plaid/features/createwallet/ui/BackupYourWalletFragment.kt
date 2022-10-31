@@ -27,31 +27,32 @@ class BackupYourWalletFragment : PinProtectedFragment<FragmentBackupBinding>() {
     }
 
     override fun onConfiguration(configuration: FragmentConfiguration?) {
-//        binding.confirm.enableButton(false)
-//        binding.ackowledgement1.setOnCheckedChangeListener { compoundButton, isChecked ->
-//            binding.confirm.enableButton(allAcknowledgementsChecked())
-//        }
-//
-//        binding.ackowledgement2.setOnCheckedChangeListener { compoundButton, isChecked ->
-//            binding.confirm.enableButton(allAcknowledgementsChecked())
-//        }
-//
-//        binding.ackowledgement3.setOnCheckedChangeListener { compoundButton, isChecked ->
-//            binding.confirm.enableButton(allAcknowledgementsChecked())
-//        }
-//
-//        binding.confirm.onClick {
-//            findNavController().navigate(
-//                BackupYourWalletFragmentDirections.actionBackupWalletFragmentToSeedPhraseFragment(),
-//                Constants.Navigation.ANIMATED_ENTER_EXIT_RIGHT_NAV_OPTION
-//            )
-//        }
+        binding.seedPhraseBackupSubtitle.setText(getString(R.string.backup_seed_phrase_description, viewModel.entropyStrengthToString(requireContext())))
+
+        binding.continueButton.enableButton(false)
+        binding.backupAcknowledgement1.setOnCheckedChangeListener { compoundButton, isChecked ->
+            binding.continueButton.enableButton(allAcknowledgementsChecked())
+        }
+
+        binding.backupAcknowledgement2.setOnCheckedChangeListener { compoundButton, isChecked ->
+            binding.continueButton.enableButton(allAcknowledgementsChecked())
+        }
+
+        binding.backupAcknowledgement3.setOnCheckedChangeListener { compoundButton, isChecked ->
+            binding.continueButton.enableButton(allAcknowledgementsChecked())
+        }
+
+        binding.continueButton.onClick {
+            findNavController().navigate(
+                BackupYourWalletFragmentDirections.actionBackupWalletFragmentToSeedPhraseFragment(),
+                Constants.Navigation.ANIMATED_ENTER_EXIT_RIGHT_NAV_OPTION
+            )
+        }
     }
 
     fun allAcknowledgementsChecked() : Boolean {
-        return true
-//        return binding.ackowledgement1.isChecked && binding.ackowledgement2.isChecked
-//                && binding.ackowledgement3.isChecked
+        return binding.backupAcknowledgement1.isChecked && binding.backupAcknowledgement2.isChecked
+                && binding.backupAcknowledgement3.isChecked
     }
 
     override fun actionBarTitle(): Int {

@@ -145,7 +145,7 @@ class RoundedButtonView(context: Context, attrs: AttributeSet?) : LinearLayout(c
         }
     }
 
-    private fun setTint(value: Int) {
+    fun setTint(value: Int) {
         if(value != 0) {
             button?.tint(value)
         }

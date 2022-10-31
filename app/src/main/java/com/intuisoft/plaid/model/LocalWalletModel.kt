@@ -3,6 +3,7 @@ package com.intuisoft.plaid.model
 import android.widget.TextView
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.SingleLiveData
 import com.intuisoft.plaid.repositories.LocalStoreRepository
 import com.intuisoft.plaid.util.Constants
@@ -35,20 +36,21 @@ data class LocalWalletModel(
         when(this.walletState) {
             WalletState.SYNCING -> {
                 if(progress >= 1) {
-                    walletState.text = Constants.Strings.SYNCING + " ($progress%)"
+                    walletState.text = walletState.context.getString(R.string.syncing_percent, progress.toString())
                 } else {
-                    walletState.text = Constants.Strings.SYNCING
+                    walletState.text = walletState.context.getString(R.string.syncing)
                 }
             } else -> {
                 when(walletKit!!.getPurpose()) {
                     HDWallet.Purpose.BIP84 -> {
-                        walletState.text = Constants.Strings.BIP_TYPE_84
+                        walletState.text = walletState.context.getString(R.string.create_wallet_advanced_options_bip_1_short)
+
                     }
                     HDWallet.Purpose.BIP49 -> {
-                        walletState.text =Constants.Strings.BIP_TYPE_49
+                        walletState.text = walletState.context.getString(R.string.create_wallet_advanced_options_bip_2_short)
                     }
                     HDWallet.Purpose.BIP44 -> {
-                        walletState.text = Constants.Strings.BIP_TYPE_44
+                        walletState.text = walletState.context.getString(R.string.create_wallet_advanced_options_bip_3_short)
                     }
                 }
             }
@@ -68,9 +70,9 @@ data class LocalWalletModel(
         when(walletState) {
             WalletState.SYNCING -> {
                 if(progress >= 1) {
-                    walletBalance.text = Constants.Strings.SYNCING + " ($progress%)"
+                    walletBalance.text = walletBalance.context.getString(R.string.syncing_percent, progress.toString())
                 } else {
-                    walletBalance.text = Constants.Strings.SYNCING
+                    walletBalance.text = walletBalance.context.getString(R.string.syncing)
                 }
             } else -> {
                 walletBalance.text = getBalance(localStoreRepository, showFullBalance)

@@ -67,8 +67,7 @@
                     android:id="@+id/sats"
                     android:layout_weight="1"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintBottom_toTopOf="@id/goto_homescreen"/>
+                    app:layout_constraintEnd_toEndOf="parent"/>
 
                 <com.intuisoft.plaid.androidwrappers.RoundedButtonView
                     android:layout_width="0dp"
@@ -80,8 +79,7 @@
                     android:layout_weight="1"
                     android:layout_marginHorizontal="@dimen/margin_10"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintBottom_toTopOf="@id/goto_homescreen"/>
+                    app:layout_constraintEnd_toEndOf="parent"/>
 
                 <com.intuisoft.plaid.androidwrappers.RoundedButtonView
                     android:layout_width="0dp"
@@ -92,8 +90,7 @@
                     android:id="@+id/currency"
                     android:layout_weight="1"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintBottom_toTopOf="@id/goto_homescreen"/>
+                    app:layout_constraintEnd_toEndOf="parent"/>
             </LinearLayout>
     </androidx.cardview.widget.CardView>
 

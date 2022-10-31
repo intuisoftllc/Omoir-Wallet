@@ -10,10 +10,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
-import android.widget.NumberPicker
-import android.widget.TextView
-import android.widget.Toolbar
+import android.widget.*
 import androidx.core.os.bundleOf
 import androidx.core.widget.doOnTextChanged
 import androidx.lifecycle.Observer
@@ -31,10 +28,12 @@ import com.intuisoft.plaid.model.BitcoinDisplayUnit
 import com.intuisoft.plaid.util.Constants
 import kotlinx.android.synthetic.main.custom_view_settings_item.*
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
 class SettingsFragment : PinProtectedFragment<FragmentSettingsBinding>() {
     private val viewModel: SettingsViewModel by sharedViewModel()
+    private val walletVm: WalletViewModel by viewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -47,6 +46,11 @@ class SettingsFragment : PinProtectedFragment<FragmentSettingsBinding>() {
 
     override fun onConfiguration(configuration: FragmentConfiguration?) {
 
+        onBackPressedCallback {
+            onNavigateBack()
+        }
+
+        viewModel.appRestartNeeded = false
         viewModel.bitcoinDisplayUnitSetting.observe(viewLifecycleOwner, Observer {
             when(it) {
                 BitcoinDisplayUnit.BTC -> {
@@ -119,6 +123,7 @@ class SettingsFragment : PinProtectedFragment<FragmentSettingsBinding>() {
                             subtitle = getString(R.string.low_pin_entry_subtitle),
                             positive = getString(R.string.low_pin_entry_positive_button),
                             negative = getString(R.string.cancel),
+                            positiveTint = 0,
                             onPositive = {
                                 viewModel.saveMaxPinAttempts(newLimit)
                             },
@@ -277,6 +282,7 @@ class SettingsFragment : PinProtectedFragment<FragmentSettingsBinding>() {
             val title = bottomSheetDialog.findViewById<TextView>(R.id.bottom_sheet_title)
             val numberPicker = bottomSheetDialog.findViewById<NumberPicker>(R.id.numberPicker)
 
+            val originalConfirmations = viewModel.getMinConfirmations()
             title?.setText(getString(R.string.settings_option_view_address_min_confirmations))
             numberPicker?.minValue = 1
             numberPicker?.maxValue = 6
@@ -284,6 +290,12 @@ class SettingsFragment : PinProtectedFragment<FragmentSettingsBinding>() {
             numberPicker?.wrapSelectorWheel = true
             numberPicker?.setOnValueChangedListener { picker, oldVal, newVal ->
                 viewModel.saveMinimumConfirmation(newVal)
+            }
+
+            bottomSheetDialog.setOnCancelListener {
+                if(originalConfirmations != viewModel.getMinConfirmations()) {
+                    viewModel.appRestartNeeded = true
+                }
             }
 
             bottomSheetDialog.show()
@@ -296,6 +308,7 @@ class SettingsFragment : PinProtectedFragment<FragmentSettingsBinding>() {
                 subtitle = getString(R.string.settings_option_wipe_data_subtitle),
                 positive = getString(R.string.settings_option_wipe_data_button),
                 negative = getString(R.string.cancel),
+                positiveTint = 0,
                 onPositive = {
                     if(viewModel.isFingerprintEnabled()) {
                         validateFingerprint(
@@ -419,6 +432,26 @@ class SettingsFragment : PinProtectedFragment<FragmentSettingsBinding>() {
 
         bottomSheetDialog.show()
     }
+    fun onNavigateBack() {
+        if(viewModel.appRestartNeeded) {
+            warningDialog(
+                context = requireContext(),
+                title = getString(R.string.settings_option_app_restart_title),
+                subtitle = getString(R.string.settings_option_app_restart_subtitle),
+                positive = getString(R.string.settings_option_app_restart_positive_text),
+                negative = getString(R.string.settings_option_app_restart_negative_text),
+                positiveTint = R.color.brand_color_dark_blue,
+                onPositive = {
+                    walletVm.restartApp(this)
+                },
+                onNegative = {
+                    findNavController().popBackStack()
+                }
+            )
+        } else {
+            findNavController().popBackStack()
+        }
+    }
 
     override fun onResume() {
         super.onResume()
@@ -444,7 +477,7 @@ class SettingsFragment : PinProtectedFragment<FragmentSettingsBinding>() {
     }
 
     override fun onActionLeft() {
-        findNavController().popBackStack()
+        onNavigateBack()
     }
 
     override fun navigationId(): Int {
@@ -458,6 +491,7 @@ class SettingsFragment : PinProtectedFragment<FragmentSettingsBinding>() {
             subtitle: String,
             positive: String,
             negative: String,
+            positiveTint: Int,
             onPositive: (() -> Unit)?,
             onNegative: (() -> Unit)?
         ) {
@@ -474,6 +508,7 @@ class SettingsFragment : PinProtectedFragment<FragmentSettingsBinding>() {
             sheetSubtitle.text = subtitle
             save.setButtonText(positive)
             cancel.setButtonText(negative)
+            save.setTint(positiveTint)
 
             save.onClick {
                 bottomSheetDialog.cancel()

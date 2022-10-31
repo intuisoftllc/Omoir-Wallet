@@ -77,6 +77,7 @@ class AddressBookFragment : PinProtectedFragment<FragmentAddressBookBinding>() {
                     subtitle = getString(R.string.save_address_delete_subtitle, addressModel.addressName),
                     positive = getString(R.string.delete),
                     negative = getString(R.string.cancel),
+                    positiveTint = 0,
                     onPositive = {
                         viewModel.removeAddress(addressModel.addressName)
                         viewModel.showAddresses()

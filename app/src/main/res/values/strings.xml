@@ -69,6 +69,10 @@
     <string name="settings_option_appearance_light">Light mode</string>
     <string name="settings_option_appearance_dark">Dark mode</string>
     <string name="settings_option_appearance_auto">Determined by the system</string>
+    <string name="settings_option_app_restart_title">Restart App</string>
+    <string name="settings_option_app_restart_subtitle">The changes recently made within the app requires a restart for them to fully take affect.</string>
+    <string name="settings_option_app_restart_positive_text">Restart Now</string>
+    <string name="settings_option_app_restart_negative_text">Restart Later</string>
 <!--    Settings Strings End -->
 
 <!--    Bitcoin Unit Strings -->
@@ -112,7 +116,7 @@
 
 <!--    Backup Seed Phrase Strings -->
     <string name="backup_seed_phrase_title">Backup Your Seed Phrase</string>
-    <string name="backup_seed_phrase_description">In the next step you will see your seed phrase (%1$s words) that will allow you to recover your wallet in the future in case you loose access to this wallet.</string>
+    <string name="backup_seed_phrase_description">In the next step you will see your seed phrase (%1$s) that will allow you to recover your wallet in the future in case you loose access to this wallet.</string>
     <string name="backup_seed_phrase_acknowledgement_1">If I do not backup my seed phrase I understand that I could risk losing all my funds.</string>
     <string name="backup_seed_phrase_acknowledgement_2">I Understand if I expose my seed phrase to anyone, at any point my funds can be stolen.</string>
     <string name="backup_seed_phrase_acknowledgement_3">I Understand that it is solely my responsibility to keep my seed phrase secure.</string>
@@ -204,6 +208,29 @@
     <string name="credits_ui_designer_link">https://www.fiverr.com/imraan_zaack</string>
 <!--    Credits Strings End -->
 
+<!--    Create Wallet Strings -->
+    <string name="create_wallet_advanced_options_disclaimer">This above settings allow you to change specific properties of your wallet.\n\nIf you do not know what they mean, it\'s best to leave them unchanged.</string>
+    <string name="create_wallet_advanced_options_title_1">Bitcoin Network</string>
+    <string name="create_wallet_advanced_options_title_2">Wallet Configuration</string>
+    <string name="create_wallet_advanced_options_entropy_strength">Entropy Strength</string>
+    <string name="create_wallet_advanced_options_bip">Bip Type</string>
+    <string name="create_wallet_advanced_options_bip_1">Bip 84 Wallet (p2wpkh bech32)</string>
+    <string name="create_wallet_advanced_options_bip_2">Bip 49 Wallet (p2wpkhsh)</string>
+    <string name="create_wallet_advanced_options_bip_3">Bip 44 Wallet (p2pkh)</string>
+    <string name="create_wallet_advanced_options_bip_1_short">Bip 84 Wallet</string>
+    <string name="create_wallet_advanced_options_bip_2_short">Bip 49 Wallet</string>
+    <string name="create_wallet_advanced_options_bip_3_short">Bip 44 Wallet</string>
+    <string name="create_wallet_advanced_options_entropy_strength_1">12 words</string>
+    <string name="create_wallet_advanced_options_entropy_strength_2">15 words</string>
+    <string name="create_wallet_advanced_options_entropy_strength_3">18 words</string>
+    <string name="create_wallet_advanced_options_entropy_strength_4">20 words</string>
+    <string name="create_wallet_advanced_options_entropy_strength_5">24 words</string>
+    <string name="create_wallet_success_title">Wallet Created!</string>
+    <string name="create_wallet_success_subtitle">Your bitcoin wallet has been created.\n\nPlease note that it may take some time before your transactions (if any) will appear in the wallet dashboard screen.</string>
+    <string name="create_wallet_success_positive_button">Go to Wallet Dashboard</string>
+    <string name="create_wallet_success_negative_button">Go to Home Screen</string>
+<!--    Create Wallet Strings End -->
+
 <!--    Generic Use Strings -->
     <string name="welcome">Welcome</string>
     <string name="name">Name</string>
@@ -222,6 +249,8 @@
     <string name="advanced_options">Advanced Options</string>
     <string name="create_new_wallet">Create A New Wallet</string>
     <string name="available_balance">Available Balance</string>
+    <string name="syncing">Syncing...</string>
+    <string name="syncing_percent">Syncing... (%1$s%%)</string>
 <!--    Generic Use Strings End -->
 
 
