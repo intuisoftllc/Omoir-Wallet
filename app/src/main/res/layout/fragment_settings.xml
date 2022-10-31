@@ -143,7 +143,7 @@
 
 
             <androidx.cardview.widget.CardView
-                android:id="@+id/settings_subscriptions"
+                android:id="@+id/settings_subscriptions_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layout_constraintStart_toStartOf="parent"
@@ -170,6 +170,7 @@
                         android:text="@string/settings_category_subscriptions"/>
 
                     <com.intuisoft.plaid.androidwrappers.SettingsItemView
+                        android:id="@+id/subscription"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         app:settings_variant="normal"
@@ -185,7 +186,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/settings_subscriptions"
+                app:layout_constraintTop_toBottomOf="@id/settings_subscriptions_container"
                 app:layout_constraintEnd_toEndOf="parent"
                 android:layout_marginBottom="@dimen/horizontal_padding_size"
                 app:cardCornerRadius="4dp"
@@ -226,6 +227,7 @@
                         app:item_subtitle="@string/settings_option_view_address_book_description"/>
 
                     <com.intuisoft.plaid.androidwrappers.SettingsItemView
+                        android:id="@+id/minimum_confirmations"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         app:settings_variant="normal"
@@ -272,6 +274,7 @@
                         android:text="@string/settings_category_misc"/>
 
                     <com.intuisoft.plaid.androidwrappers.SettingsItemView
+                        android:id="@+id/about_us"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         app:settings_variant="normal"
@@ -280,6 +283,7 @@
                         app:item_subtitle="@string/settings_option_view_about_us_description"/>
 
                     <com.intuisoft.plaid.androidwrappers.SettingsItemView
+                        android:id="@+id/credits"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         app:settings_variant="normal"
@@ -288,6 +292,7 @@
                         app:item_subtitle="@string/settings_option_view_credits_description"/>
 
                     <com.intuisoft.plaid.androidwrappers.SettingsItemView
+                        android:id="@+id/help"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         app:settings_variant="normal"
@@ -315,10 +320,11 @@
                     android:orientation="vertical"
                     android:paddingHorizontal="10dp">
                     <com.intuisoft.plaid.androidwrappers.SettingsItemView
+                        android:id="@+id/wipe_data"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         app:settings_variant="normal"
-                        android:paddingVertical="8dp"
+                        android:paddingVertical="@dimen/margin_15"
                         app:title_text_color="@color/error_color"
                         app:item_title="@string/settings_option_view_wipe_data"/>
                 </LinearLayout>
@@ -344,6 +350,7 @@
                     android:orientation="vertical"
                     android:paddingHorizontal="10dp">
                     <com.intuisoft.plaid.androidwrappers.SettingsItemView
+                        android:id="@+id/app_version"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         app:settings_variant="normal"

@@ -15,6 +15,10 @@ interface LocalStoreRepository {
 
     fun getPinEntryLimit(): Int
 
+    fun getMinimumConfirmations(): Int
+
+    fun setMinConfirmations(minConfirmations: Int)
+
     fun setMaxPinEntryLimit(limit: Int)
 
     fun resetPinEntries()

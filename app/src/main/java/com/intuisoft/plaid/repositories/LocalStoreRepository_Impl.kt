@@ -26,6 +26,14 @@ class LocalStoreRepository_Impl(
         return userPreferences.maxPinAttempts
     }
 
+    override fun getMinimumConfirmations(): Int {
+        return userPreferences.minConfirmations
+    }
+
+    override fun setMinConfirmations(minConfirmations: Int) {
+        userPreferences.minConfirmations = minConfirmations
+    }
+
     override fun setMaxPinEntryLimit(limit: Int) {
         userPreferences.maxPinAttempts = limit
     }

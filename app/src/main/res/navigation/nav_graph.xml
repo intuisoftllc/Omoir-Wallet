@@ -222,6 +222,14 @@
     </fragment>
 
     <fragment
+        android:id="@+id/creditsFragment"
+        android:name="com.intuisoft.plaid.features.settings.ui.CreditsFragment"
+        android:label="@string/credits_fragment_label"
+        tools:layout="@layout/fragment_credits">
+
+    </fragment>
+
+    <fragment
         android:id="@+id/aboutUsFragment"
         android:name="com.intuisoft.plaid.features.settings.ui.AboutUsFragment"
         android:label="@string/appearance_fragment_label"

@@ -5,6 +5,7 @@ import com.google.gson.Gson
 import com.intuisoft.plaid.model.*
 import com.intuisoft.plaid.util.Constants
 import com.intuisoft.plaid.util.Constants.Limit.DEFAULT_MAX_PIN_ATTEMPTS
+import com.intuisoft.plaid.util.Constants.Limit.MIN_CONFIRMATIONS
 import com.intuisoft.plaid.walletmanager.StoredWalletInfo
 
 class UserPreferences(
@@ -24,9 +25,10 @@ class UserPreferences(
         const val PIN_TIMEOUT_KEY = "PIN_TIMEOUT_KEY"
         const val VERSION_TAPPED_COUNT_KEY = "VERSION_TAPPED_COUNT_KEY"
         const val LAST_SYNC_TIME_KEY = "LAST_SYNC_TIME_KEY"
-        const val WALLET_INFO = "WALLET_INFO"
-        const val DEFAULT_FEE_TYPE = "DEFAULT_FEE_TYPE"
-        const val SAVED_ADDRESSES = "SAVED_ADDRESSES"
+        const val WALLET_INFO_KEY = "WALLET_INFO_KEY"
+        const val DEFAULT_FEE_TYPE_KEY = "DEFAULT_FEE_TYPE_KEY"
+        const val SAVED_ADDRESSES_KEY = "SAVED_ADDRESSES_KEY"
+        const val MIN_CONFIRMATIONS_KEY = "MIN_CONFIRMATIONS_KEY"
     }
 
     var incorrectPinAttempts: Int
@@ -45,6 +47,14 @@ class UserPreferences(
             putInt(MAX_PIN_ATTEMPTS_KEY, attempts)
         }
 
+    var minConfirmations: Int
+        get() {
+            return getInt(MIN_CONFIRMATIONS_KEY, MIN_CONFIRMATIONS)
+        }
+        set(min) {
+            putInt(MIN_CONFIRMATIONS_KEY, min)
+        }
+
     var bitcoinDisplayUnit: BitcoinDisplayUnit
         get() {
             val unit = getInt(BITCOIN_UNIT_KEY, BitcoinDisplayUnit.BTC.typeId)
@@ -56,7 +66,7 @@ class UserPreferences(
 
     var savedAddressInfo: SavedAddressInfo
         get() {
-            val addresses = getString(SAVED_ADDRESSES, null)
+            val addresses = getString(SAVED_ADDRESSES_KEY, null)
 
             if(addresses != null) {
                 return Gson().fromJson(
@@ -70,12 +80,12 @@ class UserPreferences(
         set(info) {
             if(info == null) {
                 putString(
-                    SAVED_ADDRESSES,
+                    SAVED_ADDRESSES_KEY,
                     Gson().toJson(SavedAddressInfo(mutableListOf()))
                 )
             } else {
                 putString(
-                    SAVED_ADDRESSES,
+                    SAVED_ADDRESSES_KEY,
                     Gson().toJson(info)
                 )
             }
@@ -108,11 +118,11 @@ class UserPreferences(
 
     var defaultFeeType: FeeType
         get() {
-            val type = getInt(DEFAULT_FEE_TYPE, FeeType.MED.ordinal)
+            val type = getInt(DEFAULT_FEE_TYPE_KEY, FeeType.MED.ordinal)
             return FeeType.values().find { it.ordinal == type } ?: FeeType.MED
         }
         set(type) {
-            putInt(DEFAULT_FEE_TYPE, type.ordinal)
+            putInt(DEFAULT_FEE_TYPE_KEY, type.ordinal)
         }
 
     var pinTimeout: Int
@@ -149,7 +159,7 @@ class UserPreferences(
 
     var storedWalletInfo: StoredWalletInfo
         get() {
-            val walletInfo = getString(WALLET_INFO, null)
+            val walletInfo = getString(WALLET_INFO_KEY, null)
 
             if(walletInfo != null) {
                 return Gson().fromJson(
@@ -163,12 +173,12 @@ class UserPreferences(
         set(info) {
             if(info == null) {
                 putString(
-                    WALLET_INFO,
+                    WALLET_INFO_KEY,
                     Gson().toJson(StoredWalletInfo(mutableListOf()))
                 )
             } else {
                 putString(
-                    WALLET_INFO,
+                    WALLET_INFO_KEY,
                     Gson().toJson(info)
                 )
             }

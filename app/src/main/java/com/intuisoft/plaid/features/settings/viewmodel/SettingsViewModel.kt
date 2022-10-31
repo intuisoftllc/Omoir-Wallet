@@ -47,6 +47,11 @@ class SettingsViewModel(
     fun getPinTimeout() = localStoreRepository.getPinTimeout()
     fun getDisplayUnit() = localStoreRepository.getBitcoinDisplayUnit()
     fun getName() = localStoreRepository.getUserAlias()
+    fun getMinConfirmations() = localStoreRepository.getMinimumConfirmations()
+
+    fun saveMinimumConfirmation(min: Int) {
+        localStoreRepository.setMinConfirmations(min)
+    }
 
     fun updateSettingsScreen() {
         updateDisplayUnitSetting()

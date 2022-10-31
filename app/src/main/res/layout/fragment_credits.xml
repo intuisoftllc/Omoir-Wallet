@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:paddingBottom="@dimen/horizontal_padding_size">
+
+            <com.intuisoft.plaid.androidwrappers.SettingsItemView
+                android:id="@+id/acknowledgement_1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:settings_variant="card"
+                android:layout_margin="@dimen/margin_10"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:item_title="@string/credits_acknowledgement_1_title"
+                app:item_subtitle="@string/credits_acknowledgement_1_subtitle"
+                app:show_chevron="true"/>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/tec_stack"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/acknowledgement_1"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginBottom="@dimen/horizontal_padding_size"
+                app:cardCornerRadius="4dp"
+                android:layout_margin="10dp"
+                app:layout_constraintHorizontal_bias="0">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        style="@style/TextStyle.Semibold.12"
+                        android:textColor="@color/settings_category_text_color"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="@dimen/horizontal_padding_size"
+                        android:text="@string/credits_tech_stack_title"/>
+
+                    <com.intuisoft.plaid.androidwrappers.SettingsItemView
+                        android:id="@+id/bitcoin_unit"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:settings_variant="normal"
+                        app:item_title="@string/credits_acknowledgement_2_title"
+                        android:layout_marginBottom="@dimen/horizontal_padding_size"
+                        app:subtitle_icon="@drawable/ic_bitcoin"
+                        app:item_subtitle="@string/credits_acknowledgement_2_subtitle"/>
+
+                    <com.intuisoft.plaid.androidwrappers.SettingsItemView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:settings_variant="normal"
+                        android:layout_marginBottom="@dimen/horizontal_padding_size"
+                        app:item_title="@string/credits_acknowledgement_3_title"
+                        app:item_subtitle="@string/credits_acknowledgement_3_subtitle"/>
+
+                    <com.intuisoft.plaid.androidwrappers.SettingsItemView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:settings_variant="normal"
+                        android:layout_marginBottom="@dimen/horizontal_padding_size"
+                        app:item_title="@string/credits_acknowledgement_4_title"
+                        app:item_subtitle="@string/credits_acknowledgement_4_subtitle"/>
+
+                    <com.intuisoft.plaid.androidwrappers.SettingsItemView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:settings_variant="normal"
+                        app:item_title="@string/credits_acknowledgement_5_title"
+                        app:item_subtitle="@string/credits_acknowledgement_5_subtitle"/>
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>

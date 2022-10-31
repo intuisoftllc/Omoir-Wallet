@@ -1,6 +1,7 @@
 package com.intuisoft.plaid.androidwrappers
 
 import android.content.Context
+import android.text.Html
 import android.text.TextUtils
 import android.util.AttributeSet
 import android.view.View
@@ -120,12 +121,12 @@ class SettingsItemView(context: Context, attrs: AttributeSet?) : LinearLayout(co
     }
 
     fun setTitleText(value: String) {
-        titleTv?.text = value
+        titleTv?.text = Html.fromHtml(value)
         titleTv?.isVisible = value.isNotEmpty()
     }
 
     fun setSubTitleText(value: String) {
-        subtitleTv?.text = value
+        subtitleTv?.text = Html.fromHtml(value)
         subtitleTv?.isVisible = value.isNotEmpty()
     }
 

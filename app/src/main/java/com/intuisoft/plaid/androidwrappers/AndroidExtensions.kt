@@ -8,6 +8,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.Resources
 import android.graphics.PorterDuff
+import android.net.Uri
 import android.os.Bundle
 import android.util.TypedValue
 import android.view.Gravity
@@ -18,7 +19,6 @@ import androidx.activity.OnBackPressedCallback
 import androidx.annotation.DimenRes
 import androidx.annotation.DrawableRes
 import androidx.biometric.BiometricPrompt
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.core.view.WindowInsetsControllerCompat
@@ -32,6 +32,7 @@ import com.intuisoft.plaid.model.LocalWalletModel
 import com.intuisoft.plaid.util.Constants
 import com.intuisoft.plaid.util.entensions.getColorFromAttr
 import java.util.concurrent.Executor
+
 
 val Activity.windowInsetsController: WindowInsetsControllerCompat
     get() = WindowInsetsControllerCompat(window, window.decorView)
@@ -231,4 +232,9 @@ fun Activity.checkAppPermission(permission: String, requestCode: Int, onAlreadyG
     } else {
         onAlreadyGranted()
     }
+}
+
+fun Context.openLink(url: String) {
+    val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+    startActivity(browserIntent)
 }

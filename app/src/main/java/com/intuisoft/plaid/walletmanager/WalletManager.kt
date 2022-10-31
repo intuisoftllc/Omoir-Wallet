@@ -51,9 +51,11 @@ class WalletManager(
                             peerSize = Constants.Limit.MAX_PEERS,
                             gapLimit = 50,
                             syncMode = BitcoinCore.SyncMode.Api(),
-                            confirmationsThreshold = Constants.Limit.MIN_CONFIRMATIONS,
+                            confirmationsThreshold = 1,
                             purpose = HDWallet.Purpose.BIP44
                         )
+
+                        _baseWallet!!.refresh()
                     }
 
                     localStoreRepository.setOnWipeDataListener(this@WalletManager)
@@ -279,7 +281,7 @@ class WalletManager(
                    peerSize = Constants.Limit.MAX_PEERS,
                    gapLimit = 50,
                    syncMode = getWalletSyncMode(identifier.apiSyncMode),
-                   confirmationsThreshold = Constants.Limit.MIN_CONFIRMATIONS,
+                   confirmationsThreshold = localStoreRepository.getMinimumConfirmations(),
                    purpose = HDWallet.Purpose.values().find {  it.ordinal == identifier.bip }!!
                )
 

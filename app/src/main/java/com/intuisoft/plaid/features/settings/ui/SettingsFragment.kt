@@ -270,111 +270,127 @@ class SettingsFragment : PinProtectedFragment<FragmentSettingsBinding>() {
                 Constants.Navigation.ANIMATED_ENTER_EXIT_RIGHT_NAV_OPTION
             )
         }
-//
-//        binding.wipeDataSetting.onClick {
-//            val builder = AlertDialog.Builder(requireContext())
-//            builder.setTitle(R.string.wipe_data_title)
-//                .setMessage(R.string.wipe_data_message)
-//                .setPositiveButton(R.string.erase_data) { dialog, id ->
-//
-//                    if(viewModel.isFingerprintEnabled()) {
-//                        validateFingerprint(
-//                            title = Constants.Strings.SCAN_TO_ERASE_DATA,
-//                            subTitle = Constants.Strings.USE_BIOMETRIC_REASON_3,
-//                            onSuccess = {
-//                                wipeData()
-//                            }
-//                        )
-//                    } else {
-//                        wipeData()
-//                    }
-//
-//
-//                }
-//                .setNegativeButton(R.string.cancel) { dialog, id ->
-//                    // do nothing
-//                }
-//
-//            val dialog = builder.create()
-//            dialog.setOnShowListener {
-//                dialog.getButton(AlertDialog.BUTTON_POSITIVE)
-//                    .setTextColor(requireContext().getColor(R.color.error_color))
-//            }
-//
-//            dialog.show()
-//        }
-//
-//        viewModel.appVersionSetting.observe(viewLifecycleOwner, Observer {
-//            binding.appVersionSetting.setSubTitleText(it)
-//        })
-//
-//        viewModel.showEasterEgg.observe(viewLifecycleOwner, Observer {
-//            styledSnackBar(requireView(), "You have unleashed the memes!") {
-//                navigate(
-//                    R.id.memeFragment,
-//                    Constants.Navigation.ANIMATED_ENTER_EXIT_RIGHT_NAV_OPTION
-//                )
-//            }
-//        })
-//
-//        binding.appVersionSetting.onClick {
-//            viewModel.onVersionTapped()
-//        }
-//
-//        binding.helpSetting.onClick {
-//            val emailIntent = Intent(Intent.ACTION_SEND);
-//            emailIntent.setType("text/plain");
-//            emailIntent.putExtra(Intent.EXTRA_EMAIL, arrayOf(getString(R.string.business_email)))
-//            emailIntent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.support_request_subject))
-//
-//            val release = Build.VERSION.RELEASE
-//            val sdkVersion = Build.VERSION.SDK_INT
-//            emailIntent.putExtra(Intent.EXTRA_TEXT,
-//                getString(R.string.support_request_message,
-//                    Build.BRAND,
-//                    "Android SDK: $sdkVersion ($release)",
-//                    System.getProperty("os.version"),
-//                    Build.MODEL,
-//                    Build.PRODUCT
-//                )
-//            );
-//
-//
-//            emailIntent.setType("message/rfc822");
-//
-//            try {
-//                startActivity(
-//                    Intent.createChooser(emailIntent, "Send email using..."));
-//            } catch (ex: ActivityNotFoundException) {
-//                styledSnackBar(requireView(), "No email clients installed.")
-//            }
-//
-//        }
-//
-//        binding.aboutUsSetting.onClick {
-//            navigate(
-//                R.id.aboutUsFragment,
-//                Constants.Navigation.ANIMATED_ENTER_EXIT_RIGHT_NAV_OPTION
-//            )
-//        }
-//    }
-//
-//    fun wipeData() {
-//        val progressDialog = ProgressDialog.show(requireContext(), getString(R.string.wiping_data_title), getString(R.string.wiping_data_message))
-//        progressDialog.setCancelable(false)
-//
-//        viewModel.eraseAllData {
-//            progressDialog.cancel()
-//
-//            navigate(
-//                navId = R.id.splashFragment,
-//                options = navOptions {
-//                    popUpTo(R.id.settingsFragment) {
-//                        inclusive = true
-//                    }
-//                }
-//            )
-//        }
+
+        binding.minimumConfirmations.onClick {
+            val bottomSheetDialog = BottomSheetDialog(requireContext())
+            bottomSheetDialog.setContentView(R.layout.bottom_sheet_max_attempts)
+            val title = bottomSheetDialog.findViewById<TextView>(R.id.bottom_sheet_title)
+            val numberPicker = bottomSheetDialog.findViewById<NumberPicker>(R.id.numberPicker)
+
+            title?.setText(getString(R.string.settings_option_view_address_min_confirmations))
+            numberPicker?.minValue = 1
+            numberPicker?.maxValue = 6
+            numberPicker?.value = viewModel.getMinConfirmations()
+            numberPicker?.wrapSelectorWheel = true
+            numberPicker?.setOnValueChangedListener { picker, oldVal, newVal ->
+                viewModel.saveMinimumConfirmation(newVal)
+            }
+
+            bottomSheetDialog.show()
+        }
+
+        binding.wipeData.onClick {
+            warningDialog(
+                context = requireContext(),
+                title = getString(R.string.settings_option_wipe_data_title),
+                subtitle = getString(R.string.settings_option_wipe_data_subtitle),
+                positive = getString(R.string.settings_option_wipe_data_button),
+                negative = getString(R.string.cancel),
+                onPositive = {
+                    if(viewModel.isFingerprintEnabled()) {
+                        validateFingerprint(
+                            title = Constants.Strings.SCAN_TO_ERASE_DATA,
+                            subTitle = Constants.Strings.USE_BIOMETRIC_REASON_3,
+                            onSuccess = {
+                                wipeData()
+                            }
+                        )
+                    } else {
+                        wipeData()
+                    }
+                },
+                onNegative = null
+            )
+        }
+
+        viewModel.appVersionSetting.observe(viewLifecycleOwner, Observer {
+            binding.appVersion.setSubTitleText(it)
+        })
+
+        viewModel.showEasterEgg.observe(viewLifecycleOwner, Observer {
+            styledSnackBar(requireView(), "You have unleashed the memes!") {
+                navigate(
+                    R.id.memeFragment,
+                    Constants.Navigation.ANIMATED_ENTER_EXIT_RIGHT_NAV_OPTION
+                )
+            }
+        })
+
+        binding.appVersion.onClick {
+            viewModel.onVersionTapped()
+        }
+
+        binding.help.onClick {
+            val emailIntent = Intent(Intent.ACTION_SEND);
+            emailIntent.setType("text/plain");
+            emailIntent.putExtra(Intent.EXTRA_EMAIL, arrayOf(getString(R.string.business_info_email)))
+            emailIntent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.business_info_support_request_subject))
+
+            val release = Build.VERSION.RELEASE
+            val sdkVersion = Build.VERSION.SDK_INT
+            emailIntent.putExtra(Intent.EXTRA_TEXT,
+                getString(R.string.business_info_support_request_message,
+                    Build.BRAND,
+                    "Android SDK: $sdkVersion ($release)",
+                    System.getProperty("os.version"),
+                    Build.MODEL,
+                    Build.PRODUCT
+                )
+            );
+
+
+            emailIntent.setType("message/rfc822");
+
+            try {
+                startActivity(
+                    Intent.createChooser(emailIntent, "Send email using..."));
+            } catch (ex: ActivityNotFoundException) {
+                styledSnackBar(requireView(), "No email clients installed.")
+            }
+
+        }
+
+        binding.credits.onClick {
+            navigate(
+                R.id.creditsFragment,
+                Constants.Navigation.ANIMATED_ENTER_EXIT_RIGHT_NAV_OPTION
+            )
+        }
+
+        binding.aboutUs.onClick {
+            navigate(
+                R.id.aboutUsFragment,
+                Constants.Navigation.ANIMATED_ENTER_EXIT_RIGHT_NAV_OPTION
+            )
+        }
+    }
+
+    fun wipeData() {
+        val progressDialog = ProgressDialog.show(requireContext(), getString(R.string.wiping_data_title), getString(R.string.wiping_data_message))
+        progressDialog.setCancelable(false)
+
+        viewModel.eraseAllData {
+            progressDialog.cancel()
+
+            navigate(
+                navId = R.id.splashFragment,
+                options = navOptions {
+                    popUpTo(R.id.settingsFragment) {
+                        inclusive = true
+                    }
+                }
+            )
+        }
     }
 
 

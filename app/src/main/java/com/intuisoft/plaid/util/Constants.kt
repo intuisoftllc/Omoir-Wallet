@@ -123,7 +123,7 @@ class Constants {
         const val SATS_PER_BTC = 100000000
         const val MAX_PEERS = 10
         const val PAGE_LIMIT = 50
-        const val MIN_CONFIRMATIONS = 1
+        const val MIN_CONFIRMATIONS = 3
         const val DEFAULT_PIN_TIMEOUT = Time.INSTANT_TIME_OFFSET // check for pin only when user leaves the app by default
     }
 }

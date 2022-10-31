@@ -42,6 +42,9 @@
     <string name="settings_option_view_credits">Credits</string>
     <string name="settings_option_view_credits_description">Libraries Used &amp; Notable Credits</string>
     <string name="settings_option_view_help">Help</string>
+    <string name="settings_option_wipe_data_title">Erase All Data</string>
+    <string name="settings_option_wipe_data_button">Erase Data</string>
+    <string name="settings_option_wipe_data_subtitle">Are you sure you want to wipe all data from Plaid Crypto Wallet™? This action is irreversible, please be sure you have backed up all your seed phrases.</string>
     <string name="settings_option_view_wipe_data">Wipe All Data</string>
     <string name="settings_option_view_build_version">Build Version</string>
     <string name="settings_option_view_help_description">Get Help and Learn More</string>
@@ -185,6 +188,22 @@
     <string name="save_address_delete_subtitle">Are you sure you want to delete the saved address for \"%1$s\"?</string>
 <!--    Save Address Strings End -->
 
+<!--    Credits Strings -->
+    <string name="credits_title">Credits</string>
+    <string name="credits_tech_stack_title">Tech Stack</string>
+    <string name="credits_acknowledgement_1_title">UI Designer</string>
+    <string name="credits_acknowledgement_1_subtitle"><b>imraan_zaack</b> on fiver</string>
+    <string name="credits_acknowledgement_2_title">Bitcoin Api</string>
+    <string name="credits_acknowledgement_2_subtitle">bitcoin-kit-android</string>
+    <string name="credits_acknowledgement_3_title">QR Code Api</string>
+    <string name="credits_acknowledgement_3_subtitle">zxing-android + google vision</string>
+    <string name="credits_acknowledgement_4_title">Database Management</string>
+    <string name="credits_acknowledgement_4_subtitle">androidx-room</string>
+    <string name="credits_acknowledgement_5_title">Network Api</string>
+    <string name="credits_acknowledgement_5_subtitle">retrofit2 + okhttp3</string>
+    <string name="credits_ui_designer_link">https://www.fiverr.com/imraan_zaack</string>
+<!--    Credits Strings End -->
+
 <!--    Generic Use Strings -->
     <string name="welcome">Welcome</string>
     <string name="name">Name</string>
@@ -220,6 +239,7 @@
     <string name="withdraw_fragment_label">Send BTC</string>
     <string name="transaction_details_fragment_label">Transaction Details</string>
     <string name="meme_fragment_label">You Have Unleashed The Memes!</string>
+    <string name="credits_fragment_label">Credits</string>
     <string name="create_wallet_fragment_label">Create A Wallet</string>
     <string name="backup_wallet_fragment_label">Backup Your Wallet</string>
     <string name="seed_phrase_fragment_label">Your Seed Phrase</string>
@@ -234,4 +254,10 @@
     <string name="fingerprint_all_set_label">All Set</string>
 <!--  Fragment Labels End -->
 
+
+<!--  Business Information -->
+    <string name="business_info_email">intuisoftllc@gmail.com</string>
+    <string name="business_info_support_request_subject">Plaid Crypto Wallet Support</string>
+    <string name="business_info_support_request_message">Device: %1$s\nApi Level: %2$s\nOS Version: %3$s\nModel: %4$s\nProduct: %5$s\n----------------------------------------\n\nHello Intuisoft team, I would like to request more information regarding your app.</string>
+    <!--  Business Information End -->
 </resources>
