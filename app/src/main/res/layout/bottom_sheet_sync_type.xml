@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingHorizontal="20sp"
+    android:paddingBottom="40dp"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/bottom_sheet_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_28"
+        android:text="@string/wallet_settings_sync_type_title"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center_horizontal"
+        style="@style/TextStyle.Semibold.24"
+        android:textStyle="bold"
+        android:textColor="?attr/colorPrimaryVariant"/>
+
+    <TextView
+        android:id="@+id/bottom_sheet_subtitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/TextStyle.Regular.14"
+        android:gravity="center"
+        android:layout_gravity="center"
+        android:textColor="@color/brand_color_dark_blue"
+        android:layout_marginTop="@dimen/horizontal_padding_size"
+        android:layout_marginHorizontal="@dimen/horizontal_padding_size"
+        app:layout_constraintTop_toBottomOf="@id/bottom_sheet_title"
+        android:text="@string/wallet_settings_sync_type_subtitle"/>
+
+
+    <com.intuisoft.plaid.androidwrappers.SettingsItemView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:item_title="@string/wallet_settings_sync_type_api"
+        app:settings_variant="radio"
+        app:show_radio="true"
+        android:layout_marginTop="@dimen/margin_24"
+        android:id="@+id/apiSync"/>
+
+    <com.intuisoft.plaid.androidwrappers.SettingsItemView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:item_title="@string/wallet_settings_sync_type_core"
+        app:settings_variant="radio"
+        app:show_radio="true"
+        android:layout_marginTop="@dimen/horizontal_padding_size"
+        android:id="@+id/coreSync"/>
+
+
+</LinearLayout>

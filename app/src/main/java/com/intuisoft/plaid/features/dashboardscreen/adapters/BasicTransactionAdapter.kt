@@ -7,6 +7,7 @@ import android.view.animation.AnimationUtils
 import androidx.recyclerview.widget.RecyclerView
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.BindingViewHolder
+import com.intuisoft.plaid.databinding.ListItemBasicTransactionDetailBinding
 import com.intuisoft.plaid.features.dashboardscreen.adapters.detail.BasicTransactionDetail
 import com.intuisoft.plaid.repositories.LocalStoreRepository
 import io.horizontalsystems.bitcoincore.models.TransactionInfo
@@ -25,9 +26,9 @@ class BasicTransactionAdapter(
         viewType: Int
     ): BindingViewHolder {
         return when (viewType) {
-//            R.layout.basic_transaction_detail_list_item -> {
-//                BindingViewHolder.create(parent, BasicTransactionDetailListItemBinding::inflate)
-//            }
+            R.layout.list_item_basic_transaction_detail -> {
+                BindingViewHolder.create(parent, ListItemBasicTransactionDetailBinding::inflate)
+            }
             else -> throw IllegalArgumentException("Invalid BindingViewHolder Type")
         }
     }
@@ -51,6 +52,12 @@ class BasicTransactionAdapter(
             view.startAnimation(animation)
         } else {
             view.clearAnimation()
+        }
+    }
+
+    fun updateConversion() {
+        transactions.forEach {
+            it.onConversionUpdated()
         }
     }
 

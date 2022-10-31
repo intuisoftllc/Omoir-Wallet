@@ -75,9 +75,9 @@ class WithdrawalViewModel(
 
     fun getLocalAddress() = address
 
-    fun updateUTXOs(utxos: MutableList<UnspentOutput>) {
+    fun updateUTXOs(context: Context, utxos: MutableList<UnspentOutput>) {
         selectedUTXOs = utxos
-        showWalletBalance()
+        showWalletBalance(context)
     }
 
     fun setLocalAddress(addr: String) {

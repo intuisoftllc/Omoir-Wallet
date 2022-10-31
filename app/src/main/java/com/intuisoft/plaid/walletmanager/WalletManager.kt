@@ -85,6 +85,13 @@ class WalletManager(
         }
     }
 
+    override fun updateWalletSyncMode(localWallet: LocalWalletModel, apiSync: Boolean) {
+        findStoredWallet(localWallet.uuid)?.let {
+            it.apiSyncMode = apiSync
+            localStoreRepository.setStoredWalletInfo(localStoreRepository.getStoredWalletInfo())
+        }
+    }
+
     private fun getWalletPassPhrase(walletId: String): String {
         return localPassphrases.get(walletId) ?: ""
     }

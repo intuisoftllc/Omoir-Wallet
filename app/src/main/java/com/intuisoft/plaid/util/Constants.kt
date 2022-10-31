@@ -17,6 +17,7 @@ class Constants {
     object Navigation {
         const val WALLET_UUID_BUNDLE_ID = "wallet_id"
         const val FRAGMENT_CONFIG = "fragment_config"
+        const val FROM_SETTINGS = "from_settings"
 
         val ANIMATED_SLIDE_UP_OPTION =
             navOptions {

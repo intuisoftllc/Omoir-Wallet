@@ -52,6 +52,7 @@
     </androidx.cardview.widget.CardView>
 
     <TextView
+        android:id="@+id/text_field_type_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/name"

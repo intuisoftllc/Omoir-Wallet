@@ -140,6 +140,10 @@ class PinFragment: BindingFragment<FragmentPinBinding>() {
         // ignore
     }
 
+    override fun onSubtitleClicked() {
+        // ignore
+    }
+
     override fun navigationId(): Int {
         return R.id.pinFragment
     }

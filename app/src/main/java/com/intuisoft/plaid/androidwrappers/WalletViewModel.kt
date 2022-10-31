@@ -1,12 +1,14 @@
 package com.intuisoft.plaid.androidwrappers
 
 import android.app.Application
+import android.content.Context
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.model.BitcoinDisplayUnit
 import com.intuisoft.plaid.model.LocalWalletModel
+import com.intuisoft.plaid.model.WalletState
 import com.intuisoft.plaid.repositories.LocalStoreRepository
 import com.intuisoft.plaid.util.Constants
 import com.intuisoft.plaid.util.SimpleCoinNumberFormat
@@ -66,14 +68,21 @@ open class WalletViewModel(
     protected var localWallet: LocalWalletModel? = null
     private val disposables = CompositeDisposable()
 
-    fun showWalletBalance() {
-        _walletBalance.postValue(SimpleCoinNumberFormat.format(localStoreRepository, getWalletBalance(), true))
+    fun showWalletBalance(context: Context) {
+        _walletBalance.postValue(localWallet!!.onWalletStateChanged(context, 0, false, localStoreRepository))
     }
 
-    fun restartApp(fragment: Fragment) {
-        walletManager.stop()
-        fragment.navigate(R.id.splashFragment)
+    fun setWalletPassphrase(passphrase: String) {
+        walletManager.setWalletPassphrase(localWallet!!, passphrase)
     }
+
+    fun isWalletSyncing() = localWallet!!.walletState == WalletState.SYNCING
+
+    fun updateWalletSyncMode(apiSync: Boolean) {
+        walletManager.updateWalletSyncMode(localWallet!!, apiSync)
+    }
+
+    fun hasApiSyncMode() = walletManager.findStoredWallet(localWallet!!.uuid)!!.apiSyncMode
 
     fun calculateFee(sats: Long, feeRate: Int, address: String?, retry: Boolean = true) : Long {
         try {

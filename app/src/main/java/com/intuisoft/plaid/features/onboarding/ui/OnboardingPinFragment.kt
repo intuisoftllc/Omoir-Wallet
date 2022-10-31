@@ -108,6 +108,10 @@ class OnboardingPinFragment : BindingFragment<FragmentOnboardingPinBinding>() {
         // ignore
     }
 
+    override fun onSubtitleClicked() {
+        // ignore
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

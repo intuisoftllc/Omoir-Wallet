@@ -70,7 +70,7 @@
     <string name="settings_option_appearance_dark">Dark mode</string>
     <string name="settings_option_appearance_auto">Determined by the system</string>
     <string name="settings_option_app_restart_title">Restart App</string>
-    <string name="settings_option_app_restart_subtitle">The changes recently made within the app requires a restart for them to fully take affect.</string>
+    <string name="settings_option_app_restart_subtitle">The changes recently made within the app requires a soft restart for them to fully take affect.</string>
     <string name="settings_option_app_restart_positive_text">Restart Now</string>
     <string name="settings_option_app_restart_negative_text">Restart Later</string>
 <!--    Settings Strings End -->
@@ -78,6 +78,7 @@
 <!--    Bitcoin Unit Strings -->
     <string name="bitcoin_unit_1">Bitcoin (BTC)</string>
     <string name="bitcoin_unit_2">Satoshi (SAT)</string>
+    <string name="bitcoin_unit_3">Fiat Currency ($)</string>
 <!--    Bitcoin Unit Strings End -->
 
 <!--    About Us Strings -->
@@ -231,6 +232,53 @@
     <string name="create_wallet_success_negative_button">Go to Home Screen</string>
 <!--    Create Wallet Strings End -->
 
+<!--    Transaction Details Strings -->
+    <string name="transaction_details_title">Transaction Details</string>
+    <string name="transaction_details_item_1">Transaction Type</string>
+    <string name="transaction_details_item_3">Transaction Date</string>
+    <string name="transaction_details_item_6">Status</string>
+    <string name="transaction_details_view_external">View on blockchain.com</string>
+    <string name="transaction_details_type_incoming">Incoming</string>
+    <string name="transaction_details_type_outgoing">Outgoing</string>
+    <string name="transaction_details_type_sent_to_self">Sent to Self</string>
+    <string name="transaction_details_status_invalid">Invalid</string>
+    <string name="transaction_details_status_pending">Pending</string>
+    <string name="transaction_details_status_processed">Processed</string>
+    <string name="transaction_details_share_text">Check out this transaction for amount: %1$s, with fee: %2$s.\nYou can view this transaction at: %3$s</string>
+    <string name="transaction_details_share_tag">Bitcoin Transaction</string>
+<!--    Transaction Details Strings End -->
+
+
+<!--    Wallet Settings Strings -->
+    <string name="wallet_settings_rename_wallet">Rename Wallet</string>
+    <string name="wallet_settings_seed_phrase">Seed Phrase</string>
+    <string name="wallet_settings_seed_phrase_description">Show seed phrase</string>
+    <string name="wallet_settings_passphrase">Wallet Passphrase</string>
+    <string name="wallet_settings_passphrase_description">Set hd wallet passphrase</string>
+    <string name="wallet_settings_export">Export Wallet</string>
+    <string name="wallet_settings_export_description">Show wallet\'s master public key</string>
+    <string name="wallet_settings_network">Network</string>
+    <string name="wallet_settings_sync_type">Sync Type</string>
+    <string name="wallet_settings_sync_type_description">Set network sync type</string>
+    <string name="wallet_settings_bip">Bip</string>
+    <string name="wallet_settings_title_wallet_configuration">Wallet Configuration</string>
+    <string name="wallet_settings_delete">Delete Wallet</string>
+    <string name="wallet_settings_deleting_wallet_message">Erasing wallet data, this may take some time.</string>
+    <string name="wallet_settings_deleting_wallet_title">Erasing Wallet</string>
+    <string name="wallet_settings_delete_wallet_title">Erase Wallet Data</string>
+    <string name="wallet_settings_delete_wallet_subtitle">Are you sure you want to erase your wallet? This action is irreversible, please be sure you have backed up your seed phrase and passphrases (if applicable).</string>
+    <string name="wallet_settings_passphrase_title">Wallet Passphrase</string>
+    <string name="wallet_settings_passphrase_subtitle">Please Note\n\n1. When a hidden wallet is created it\'s passphrase cannot be changed. If the passphrase is lost, entered in the wrong case, or forgotten, the hidden wallet will be lost forever along with any funds held within.\n\n2. Keep the passphrase fields blank to enter the default wallet.\n\n3. For security reasons, all hidden wallets are stored in memory and will be wiped upon app termination (you will have to re-enter the passphrase to restore the hidden wallet).</string>
+    <string name="wallet_settings_text_box_passphrase">Passphrase</string>
+    <string name="wallet_settings_text_box_reenter_passphrase">Re-Enter Passphrase</string>
+    <string name="wallet_settings_passphrase_hint">HODL</string>
+    <string name="wallet_settings_passphrase_error">Passphrases do not match!</string>
+    <string name="wallet_settings_sync_type_title">Sync Type</string>
+    <string name="wallet_settings_sync_type_subtitle">Change how your wallet syncs with the bitcoin network. Api syncing is significantly faster however if you are looking for a more secure solution.\n\nPlaid Crypto Wallet™ allows you to sync your wallet directly with bitcoin node operators. Please keep in mind that enabling core syncing may be significantly slower.</string>
+    <string name="wallet_settings_sync_type_api">Api Based Syncing</string>
+    <string name="wallet_settings_sync_type_core">Core Based Syncing</string>
+    <!--    Wallet Settings Strings End -->
+
 <!--    Generic Use Strings -->
     <string name="welcome">Welcome</string>
     <string name="name">Name</string>
@@ -240,8 +288,10 @@
     <string name="register">Register</string>
     <string name="continue_button">Continue</string>
     <string name="sats">Sats</string>
+    <string name="fiat">Fiat</string>
     <string name="btc">BTC</string>
     <string name="save">Save</string>
+    <string name="confirm">Confirm</string>
     <string name="cancel">Cancel</string>
     <string name="delete">Delete</string>
     <string name="update">Update</string>
@@ -250,9 +300,15 @@
     <string name="create_new_wallet">Create A New Wallet</string>
     <string name="available_balance">Available Balance</string>
     <string name="syncing">Syncing...</string>
+    <string name="amount">Amount</string>
+    <string name="fee">Fee</string>
+    <string name="share">share</string>
+    <string name="main_net">Main Net</string>
+    <string name="test_net">Test Net</string>
+    <string name="not_applicable">N/A</string>
+    <string name="transaction_id">Transaction ID</string>
     <string name="syncing_percent">Syncing... (%1$s%%)</string>
 <!--    Generic Use Strings End -->
-
 
 <!--  Fragment Labels -->
     <string name="homescreen_fragment_label">Home</string>

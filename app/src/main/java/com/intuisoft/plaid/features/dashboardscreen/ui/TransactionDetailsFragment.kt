@@ -1,16 +1,12 @@
 package com.intuisoft.plaid.features.dashboardscreen.ui
 
 import android.content.Intent
-import android.graphics.*
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.navigation.fragment.findNavController
-import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.gson.Gson
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.*
@@ -48,80 +44,82 @@ class TransactionDetailsFragment : PinProtectedFragment<FragmentTransactionDetai
 
     override fun onConfiguration(configuration: FragmentConfiguration?) {
 
-//        configuration?.let {
-//            when(it.configurationType) {
-//                FragmentConfigurationType.CONFIGURATION_TRANSACTION_DATA -> {
-//                    val transaction = Gson().fromJson((it.configData as ConfigTransactionData).payload, TransactionInfo::class.java)
-//
-//                    when(transaction.type) {
-//                        TransactionType.Incoming -> {
-//                            binding.transactionType.setSubTitleText("Incoming")
-//                            binding.transactionType.showSubtitleIcon(R.drawable.ic_recieve_coins_48)
-//                        }
-//
-//                        TransactionType.Outgoing -> {
-//                            binding.transactionType.setSubTitleText("Outgoing")
-//                            binding.transactionType.showSubtitleIcon(R.drawable.ic_send_coins_48)
-//                        }
-//
-//                        TransactionType.SentToSelf -> {
-//                            binding.transactionType.setSubTitleText("Sent To Self")
-//                            binding.transactionType.showSubtitleIcon(R.drawable.ic_sent_coins_to_self_48)
-//                        }
-//                    }
-//
-//                    binding.amount.setSubTitleText(SimpleCoinNumberFormat.format(localStoreRepository, transaction.amount, true))
-//                    binding.transactionDate.setSubTitleText(getDateByLocale(transaction.timestamp * 1000, Locale.US.language)!!)
-//
-//                    when(transaction.fee) {
-//                        null -> {
-//                            binding.transactionFee.setSubTitleText("N/A")
-//                        }
-//                        else -> {
-//                            binding.transactionFee.setSubTitleText(SimpleCoinNumberFormat.format(localStoreRepository, transaction.fee!!, true))
-//                        }
-//                    }
-//
-//                    binding.transactionId.setSubTitleText(transaction.transactionHash)
-//
-//                    binding.transactionId.onClick {
-//                        requireContext().copyToClipboard(transaction.transactionHash, "transactionId")
-//                        styledSnackBar(requireView(), Constants.Strings.COPIED_TO_CLIPBOARD, true)
-//                    }
-//
-//                    when(transaction.blockHeight) {
-//                        null, 0 -> {
-//                            if(transaction.status == TransactionStatus.INVALID) {
-//                                binding.transactionStatus.setSubTitleText("Invalid")
-//                            } else {
-//                                binding.transactionStatus.setSubTitleText("Pending")
-//                            }
-//                        }
-//                        else -> {
-//                            binding.transactionStatus.setSubTitleText("Processed")
-//                        }
-//                    }
-//
-//                    binding.close.setOnClickListener {
-//                        findNavController().popBackStack()
-//                    }
-//
-//                    binding.share.onClick {
-//
-//                        val text = """
-//                                    Check out this transaction for amount: ${SimpleCoinNumberFormat.format(localStoreRepository, transaction.amount)}, with fee: ${SimpleCoinNumberFormat.format(localStoreRepository, transaction.fee!!, true)}.
-//                                    You can view this transaction at: ${Constants.Strings.BLOCKCHAIN_COM_TX_URL}${transaction.transactionHash}
-//                                    """
-//                        val subject = "Bitcoin Transaction"
-//                        requireActivity().shareText(subject, text)
-//                    }
-//
-//                    binding.viewOnBlockchain.onClick {
-//                        viewOnBlockchainCom(Constants.Strings.BLOCKCHAIN_COM_TX_URL, transaction.transactionHash)
-//                    }
-//                }
-//            }
-//        }
+        configuration?.let {
+            when(it.configurationType) {
+                FragmentConfigurationType.CONFIGURATION_TRANSACTION_DATA -> {
+                    val transaction = Gson().fromJson((it.configData as ConfigTransactionData).payload, TransactionInfo::class.java)
+
+                    when(transaction.type) {
+                        TransactionType.Incoming -> {
+                            binding.transactionType.setSubTitleText(getString(R.string.transaction_details_type_incoming))
+                            binding.transactionType.showSubtitleIcon(R.drawable.ic_incoming)
+                        }
+
+                        TransactionType.Outgoing -> {
+                            binding.transactionType.setSubTitleText(getString(R.string.transaction_details_type_outgoing))
+                            binding.transactionType.showSubtitleIcon(R.drawable.ic_outgoing)
+                        }
+
+                        TransactionType.SentToSelf -> {
+                            binding.transactionType.setSubTitleText(getString(R.string.transaction_details_type_sent_to_self))
+                            binding.transactionType.showSubtitleIcon(R.drawable.ic_sent_to_self)
+                        }
+                    }
+
+                    binding.amount.setSubTitleText(SimpleCoinNumberFormat.format(localStoreRepository, transaction.amount, false))
+                    binding.transactionDate.setSubTitleText(getDateByLocale(transaction.timestamp * 1000, Locale.US.language)!!)
+
+                    when(transaction.fee) {
+                        null -> {
+                            binding.transactionFee.setSubTitleText(getString(R.string.not_applicable))
+                        }
+                        else -> {
+                            binding.transactionFee.setSubTitleText(SimpleCoinNumberFormat.format(localStoreRepository, transaction.fee!!, false))
+                        }
+                    }
+
+                    binding.transactionId.setSubTitleText(transaction.transactionHash)
+
+                    binding.transactionId.onClick {
+                        requireContext().copyToClipboard(transaction.transactionHash, "transactionId")
+                        styledSnackBar(requireView(), Constants.Strings.COPIED_TO_CLIPBOARD, true)
+                    }
+
+                    when(transaction.blockHeight) {
+                        null, 0 -> {
+                            if(transaction.status == TransactionStatus.INVALID) {
+                                binding.transactionStatus.setSubTitleText(getString(R.string.transaction_details_status_invalid))
+                            } else {
+                                binding.transactionStatus.setSubTitleText(getString(R.string.transaction_details_status_pending))
+                            }
+                        }
+                        else -> {
+                            binding.transactionStatus.setSubTitleText(getString(R.string.transaction_details_status_processed))
+                        }
+                    }
+
+                    binding.close.setOnClickListener {
+                        findNavController().popBackStack()
+                    }
+
+                    binding.share.onClick {
+
+                        val text = getString(
+                            R.string.transaction_details_share_text,
+                            SimpleCoinNumberFormat.format(localStoreRepository, transaction.amount),
+                            SimpleCoinNumberFormat.format(localStoreRepository, transaction.fee!!),
+                            Constants.Strings.BLOCKCHAIN_COM_TX_URL + transaction.transactionHash
+                        )
+                        val subject = getString(R.string.transaction_details_share_tag)
+                        requireActivity().shareText(subject, text)
+                    }
+
+                    binding.viewOnBlockchain.onClick {
+                        viewOnBlockchainCom(Constants.Strings.BLOCKCHAIN_COM_TX_URL, transaction.transactionHash)
+                    }
+                }
+            }
+        }
 
     }
 

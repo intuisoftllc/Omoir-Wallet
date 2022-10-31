@@ -7,9 +7,7 @@ import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import com.intuisoft.plaid.features.onboarding.viewmodel.OnboardingViewModel
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
-import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
-import androidx.navigation.fragment.findNavController
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.*
 import com.intuisoft.plaid.databinding.FragmentOnboardingFingerprintRegistrationBinding
@@ -86,6 +84,10 @@ class FingerprintSetupFragment : BindingFragment<FragmentOnboardingFingerprintRe
         // ignore
     }
 
+    override fun onSubtitleClicked() {
+        // ignore
+    }
+
     override fun navigationId(): Int {
         return R.id.fingerprintSetupFragment
     }
@@ -101,7 +103,7 @@ class FingerprintSetupFragment : BindingFragment<FragmentOnboardingFingerprintRe
             Constants.Navigation.FRAGMENT_CONFIG to FragmentConfiguration(
                 actionBarTitle = 0,
                 actionBarSubtitle = 0,
-                actionbarVariant = 0,
+                actionBarVariant = 0,
                 actionLeft = 0,
                 actionRight = 0,
                 configurationType = FragmentConfigurationType.CONFIGURATION_All_SET,

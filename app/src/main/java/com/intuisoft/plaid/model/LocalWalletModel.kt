@@ -1,5 +1,6 @@
 package com.intuisoft.plaid.model
 
+import android.content.Context
 import android.widget.TextView
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -57,25 +58,25 @@ data class LocalWalletModel(
         }
     }
 
-    fun getBalance(localStoreRepository: LocalStoreRepository, fullValue: Boolean): String {
-        return SimpleCoinNumberFormat.format(localStoreRepository, walletKit!!.balance.spendable, fullValue)
+    fun getBalance(localStoreRepository: LocalStoreRepository, shortenSats: Boolean): String {
+        return SimpleCoinNumberFormat.format(localStoreRepository, walletKit!!.balance.spendable, shortenSats)
     }
 
     fun onWalletStateChanged(
-        walletBalance: TextView,
+        context: Context,
         progress: Int,
-        showFullBalance: Boolean,
+        shortenSats: Boolean,
         localStoreRepository: LocalStoreRepository
-    ) {
+    ): String {
         when(walletState) {
             WalletState.SYNCING -> {
                 if(progress >= 1) {
-                    walletBalance.text = walletBalance.context.getString(R.string.syncing_percent, progress.toString())
+                    return context.getString(R.string.syncing_percent, progress.toString())
                 } else {
-                    walletBalance.text = walletBalance.context.getString(R.string.syncing)
+                    return context.getString(R.string.syncing)
                 }
             } else -> {
-                walletBalance.text = getBalance(localStoreRepository, showFullBalance)
+                return getBalance(localStoreRepository, shortenSats)
             }
         }
     }

@@ -113,6 +113,10 @@ class WelcomeFragment : BindingFragment<FragmentOnboardingWelcomeBinding>() {
         // ignore
     }
 
+    override fun onSubtitleClicked() {
+        // ignore
+    }
+
     override fun navigationId(): Int {
         return R.id.welcomeFragment
     }

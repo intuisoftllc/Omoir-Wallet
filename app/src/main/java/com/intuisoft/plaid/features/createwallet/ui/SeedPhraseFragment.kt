@@ -75,6 +75,13 @@ class SeedPhraseFragment : PinProtectedFragment<FragmentSeedPhraseBinding>() {
         return R.id.seedPhraseFragment
     }
 
+    override fun onActionLeft() {
+        if(baseVM?.currentConfig?.configurationType ==
+            FragmentConfigurationType.CONFIGURATION_BASIC_SEED_SCREEN) {
+            findNavController().popBackStack()
+        }
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

@@ -85,11 +85,10 @@
                 android:id="@+id/transactions"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                tools:itemCount="5"
+                tools:itemCount="12"
+                android:layout_marginTop="@dimen/horizontal_padding_size"
                 android:paddingHorizontal="@dimen/horizontal_padding_size"
-                android:paddingBottom="@dimen/horizontal_padding_size"
                 tools:listitem="@layout/list_item_basic_transaction_detail" />
         </LinearLayout>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

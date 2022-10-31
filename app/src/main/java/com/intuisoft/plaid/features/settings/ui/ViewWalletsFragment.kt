@@ -5,16 +5,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.docformative.docformative.toArrayList
 import com.intuisoft.plaid.activities.MainActivity
 import com.intuisoft.plaid.R
-import com.intuisoft.plaid.androidwrappers.FragmentConfiguration
-import com.intuisoft.plaid.androidwrappers.TopBarView
-import com.intuisoft.plaid.androidwrappers.WalletViewModel
-import com.intuisoft.plaid.androidwrappers.navigate
+import com.intuisoft.plaid.androidwrappers.*
 import com.intuisoft.plaid.databinding.FragmentAppearanceBinding
 import com.intuisoft.plaid.databinding.FragmentManageWalletsBinding
 import com.intuisoft.plaid.features.homescreen.adapters.BasicWalletDataAdapter
@@ -24,6 +22,8 @@ import com.intuisoft.plaid.features.settings.viewmodel.ViewWalletsViewModel
 import com.intuisoft.plaid.model.AppTheme
 import com.intuisoft.plaid.model.LocalWalletModel
 import com.intuisoft.plaid.repositories.LocalStoreRepository
+import com.intuisoft.plaid.util.Constants
+import com.intuisoft.plaid.util.fragmentconfig.ConfigQrDisplayData
 import com.intuisoft.plaid.walletmanager.AbstractWalletManager
 import com.intuisoft.plaid.walletmanager.WalletManager
 import org.koin.android.ext.android.inject
@@ -63,7 +63,15 @@ class ViewWalletsFragment : PinProtectedFragment<FragmentManageWalletsBinding>()
 
 
     fun onWalletSelected(wallet: LocalWalletModel) {
-        navigate(R.id.walletDashboardFragment, wallet)
+        var bundle = bundleOf(
+            Constants.Navigation.FROM_SETTINGS to true,
+            Constants.Navigation.WALLET_UUID_BUNDLE_ID to wallet.uuid
+        )
+
+        navigate(
+            R.id.walletSettingsFragment,
+            bundle
+        )
     }
 
     override fun onResume() {

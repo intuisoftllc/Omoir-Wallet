@@ -8,4 +8,5 @@ interface FragmentActionBarDelegate {
     fun actionBarActionRight() : Int
     fun onActionLeft()
     fun onActionRight()
+    fun onSubtitleClicked()
 }

@@ -64,6 +64,10 @@ class SplashFragment : BindingFragment<FragmentSplashBinding>() {
         // ignore
     }
 
+    override fun onSubtitleClicked() {
+        // ignore
+    }
+
     override fun actionBarVariant(): Int {
         return TopBarView.NO_BAR
     }

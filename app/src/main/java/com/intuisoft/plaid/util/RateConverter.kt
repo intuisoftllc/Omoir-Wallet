@@ -34,15 +34,25 @@ class RateConverter(
         }
     }
 
-    fun from(type: RateType) : Pair<String, String> {
+    fun from(type: RateType, shortenSats: Boolean = true) : Pair<String, String> {
         when(type) {
             RateType.SATOSHI_RATE -> {
                 val postfix = if(localBTC == 1L) {
                     "Sat"
                 } else "Sats"
 
-                val basic = SimpleCoinNumberFormat.formatBasic(localBTC.toDouble())!!
-                val postfixed = SimpleCoinNumberFormat.format(localBTC.toDouble()) + " " + postfix
+                val basic: String
+                val postfixed: String
+
+                if(shortenSats) {
+                    basic = SimpleCoinNumberFormat.formatSatsShort(localBTC)
+                    postfixed =
+                        SimpleCoinNumberFormat.formatSatsShort(localBTC) + " " + postfix
+                } else {
+                    basic = SimpleCoinNumberFormat.formatBasic(localBTC.toDouble())!!
+                    postfixed =
+                        SimpleCoinNumberFormat.format(localBTC.toDouble()) + " " + postfix
+                }
 
                 return Pair(basic, postfixed)
             }
@@ -56,7 +66,7 @@ class RateConverter(
 
             RateType.FIAT_RATE -> {
                 val basic = SimpleCoinNumberFormat.formatBasic((localBTC.toDouble() / Constants.Limit.SATS_PER_BTC) * fiatRate)!!
-                val postfixed = "$ " + SimpleCoinNumberFormat.format((localBTC.toDouble() / Constants.Limit.SATS_PER_BTC) * fiatRate)
+                val postfixed = "$ " + SimpleCoinNumberFormat.formatCurrency((localBTC.toDouble() / Constants.Limit.SATS_PER_BTC) * fiatRate)
 
                 return Pair(basic, postfixed)
             }

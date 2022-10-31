@@ -23,6 +23,7 @@ abstract class AbstractWalletManager {
 
     abstract fun start()
     abstract fun stop()
+    abstract fun updateWalletSyncMode(localWallet: LocalWalletModel, apiSync: Boolean)
     abstract fun updateWalletName(localWallet: LocalWalletModel, newName: String)
     abstract fun validAddress(address: String) : Boolean
     abstract fun arePeersReady() : Boolean

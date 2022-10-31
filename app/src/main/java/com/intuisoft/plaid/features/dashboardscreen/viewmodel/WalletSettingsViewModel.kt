@@ -25,6 +25,12 @@ class WalletSettingsViewModel(
     private val walletManager: AbstractWalletManager
 ): WalletViewModel(application, localStoreRepository, walletManager) {
 
+    var fromSettings: Boolean = false
+
+    fun setPassphrase(passphrase: String) {
+        setWalletPassphrase(passphrase)
+    }
+
     fun changeWalletName(name: String) {
         super.updateWalletName(name)
         showWalletName()

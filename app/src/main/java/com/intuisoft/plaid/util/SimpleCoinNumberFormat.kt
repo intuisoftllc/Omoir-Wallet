@@ -6,26 +6,26 @@ import java.text.DecimalFormat
 
 object SimpleCoinNumberFormat {
 
-    fun format(localStoreRepository: LocalStoreRepository, sats: Long, showFullBalance: Boolean = false) : String {
-        // todo: add usd checking support add showUSDIfEnabled: Boolean as a parmeter
+    fun format(localStoreRepository: LocalStoreRepository, sats: Long, shortenSats: Boolean = true) : String {
+        val converter = RateConverter(19000.0)
+        converter.setLocalRate(RateConverter.RateType.SATOSHI_RATE, sats.toDouble())
+
         when(localStoreRepository.getBitcoinDisplayUnit()) {
             BitcoinDisplayUnit.BTC -> {
-                return "" + format(sats.toDouble() / Constants.Limit.SATS_PER_BTC.toDouble()) + " BTC"
+                return converter.from(RateConverter.RateType.BTC_RATE).second
             }
 
             BitcoinDisplayUnit.SATS -> {
-                val postfix = if(sats == 1L) "Sat" else "Sats"
+                return converter.from(RateConverter.RateType.SATOSHI_RATE, shortenSats).second
+            }
 
-                if(showFullBalance) {
-                    return formatFullBalance(sats) + " " + postfix
-                } else {
-                    return format(sats) + " " + postfix
-                }
+            BitcoinDisplayUnit.FIAT -> {
+                return converter.from(RateConverter.RateType.FIAT_RATE).second
             }
         }
     }
 
-    private fun format(number: Long) : String {
+    fun formatSatsShort(number: Long) : String {
         if(number <= 0) return "0"
 
         val df = DecimalFormat("###,###.##")
@@ -77,6 +77,11 @@ object SimpleCoinNumberFormat {
 
     fun format(value: Double): String? {
         val df = DecimalFormat("###,###,###,###.########")
+        return df.format(value)
+    }
+
+    fun formatCurrency(value: Double): String? {
+        val df = DecimalFormat("###,###,###,###.##")
         return df.format(value)
     }
 

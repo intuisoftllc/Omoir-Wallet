@@ -29,4 +29,16 @@
         app:item_title="@string/bitcoin_unit_2"
         app:show_radio="true"/>
 
+    <com.intuisoft.plaid.androidwrappers.SettingsItemView
+        android:id="@+id/btc_unit_3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:settings_variant="radio"
+        android:layout_marginTop="@dimen/horizontal_padding_size"
+        app:layout_constraintTop_toBottomOf="@id/btc_unit_2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:item_title="@string/bitcoin_unit_3"
+        app:show_radio="true"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

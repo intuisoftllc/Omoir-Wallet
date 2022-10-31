@@ -10,7 +10,6 @@ import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.FragmentConfiguration
 import com.intuisoft.plaid.androidwrappers.TopBarView
 import com.intuisoft.plaid.databinding.FragmentBitcoinUnitBinding
-import com.intuisoft.plaid.databinding.FragmentSettingsBinding
 import com.intuisoft.plaid.features.pin.ui.PinProtectedFragment
 import com.intuisoft.plaid.features.settings.viewmodel.SettingsViewModel
 import com.intuisoft.plaid.model.BitcoinDisplayUnit
@@ -35,6 +34,7 @@ class BitcoinUnitFragment : PinProtectedFragment<FragmentBitcoinUnitBinding>() {
         viewModel.bitcoinDisplayUnitSetting.observe(viewLifecycleOwner, Observer {
             binding.btcUnit1.checkRadio(it == BitcoinDisplayUnit.BTC)
             binding.btcUnit2.checkRadio(it == BitcoinDisplayUnit.SATS)
+            binding.btcUnit3.checkRadio(it == BitcoinDisplayUnit.FIAT)
         })
 
         binding.btcUnit1.onRadioClicked { view, checked ->
@@ -48,6 +48,13 @@ class BitcoinUnitFragment : PinProtectedFragment<FragmentBitcoinUnitBinding>() {
 
             if(checked || viewModel.getDisplayUnit() == BitcoinDisplayUnit.SATS) {
                 viewModel.saveDisplayUnit(BitcoinDisplayUnit.SATS)
+            }
+        }
+
+        binding.btcUnit3.onRadioClicked { view, checked ->
+
+            if(checked || viewModel.getDisplayUnit() == BitcoinDisplayUnit.FIAT) {
+                viewModel.saveDisplayUnit(BitcoinDisplayUnit.FIAT)
             }
         }
     }

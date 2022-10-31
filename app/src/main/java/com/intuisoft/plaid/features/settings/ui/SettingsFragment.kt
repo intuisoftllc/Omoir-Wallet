@@ -1,5 +1,6 @@
 package com.intuisoft.plaid.features.settings.ui
 
+import android.app.Activity
 import android.app.AlertDialog
 import android.app.ProgressDialog
 import android.content.ActivityNotFoundException
@@ -7,11 +8,13 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.core.os.bundleOf
+import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
@@ -33,7 +36,6 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SettingsFragment : PinProtectedFragment<FragmentSettingsBinding>() {
     private val viewModel: SettingsViewModel by sharedViewModel()
-    private val walletVm: WalletViewModel by viewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -50,7 +52,6 @@ class SettingsFragment : PinProtectedFragment<FragmentSettingsBinding>() {
             onNavigateBack()
         }
 
-        viewModel.appRestartNeeded = false
         viewModel.bitcoinDisplayUnitSetting.observe(viewLifecycleOwner, Observer {
             when(it) {
                 BitcoinDisplayUnit.BTC -> {
@@ -61,6 +62,16 @@ class SettingsFragment : PinProtectedFragment<FragmentSettingsBinding>() {
                 BitcoinDisplayUnit.SATS -> {
                     binding.bitcoinUnit.showSubtitleIcon(R.drawable.ic_satoshi)
                     binding.bitcoinUnit.setSubTitleText(getString(R.string.sats))
+                }
+
+                BitcoinDisplayUnit.FIAT -> {
+                    if(viewModel.versionTapLimitReached()) {
+                        binding.bitcoinUnit.showSubtitleIcon(R.drawable.ic_poo)
+                    } else {
+                        binding.bitcoinUnit.showSubtitleIcon(R.drawable.ic_fiat)
+                    }
+                    
+                    binding.bitcoinUnit.setSubTitleText(getString(R.string.fiat))
                 }
 
                 else -> {
@@ -408,30 +419,18 @@ class SettingsFragment : PinProtectedFragment<FragmentSettingsBinding>() {
 
 
     fun changeNameBottomSheet() {
-        val bottomSheetDialog = BottomSheetDialog(requireContext())
-        bottomSheetDialog.setContentView(R.layout.bottom_sheet_change_name)
-        val save = bottomSheetDialog.findViewById<RoundedButtonView>(R.id.save)!!
-        val cancel = bottomSheetDialog.findViewById<RoundedButtonView>(R.id.cancel)!!
-        val name = bottomSheetDialog.findViewById<EditText>(R.id.name)!!
-        val textLeft = bottomSheetDialog.findViewById<TextView>(R.id.textLeft)!!
-
-        name.setText(viewModel.getName())
-        name.doOnTextChanged { text, start, before, count ->
-            textLeft.text = "${text?.length ?: 0}/25"
-            save.enableButton(text?.isNotEmpty() ?: false)
-        }
-
-        save.onClick {
-            viewModel.saveName(name.text.toString())
-            bottomSheetDialog.cancel()
-        }
-
-        cancel.onClick {
-            bottomSheetDialog.cancel()
-        }
-
-        bottomSheetDialog.show()
+        simpleTextFieldDialog(
+            activity = requireActivity(),
+            title = getString(R.string.change_name_title),
+            fieldType = getString(R.string.name),
+            fieldHint = getString(R.string.welcome_alias_suggestion),
+            initialText = viewModel.getName() ?: "",
+            onSave = {
+                viewModel.saveName(it)
+            }
+        )
     }
+
     fun onNavigateBack() {
         if(viewModel.appRestartNeeded) {
             warningDialog(
@@ -439,14 +438,12 @@ class SettingsFragment : PinProtectedFragment<FragmentSettingsBinding>() {
                 title = getString(R.string.settings_option_app_restart_title),
                 subtitle = getString(R.string.settings_option_app_restart_subtitle),
                 positive = getString(R.string.settings_option_app_restart_positive_text),
-                negative = getString(R.string.settings_option_app_restart_negative_text),
+                negative = null,
                 positiveTint = R.color.brand_color_dark_blue,
                 onPositive = {
-                    walletVm.restartApp(this)
+                    viewModel.restartApp(this)
                 },
-                onNegative = {
-                    findNavController().popBackStack()
-                }
+                onNegative = null
             )
         } else {
             findNavController().popBackStack()
@@ -485,12 +482,67 @@ class SettingsFragment : PinProtectedFragment<FragmentSettingsBinding>() {
     }
 
     companion object {
+
+        fun simpleTextFieldDialog(
+            activity: Activity,
+            title: String,
+            fieldType: String,
+            fieldHint: String,
+            initialText: String,
+            onSave: ((String) -> Unit)?,
+        ) {
+            val bottomSheetDialog = BottomSheetDialog(activity)
+            bottomSheetDialog.setContentView(R.layout.bottom_sheet_change_name)
+            val sheetTitle = bottomSheetDialog.findViewById<TextView>(R.id.bottom_sheet_title)!!
+            val textFieldType = bottomSheetDialog.findViewById<TextView>(R.id.text_field_type_name)!!
+            val save = bottomSheetDialog.findViewById<RoundedButtonView>(R.id.save)!!
+            val cancel = bottomSheetDialog.findViewById<RoundedButtonView>(R.id.cancel)!!
+            val name = bottomSheetDialog.findViewById<EditText>(R.id.name)!!
+            val textLeft = bottomSheetDialog.findViewById<TextView>(R.id.textLeft)!!
+
+            sheetTitle.text = title
+            name.setText(initialText)
+            name.hint = fieldHint
+            textFieldType.text = fieldType
+            name.doOnTextChanged { text, start, before, count ->
+                textLeft.text = "${text?.length ?: 0}/25"
+                save.enableButton(text?.isNotEmpty() ?: false)
+            }
+
+            name.setOnKeyListener(object : View.OnKeyListener {
+                override fun onKey(v: View?, keyCode: Int, event: KeyEvent): Boolean {
+                    // if the event is a key down event on the enter button
+                    if (event.action == KeyEvent.ACTION_DOWN &&
+                        keyCode == KeyEvent.KEYCODE_ENTER
+                    ) {
+                        activity.hideSoftKeyboard()
+                        name.clearFocus()
+                        name.isCursorVisible = false
+
+                        return true
+                    }
+                    return false
+                }
+            })
+
+            save.onClick {
+                onSave?.invoke(name.text.toString())
+                bottomSheetDialog.cancel()
+            }
+
+            cancel.onClick {
+                bottomSheetDialog.cancel()
+            }
+
+            bottomSheetDialog.show()
+        }
+
         fun warningDialog(
             context: Context,
             title: String,
             subtitle: String,
             positive: String,
-            negative: String,
+            negative: String?,
             positiveTint: Int,
             onPositive: (() -> Unit)?,
             onNegative: (() -> Unit)?
@@ -507,7 +559,9 @@ class SettingsFragment : PinProtectedFragment<FragmentSettingsBinding>() {
             sheetTitle.text = title
             sheetSubtitle.text = subtitle
             save.setButtonText(positive)
-            cancel.setButtonText(negative)
+            if(negative != null) {
+                cancel.setButtonText(negative)
+            } else cancel.isVisible = false
             save.setTint(positiveTint)
 
             save.onClick {

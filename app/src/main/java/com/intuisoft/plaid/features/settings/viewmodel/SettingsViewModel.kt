@@ -3,11 +3,13 @@ package com.intuisoft.plaid.features.settings.viewmodel
 import android.app.Application
 import android.content.Context
 import android.os.Build
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import com.intuisoft.plaid.BuildConfig
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.BaseViewModel
 import com.intuisoft.plaid.androidwrappers.SingleLiveData
+import com.intuisoft.plaid.androidwrappers.navigate
 import com.intuisoft.plaid.local.UserPreferences
 import com.intuisoft.plaid.model.AppTheme
 import com.intuisoft.plaid.model.BitcoinDisplayUnit
@@ -48,8 +50,15 @@ class SettingsViewModel(
     fun getDisplayUnit() = localStoreRepository.getBitcoinDisplayUnit()
     fun getName() = localStoreRepository.getUserAlias()
     fun getMinConfirmations() = localStoreRepository.getMinimumConfirmations()
+    fun versionTapLimitReached() = localStoreRepository.versionTapLimitReached()
 
     var appRestartNeeded = false
+
+    fun restartApp(fragment: Fragment) {
+        appRestartNeeded = false
+        walletManager.stop()
+        fragment.navigate(R.id.splashFragment)
+    }
 
     fun saveMinimumConfirmation(min: Int) {
         localStoreRepository.setMinConfirmations(min)

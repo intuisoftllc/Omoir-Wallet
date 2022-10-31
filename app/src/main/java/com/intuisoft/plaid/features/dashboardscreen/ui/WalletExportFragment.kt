@@ -1,29 +1,24 @@
 package com.intuisoft.plaid.features.dashboardscreen.ui
 
-import android.R.attr.label
-import android.content.ClipData
-import android.content.ClipboardManager
-import android.content.Context
 import android.graphics.*
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.google.zxing.BarcodeFormat
+import com.google.zxing.EncodeHintType
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.*
 import com.intuisoft.plaid.databinding.FragmentWalletExportBinding
 import com.intuisoft.plaid.features.dashboardscreen.viewmodel.WalletExportViewModel
 import com.intuisoft.plaid.features.pin.ui.PinProtectedFragment
-import com.intuisoft.plaid.util.Constants
-import com.intuisoft.plaid.util.SimpleCoinNumberFormat
 import com.intuisoft.plaid.util.fragmentconfig.ConfigQrDisplayData
 import com.journeyapps.barcodescanner.BarcodeEncoder
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import java.util.*
 
 
 class WalletExportFragment : PinProtectedFragment<FragmentWalletExportBinding>() {
@@ -45,55 +40,55 @@ class WalletExportFragment : PinProtectedFragment<FragmentWalletExportBinding>()
     }
 
     override fun onConfiguration(configuration: FragmentConfiguration?) {
-//        configuration?.let {
-//            val configData = it.configData as ConfigQrDisplayData
-//
-//            binding.close.isVisible = configData.showClose
-//            binding.pubKeyTitle.isVisible = configData.qrTitle != null
-//            binding.pubKeyTitle.text = configData.qrTitle
-//            binding.pubAddress.text = configData.payload
-//            showQrCode(configData.payload)
-//
-//            when(it.configurationType) {
-//
-//                FragmentConfigurationType.CONFIGURATION_DISPLAY_QR -> {
-//                    // do nothing
-//                }
-//
-//                FragmentConfigurationType.CONFIGURATION_DISPLAY_SHAREABLE_QR -> {
-//                    binding.shareButton.isVisible = true
-//                }
-//            }
-//
-//            viewModel.xpubClickable.observe(viewLifecycleOwner, Observer {
-//                binding.pubAddress.isClickable = it
-//            })
-//
-//            viewModel.xpubData.observe(viewLifecycleOwner, Observer {
-//                binding.pubAddress.text = it
-//            })
-//
-//            viewModel.copyXpub.observe(viewLifecycleOwner, Observer {
-//                if(it) {
-//                    binding.pubAddress.setTextColor(requireContext().getColor(R.color.success_color))
-//                    requireContext().copyToClipboard((configuration!!.configData as ConfigQrDisplayData).payload, "address")
-//                } else {
-//                    binding.pubAddress.setTextColor(requireContext().getColor(R.color.alt_black))
-//                }
-//            })
-//
-//            binding.pubAddress.setOnClickListener {
-//                viewModel.copyXpubToClipboard((configuration!!.configData as ConfigQrDisplayData).payload)
-//            }
-//
-//            binding.shareButton.onClick {
-//                requireActivity().shareText(null, configData.payload)
-//            }
-//
-//            binding.close.setOnClickListener {
-//                findNavController().popBackStack()
-//            }
-//        }
+        configuration?.let {
+            val configData = it.configData as ConfigQrDisplayData
+
+            binding.close.isVisible = configData.showClose
+            binding.pubKeyTitle.isVisible = configData.qrTitle != null
+            binding.pubKeyTitle.text = configData.qrTitle
+            binding.pubAddress.text = configData.payload
+            showQrCode(configData.payload)
+
+            when(it.configurationType) {
+
+                FragmentConfigurationType.CONFIGURATION_DISPLAY_QR -> {
+                    // do nothing
+                }
+
+                FragmentConfigurationType.CONFIGURATION_DISPLAY_SHAREABLE_QR -> {
+                    binding.shareButton.isVisible = true
+                }
+            }
+
+            viewModel.xpubClickable.observe(viewLifecycleOwner, Observer {
+                binding.pubAddress.isClickable = it
+            })
+
+            viewModel.xpubData.observe(viewLifecycleOwner, Observer {
+                binding.pubAddress.text = it
+            })
+
+            viewModel.copyXpub.observe(viewLifecycleOwner, Observer {
+                if(it) {
+                    binding.pubAddress.setTextColor(requireContext().getColor(R.color.success_color))
+                    requireContext().copyToClipboard((configuration!!.configData as ConfigQrDisplayData).payload, "address")
+                } else {
+                    binding.pubAddress.setTextColor(requireContext().getColor(R.color.brand_color_accent_3))
+                }
+            })
+
+            binding.pubAddress.setOnClickListener {
+                viewModel.copyXpubToClipboard((configuration!!.configData as ConfigQrDisplayData).payload)
+            }
+
+            binding.shareButton.onClick {
+                requireActivity().shareText(null, configData.payload)
+            }
+
+            binding.close.setOnClickListener {
+                findNavController().popBackStack()
+            }
+        }
     }
 
     fun mergeBitmaps(logo: Bitmap?, qrcode: Bitmap): Bitmap? {
@@ -111,16 +106,25 @@ class WalletExportFragment : PinProtectedFragment<FragmentWalletExportBinding>()
 
     fun showQrCode(pubKey: String) {
         try {
+            val hints: MutableMap<EncodeHintType, Any> = EnumMap<EncodeHintType, Any>(
+                EncodeHintType::class.java
+            )
+
+            hints[EncodeHintType.CHARACTER_SET] = "UTF-8"
+            hints[EncodeHintType.MARGIN] = 2
+
             val barcodeEncoder = BarcodeEncoder()
             val bitmap = barcodeEncoder.encodeBitmap(
                 pubKey,
                 BarcodeFormat.QR_CODE,
-                resources.dpToPixels(350f).toInt(),
-                resources.dpToPixels(350f).toInt()
+                resources.dpToPixels(250f).toInt(),
+                resources.dpToPixels(250f).toInt(),
+                hints
             )
+
             val logo: Bitmap = BitmapFactory.decodeResource(resources, R.mipmap.ic_launcher)
             val merge = mergeBitmaps(logo, bitmap)
-//            binding.qrCode.setImageBitmap(merge)
+            binding.qrCode.setImageBitmap(merge)
         } catch (e: Exception) {
         }
     }

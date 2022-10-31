@@ -114,6 +114,13 @@ class MainActivity : BindingActivity<ActivityMainBinding>(), ActionBarDelegate {
                     ?.onActionRight()
             }
         }
+
+        binding.toolbar.setSecondaryTextOnClick {
+            if(supportFragmentManager.currentNavigationFragment is FragmentActionBarDelegate) {
+                (supportFragmentManager.currentNavigationFragment as? FragmentActionBarDelegate)
+                    ?.onSubtitleClicked()
+            }
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
