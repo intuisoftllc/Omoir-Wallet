@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.docformative.docformative.remove
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.BindingViewHolder
+import com.intuisoft.plaid.databinding.ListItemSavedAddressBinding
 import com.intuisoft.plaid.features.dashboardscreen.adapters.detail.UnspentOutputDetail
 import com.intuisoft.plaid.repositories.LocalStoreRepository
 import io.horizontalsystems.bitcoincore.storage.UnspentOutput
@@ -27,9 +28,9 @@ class CoinControlAdapter(
         viewType: Int
     ): BindingViewHolder {
         return when (viewType) {
-//            R.layout.coin_control_list_item -> {
-//                BindingViewHolder.create(parent, CoinControlListItemBinding::inflate)
-//            }
+            R.layout.list_item_saved_address -> {
+                BindingViewHolder.create(parent, ListItemSavedAddressBinding::inflate)
+            }
             else -> throw IllegalArgumentException("Invalid BindingViewHolder Type")
         }
     }

@@ -34,7 +34,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintVertical_bias="@dimen/vertical_bias_25"
         android:layout_marginTop="@dimen/horizontal_padding_size_large"
-        style="@style/TextStyle.Semibold.40"
+        style="@style/TextStyle.Semibold.36"
         android:textStyle="bold"
         android:textColor="?attr/colorPrimaryVariant"/>
 
@@ -183,15 +183,14 @@
             android:layout_centerHorizontal="true"
             android:text="0" />
 
-        <TextView
+        <ImageView
             android:id="@+id/dot"
             style="@style/NumberInPasscode"
             android:layout_below="@id/number7"
             android:layout_alignParentLeft="true"
             android:scaleType="centerInside"
-            app:srcCompat="@drawable/ic_check_bold"
-            android:textColor="?attr/colorPrimary"
-            android:text="."/>
+            android:src="@drawable/ic_close"
+            android:textColor="?attr/colorPrimary"/>
 
 
         <ImageView
@@ -215,17 +214,11 @@
             android:layout_alignStart="@id/dot"
             android:layout_alignEnd="@id/back"
             android:layout_below="@id/dot"
-            android:layout_marginTop="@dimen/horizontal_padding_size"
+            android:layout_marginTop="@dimen/margin_24"
             android:orientation="horizontal">
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1.5"
-                android:layout_marginRight="@dimen/margin_10"
-                android:src="@drawable/ic_close"/>
-
             <com.intuisoft.plaid.androidwrappers.RoundedButtonView
+                android:id="@+id/next"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 app:btn_text="@string/next"

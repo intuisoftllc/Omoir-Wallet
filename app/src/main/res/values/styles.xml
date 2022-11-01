@@ -23,9 +23,9 @@
         <item name="lineSpacing">29dp</item>
     </style>
 
-    <style name="TextStyle.Semibold.40">
-        <item name="android:textSize">40sp</item>
-        <item name="lineSpacing">49dp</item>
+    <style name="TextStyle.Semibold.36">
+        <item name="android:textSize">36sp</item>
+        <item name="lineSpacing">45dp</item>
     </style>
 
     <style name="TextStyle.Medium">

@@ -26,7 +26,6 @@ import com.intuisoft.plaid.R
 import com.intuisoft.plaid.activities.MainActivity
 import com.intuisoft.plaid.androidwrappers.*
 import com.intuisoft.plaid.databinding.FragmentWithdrawBinding
-import com.intuisoft.plaid.features.dashboardscreen.viewmodel.CurrencyViewModel
 import com.intuisoft.plaid.features.dashboardscreen.viewmodel.WithdrawalViewModel
 import com.intuisoft.plaid.features.homescreen.adapters.CoinControlAdapter
 import com.intuisoft.plaid.features.pin.ui.PinProtectedFragment
@@ -45,7 +44,6 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class WithdrawalFragment : PinProtectedFragment<FragmentWithdrawBinding>(), BarcodeResultListener {
     private val viewModel: WithdrawalViewModel by viewModel()
-    private val currencyViewModel: CurrencyViewModel by viewModel()
     private val localStoreRepository: LocalStoreRepository by inject()
     private var overBalanceFailures = 5
 
@@ -63,14 +61,8 @@ class WithdrawalFragment : PinProtectedFragment<FragmentWithdrawBinding>(), Barc
 
     override fun onConfiguration(configuration: FragmentConfiguration?) {
 
-//        viewModel.showWalletDisplayUnit()
-//        viewModel.setInitialFeeRate()
-//        viewModel.setLocalSpendAmount(0.0, viewModel.getCurrentRateConversion())
-//
-//        binding.close.setOnClickListener {
-//            findNavController().popBackStack()
-//        }
-//
+        viewModel.showWalletDisplayUnit()
+
 //        binding.amount.addTextChangedListener(object : TextWatcher {
 //            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
 //                //here is your code
@@ -95,6 +87,101 @@ class WithdrawalFragment : PinProtectedFragment<FragmentWithdrawBinding>(), Barc
 //                }
 //            }
 //        })
+
+        viewModel.walletDisplayUnit.observe(viewLifecycleOwner, Observer {
+            when(it) {
+                BitcoinDisplayUnit.BTC -> {
+                    binding.btc.setButtonStyle(RoundedButtonView.ButtonStyle.PILL_STYLE)
+                    binding.sats.setButtonStyle(RoundedButtonView.ButtonStyle.TRANSPARENT_STYLE)
+                    binding.currency.setButtonStyle(RoundedButtonView.ButtonStyle.TRANSPARENT_STYLE)
+                }
+
+                BitcoinDisplayUnit.SATS -> {
+                    binding.btc.setButtonStyle(RoundedButtonView.ButtonStyle.TRANSPARENT_STYLE)
+                    binding.sats.setButtonStyle(RoundedButtonView.ButtonStyle.PILL_STYLE)
+                    binding.currency.setButtonStyle(RoundedButtonView.ButtonStyle.TRANSPARENT_STYLE)
+                }
+
+                BitcoinDisplayUnit.FIAT -> {
+                    binding.btc.setButtonStyle(RoundedButtonView.ButtonStyle.TRANSPARENT_STYLE)
+                    binding.sats.setButtonStyle(RoundedButtonView.ButtonStyle.TRANSPARENT_STYLE)
+                    binding.currency.setButtonStyle(RoundedButtonView.ButtonStyle.PILL_STYLE)
+                }
+            }
+
+            viewModel.displaySpendAmount()
+            viewModel.displayTotalBalance()
+        })
+
+        viewModel.localSpendAmount.observe(viewLifecycleOwner, Observer {
+            binding.amount.text = it
+        })
+
+        binding.btc.onClick {
+            viewModel.setDisplayUnit(BitcoinDisplayUnit.BTC)
+            viewModel.showWalletDisplayUnit()
+        }
+
+        binding.sats.onClick {
+            viewModel.setDisplayUnit(BitcoinDisplayUnit.SATS)
+            viewModel.showWalletDisplayUnit()
+        }
+
+        binding.currency.onClick {
+            viewModel.setDisplayUnit(BitcoinDisplayUnit.FIAT)
+            viewModel.showWalletDisplayUnit()
+        }
+
+        viewModel.maximumSpend.observe(viewLifecycleOwner, Observer {
+            binding.availableBalance.setSubTitleText(it)
+        })
+
+        binding.availableBalance.onClick {
+            showCoinControlBottomSheet()
+        }
+
+        viewModel.shouldAdvance.observe(viewLifecycleOwner, Observer {
+            binding.next.enableButton(it)
+        })
+
+        binding.number0.setOnClickListener {
+            viewModel.increaseBy(0)
+        }
+        binding.number1.setOnClickListener {
+            viewModel.increaseBy(1)
+        }
+
+        binding.number2.setOnClickListener {
+            viewModel.increaseBy(2)
+        }
+
+        binding.number3.setOnClickListener {
+            viewModel.increaseBy(3)
+        }
+
+        binding.number4.setOnClickListener {
+            viewModel.increaseBy(4)
+        }
+
+        binding.number5.setOnClickListener {
+            viewModel.increaseBy(5)
+        }
+
+        binding.number6.setOnClickListener {
+            viewModel.increaseBy(6)
+        }
+
+        binding.number7.setOnClickListener {
+            viewModel.increaseBy(7)
+        }
+
+        binding.number8.setOnClickListener {
+            viewModel.increaseBy(8)
+        }
+
+        binding.number9.setOnClickListener {
+            viewModel.increaseBy(9)
+        }
 //
 //        binding.address.addTextChangedListener(object : TextWatcher {
 //            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
@@ -375,39 +462,39 @@ class WithdrawalFragment : PinProtectedFragment<FragmentWithdrawBinding>(), Barc
     }
 
     fun showCoinControlBottomSheet() {
-//        val bottomSheetDialog = BottomSheetDialog(requireContext())
-//        bottomSheetDialog.setContentView(com.intuisoft.plaid.R.layout.advanced_options_coin_control)
-//        val selectAll = bottomSheetDialog.findViewById<RoundedButtonView>(R.id.selectAllButton)!!
-//        val noUTXOs = bottomSheetDialog.findViewById<TextView>(R.id.noUTXOAvailable)!!
-//        val unspentOutputsList = bottomSheetDialog.findViewById<RecyclerView>(R.id.unspentOutputs)!!
-//        val utxos = viewModel.getUnspentOutputs()
-//
-//        if(utxos.isEmpty()) {
-//            selectAll.enableButton(false)
-//            noUTXOs.isVisible = true
-//            unspentOutputsList.isVisible = false
-//        } else {
-//            val adapter = CoinControlAdapter(localStoreRepository) {
-////                if(it) {
-////                    selectAll.setButtonStyle(RoundedButtonView.ButtonStyle.OUTLINED_STYLE)
-////                } else {
-////                    selectAll.setButtonStyle(RoundedButtonView.ButtonStyle.WHITE_ROUNDED_STYLE)
-////                }
-//            }
-//
-//            unspentOutputsList.adapter = adapter
-//            adapter.addUTXOs(utxos.toArrayList(), viewModel.getSelectedUTXOs().toArrayList())
-//
-//            selectAll.onClick {
-//                adapter.selectAll(!adapter.areAllItemsSelected())
-//            }
-//
-//            bottomSheetDialog.setOnCancelListener {
-//                viewModel.updateUTXOs(adapter.selectedUTXOs)
-//            }
-//        }
-//
-//        bottomSheetDialog.show()
+        val bottomSheetDialog = BottomSheetDialog(requireContext())
+        bottomSheetDialog.setContentView(R.layout.bottom_sheet_coin_control)
+        val selectAll = bottomSheetDialog.findViewById<RoundedButtonView>(R.id.select_all)!!
+        val noUTXOs = bottomSheetDialog.findViewById<TextView>(R.id.no_utxos)!!
+        val unspentOutputsList = bottomSheetDialog.findViewById<RecyclerView>(R.id.utxos)!!
+        val utxos = viewModel.getUnspentOutputs()
+
+        if(utxos.isEmpty()) {
+            selectAll.enableButton(false)
+            noUTXOs.isVisible = true
+            unspentOutputsList.isVisible = false
+        } else {
+            val adapter = CoinControlAdapter(localStoreRepository) {
+                if(it) {
+                    selectAll.setButtonStyle(RoundedButtonView.ButtonStyle.ROUNDED_STYLE)
+                } else {
+                    selectAll.setButtonStyle(RoundedButtonView.ButtonStyle.OUTLINED_STYLE)
+                }
+            }
+
+            unspentOutputsList.adapter = adapter
+            adapter.addUTXOs(utxos.toArrayList(), viewModel.getSelectedUTXOs().toArrayList())
+
+            selectAll.onClick {
+                adapter.selectAll(!adapter.areAllItemsSelected())
+            }
+
+            bottomSheetDialog.setOnCancelListener {
+                viewModel.updateUTXOs(adapter.selectedUTXOs)
+            }
+        }
+
+        bottomSheetDialog.show()
     }
 
     fun setFeeRate(

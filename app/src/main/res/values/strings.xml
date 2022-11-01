@@ -279,6 +279,11 @@
     <string name="wallet_settings_sync_type_core">Core Based Syncing</string>
     <!--    Wallet Settings Strings End -->
 
+<!--    Coin Control Bottom Sheet Strings -->
+    <string name="coin_control_title">Coin Control</string>
+    <string name="coin_control_no_utxos">No UTXO\'s Available For Spend</string>
+<!--    Coin Control Bottom Sheet Strings End -->
+
 <!--    Generic Use Strings -->
     <string name="welcome">Welcome</string>
     <string name="name">Name</string>
@@ -306,6 +311,7 @@
     <string name="main_net">Main Net</string>
     <string name="test_net">Test Net</string>
     <string name="not_applicable">N/A</string>
+    <string name="select_all">Select All</string>
     <string name="transaction_id">Transaction ID</string>
     <string name="syncing_percent">Syncing... (%1$s%%)</string>
 <!--    Generic Use Strings End -->
@@ -344,5 +350,5 @@
     <string name="business_info_email">intuisoftllc@gmail.com</string>
     <string name="business_info_support_request_subject">Plaid Crypto Wallet Support</string>
     <string name="business_info_support_request_message">Device: %1$s\nApi Level: %2$s\nOS Version: %3$s\nModel: %4$s\nProduct: %5$s\n----------------------------------------\n\nHello Intuisoft team, I would like to request more information regarding your app.</string>
-    <!--  Business Information End -->
+<!--  Business Information End -->
 </resources>

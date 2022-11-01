@@ -1,5 +1,7 @@
 package com.intuisoft.plaid.util
 
+import kotlin.math.roundToLong
+
 class RateConverter(
     private var fiatRate: Double
 ) {
@@ -14,6 +16,14 @@ class RateConverter(
         return con
     }
 
+    fun getRawBtcRate() =
+        localBTC.toDouble() / Constants.Limit.SATS_PER_BTC
+
+    fun getRawFiatRate() =
+        (localBTC.toDouble() / Constants.Limit.SATS_PER_BTC) * fiatRate
+
+    fun getFiatRate() = fiatRate
+
     fun setFiatRate(fiatRate: Double) {
         this.fiatRate = fiatRate
     }
@@ -21,7 +31,7 @@ class RateConverter(
     fun setLocalRate(type: RateType, amount: Double) {
         when(type) {
             RateType.BTC_RATE -> {
-                localBTC = (amount * Constants.Limit.SATS_PER_BTC).toLong()
+                localBTC = (amount * Constants.Limit.SATS_PER_BTC).roundToLong()
             }
 
             RateType.SATOSHI_RATE -> {
@@ -29,7 +39,7 @@ class RateConverter(
             }
 
             RateType.FIAT_RATE -> {
-                localBTC = ((amount / fiatRate) * Constants.Limit.SATS_PER_BTC).toLong()
+                localBTC = ((amount / fiatRate) * Constants.Limit.SATS_PER_BTC).roundToLong()
             }
         }
     }
@@ -58,15 +68,15 @@ class RateConverter(
             }
 
             RateType.BTC_RATE -> {
-                val basic = SimpleCoinNumberFormat.formatBasic(localBTC.toDouble() / Constants.Limit.SATS_PER_BTC)!!
-                val postfixed = SimpleCoinNumberFormat.format(localBTC.toDouble() / Constants.Limit.SATS_PER_BTC) + " BTC"
+                val basic = SimpleCoinNumberFormat.formatBasic(getRawBtcRate())!!
+                val postfixed = SimpleCoinNumberFormat.format(getRawBtcRate()) + " BTC"
 
                 return Pair(basic, postfixed)
             }
 
             RateType.FIAT_RATE -> {
-                val basic = SimpleCoinNumberFormat.formatBasic((localBTC.toDouble() / Constants.Limit.SATS_PER_BTC) * fiatRate)!!
-                val postfixed = "$ " + SimpleCoinNumberFormat.formatCurrency((localBTC.toDouble() / Constants.Limit.SATS_PER_BTC) * fiatRate)
+                val basic = SimpleCoinNumberFormat.formatBasic(getRawFiatRate())!!
+                val postfixed = "$ " + SimpleCoinNumberFormat.formatCurrency(getRawFiatRate())
 
                 return Pair(basic, postfixed)
             }

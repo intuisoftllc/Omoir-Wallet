@@ -13,8 +13,8 @@ import com.intuisoft.plaid.repositories.LocalStoreRepository
 import com.intuisoft.plaid.util.Constants
 import com.intuisoft.plaid.util.NetworkUtil
 import com.intuisoft.plaid.util.RateConverter
+import com.intuisoft.plaid.util.entensions.shiftRight
 import com.intuisoft.plaid.walletmanager.AbstractWalletManager
-import com.intuisoft.plaid.walletmanager.WalletManager
 import io.horizontalsystems.bitcoincore.models.TransactionDataSortType
 import io.horizontalsystems.bitcoincore.storage.FullTransaction
 import io.horizontalsystems.bitcoincore.storage.UnspentOutput
@@ -56,12 +56,124 @@ class WithdrawalViewModel(
     protected val _onTransactionSent = SingleLiveData<Unit>()
     val onTransactionSent: LiveData<Unit> = _onTransactionSent
 
-    private var localRate: RateConverter = RateConverter(19000.0)
+
+    // keep begin
+    protected val _localSpendAmount = SingleLiveData<String>()
+    val localSpendAmount: LiveData<String> = _localSpendAmount
+
+    protected val _maximumSpend = SingleLiveData<String>()
+    val maximumSpend: LiveData<String> = _maximumSpend
+
+    protected val _shouldAdvance = SingleLiveData<Boolean>()
+    val shouldAdvance: LiveData<Boolean> = _shouldAdvance
+
+    private var amountToSpend: RateConverter = RateConverter(19000.0)
+    private var selectedUTXOs: MutableList<UnspentOutput> = mutableListOf()
+
+    fun getLocalSpendAmount() = amountToSpend
+
+    fun displaySpendAmount() {
+        _shouldAdvance.postValue(amountToSpend.getRawRate() > 0L)
+        _localSpendAmount.postValue(amountToSpend.from(getDisplayUnit().toRateType(), false).second!!)
+    }
+
+    fun displayTotalBalance() {
+        val rate = RateConverter(amountToSpend.getFiatRate())
+        rate.setLocalRate(RateConverter.RateType.SATOSHI_RATE, getWalletBalance().toDouble())
+
+        _maximumSpend.postValue(rate.from(getDisplayUnit().toRateType(), false).second!!)
+    }
+
+    fun increaseBy(number: Int) {
+        val tempRate = RateConverter(amountToSpend.getFiatRate())
+        tempRate.setLocalRate(RateConverter.RateType.SATOSHI_RATE, amountToSpend.getRawRate().toDouble())
+
+        if(number == 0 && tempRate.getRawRate() == 0L)
+            return
+
+        when(getDisplayUnit()) {
+            BitcoinDisplayUnit.SATS -> {
+                var sats = tempRate.getRawRate()
+                sats = (sats * 10) + number
+
+                // todo: check if over balance
+                amountToSpend.setLocalRate(RateConverter.RateType.SATOSHI_RATE, sats.toDouble())
+            }
+
+            BitcoinDisplayUnit.BTC -> {
+                var btc = tempRate.getRawBtcRate()
+
+                if(btc == 0.0) {
+                    btc = 0.00000001 * number
+                } else {
+                    btc = (btc * 10) + (0.00000001 * number)
+                }
+
+                // todo: check if over balance
+                amountToSpend.setLocalRate(RateConverter.RateType.BTC_RATE, btc)
+            }
+
+            BitcoinDisplayUnit.FIAT -> {
+                var fiat = tempRate.getRawFiatRate()
+
+                if(fiat == 0.0) {
+                    fiat = 0.01 * number
+                } else {
+                    var str = "%.2f".format(fiat)
+                    if((str.contains('.') && str.last() != '0') || number == 0) {
+                        str = str.shiftRight('.', 1)
+                    } else if(str.endsWith("00")) {
+                        str = str.dropLast(2)
+                    }
+                    else {
+                        str = str.dropLast(1)
+                    }
+
+                    if(number == 0) {
+                        if(str.last() == '.') {
+                            str += number
+                        }
+                    } else {
+                        str += number
+                    }
+
+                    fiat = str.toDouble()
+                }
+
+                // todo: check if over balance
+                amountToSpend.setLocalRate(RateConverter.RateType.FIAT_RATE, fiat)
+            }
+        }
+
+        displaySpendAmount()
+    }
+
+    override fun getWalletBalance() : Long {
+        if(selectedUTXOs.isEmpty())
+            return localWallet!!.walletKit!!.balance.spendable
+        else {
+            var balance = 0L
+            selectedUTXOs.forEach {
+                balance += it.output.value
+            }
+
+            return balance
+        }
+    }
+
+    fun updateUTXOs(utxos: MutableList<UnspentOutput>) {
+        selectedUTXOs = utxos
+        displayTotalBalance()
+    }
+    // keep end
+
+
+
+
     private var feeRate: Int = 0
     private var address: String? = null
     private var amountCurrencySwap: Boolean = false
     private var networkFeeRate: NetworkFeeRate = NetworkFeeRate(1, 2, 6)
-    private var selectedUTXOs: MutableList<UnspentOutput> = mutableListOf()
 
     fun swapCurrencyAndAmount() = amountCurrencySwap
 
@@ -69,16 +181,11 @@ class WithdrawalViewModel(
 
     fun getNetworkFeeRate() = networkFeeRate
 
-    fun getLocalRate() = localRate
 
     fun getSelectedUTXOs() = selectedUTXOs
 
     fun getLocalAddress() = address
 
-    fun updateUTXOs(context: Context, utxos: MutableList<UnspentOutput>) {
-        selectedUTXOs = utxos
-        showWalletBalance(context)
-    }
 
     fun setLocalAddress(addr: String) {
         address = addr
@@ -86,9 +193,9 @@ class WithdrawalViewModel(
 
     fun getTotalFee(retry: Boolean = true): Long {
         if(selectedUTXOs.isNotEmpty()) {
-            return calculateFee(selectedUTXOs, localRate.getRawRate(), feeRate, address, retry)
+            return calculateFee(selectedUTXOs, amountToSpend.getRawRate(), feeRate, address, retry)
         } else {
-            return calculateFee(localRate.getRawRate(), feeRate, address, retry)
+            return calculateFee(amountToSpend.getRawRate(), feeRate, address, retry)
         }
     }
 
@@ -120,20 +227,6 @@ class WithdrawalViewModel(
             feeRate = networkFeeRate.medFee
         } else {
             feeRate = networkFeeRate.highFee
-        }
-    }
-
-
-    override fun getWalletBalance() : Long {
-        if(selectedUTXOs.isEmpty())
-            return localWallet!!.walletKit!!.balance.spendable
-        else {
-            var balance = 0L
-            selectedUTXOs.forEach {
-                balance += it.output.value
-            }
-
-            return balance
         }
     }
 
@@ -176,7 +269,7 @@ class WithdrawalViewModel(
             if(selectedUTXOs.isNotEmpty()) {
                 return localWallet!!.walletKit!!.redeem(
                     unspentOutputs = selectedUTXOs,
-                    value = localRate.getRawRate(),
+                    value = amountToSpend.getRawRate(),
                     address = address!!,
                     feeRate = feeRate,
                     sortType = TransactionDataSortType.Bip69,
@@ -185,7 +278,7 @@ class WithdrawalViewModel(
             } else {
                 return localWallet!!.walletKit!!.send(
                     address = address!!,
-                    value = localRate.getRawRate(),
+                    value = amountToSpend.getRawRate(),
                     senderPay = true,
                     feeRate = feeRate,
                     sortType = TransactionDataSortType.Bip69,
@@ -200,15 +293,15 @@ class WithdrawalViewModel(
     }
 
     fun setLocalSpendAmount(amount: Double, type: RateConverter.RateType) {
-        localRate.setLocalRate(type, amount)
-        _onLocalSpendAmountUpdated.postValue(localRate.getRawRate())
+        amountToSpend.setLocalRate(type, amount)
+        _onLocalSpendAmountUpdated.postValue(amountToSpend.getRawRate())
     }
 
     fun adjustLocalSpendToFitFee() {
         if(selectedUTXOs.isNotEmpty()) {
-            localRate.setLocalRate(RateConverter.RateType.SATOSHI_RATE, localWallet!!.walletKit!!.maximumSpendableValue(selectedUTXOs, address, feeRate).toDouble())
+            amountToSpend.setLocalRate(RateConverter.RateType.SATOSHI_RATE, localWallet!!.walletKit!!.maximumSpendableValue(selectedUTXOs, address, feeRate).toDouble())
         } else {
-            localRate.setLocalRate(RateConverter.RateType.SATOSHI_RATE, localWallet!!.walletKit!!.maximumSpendableValue(address, feeRate).toDouble())
+            amountToSpend.setLocalRate(RateConverter.RateType.SATOSHI_RATE, localWallet!!.walletKit!!.maximumSpendableValue(address, feeRate).toDouble())
         }
     }
 
@@ -216,7 +309,7 @@ class WithdrawalViewModel(
         if(rate <= 0) {
             feeRate = 1
         } else feeRate = rate
-        _onLocalSpendAmountUpdated.postValue(localRate.getRawRate())
+        _onLocalSpendAmountUpdated.postValue(amountToSpend.getRawRate())
     }
 
     fun getCurrentRateConversion(): RateConverter.RateType {
@@ -237,7 +330,7 @@ class WithdrawalViewModel(
             return false
         }
 
-        val clone = localRate.clone()
+        val clone = amountToSpend.clone()
         clone.setLocalRate(getCurrentRateConversion(), amountStr.toDouble())
 
         if(clone.getRawRate() <= getWalletBalance()) {
