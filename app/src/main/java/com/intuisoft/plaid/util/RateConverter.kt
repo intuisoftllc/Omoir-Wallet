@@ -28,6 +28,11 @@ class RateConverter(
         this.fiatRate = fiatRate
     }
 
+    fun copyRate(converter: RateConverter) {
+        this.localBTC = converter.localBTC
+    }
+
+
     fun setLocalRate(type: RateType, amount: Double) {
         when(type) {
             RateType.BTC_RATE -> {
@@ -47,38 +52,56 @@ class RateConverter(
     fun from(type: RateType, shortenSats: Boolean = true) : Pair<String, String> {
         when(type) {
             RateType.SATOSHI_RATE -> {
-                val postfix = if(localBTC == 1L) {
-                    "Sat"
-                } else "Sats"
-
                 val basic: String
                 val postfixed: String
 
                 if(shortenSats) {
                     basic = SimpleCoinNumberFormat.formatSatsShort(localBTC)
                     postfixed =
-                        SimpleCoinNumberFormat.formatSatsShort(localBTC) + " " + postfix
+                        prefixPostfixValue(SimpleCoinNumberFormat.formatSatsShort(localBTC), type)
                 } else {
-                    basic = SimpleCoinNumberFormat.formatBasic(localBTC.toDouble())!!
+                    basic = SimpleCoinNumberFormat.format(localBTC.toDouble())!!
                     postfixed =
-                        SimpleCoinNumberFormat.format(localBTC.toDouble()) + " " + postfix
+                        prefixPostfixValue(SimpleCoinNumberFormat.format(localBTC.toDouble())!!, type)
                 }
 
                 return Pair(basic, postfixed)
             }
 
             RateType.BTC_RATE -> {
-                val basic = SimpleCoinNumberFormat.formatBasic(getRawBtcRate())!!
-                val postfixed = SimpleCoinNumberFormat.format(getRawBtcRate()) + " BTC"
+                val basic = SimpleCoinNumberFormat.format(getRawBtcRate())!!
+                val postfixed = prefixPostfixValue(SimpleCoinNumberFormat.format(getRawBtcRate())!!, type)
 
                 return Pair(basic, postfixed)
             }
 
             RateType.FIAT_RATE -> {
-                val basic = SimpleCoinNumberFormat.formatBasic(getRawFiatRate())!!
-                val postfixed = "$ " + SimpleCoinNumberFormat.formatCurrency(getRawFiatRate())
+                val basic = SimpleCoinNumberFormat.formatCurrency(getRawFiatRate())!!
+                val postfixed = prefixPostfixValue(SimpleCoinNumberFormat.formatCurrency(getRawFiatRate())!!, type)
 
                 return Pair(basic, postfixed)
+            }
+        }
+    }
+
+    companion object {
+        fun prefixPostfixValue(value: String, type: RateType) : String {
+            when(type) {
+                RateType.SATOSHI_RATE -> {
+                    val postfix = if(value == "1") {
+                        "Sat"
+                    } else "Sats"
+
+                    return "$value $postfix"
+                }
+
+                RateType.BTC_RATE -> {
+                    return "$value BTC"
+                }
+
+                RateType.FIAT_RATE -> {
+                    return "$ $value"
+                }
             }
         }
     }

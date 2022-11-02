@@ -2,6 +2,7 @@ package com.intuisoft.plaid.util
 
 import com.intuisoft.plaid.model.BitcoinDisplayUnit
 import com.intuisoft.plaid.repositories.LocalStoreRepository
+import java.math.RoundingMode
 import java.text.DecimalFormat
 
 object SimpleCoinNumberFormat {
@@ -20,7 +21,7 @@ object SimpleCoinNumberFormat {
             }
 
             BitcoinDisplayUnit.FIAT -> {
-                return converter.from(RateConverter.RateType.FIAT_RATE).second
+                return converter.from(RateConverter.RateType.FIAT_RATE, true).second
             }
         }
     }
@@ -76,17 +77,12 @@ object SimpleCoinNumberFormat {
     }
 
     fun format(value: Double): String? {
-        val df = DecimalFormat("###,###,###,###.########")
+        val df = DecimalFormat("###,###,###,###,###.########")
         return df.format(value)
     }
 
     fun formatCurrency(value: Double): String? {
         val df = DecimalFormat("###,###,###,###.##")
-        return df.format(value)
-    }
-
-    fun formatBasic(value: Double): String? {
-        val df = DecimalFormat("########.########")
         return df.format(value)
     }
 

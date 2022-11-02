@@ -129,8 +129,8 @@ fun Fragment.validateFingerprint(
 
 fun styledSnackBar(root: View, title: String, showTop: Boolean? = null, onDismissed: (() -> Unit)? = null) {
     val snack = Snackbar.make(root, title, Snackbar.LENGTH_LONG)
-        .setBackgroundTint(root.context.getColorFromAttr(com.google.android.material.R.attr.colorSecondary))
-        .setActionTextColor(root.context.getColorFromAttr(com.google.android.material.R.attr.colorOnPrimary))
+        .setBackgroundTint(root.context.getColorFromAttr(com.google.android.material.R.attr.colorPrimary))
+        .setActionTextColor(root.context.getColorFromAttr(com.google.android.material.R.attr.colorOnSecondary))
         .addCallback(object : Snackbar.Callback() {
 
             override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {

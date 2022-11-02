@@ -10,7 +10,31 @@ fun String.sha256(): String {
 
 fun String.shiftRight(char: Char, amount: Int) : String {
     var index = indexOf(char)
-    var str = str.replace(char, "")
-    str = str.replaceRange(index + amount, index + amount, char)
+    var str = this.replace(char.toString(), "")
+    str = str.replaceRange(index + amount, index + amount, char.toString())
     return str
+}
+
+fun String.charsAfter(ch: Char) : Int {
+    var charsFound = 0
+
+    this.forEachIndexed { index, c ->
+        if(c == ch) {
+            return this.length - (index + 1)
+        }
+    }
+
+    return 0
+}
+
+fun String.addChars(ch: Char, count: Int) : String {
+
+    var i = 0
+    var newStr = this
+    while(i < count) {
+        newStr += ch
+        i++
+    }
+
+    return newStr
 }

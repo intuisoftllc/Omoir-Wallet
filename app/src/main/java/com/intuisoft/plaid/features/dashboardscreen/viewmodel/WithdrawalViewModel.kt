@@ -4,6 +4,8 @@ import android.app.Application
 import android.content.Context
 import android.widget.Toast
 import androidx.lifecycle.LiveData
+import com.intuisoft.plaid.PlaidApp
+import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.SingleLiveData
 import com.intuisoft.plaid.androidwrappers.WalletViewModel
 import com.intuisoft.plaid.model.BitcoinDisplayUnit
@@ -13,7 +15,8 @@ import com.intuisoft.plaid.repositories.LocalStoreRepository
 import com.intuisoft.plaid.util.Constants
 import com.intuisoft.plaid.util.NetworkUtil
 import com.intuisoft.plaid.util.RateConverter
-import com.intuisoft.plaid.util.entensions.shiftRight
+import com.intuisoft.plaid.util.entensions.addChars
+import com.intuisoft.plaid.util.entensions.charsAfter
 import com.intuisoft.plaid.walletmanager.AbstractWalletManager
 import io.horizontalsystems.bitcoincore.models.TransactionDataSortType
 import io.horizontalsystems.bitcoincore.storage.FullTransaction
@@ -67,85 +70,232 @@ class WithdrawalViewModel(
     protected val _shouldAdvance = SingleLiveData<Boolean>()
     val shouldAdvance: LiveData<Boolean> = _shouldAdvance
 
-    private var amountToSpend: RateConverter = RateConverter(19000.0)
-    private var selectedUTXOs: MutableList<UnspentOutput> = mutableListOf()
+    protected val _onInputRejected = SingleLiveData<Unit>()
+    val onInputRejected: LiveData<Unit> = _onInputRejected
 
-    fun getLocalSpendAmount() = amountToSpend
+    protected val _onDisplayExplanation = SingleLiveData<String>()
+    val onDisplayExplanation: LiveData<String> = _onDisplayExplanation
+
+    private var amountToSpend: RateConverter = RateConverter(19000.0)
+    private var internalAmountString: String = "0"
+    private var selectedUTXOs: MutableList<UnspentOutput> = mutableListOf()
+    private var overBalanceErrors = 0
+    private var maxDecimalErrors = 0
+    private var decimalPlaceNotAllowedErrors = 0
+    private var decimalPlace = 0
+    private var decimalEntry = false
+
+    private fun countFloatingZeros() : Int {
+
+        var zeros = 0
+        internalAmountString.reversed().forEach {
+            if(it == '0') {
+                zeros++
+            } else return zeros
+        }
+
+        return zeros
+    }
 
     fun displaySpendAmount() {
+        val spend = amountToSpend.from(getDisplayUnit().toRateType(), false)
+
+        if((countFloatingZeros() > 0 && internalAmountString.find { it == '.'} != null)
+            || (decimalEntry && countFloatingZeros() == 0)) {
+            var finalAmount = spend.first
+            if(spend.first.find { it == '.' } == null) {
+                finalAmount += ".".addChars('0', countFloatingZeros())
+            } else {
+                finalAmount += "".addChars('0', countFloatingZeros())
+            }
+
+            _localSpendAmount.postValue(RateConverter.prefixPostfixValue(finalAmount, getDisplayUnit().toRateType()))
+        } else
+            _localSpendAmount.postValue(spend.second!!)
         _shouldAdvance.postValue(amountToSpend.getRawRate() > 0L)
-        _localSpendAmount.postValue(amountToSpend.from(getDisplayUnit().toRateType(), false).second!!)
+    }
+
+    fun getMaxSpend() : RateConverter {
+        val rate = RateConverter(amountToSpend.getFiatRate())
+        rate.setLocalRate(RateConverter.RateType.SATOSHI_RATE, getWalletBalance().toDouble())
+        return rate
     }
 
     fun displayTotalBalance() {
-        val rate = RateConverter(amountToSpend.getFiatRate())
-        rate.setLocalRate(RateConverter.RateType.SATOSHI_RATE, getWalletBalance().toDouble())
-
-        _maximumSpend.postValue(rate.from(getDisplayUnit().toRateType(), false).second!!)
+        _maximumSpend.postValue(getMaxSpend().from(getDisplayUnit().toRateType(), false).second!!)
     }
 
-    fun increaseBy(number: Int) {
-        val tempRate = RateConverter(amountToSpend.getFiatRate())
-        tempRate.setLocalRate(RateConverter.RateType.SATOSHI_RATE, amountToSpend.getRawRate().toDouble())
+    fun spendMaxBalance() {
+        amountToSpend.copyRate(getMaxSpend())
+        setInternalAmount()
+        displaySpendAmount()
+    }
 
-        if(number == 0 && tempRate.getRawRate() == 0L)
-            return
+    fun activateDecimalEntry() {
+        if(!decimalEntry && getDisplayUnit() != BitcoinDisplayUnit.SATS) {
+            decimalEntry = true
+            decimalPlace = 0
+            if(internalAmountString.isEmpty())
+                internalAmountString = "0"
 
-        when(getDisplayUnit()) {
-            BitcoinDisplayUnit.SATS -> {
-                var sats = tempRate.getRawRate()
-                sats = (sats * 10) + number
+            internalAmountString += "."
+        } else if(getDisplayUnit() == BitcoinDisplayUnit.SATS) {
+            _onInputRejected.postValue(Unit)
+            decimalPlaceNotAllowedErrors++
 
-                // todo: check if over balance
-                amountToSpend.setLocalRate(RateConverter.RateType.SATOSHI_RATE, sats.toDouble())
-            }
-
-            BitcoinDisplayUnit.BTC -> {
-                var btc = tempRate.getRawBtcRate()
-
-                if(btc == 0.0) {
-                    btc = 0.00000001 * number
-                } else {
-                    btc = (btc * 10) + (0.00000001 * number)
-                }
-
-                // todo: check if over balance
-                amountToSpend.setLocalRate(RateConverter.RateType.BTC_RATE, btc)
-            }
-
-            BitcoinDisplayUnit.FIAT -> {
-                var fiat = tempRate.getRawFiatRate()
-
-                if(fiat == 0.0) {
-                    fiat = 0.01 * number
-                } else {
-                    var str = "%.2f".format(fiat)
-                    if((str.contains('.') && str.last() != '0') || number == 0) {
-                        str = str.shiftRight('.', 1)
-                    } else if(str.endsWith("00")) {
-                        str = str.dropLast(2)
-                    }
-                    else {
-                        str = str.dropLast(1)
-                    }
-
-                    if(number == 0) {
-                        if(str.last() == '.') {
-                            str += number
-                        }
-                    } else {
-                        str += number
-                    }
-
-                    fiat = str.toDouble()
-                }
-
-                // todo: check if over balance
-                amountToSpend.setLocalRate(RateConverter.RateType.FIAT_RATE, fiat)
+            if(decimalPlaceNotAllowedErrors % errorThreshold == 0) {
+                _onDisplayExplanation.postValue(getApplication<PlaidApp>().getString(R.string.withdraw_error_decimal_not_allowed))
             }
         }
 
         displaySpendAmount()
+    }
+
+    private fun setInternalAmount() {
+        internalAmountString = amountToSpend.from(getDisplayUnit().toRateType(), false).first!!
+
+        when(getDisplayUnit()) {
+            BitcoinDisplayUnit.SATS -> {
+                decimalEntry = false
+            }
+
+            BitcoinDisplayUnit.BTC,
+            BitcoinDisplayUnit.FIAT -> {
+                var charsAfter = internalAmountString.charsAfter('.')
+
+                if(charsAfter > 0 && amountToSpend.getRawRate() != 0L) {
+                    decimalEntry = true
+                    decimalPlace = charsAfter
+                } else decimalEntry = false
+            }
+        }
+    }
+
+    fun changeDisplayUnit(displayUnit: BitcoinDisplayUnit) {
+        setDisplayUnit(displayUnit)
+        setInternalAmount()
+    }
+
+    private fun increaseDecimalBasedNumber(
+        number: Int,
+        maxDecimals: Int
+    ) {
+        if(!decimalEntry) {
+            if(number == 0 && (internalAmountString.isEmpty()
+                        || internalAmountString.replace(",", "").toDouble() == 0.0))
+                return
+
+            internalAmountString += number
+        } else if((number == 0 && decimalPlace < maxDecimals) || decimalPlace < maxDecimals) {
+            decimalPlace++
+            internalAmountString += number
+        } else if(decimalPlace == maxDecimals) {
+            maxDecimalsError()
+        }
+        else if(number != 0 || (number == 0 && amountToSpend.getRawRate() > 0)) {
+            overBalanceError()
+        }
+    }
+
+    fun decreaseBy(singleNum: Boolean) {
+        if(decimalPlace > 0) decimalPlace--
+
+        if(singleNum && internalAmountString.length > 1) {
+            internalAmountString = internalAmountString.dropLast(1)
+        } else {
+            internalAmountString = ""
+        }
+
+        if(internalAmountString.isEmpty()) {
+            amountToSpend.setLocalRate(RateConverter.RateType.SATOSHI_RATE, 0.0)
+        }
+        else {
+            amountToSpend.setLocalRate(getDisplayUnit().toRateType(), internalAmountString.replace(",", "").toDouble())
+        }
+
+        if(decimalPlace == 0 && decimalEntry) {
+            decimalEntry = false
+
+            if(internalAmountString.endsWith("."))
+                internalAmountString = internalAmountString.dropLast(1) // drop the .
+        }
+
+        if(amountToSpend.getRawRate() == 0L && decimalEntry) {
+            decimalEntry = false
+            internalAmountString = ""
+        }
+
+        internalAmountString = internalAmountString.replace(",", "")
+        displaySpendAmount()
+    }
+
+    private fun overBalanceError() {
+        _onInputRejected.postValue(Unit)
+        overBalanceErrors++
+
+        if(overBalanceErrors % errorThreshold == 0) {
+            _onDisplayExplanation.postValue(getApplication<PlaidApp>().getString(R.string.withdraw_error_over_balance))
+        }
+    }
+
+    private fun maxDecimalsError() {
+        _onInputRejected.postValue(Unit)
+        maxDecimalErrors++
+
+        if(maxDecimalErrors % errorThreshold == 0) {
+            _onDisplayExplanation.postValue(getApplication<PlaidApp>().getString(R.string.withdraw_error_max_decimals))
+        }
+    }
+
+    fun increaseBy(number: Int) {
+        if(number == 0 && internalAmountString.isEmpty() && decimalPlace == -1)
+            return
+
+        when(getDisplayUnit()) {
+            BitcoinDisplayUnit.SATS -> {
+                if(number == 0 && (internalAmountString.isEmpty() || (internalAmountString.replace(",", "").toDouble() != 0.0)))
+                    internalAmountString += "0"
+                else if(number != 0)
+                    internalAmountString += number
+            }
+
+            BitcoinDisplayUnit.BTC -> {
+                increaseDecimalBasedNumber(
+                    number = number,
+                    maxDecimals = 8
+                )
+            }
+
+            BitcoinDisplayUnit.FIAT -> {
+                increaseDecimalBasedNumber(
+                    number = number,
+                    maxDecimals = 2
+                )
+            }
+        }
+
+        val tempRate = RateConverter(amountToSpend.getFiatRate())
+        if(internalAmountString.isEmpty()) {
+            tempRate.setLocalRate(RateConverter.RateType.SATOSHI_RATE, 0.0)
+        }
+        else {
+            tempRate.setLocalRate(getDisplayUnit().toRateType(), internalAmountString.replace(",", "").toDouble())
+        }
+
+        if(getDisplayUnit() == BitcoinDisplayUnit.FIAT &&
+            (getMaxSpend().from(RateConverter.RateType.FIAT_RATE).first == tempRate.from(RateConverter.RateType.FIAT_RATE).first)) {
+            // this solves a rounding issue for when a users balance causes entering the full balance to be slightly more than they have
+            spendMaxBalance()
+        } else if(tempRate.getRawRate() <= getMaxSpend().getRawRate()) {
+            amountToSpend.copyRate(tempRate)
+            displaySpendAmount()
+        } else {
+            if(internalAmountString.isNotEmpty()) {
+                internalAmountString = internalAmountString.dropLast(1)
+                if(decimalPlace > 0) decimalPlace--
+            }
+            overBalanceError()
+        }
     }
 
     override fun getWalletBalance() : Long {
@@ -339,5 +489,9 @@ class WithdrawalViewModel(
         } else {
             return false
         }
+    }
+
+    companion object {
+        private const val errorThreshold = 5
     }
 }

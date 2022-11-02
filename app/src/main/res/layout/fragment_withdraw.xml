@@ -40,7 +40,7 @@
 
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/settings_general"
+        android:id="@+id/conversion_selector"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
@@ -95,10 +95,24 @@
     </androidx.cardview.widget.CardView>
 
 
+    <TextView
+        android:id="@+id/send_max"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:text="Spend Max"
+        android:gravity="center"
+        android:background="?android:selectableItemBackground"
+        android:paddingHorizontal="@dimen/horizontal_padding_size"
+        android:layout_marginTop="@dimen/margin_15"
+        style="@style/TextStyle.Semibold.16"
+        android:textColor="?attr/colorPrimaryVariant"
+        app:layout_constraintTop_toBottomOf="@id/conversion_selector"/>
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
         android:paddingStart="48dp"
         android:paddingEnd="48dp"
         android:paddingTop="48dp"
@@ -183,14 +197,15 @@
             android:layout_centerHorizontal="true"
             android:text="0" />
 
-        <ImageView
+        <TextView
             android:id="@+id/dot"
             style="@style/NumberInPasscode"
             android:layout_below="@id/number7"
             android:layout_alignParentLeft="true"
             android:scaleType="centerInside"
-            android:src="@drawable/ic_close"
-            android:textColor="?attr/colorPrimary"/>
+            app:srcCompat="@drawable/ic_check_bold"
+            android:textColor="?attr/colorPrimary"
+            android:text="."/>
 
 
         <ImageView
@@ -214,8 +229,16 @@
             android:layout_alignStart="@id/dot"
             android:layout_alignEnd="@id/back"
             android:layout_below="@id/dot"
-            android:layout_marginTop="@dimen/margin_24"
+            android:layout_marginTop="@dimen/horizontal_padding_size"
             android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/delete_all"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.5"
+                android:layout_marginRight="@dimen/margin_10"
+                android:src="@drawable/ic_close"/>
 
             <com.intuisoft.plaid.androidwrappers.RoundedButtonView
                 android:id="@+id/next"

@@ -1,9 +1,6 @@
 package com.intuisoft.plaid.features.dashboardscreen.ui
 
-import android.Manifest
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,19 +8,12 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.EditText
 import android.widget.TextView
-import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
-import androidx.lifecycle.viewModelScope
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.docformative.docformative.toArrayList
-import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.google.android.material.bottomsheet.BottomSheetBehavior.BottomSheetCallback
-import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_EXPANDED
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.intuisoft.plaid.R
-import com.intuisoft.plaid.activities.MainActivity
 import com.intuisoft.plaid.androidwrappers.*
 import com.intuisoft.plaid.databinding.FragmentWithdrawBinding
 import com.intuisoft.plaid.features.dashboardscreen.viewmodel.WithdrawalViewModel
@@ -33,11 +23,6 @@ import com.intuisoft.plaid.listeners.BarcodeResultListener
 import com.intuisoft.plaid.model.BitcoinDisplayUnit
 import com.intuisoft.plaid.model.FeeType
 import com.intuisoft.plaid.repositories.LocalStoreRepository
-import com.intuisoft.plaid.util.*
-import io.horizontalsystems.bitcoincore.extensions.toHexString
-import io.horizontalsystems.bitcoincore.serializers.TransactionSerializer
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -62,31 +47,6 @@ class WithdrawalFragment : PinProtectedFragment<FragmentWithdrawBinding>(), Barc
     override fun onConfiguration(configuration: FragmentConfiguration?) {
 
         viewModel.showWalletDisplayUnit()
-
-//        binding.amount.addTextChangedListener(object : TextWatcher {
-//            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-//                //here is your code
-//            }
-//
-//            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
-//                // TODO Auto-generated method stub
-//            }
-//
-//            override fun afterTextChanged(s: Editable) {
-//                if(s.isNotEmpty() && !viewModel.validateSendAmount(s.toString())) {
-//                    binding.amount.setText(s.toString().dropLast(1))
-//                    binding.amount.setSelection(binding.amount.text.length)
-//                    onAmountOverBalanceAnimation()
-//
-//                    overBalanceFailures++
-//                    if(overBalanceFailures % 5 == 0 && overBalanceFailures > 1) {
-//                        styledSnackBar(requireView(), "You cannot enter a higher balance than you have, try changing the denomination.", true)
-//                    }
-//                } else if(s.isEmpty()){
-//                    viewModel.setLocalSpendAmount(0.0, viewModel.getCurrentRateConversion())
-//                }
-//            }
-//        })
 
         viewModel.walletDisplayUnit.observe(viewLifecycleOwner, Observer {
             when(it) {
@@ -118,17 +78,17 @@ class WithdrawalFragment : PinProtectedFragment<FragmentWithdrawBinding>(), Barc
         })
 
         binding.btc.onClick {
-            viewModel.setDisplayUnit(BitcoinDisplayUnit.BTC)
+            viewModel.changeDisplayUnit(BitcoinDisplayUnit.BTC)
             viewModel.showWalletDisplayUnit()
         }
 
         binding.sats.onClick {
-            viewModel.setDisplayUnit(BitcoinDisplayUnit.SATS)
+            viewModel.changeDisplayUnit(BitcoinDisplayUnit.SATS)
             viewModel.showWalletDisplayUnit()
         }
 
         binding.currency.onClick {
-            viewModel.setDisplayUnit(BitcoinDisplayUnit.FIAT)
+            viewModel.changeDisplayUnit(BitcoinDisplayUnit.FIAT)
             viewModel.showWalletDisplayUnit()
         }
 
@@ -147,6 +107,7 @@ class WithdrawalFragment : PinProtectedFragment<FragmentWithdrawBinding>(), Barc
         binding.number0.setOnClickListener {
             viewModel.increaseBy(0)
         }
+
         binding.number1.setOnClickListener {
             viewModel.increaseBy(1)
         }
@@ -182,6 +143,31 @@ class WithdrawalFragment : PinProtectedFragment<FragmentWithdrawBinding>(), Barc
         binding.number9.setOnClickListener {
             viewModel.increaseBy(9)
         }
+
+        binding.deleteAll.setOnClickListener {
+            viewModel.decreaseBy(false)
+        }
+
+        binding.back.setOnClickListener {
+            viewModel.decreaseBy(true)
+        }
+
+        binding.dot.setOnClickListener {
+            viewModel.activateDecimalEntry()
+        }
+        
+        viewModel.onInputRejected.observe(viewLifecycleOwner, Observer {
+            onAmountOverBalanceAnimation()
+        })
+
+        viewModel.onDisplayExplanation.observe(viewLifecycleOwner, Observer {
+            styledSnackBar(requireView(), it, true)
+        })
+
+        binding.sendMax.setOnClickListener {
+            viewModel.spendMaxBalance()
+        }
+
 //
 //        binding.address.addTextChangedListener(object : TextWatcher {
 //            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
@@ -551,7 +537,7 @@ class WithdrawalFragment : PinProtectedFragment<FragmentWithdrawBinding>(), Barc
 
     fun onAmountOverBalanceAnimation() {
         val shake: Animation = AnimationUtils.loadAnimation(requireActivity(), R.anim.shake)
-//        binding.amount.startAnimation(shake)
+        binding.amount.startAnimation(shake)
     }
 
 

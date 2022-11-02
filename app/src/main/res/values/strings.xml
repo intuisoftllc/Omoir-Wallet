@@ -146,7 +146,10 @@
 <!--    Export Wallet Strings End -->
 
 <!--    Withdraw Strings -->
-
+    <string name="withdraw_error_decimal_not_allowed">Decimals are not allowed for (SAT) conversion</string>
+    <string name="withdraw_error_over_balance">You cannot enter a higher amount than your total balance</string>
+    <string name="withdraw_error_fee_too_high">Amount + Fee is too high based on the available inputs</string>
+    <string name="withdraw_error_max_decimals">Max amount of decimals reached</string>
 <!--    Withdraw Strings End -->
 
 <!--    Easter Egg Strings -->
@@ -277,7 +280,7 @@
     <string name="wallet_settings_sync_type_subtitle">Change how your wallet syncs with the bitcoin network. Api syncing is significantly faster however if you are looking for a more secure solution.\n\nPlaid Crypto Wallet™ allows you to sync your wallet directly with bitcoin node operators. Please keep in mind that enabling core syncing may be significantly slower.</string>
     <string name="wallet_settings_sync_type_api">Api Based Syncing</string>
     <string name="wallet_settings_sync_type_core">Core Based Syncing</string>
-    <!--    Wallet Settings Strings End -->
+<!--    Wallet Settings Strings End -->
 
 <!--    Coin Control Bottom Sheet Strings -->
     <string name="coin_control_title">Coin Control</string>
@@ -347,7 +350,7 @@
 
 
 <!--  Business Information -->
-    <string name="business_info_email">intuisoftllc@gmail.com</string>
+    <string name="business_info_email">support@plaidcryptowallet.com</string>
     <string name="business_info_support_request_subject">Plaid Crypto Wallet Support</string>
     <string name="business_info_support_request_message">Device: %1$s\nApi Level: %2$s\nOS Version: %3$s\nModel: %4$s\nProduct: %5$s\n----------------------------------------\n\nHello Intuisoft team, I would like to request more information regarding your app.</string>
 <!--  Business Information End -->
