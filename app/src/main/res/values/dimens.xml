@@ -6,11 +6,13 @@
     <dimen name="rounded_edge_radius">16dp</dimen>
     <dimen name="horizontal_padding_size">16dp</dimen>
     <dimen name="horizontal_padding_size_large">40dp</dimen>
+    <dimen name="horizontal_padding_size_xlarge">80dp</dimen>
     <dimen name="card_corner_radius">8dp</dimen>
     <dimen name="parent_bottom_margin">32dp</dimen>
     <dimen name="vertical_bias_25">0.25</dimen>
     <dimen name="vertical_bias_15">0.15</dimen>
     <dimen name="vertical_bias_40">0.4</dimen>
+    <dimen name="vertical_bias_30">0.3</dimen>
     <dimen name="subtitle_icon_size">14dp</dimen>
     <dimen name="card_view_corner_radius">12dp</dimen>
     <dimen name="card_view_elevation">1dp</dimen>

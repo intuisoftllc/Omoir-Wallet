@@ -35,6 +35,7 @@ class DashboardFragment : PinProtectedFragment<FragmentWalletDashboardBinding>()
 
     private val adapter = BasicTransactionAdapter(
         onTransactionSelected = ::onTransactionSelected,
+        getConfirmationsForTransaction = ::getConfirmationsForTransaction,
         localStoreRepository = localStoreRepository
     )
 
@@ -123,6 +124,10 @@ class DashboardFragment : PinProtectedFragment<FragmentWalletDashboardBinding>()
         }
     }
 
+    fun getConfirmationsForTransaction(transaction: TransactionInfo) : Int {
+        return viewModel.getConfirmations(transaction)
+    }
+
     fun onTransactionSelected(transaction: TransactionInfo) {
         var bundle = bundleOf(
             Constants.Navigation.FRAGMENT_CONFIG to FragmentConfiguration(
@@ -130,7 +135,8 @@ class DashboardFragment : PinProtectedFragment<FragmentWalletDashboardBinding>()
                 configData = ConfigTransactionData(
                     payload = Gson().toJson(transaction)
                 )
-            )
+            ),
+            Constants.Navigation.WALLET_UUID_BUNDLE_ID to viewModel.getWalletId()
         )
 
         navigate(

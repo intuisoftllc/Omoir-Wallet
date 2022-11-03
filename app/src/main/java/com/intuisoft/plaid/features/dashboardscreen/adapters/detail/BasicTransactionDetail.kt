@@ -16,6 +16,7 @@ import kotlinx.android.synthetic.main.list_item_basic_transaction_detail.view.*
 class BasicTransactionDetail(
     val transaction: TransactionInfo,
     val onClick: (TransactionInfo) -> Unit,
+    val getConfirmations: (TransactionInfo) -> Int,
     val localStoreRepository: LocalStoreRepository
 ) : ListItem {
     override val layoutId: Int
@@ -31,7 +32,7 @@ class BasicTransactionDetail(
                 onClick(transaction)
             }
 
-            if(transaction.blockHeight == null) {
+            if(getConfirmations(transaction) < localStoreRepository.getMinimumConfirmations()) {
                 if(transaction.status == TransactionStatus.INVALID) {
                     transaction_status_indicator.setImageResource(R.drawable.ic_alert_red)
                 } else {
@@ -54,7 +55,12 @@ class BasicTransactionDetail(
             }
 
             time_passed.text = SimpleTimeFormat.timeToString(transaction.timestamp)
-            transaction_amount.text = SimpleCoinNumberFormat.format(localStoreRepository, transaction.amount)
+
+            if(transaction.type == TransactionType.SentToSelf && transaction.fee != null) {
+                transaction_amount.text = "-${SimpleCoinNumberFormat.format(localStoreRepository, transaction.fee!!)}"
+            } else {
+                transaction_amount.text = SimpleCoinNumberFormat.format(localStoreRepository, transaction.amount)
+            }
         }
     }
 

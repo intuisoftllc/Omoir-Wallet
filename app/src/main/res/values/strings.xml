@@ -149,7 +149,11 @@
     <string name="withdraw_error_decimal_not_allowed">Decimals are not allowed for (SAT) conversion</string>
     <string name="withdraw_error_over_balance">You cannot enter a higher amount than your total balance</string>
     <string name="withdraw_error_fee_too_high">Amount + Fee is too high based on the available inputs</string>
-    <string name="withdraw_error_max_decimals">Max amount of decimals reached</string>
+    <string name="withdraw_error_max_decimals">Max amount of decimal numbers reached</string>
+    <string name="withdraw_error_low_payment_amount">Payment amount too low</string>
+    <string name="withdraw_error_not_enough_funds_with_selected_utxos">Max available spend is too small, try increasing spend via coin control</string>
+    <string name="withdraw_error_not_enough_funds">Max available spend is too small, try adding more funds to wallet</string>
+    <string name="withdraw_error_something_went_wrong">Oops something went wrong! If this issue persists, try restarting the app</string>
 <!--    Withdraw Strings End -->
 
 <!--    Easter Egg Strings -->
@@ -240,6 +244,7 @@
     <string name="transaction_details_item_1">Transaction Type</string>
     <string name="transaction_details_item_3">Transaction Date</string>
     <string name="transaction_details_item_6">Status</string>
+    <string name="transaction_details_item_7">Confirmations</string>
     <string name="transaction_details_view_external">View on blockchain.com</string>
     <string name="transaction_details_type_incoming">Incoming</string>
     <string name="transaction_details_type_outgoing">Outgoing</string>
@@ -271,7 +276,7 @@
     <string name="wallet_settings_delete_wallet_title">Erase Wallet Data</string>
     <string name="wallet_settings_delete_wallet_subtitle">Are you sure you want to erase your wallet? This action is irreversible, please be sure you have backed up your seed phrase and passphrases (if applicable).</string>
     <string name="wallet_settings_passphrase_title">Wallet Passphrase</string>
-    <string name="wallet_settings_passphrase_subtitle">Please Note\n\n1. When a hidden wallet is created it\'s passphrase cannot be changed. If the passphrase is lost, entered in the wrong case, or forgotten, the hidden wallet will be lost forever along with any funds held within.\n\n2. Keep the passphrase fields blank to enter the default wallet.\n\n3. For security reasons, all hidden wallets are stored in memory and will be wiped upon app termination (you will have to re-enter the passphrase to restore the hidden wallet).</string>
+    <string name="wallet_settings_passphrase_subtitle">Please Note\n\n1. When a hidden wallet is created it\'s passphrase cannot be changed. If the passphrase is lost, entered in the wrong case, or forgotten, the hidden wallet will be lost forever along with any funds held within.\n\n2. Keep the passphrase fields blank to enter the default wallet.\n\n3. For security reasons, only transactions related to a hidden wallet are saved. The private keys and passphrase are stored in memory and will be wiped upon app termination (you will have to re-enter the passphrase to restore the hidden wallet).</string>
     <string name="wallet_settings_text_box_passphrase">Passphrase</string>
     <string name="wallet_settings_text_box_reenter_passphrase">Re-Enter Passphrase</string>
     <string name="wallet_settings_passphrase_hint">HODL</string>
@@ -287,6 +292,31 @@
     <string name="coin_control_no_utxos">No UTXO\'s Available For Spend</string>
 <!--    Coin Control Bottom Sheet Strings End -->
 
+
+<!--    Withdraw Confirmation Strings -->
+    <string name="withdraw_confirmation_address_suggestion">bc1qgrkgrv9a43...</string>
+    <string name="withdraw_confirmation_address_text_box_title">What address would you like to send funds to?</string>
+    <string name="withdraw_confirmation_speed_slow">Slow</string>
+    <string name="withdraw_confirmation_speed_med">Med</string>
+    <string name="withdraw_confirmation_speed_fast">Fast</string>
+    <string name="withdraw_confirmation_fee_suggestion">1</string>
+    <string name="withdraw_confirmation_text_box_title_fee">Fee Sat/byte</string>
+    <string name="withdraw_confirmation_advanced_options_address_book">Address Book</string>
+    <string name="withdraw_confirmation_advanced_options_address_book_create">Add Address</string>
+    <string name="withdraw_confirmation_dialog_title">Confirm Transaction</string>
+    <string name="withdraw_confirmation_dialog_full_balance_alert">Note, this will spend your full balance!</string>
+    <string name="withdraw_confirmation_dialog_adjusted_balance">(adjusted to fit fee)</string>
+    <string name="withdraw_confirmation_create_transaction_error">Failed to create transaction, if this issue persists try restarting the app and try again</string>
+    <string name="withdraw_confirmation_dialog_info_raw_tx">Raw Transaction</string>
+    <string name="withdraw_confirmation_dialog_info_tx_id">Transaction ID</string>
+    <string name="withdraw_confirmation_dialog_info_send_to">Sending To</string>
+    <string name="withdraw_confirmation_dialog_info_tx_amount">Amount</string>
+    <string name="withdraw_confirmation_dialog_info_fee">Fee</string>
+    <string name="withdraw_confirmation_dialog_info_fee_rate">Fee Rate</string>
+    <string name="withdraw_confirmation_error_invalid_address">You must enter a valid bitcoin address to send to</string>
+    <string name="withdraw_confirmation_dialog_success_fee">Fee: %1$s</string>
+<!--    Withdraw Confirmation Strings End -->
+
 <!--    Generic Use Strings -->
     <string name="welcome">Welcome</string>
     <string name="name">Name</string>
@@ -300,16 +330,22 @@
     <string name="btc">BTC</string>
     <string name="save">Save</string>
     <string name="confirm">Confirm</string>
+    <string name="scan">Scan</string>
+    <string name="raw_transaction">Raw transaction</string>
     <string name="cancel">Cancel</string>
     <string name="delete">Delete</string>
     <string name="update">Update</string>
     <string name="bitcoin">Bitcoin</string>
+    <string name="no_internet_connection">No Internet Connection!</string>
+    <string name="reconnecting_to_core">Reconnecting to bitcoin core, please wait…</string>
     <string name="advanced_options">Advanced Options</string>
     <string name="create_new_wallet">Create A New Wallet</string>
     <string name="available_balance">Available Balance</string>
     <string name="syncing">Syncing...</string>
     <string name="amount">Amount</string>
     <string name="fee">Fee</string>
+    <string name="send">Send</string>
+    <string name="done">Done</string>
     <string name="share">share</string>
     <string name="main_net">Main Net</string>
     <string name="test_net">Test Net</string>
@@ -331,6 +367,7 @@
     <string name="address_book_fragment_label">Address Book</string>
     <string name="manage_wallets_fragment_label">Manage Wallets</string>
     <string name="withdraw_fragment_label">Send BTC</string>
+    <string name="withdraw_confirmation_fragment_label">Withdraw</string>
     <string name="transaction_details_fragment_label">Transaction Details</string>
     <string name="meme_fragment_label">You Have Unleashed The Memes!</string>
     <string name="credits_fragment_label">Credits</string>

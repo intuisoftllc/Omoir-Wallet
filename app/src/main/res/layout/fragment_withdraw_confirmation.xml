@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/address_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginBottom="@dimen/horizontal_padding_size_large"
+        app:cardCornerRadius="@dimen/card_corner_radius"
+        android:layout_marginHorizontal="@dimen/margin_20"
+        app:layout_constraintVertical_bias="@dimen/vertical_bias_40">
+
+        <EditText
+            android:id="@+id/address"
+            style="@style/TextStyle.Medium.14"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:hint="@string/withdraw_confirmation_address_suggestion"
+            android:maxLines="1"
+            android:padding="@dimen/horizontal_padding_size"
+            android:inputType="text"
+            android:imeOptions="actionDone"
+            android:textColorHint="@color/color_disabled"
+            android:textSize="14sp"
+            tools:ignore="TextContrastCheck,TouchTargetSizeCheck" />
+    </androidx.cardview.widget.CardView>
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/withdraw_confirmation_address_text_box_title"
+        style="@style/TextStyle.Semibold.12"
+        app:layout_constraintStart_toStartOf="@id/address_container"
+        app:layout_constraintBottom_toTopOf="@id/address_container"
+        android:layout_marginBottom="@dimen/horizontal_padding_size"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginHorizontal="@dimen/horizontal_padding_size_large"
+        app:layout_constraintTop_toBottomOf="@id/address_container"
+        app:layout_constraintVertical_bias="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/advanced_options"
+            android:drawableRight="@drawable/ic_chevron_right"
+            android:drawablePadding="@dimen/margin_10"
+            android:background="?android:selectableItemBackground"
+            android:id="@+id/advancedOptions"
+            android:layout_gravity="center"
+            style="@style/TextStyle.Semibold.16"
+            android:textStyle="bold"
+            android:padding="@dimen/margin_10"
+            android:layout_marginBottom="@dimen/horizontal_padding_size"
+            android:textColor="?attr/colorPrimary"
+            android:gravity="center"/>
+
+        <com.intuisoft.plaid.androidwrappers.RoundedButtonView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:button_style="rounded"
+            android:id="@+id/confirm"
+            app:btn_text="@string/confirm"
+            app:text_position="center"/>
+
+        <com.intuisoft.plaid.androidwrappers.RoundedButtonView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:button_style="outlined"
+            android:id="@+id/scan"
+            android:layout_marginTop="@dimen/horizontal_padding_size"
+            android:layout_marginBottom="@dimen/margin_35"
+            app:btn_text="@string/scan"
+            app:text_position="center"/>
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

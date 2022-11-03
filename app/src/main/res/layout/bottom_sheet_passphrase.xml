@@ -60,20 +60,42 @@
                     android:layout_marginHorizontal="@dimen/margin_20"
                     app:layout_constraintVertical_bias="@dimen/vertical_bias_15">
 
-                    <EditText
-                        android:id="@+id/passphrase"
-                        style="@style/TextStyle.Medium.14"
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@color/white"
-                        android:hint="@string/wallet_settings_passphrase_hint"
-                        android:maxLength="50"
-                        android:maxLines="1"
-                        android:padding="@dimen/horizontal_padding_size"
-                        android:inputType="text"
-                        android:textColorHint="@color/color_disabled"
-                        android:textSize="14sp"
-                        tools:ignore="TextContrastCheck,TouchTargetSizeCheck" />
+                        android:layout_height="match_parent">
+                        <EditText
+                            android:id="@+id/passphrase"
+                            style="@style/TextStyle.Medium.14"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:background="@color/white"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintEnd_toStartOf="@+id/showHide"
+                            android:layout_marginRight="@dimen/margin_8"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            android:hint="@string/wallet_settings_passphrase_hint"
+                            android:maxLength="50"
+                            android:maxLines="1"
+                            android:padding="@dimen/horizontal_padding_size"
+                            android:inputType="text"
+                            android:imeOptions="actionNext"
+                            android:textColorHint="@color/color_disabled"
+                            android:textSize="14sp"
+                            tools:ignore="TextContrastCheck,TouchTargetSizeCheck" />
+
+                        <ImageView
+                            android:id="@+id/showHide"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/ic_eye_open"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            android:layout_marginRight="@dimen/horizontal_padding_size"/>
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
                 </androidx.cardview.widget.CardView>
 
                 <TextView
@@ -97,7 +119,7 @@
 
 
                 <androidx.cardview.widget.CardView
-                    android:id="@+id/address_container"
+                    android:id="@+id/confirm_passphrase_container"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:layout_constraintStart_toStartOf="parent"
@@ -121,6 +143,7 @@
                         android:maxLines="1"
                         android:padding="@dimen/horizontal_padding_size"
                         android:inputType="text"
+                        android:imeOptions="actionDone"
                         android:textColorHint="@color/color_disabled"
                         android:textSize="14sp"
                         tools:ignore="TextContrastCheck,TouchTargetSizeCheck" />
@@ -131,8 +154,8 @@
                     android:layout_height="wrap_content"
                     android:text="@string/wallet_settings_text_box_reenter_passphrase"
                     style="@style/TextStyle.Semibold.12"
-                    app:layout_constraintStart_toStartOf="@id/address_container"
-                    app:layout_constraintBottom_toTopOf="@id/address_container"
+                    app:layout_constraintStart_toStartOf="@id/confirm_passphrase_container"
+                    app:layout_constraintBottom_toTopOf="@id/confirm_passphrase_container"
                     android:layout_marginBottom="@dimen/horizontal_padding_size"/>
 
                 <TextView
@@ -141,11 +164,11 @@
                     android:layout_height="wrap_content"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    tools:text="@string/save_address_validation_error_already_exists"
+                    tools:text="@string/wallet_settings_passphrase_error"
                     android:gravity="center"
                     android:visibility="gone"
                     style="@style/TextStyle.Regular.14"
-                    app:layout_constraintTop_toBottomOf="@id/address_container"
+                    app:layout_constraintTop_toBottomOf="@id/confirm_passphrase_container"
                     android:layout_marginTop="@dimen/margin_8"
                     android:textColor="@color/text_red"/>
 
@@ -154,29 +177,31 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     app:text_position="center"
-                    app:btn_text="@string/cancel"
-                    app:button_style="transparent"
-                    android:id="@+id/cancel"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    android:layout_marginBottom="@dimen/margin_4"
-                    android:layout_marginHorizontal="@dimen/horizontal_padding_size_large"/>
-
-                <com.intuisoft.plaid.androidwrappers.RoundedButtonView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    app:text_position="center"
                     app:btn_text="@string/confirm"
                     app:button_style="rounded"
                     android:id="@+id/save"
-                    android:layout_marginTop="@dimen/margin_20"
-                    app:layout_constraintTop_toBottomOf="@id/address_container"
+                    app:layout_constraintTop_toBottomOf="@id/validation_error"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintBottom_toTopOf="@id/cancel"
                     android:layout_marginBottom="@dimen/margin_8"
+                    android:layout_marginTop="@dimen/margin_28"
                     android:layout_marginHorizontal="@dimen/horizontal_padding_size_large"/>
+
+            <com.intuisoft.plaid.androidwrappers.RoundedButtonView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:text_position="center"
+                app:btn_text="@string/cancel"
+                app:button_style="transparent"
+                android:id="@+id/cancel"
+                android:layout_marginTop="@dimen/margin_8"
+                android:layout_marginBottom="@dimen/horizontal_padding_size"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/save"
+                app:layout_constraintVertical_bias="0"
+                android:layout_marginHorizontal="@dimen/horizontal_padding_size_large"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>

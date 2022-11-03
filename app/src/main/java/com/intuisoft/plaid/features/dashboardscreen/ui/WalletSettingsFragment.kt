@@ -2,11 +2,16 @@ package com.intuisoft.plaid.features.dashboardscreen.ui
 
 import android.app.ProgressDialog
 import android.os.Bundle
+import android.text.InputType
+import android.text.method.HideReturnsTransformationMethod
+import android.text.method.PasswordTransformationMethod
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
@@ -230,6 +235,12 @@ class WalletSettingsFragment : PinProtectedFragment<FragmentWalletSettingsBindin
         val passphrase = bottomSheetDialog.findViewById<EditText>(R.id.passphrase)!!
         val confirmPassphrase = bottomSheetDialog.findViewById<EditText>(R.id.confirm_passphrase)!!
         val validationError = bottomSheetDialog.findViewById<TextView>(R.id.validation_error)!!
+        val showHide = bottomSheetDialog.findViewById<ImageView>(R.id.showHide)!!
+
+        var showPassphrase = false
+        showHide.setImageResource(R.drawable.ic_eye_closed)
+        passphrase.transformationMethod = PasswordTransformationMethod.getInstance()
+        confirmPassphrase.transformationMethod = PasswordTransformationMethod.getInstance()
 
         val originalPassphrase = viewModel.getWalletPassphrase()
         if(originalPassphrase.isNotEmpty()) {
@@ -249,37 +260,23 @@ class WalletSettingsFragment : PinProtectedFragment<FragmentWalletSettingsBindin
             validationError.isVisible = false
         }
 
-        passphrase.setOnKeyListener(object : View.OnKeyListener {
-            override fun onKey(v: View?, keyCode: Int, event: KeyEvent): Boolean {
-                // if the event is a key down event on the enter button
-                if (event.action == KeyEvent.ACTION_DOWN &&
-                    keyCode == KeyEvent.KEYCODE_ENTER
-                ) {
-                    requireActivity().hideSoftKeyboard()
-                    passphrase.clearFocus()
-                    passphrase.isCursorVisible = false
+        showHide.setOnClickListener {
+            showPassphrase = !showPassphrase
 
-                    return true
-                }
-                return false
+            if(showPassphrase) {
+                showHide.setImageResource(R.drawable.ic_eye_open)
+                passphrase.transformationMethod = null
+                confirmPassphrase.transformationMethod = null
+                passphrase.setSelection(passphrase.length())
+                confirmPassphrase.setSelection(confirmPassphrase.length())
+            } else {
+                showHide.setImageResource(R.drawable.ic_eye_closed)
+                passphrase.transformationMethod = PasswordTransformationMethod.getInstance()
+                confirmPassphrase.transformationMethod = PasswordTransformationMethod.getInstance()
+                passphrase.setSelection(passphrase.length())
+                confirmPassphrase.setSelection(confirmPassphrase.length())
             }
-        })
-
-        confirmPassphrase.setOnKeyListener(object : View.OnKeyListener {
-            override fun onKey(v: View?, keyCode: Int, event: KeyEvent): Boolean {
-                // if the event is a key down event on the enter button
-                if (event.action == KeyEvent.ACTION_DOWN &&
-                    keyCode == KeyEvent.KEYCODE_ENTER
-                ) {
-                    requireActivity().hideSoftKeyboard()
-                    confirmPassphrase.clearFocus()
-                    confirmPassphrase.isCursorVisible = false
-
-                    return true
-                }
-                return false
-            }
-        })
+        }
 
         save.onClick {
             if(passphrase.text.toString() == confirmPassphrase.text.toString()) {

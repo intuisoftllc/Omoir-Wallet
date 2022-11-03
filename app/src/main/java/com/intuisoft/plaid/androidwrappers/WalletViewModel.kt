@@ -82,6 +82,17 @@ open class WalletViewModel(
         walletManager.updateWalletSyncMode(localWallet!!, apiSync)
     }
 
+    fun getConfirmations(transaction: TransactionInfo) : Int {
+        val currentBlock = getCurrentBlock()
+
+        if(currentBlock == 0 || transaction.blockHeight == null
+            || (currentBlock - transaction.blockHeight!!) < 0) {
+            return 0
+        } else return (currentBlock - transaction.blockHeight!!) + 1
+    }
+
+    fun getCurrentBlock() = localWallet!!.walletKit!!.lastBlockInfo?.height ?: 0
+
     fun hasApiSyncMode() = walletManager.findStoredWallet(localWallet!!.uuid)!!.apiSyncMode
 
     fun calculateFee(sats: Long, feeRate: Int, address: String?, retry: Boolean = true) : Long {

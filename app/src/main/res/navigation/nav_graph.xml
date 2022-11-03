@@ -249,6 +249,14 @@
     </fragment>
 
     <fragment
+        android:id="@+id/withdrawConfirmtionFragment"
+        android:name="com.intuisoft.plaid.features.dashboardscreen.ui.WithdrawConfirmationFragment"
+        android:label="@string/withdraw_confirmation_fragment_label"
+        tools:layout="@layout/fragment_withdraw_confirmation">
+
+    </fragment>
+
+    <fragment
         android:id="@+id/walletDashboardFragment"
         android:name="com.intuisoft.plaid.features.dashboardscreen.ui.DashboardFragment"
         android:label="@string/wallet_dashboard_fragment_label"

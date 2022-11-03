@@ -15,6 +15,7 @@ import com.intuisoft.plaid.features.dashboardscreen.viewmodel.WalletExportViewMo
 import com.intuisoft.plaid.features.pin.ui.PinProtectedFragment
 import com.intuisoft.plaid.repositories.LocalStoreRepository
 import com.intuisoft.plaid.util.Constants
+import com.intuisoft.plaid.util.Plural
 import com.intuisoft.plaid.util.SimpleCoinNumberFormat
 import com.intuisoft.plaid.util.SimpleTimeFormat.getDateByLocale
 import com.intuisoft.plaid.util.fragmentconfig.ConfigTransactionData
@@ -27,7 +28,7 @@ import java.util.*
 
 
 class TransactionDetailsFragment : PinProtectedFragment<FragmentTransactionDetailsBinding>() {
-    private val viewModel: WalletExportViewModel by viewModel()
+    private val viewModel: WalletViewModel by viewModel()
     private val localStoreRepository: LocalStoreRepository by inject()
 
     override fun onCreateView(
@@ -79,6 +80,7 @@ class TransactionDetailsFragment : PinProtectedFragment<FragmentTransactionDetai
                     }
 
                     binding.transactionId.setSubTitleText(transaction.transactionHash)
+                    binding.transactionConfirmations.setSubTitleText(Plural.of("Confirmation", viewModel.getConfirmations(transaction).toLong(), "s"))
 
                     binding.transactionId.onClick {
                         requireContext().copyToClipboard(transaction.transactionHash, "transactionId")
@@ -94,7 +96,11 @@ class TransactionDetailsFragment : PinProtectedFragment<FragmentTransactionDetai
                             }
                         }
                         else -> {
-                            binding.transactionStatus.setSubTitleText(getString(R.string.transaction_details_status_processed))
+                            if(viewModel.getConfirmations(transaction) >= localStoreRepository.getMinimumConfirmations()) {
+                                binding.transactionStatus.setSubTitleText(getString(R.string.transaction_details_status_processed))
+                            } else {
+                                binding.transactionStatus.setSubTitleText(getString(R.string.transaction_details_status_pending))
+                            }
                         }
                     }
 

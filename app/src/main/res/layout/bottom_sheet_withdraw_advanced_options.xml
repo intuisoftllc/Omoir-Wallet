@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:paddingHorizontal="@dimen/margin_20"
+    android:paddingTop="@dimen/margin_28"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <TextView
+        android:id="@+id/bottom_sheet_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/advanced_options"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        style="@style/TextStyle.Semibold.24"
+        android:textStyle="bold"
+        android:textColor="?attr/colorPrimaryVariant"/>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/fee_speed_selector"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/bottom_sheet_title"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginBottom="@dimen/horizontal_padding_size"
+        app:cardCornerRadius="24dp"
+        android:layout_marginTop="@dimen/margin_24"
+        android:layout_marginHorizontal="@dimen/margin_20"
+        app:layout_constraintHorizontal_bias="0">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="@dimen/margin_3">
+
+            <com.intuisoft.plaid.androidwrappers.RoundedButtonView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:text_position="center"
+                app:btn_text="@string/withdraw_confirmation_speed_slow"
+                app:button_style="pill"
+                android:id="@+id/slow"
+                android:layout_weight="1"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+            <com.intuisoft.plaid.androidwrappers.RoundedButtonView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:text_position="center"
+                app:btn_text="@string/withdraw_confirmation_speed_med"
+                app:button_style="transparent"
+                android:id="@+id/med"
+                android:layout_weight="1"
+                android:layout_marginHorizontal="@dimen/margin_10"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+            <com.intuisoft.plaid.androidwrappers.RoundedButtonView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:text_position="center"
+                app:btn_text="@string/withdraw_confirmation_speed_fast"
+                app:button_style="transparent"
+                android:id="@+id/fast"
+                android:layout_weight="1"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/fee_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/fee_speed_selector"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="@dimen/margin_64"
+        android:layout_marginBottom="@dimen/horizontal_padding_size_large"
+        app:cardCornerRadius="@dimen/card_corner_radius"
+        android:layout_marginHorizontal="@dimen/margin_20">
+
+        <EditText
+            android:id="@+id/fee_rate"
+            style="@style/TextStyle.Medium.14"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:hint="@string/withdraw_confirmation_fee_suggestion"
+            android:maxLines="1"
+            android:maxLength="9"
+            android:padding="@dimen/horizontal_padding_size"
+            android:inputType="number"
+            android:imeOptions="actionDone"
+            android:textColorHint="@color/color_disabled"
+            android:textSize="14sp"
+            tools:ignore="TextContrastCheck,TouchTargetSizeCheck" />
+    </androidx.cardview.widget.CardView>
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/withdraw_confirmation_text_box_title_fee"
+        style="@style/TextStyle.Semibold.12"
+        app:layout_constraintStart_toStartOf="@id/fee_container"
+        app:layout_constraintBottom_toTopOf="@id/fee_container"
+        android:layout_marginBottom="@dimen/horizontal_padding_size"/>
+
+    <com.intuisoft.plaid.androidwrappers.SettingsItemView
+        android:id="@+id/address_book"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:settings_variant="card"
+        app:show_chevron="true"
+        android:layout_marginHorizontal="@dimen/horizontal_padding_size"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/fee_container"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginTop="@dimen/horizontal_padding_size"
+        android:layout_marginBottom="@dimen/horizontal_padding_size"
+        app:item_title="@string/withdraw_confirmation_advanced_options_address_book"
+        app:subtitle_text_color="@color/brand_color_dark_blue"
+        app:item_subtitle="5 Addresses"/>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

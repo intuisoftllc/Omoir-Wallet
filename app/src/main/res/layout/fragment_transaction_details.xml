@@ -101,8 +101,20 @@
                 app:show_switch="false"
                 android:clickable="true"
                 android:paddingVertical="@dimen/margin_8"
-                android:id="@+id/transactionId"
+                android:id="@+id/transaction_id"
                 app:show_copy="true"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0"
+                android:focusable="true" />
+
+            <com.intuisoft.plaid.androidwrappers.SettingsItemView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:item_title="@string/transaction_details_item_7"
+                app:show_switch="false"
+                android:clickable="true"
+                android:paddingVertical="@dimen/margin_8"
+                android:id="@+id/transactionConfirmations"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0"
                 android:focusable="true" />

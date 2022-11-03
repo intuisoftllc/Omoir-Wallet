@@ -87,5 +87,4 @@
         android:fontFamily="@font/montserrat_regular"
         app:cornerRadius="25dp" />
 
-
 </LinearLayout>
