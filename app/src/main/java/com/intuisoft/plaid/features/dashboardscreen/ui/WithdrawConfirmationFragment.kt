@@ -35,6 +35,7 @@ import com.intuisoft.plaid.features.dashboardscreen.adapters.AddressBookAdapter
 import com.intuisoft.plaid.features.dashboardscreen.viewmodel.WithdrawConfirmationViewModel
 import com.intuisoft.plaid.features.pin.ui.PinProtectedFragment
 import com.intuisoft.plaid.features.settings.ui.AddressBookFragment
+import com.intuisoft.plaid.features.settings.ui.SettingsFragment
 import com.intuisoft.plaid.features.settings.viewmodel.AddressBookViewModel
 import com.intuisoft.plaid.listeners.BarcodeResultListener
 import com.intuisoft.plaid.model.FeeType

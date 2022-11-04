@@ -6,6 +6,7 @@ import com.intuisoft.plaid.androidwrappers.SingleLiveData
 import com.intuisoft.plaid.local.WipeDataListener
 import com.intuisoft.plaid.model.LocalWalletModel
 import io.horizontalsystems.bitcoinkit.BitcoinKit
+import io.horizontalsystems.bitcoinkit.MainNet
 import io.horizontalsystems.hdwalletkit.HDWallet
 
 abstract class AbstractWalletManager {
@@ -35,7 +36,8 @@ abstract class AbstractWalletManager {
     abstract fun findLocalWallet(uuid: String): LocalWalletModel?
     abstract fun findStoredWallet(uuid: String): WalletIdentifier?
     abstract fun createWallet(name: String, seed: List<String>, bip: HDWallet.Purpose, testnetWallet: Boolean): String
+    abstract fun createWallet(name: String, pubKey: String): String
     abstract fun setWalletPassphrase(localWallet: LocalWalletModel, passphrase: String)
     abstract fun getWalletPassphrase(localWallet: LocalWalletModel): String
-    abstract fun getBaseWallet(): BitcoinKit
+    abstract fun getBaseWallet(mainNet: Boolean = true): BitcoinKit
 }

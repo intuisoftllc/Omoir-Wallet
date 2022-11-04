@@ -90,7 +90,7 @@ class Constants {
         const val TEST_WALLET_1 = "yard impulse luxury drive today throw farm pepper survey wreck glass federal"
         const val TEST_WALLET_2 = "wrong cousin spell stadium snake enact author piano venue outer question chair"
         const val NO_INTERNET = "No Internet Connection!"
-        const val BASE_WALLET = "BASE_WALLET"
+        const val BASE_WALLET = "BASE_WALLET_ID"
     }
 
     object ServerStrings {

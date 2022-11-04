@@ -139,6 +139,9 @@
 <!--    Wallet Dashboard Strings -->
     <string name="wallet_dashboard_no_transactions">No Transactions Yet</string>
     <string name="wallet_dashboard_transactions_title">Transactions</string>
+    <string name="wallet_dashboard_state_testnet">Testnet Wallet</string>
+    <string name="wallet_dashboard_state_testnet_read_only">Testnet, Watch-Only</string>
+    <string name="wallet_dashboard_state_mainnet_read_only">Watch-Only Wallet</string>
 <!--    Wallet Dashboard Strings End -->
 
 <!--    Export Wallet Strings -->
@@ -147,13 +150,18 @@
 
 <!--    Withdraw Strings -->
     <string name="withdraw_error_decimal_not_allowed">Decimals are not allowed for (SAT) conversion</string>
-    <string name="withdraw_error_over_balance">You cannot enter a higher amount than your total balance</string>
+    <string name="withdraw_error_over_balance">You cannot enter a higher amount than your available balance</string>
     <string name="withdraw_error_fee_too_high">Amount + Fee is too high based on the available inputs</string>
     <string name="withdraw_error_max_decimals">Max amount of decimal numbers reached</string>
     <string name="withdraw_error_low_payment_amount">Payment amount too low</string>
     <string name="withdraw_error_not_enough_funds_with_selected_utxos">Max available spend is too small, try increasing spend via coin control</string>
     <string name="withdraw_error_not_enough_funds">Max available spend is too small, try adding more funds to wallet</string>
     <string name="withdraw_error_something_went_wrong">Oops something went wrong! If this issue persists, try restarting the app</string>
+    <string name="withdraw_selected_utxo_amount">%1$s (%2$s Coins Selected)</string>
+    <string name="withdraw_selected_single_utxo_amount">%1$s (1 Coin Selected)</string>
+    <string name="withdraw_err_cross_network_send_title">Cross Network Payment</string>
+    <string name="withdraw_err_cross_network_send_main_net">It looks like you may be attempting to send from a main-net (real bitcoin) address to a test-net (worthless bitcoin only used for testing) address.</string>
+    <string name="withdraw_err_cross_network_send_test_net">It looks like you may be attempting to send from a test-net (worthless bitcoin only used for testing) address to a main-net (real bitcoin) address.</string>
 <!--    Withdraw Strings End -->
 
 <!--    Easter Egg Strings -->
@@ -217,7 +225,7 @@
 <!--    Credits Strings End -->
 
 <!--    Create Wallet Strings -->
-    <string name="create_wallet_advanced_options_disclaimer">This above settings allow you to change specific properties of your wallet.\n\nIf you do not know what they mean, it\'s best to leave them unchanged.</string>
+    <string name="create_wallet_advanced_options_disclaimer">This above settings allow you to change specific properties of your wallet. These settings do not apply when importing a wallet via public key.\n\nIf you do not know what they mean, it\'s best to leave them unchanged.</string>
     <string name="create_wallet_advanced_options_title_1">Bitcoin Network</string>
     <string name="create_wallet_advanced_options_title_2">Wallet Configuration</string>
     <string name="create_wallet_advanced_options_entropy_strength">Entropy Strength</string>
@@ -292,7 +300,6 @@
     <string name="coin_control_no_utxos">No UTXO\'s Available For Spend</string>
 <!--    Coin Control Bottom Sheet Strings End -->
 
-
 <!--    Withdraw Confirmation Strings -->
     <string name="withdraw_confirmation_address_suggestion">bc1qgrkgrv9a43...</string>
     <string name="withdraw_confirmation_address_text_box_title">What address would you like to send funds to?</string>
@@ -314,8 +321,33 @@
     <string name="withdraw_confirmation_dialog_info_fee">Fee</string>
     <string name="withdraw_confirmation_dialog_info_fee_rate">Fee Rate</string>
     <string name="withdraw_confirmation_error_invalid_address">You must enter a valid bitcoin address to send to</string>
+    <string name="withdraw_confirmation_error_invalid_address_test_net">Can\'t send testnet coins to the main chain, try checking your address and try again</string>
+    <string name="withdraw_confirmation_error_invalid_address_main_net">Can\'t send bitcoin to the testnet network from the main chain, try checking your address and try again</string>
     <string name="withdraw_confirmation_dialog_success_fee">Fee: %1$s</string>
 <!--    Withdraw Confirmation Strings End -->
+
+<!--    Import Wallet Strings -->
+    <string name="import_wallet_description">How would you like to\nimport your wallet?</string>
+    <string name="import_wallet_option_1">Recovery Phrase Import</string>
+    <string name="import_wallet_option_2">Public Key Import</string>
+    <string name="import_wallet_option_2_description">Public key import allows you to create a “watch-only” wallet where you can observe all incoming and outgoing transactions but cannot access the funds directly.\n\nEnter your public key below to create a “watch-only” wallet (usually  zpub, xpub, or ypub).</string>
+    <string name="import_wallet_public_key_text_box_title">Public Key</string>
+    <string name="import_wallet_public_key_suggestion">xpub6qR26r18Vj3QtUJrb...</string>
+<!--    Import Wallet Strings End -->
+
+<!--    Import Public Key Strings -->
+    <string name="import_public_key_error_invalid_address">You must enter a valid bitcoin address to import</string>
+<!--    Import Public Key Strings End -->
+
+<!--    Import Recovery Phrase Strings -->
+    <string name="import_recovery_phrase_title">Recovery Phrase Import</string>
+    <string name="import_recovery_phrase_subtitle">Enter your recovery phrase (12–24 words) in the correct order. If your recovery phrase is invalid, check the order of your words and try again.</string>
+    <string name="import_recovery_phrase_remove_word">Remove Last Word</string>
+    <string name="import_recovery_phrase_word_suggestion">biology</string>
+    <string name="import_recovery_phrase_error_invalid_seed_word">This is not a valid seed word, please refer to the word suggesting</string>
+    <string name="import_recovery_phrase_error_max_words">You have reached the maximum amount of words you can enter</string>
+    <string name="import_recovery_phrase_error_invalid_seed_phrase">The entered seed phrase is invalid, please check the order of the words and try again</string>
+<!--    Import Recovery Phrase Strings End -->
 
 <!--    Generic Use Strings -->
     <string name="welcome">Welcome</string>
@@ -331,6 +363,7 @@
     <string name="save">Save</string>
     <string name="confirm">Confirm</string>
     <string name="scan">Scan</string>
+    <string name="import_word">Import</string>
     <string name="raw_transaction">Raw transaction</string>
     <string name="cancel">Cancel</string>
     <string name="delete">Delete</string>
@@ -345,8 +378,10 @@
     <string name="amount">Amount</string>
     <string name="fee">Fee</string>
     <string name="send">Send</string>
+    <string name="proceed_anyway">Proceed Anyway</string>
     <string name="done">Done</string>
     <string name="share">share</string>
+    <string name="import_wallet">Import Wallet</string>
     <string name="main_net">Main Net</string>
     <string name="test_net">Test Net</string>
     <string name="not_applicable">N/A</string>
@@ -376,6 +411,9 @@
     <string name="seed_phrase_fragment_label">Your Seed Phrase</string>
     <string name="seed_phrase_basic_fragment_label">Seed Phrase</string>
     <string name="name_wallet_fragment_label">Name Your Wallet</string>
+    <string name="import_wallet_fragment_label">Import Wallet</string>
+    <string name="public_key_import_fragment_label">Public Key Import</string>
+    <string name="recovery_phrase_import_fragment_label">Recovery Phrase Import</string>
     <string name="wallet_created_fragment_label">Wallet Created</string>
     <string name="about_us_fragment_label">About Us</string>
     <string name="pin_fragment_label">Pin</string>

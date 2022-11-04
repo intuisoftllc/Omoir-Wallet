@@ -55,18 +55,17 @@ class BasicTransactionDetail(
             }
 
             time_passed.text = SimpleTimeFormat.timeToString(transaction.timestamp)
-
-            if(transaction.type == TransactionType.SentToSelf && transaction.fee != null) {
-                transaction_amount.text = "-${SimpleCoinNumberFormat.format(localStoreRepository, transaction.fee!!)}"
-            } else {
-                transaction_amount.text = SimpleCoinNumberFormat.format(localStoreRepository, transaction.amount)
-            }
+            onConversionUpdated()
         }
     }
 
     fun onConversionUpdated() {
         view?.apply {
-            transaction_amount.text = SimpleCoinNumberFormat.format(localStoreRepository, transaction.amount)
+            if(transaction.type == TransactionType.SentToSelf && transaction.fee != null) {
+                transaction_amount.text = "-${SimpleCoinNumberFormat.format(localStoreRepository, transaction.fee!!)}"
+            } else {
+                transaction_amount.text = SimpleCoinNumberFormat.format(localStoreRepository, transaction.amount)
+            }
         }
     }
 }

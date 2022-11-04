@@ -22,6 +22,9 @@ import com.intuisoft.plaid.walletmanager.AbstractWalletManager
 import io.horizontalsystems.bitcoincore.models.TransactionDataSortType
 import io.horizontalsystems.bitcoincore.storage.FullTransaction
 import io.horizontalsystems.bitcoincore.storage.UnspentOutput
+import io.horizontalsystems.bitcoinkit.BitcoinKit
+import io.horizontalsystems.hdwalletkit.HDExtendedKey
+import io.horizontalsystems.hdwalletkit.HDExtendedKeyVersion
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -128,7 +131,13 @@ class WithdrawConfirmationViewModel(
         invalidAddressErrors++
 
         if(invalidAddressErrors % errorThreshold == 0) {
-            _onDisplayExplanation.postValue(getApplication<PlaidApp>().getString(R.string.withdraw_confirmation_error_invalid_address))
+            if(localWallet!!.testNetWallet && walletManager.getBaseWallet(mainNet = true).isAddressValid(address ?: "")) {
+                _onDisplayExplanation.postValue(getApplication<PlaidApp>().getString(R.string.withdraw_confirmation_error_invalid_address_test_net))
+            } else if(!localWallet!!.testNetWallet && walletManager.getBaseWallet(mainNet = false).isAddressValid(address ?: "")) {
+                _onDisplayExplanation.postValue(getApplication<PlaidApp>().getString(R.string.withdraw_confirmation_error_invalid_address_main_net))
+            } else {
+                _onDisplayExplanation.postValue(getApplication<PlaidApp>().getString(R.string.withdraw_confirmation_error_invalid_address))
+            }
         }
     }
 
@@ -140,8 +149,8 @@ class WithdrawConfirmationViewModel(
         else {
             val result = getTotalFee()
 
-            when(result) {
-                -1L  -> { // not enough funds
+            when (result) {
+                -1L -> { // not enough funds
                     _onDisplayExplanation.postValue(getApplication<PlaidApp>().getString(R.string.withdraw_error_fee_too_high))
                 }
 

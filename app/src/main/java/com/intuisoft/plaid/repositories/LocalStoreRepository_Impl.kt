@@ -83,6 +83,14 @@ class LocalStoreRepository_Impl(
         userPreferences.savedAddressInfo = SavedAddressInfo(addressess)
     }
 
+    override fun saveBaseWalletSeed(words: List<String>) {
+        userPreferences.baseWalletSeed = words.joinToString(" ")
+    }
+
+    override fun getBaseWalletSeed(): List<String> {
+        return userPreferences.baseWalletSeed?.split(" ") ?: listOf()
+    }
+
     override fun saveAddress(name: String, address: String) {
         val addressess = userPreferences.savedAddressInfo.savedAddresses
         addressess.add(SavedAddressModel(name, address))

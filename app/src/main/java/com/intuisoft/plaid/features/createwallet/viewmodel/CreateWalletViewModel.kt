@@ -2,13 +2,17 @@ package com.intuisoft.plaid.features.createwallet.viewmodel
 
 import android.app.Application
 import android.content.Context
+import androidx.lifecycle.LiveData
+import com.intuisoft.plaid.PlaidApp
 import com.intuisoft.plaid.R
+import com.intuisoft.plaid.androidwrappers.SingleLiveData
 import com.intuisoft.plaid.androidwrappers.WalletViewModel
 import com.intuisoft.plaid.repositories.LocalStoreRepository
 import com.intuisoft.plaid.walletmanager.AbstractWalletManager
-import com.intuisoft.plaid.walletmanager.WalletManager
 import io.horizontalsystems.hdwalletkit.HDWallet
+import io.horizontalsystems.hdwalletkit.Language
 import io.horizontalsystems.hdwalletkit.Mnemonic
+import io.horizontalsystems.hdwalletkit.WordList
 
 
 class CreateWalletViewModel(
@@ -17,9 +21,49 @@ class CreateWalletViewModel(
     private val walletManager: AbstractWalletManager
 ): WalletViewModel(application, localStoreRepository, walletManager) {
 
-    private var seed: List<String>? = null
+    protected val _onInputRejected = SingleLiveData<Unit>()
+    val onInputRejected: LiveData<Unit> = _onInputRejected
+
+    protected val _onDisplayExplanation = SingleLiveData<String>()
+    val onDisplayExplanation: LiveData<String> = _onDisplayExplanation
+
+    protected val _onConfirm = SingleLiveData<Unit>()
+    val onConfirm: LiveData<Unit> = _onConfirm
+
+    protected val _onAddWord = SingleLiveData<String>()
+    val onAddWord: LiveData<String> = _onAddWord
+
+    protected val _onRemoveLastWord = SingleLiveData<Unit>()
+    val onRemoveLastWord: LiveData<Unit> = _onRemoveLastWord
+
+    protected val _importAllowed = SingleLiveData<Boolean>()
+    val importAllowed: LiveData<Boolean> = _importAllowed
+
+    protected val _wordSuggestion1 = SingleLiveData<String>()
+    val wordSuggestion1: LiveData<String> = _wordSuggestion1
+
+    protected val _wordSuggestion2 = SingleLiveData<String>()
+    val wordSuggestion2: LiveData<String> = _wordSuggestion2
+
+    protected val _wordSuggestion3 = SingleLiveData<String>()
+    val wordSuggestion3: LiveData<String> = _wordSuggestion3
+
+    protected val _wordSuggestion4 = SingleLiveData<String>()
+    val wordSuggestion4: LiveData<String> = _wordSuggestion4
+
+    protected val _wordSuggestionMany = SingleLiveData<Boolean>()
+    val wordSuggestionMany: LiveData<Boolean> = _wordSuggestionMany
+
+    protected val _clearWordEntry = SingleLiveData<Unit>()
+    val clearWordEntry: LiveData<Unit> = _clearWordEntry
+
+    private var seed: MutableList<String> = mutableListOf()
     private var bip: HDWallet.Purpose = HDWallet.Purpose.BIP84
     private var entropyStrength = Mnemonic.EntropyStrength.Default
+    private var pubKey = ""
+    private var invalidAddressErrors = 0
+    private var invalidSeedWordErrors = 0
+    private var maxWordsErrors = 0
 
     var useTestNet = false
         private set
@@ -38,6 +82,169 @@ class CreateWalletViewModel(
 
     fun setLocalBip(bip: HDWallet.Purpose) {
         this.bip = bip
+    }
+
+    fun removeLastWord() {
+        if(seed.isNotEmpty()) {
+            seed.removeLast()
+            checkSeedSize()
+            _onRemoveLastWord.postValue(Unit)
+        }
+    }
+
+    fun importSeedPhrase() {
+        try {
+            Mnemonic().toSeed(seed)
+            _onConfirm.postValue(Unit)
+        } catch(err: Throwable) {
+            _onDisplayExplanation.postValue(getApplication<PlaidApp>().getString(R.string.import_recovery_phrase_error_invalid_seed_phrase))
+        }
+    }
+
+    private fun onWordAdded() {
+        _clearWordEntry.postValue(Unit)
+        _wordSuggestion1.postValue("")
+        _wordSuggestion2.postValue("")
+        _wordSuggestion3.postValue("")
+        _wordSuggestion4.postValue("")
+        _wordSuggestionMany.postValue(false)
+    }
+
+    fun updateWordSuggestions(word: String) {
+        if(word.isNotEmpty()) {
+            val suggestions = WordList.wordList(Language.English).fetchSuggestions(word)
+
+            when {
+                suggestions.isEmpty() -> {
+                    _wordSuggestion1.postValue("")
+                    _wordSuggestion2.postValue("")
+                    _wordSuggestion3.postValue("")
+                    _wordSuggestion4.postValue("")
+                    _wordSuggestionMany.postValue(false)
+                }
+
+                suggestions.size == 1 -> {
+                    _wordSuggestion1.postValue(suggestions[0])
+                    _wordSuggestion2.postValue("")
+                    _wordSuggestion3.postValue("")
+                    _wordSuggestion4.postValue("")
+                    _wordSuggestionMany.postValue(false)
+                }
+
+                suggestions.size == 2 -> {
+                    _wordSuggestion1.postValue(suggestions[0])
+                    _wordSuggestion2.postValue(suggestions[1])
+                    _wordSuggestion3.postValue("")
+                    _wordSuggestion4.postValue("")
+                    _wordSuggestionMany.postValue(false)
+                }
+
+                suggestions.size == 3 -> {
+                    _wordSuggestion1.postValue(suggestions[0])
+                    _wordSuggestion2.postValue(suggestions[1])
+                    _wordSuggestion3.postValue(suggestions[2])
+                    _wordSuggestion4.postValue("")
+                    _wordSuggestionMany.postValue(false)
+                }
+
+                suggestions.size == 4 -> {
+                    _wordSuggestion1.postValue(suggestions[0])
+                    _wordSuggestion2.postValue(suggestions[1])
+                    _wordSuggestion3.postValue(suggestions[2])
+                    _wordSuggestion4.postValue(suggestions[3])
+                    _wordSuggestionMany.postValue(false)
+                }
+
+                else -> {
+                    _wordSuggestion1.postValue(suggestions[0])
+                    _wordSuggestion2.postValue(suggestions[1])
+                    _wordSuggestion3.postValue(suggestions[2])
+                    _wordSuggestion4.postValue(suggestions[3])
+                    _wordSuggestionMany.postValue(true)
+                }
+            }
+        } else {
+            _wordSuggestion1.postValue("")
+            _wordSuggestion2.postValue("")
+            _wordSuggestion3.postValue("")
+            _wordSuggestion4.postValue("")
+            _wordSuggestionMany.postValue(false)
+        }
+    }
+
+    private fun checkSeedSize() {
+        when(seed.size) {
+            Mnemonic.EntropyStrength.Default.wordCount,
+            Mnemonic.EntropyStrength.Low.wordCount,
+            Mnemonic.EntropyStrength.Medium.wordCount,
+            Mnemonic.EntropyStrength.High.wordCount,
+            Mnemonic.EntropyStrength.VeryHigh.wordCount -> {
+                _importAllowed.postValue(true)
+            }
+            else -> {
+                _importAllowed.postValue(false)
+            }
+        }
+    }
+
+    private fun addWord(word: String) {
+        seed.add(word)
+        _onAddWord.postValue(word)
+        onWordAdded()
+    }
+
+    fun addWordToList(word: String, partialWordSupport: Boolean = false) {
+        if(WordList.wordList(Language.English).validWord(word)) {
+            if(seed.size < maxWords) {
+                addWord(word)
+            } else {
+                onMaxWords()
+            }
+
+            checkSeedSize()
+        } else {
+            val suggestions = WordList.wordList(Language.English).fetchSuggestions(word)
+            if(suggestions.size == 1) {
+                addWord(suggestions[0])
+            } else {
+                onInvalidWord()
+            }
+        }
+    }
+
+    private fun onInvalidWord() {
+        _onInputRejected.postValue(Unit)
+        invalidSeedWordErrors++
+
+        if(invalidSeedWordErrors % errorThreshold == 0) {
+            _onDisplayExplanation.postValue(getApplication<PlaidApp>().getString(R.string.import_recovery_phrase_error_invalid_seed_word))
+        }
+    }
+
+    private fun onMaxWords() {
+        _onInputRejected.postValue(Unit)
+        maxWordsErrors++
+
+        if(maxWordsErrors % errorThreshold == 0) {
+            _onDisplayExplanation.postValue(getApplication<PlaidApp>().getString(R.string.import_recovery_phrase_error_max_words))
+        }
+    }
+
+    fun setLocalPublicKey(pubKey: String) {
+        this.pubKey = pubKey
+    }
+
+    fun importPublicKey() {
+        if(isPublicKeyAddressValid(pubKey)) {
+            _onConfirm.postValue(Unit)
+        } else {
+            _onInputRejected.postValue(Unit)
+            invalidAddressErrors++
+
+            if(invalidAddressErrors % errorThreshold == 0) {
+                _onDisplayExplanation.postValue(getApplication<PlaidApp>().getString(R.string.import_public_key_error_invalid_address))
+            }
+        }
     }
 
     fun getEntropyStrength() = entropyStrength
@@ -68,23 +275,31 @@ class CreateWalletViewModel(
     }
 
     fun setLocalSeedPhrase(p: List<String>) {
-        seed = p
+        seed = p.toMutableList()
     }
 
     fun showLocalSeedPhrase() {
         _seedPhraseGenerated.postValue(seed)
     }
 
-    /**
-     * Save wallet to disk every 1 minute
-     *
-     */
     fun commitWalletToDisk(walletName: String) {
-        commitWalletToDisk(
-            walletName = walletName,
-            seed = seed!!,
-            bip = bip,
-            testNetWallet = useTestNet
-        )
+        if(pubKey.isNotEmpty()) {
+            commitWalletToDisk(
+                walletName = walletName,
+                pubKey = pubKey
+            )
+        } else {
+            commitWalletToDisk(
+                walletName = walletName,
+                seed = seed,
+                bip = bip,
+                testNetWallet = useTestNet
+            )
+        }
+    }
+
+    companion object {
+        private const val errorThreshold = 3
+        private const val maxWords = 24
     }
 }

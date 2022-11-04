@@ -93,6 +93,30 @@
     </fragment>
 
     <fragment
+        android:id="@+id/importWalletFragment"
+        android:name="com.intuisoft.plaid.features.createwallet.ui.ImportWalletFragment"
+        android:label="@string/import_wallet_fragment_label"
+        tools:layout="@layout/fragment_import_wallet">
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/publicKeyImportFragment"
+        android:name="com.intuisoft.plaid.features.createwallet.ui.PublicKeyImportFragment"
+        android:label="@string/public_key_import_fragment_label"
+        tools:layout="@layout/fragment_public_key_import">
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/recoveryPhraseImportFragment"
+        android:name="com.intuisoft.plaid.features.createwallet.ui.RecoveryPhraseImportFragment"
+        android:label="@string/recovery_phrase_import_fragment_label"
+        tools:layout="@layout/fragment_recovery_phrase_import">
+
+    </fragment>
+
+    <fragment
         android:id="@+id/welcomeFragment"
         android:name="com.intuisoft.plaid.features.onboarding.ui.WelcomeFragment"
         android:label="@string/welcome_fragment_label"

@@ -20,7 +20,7 @@ class HDWalletAccount(
     }
 
     fun masterPublicKey(purpose: HDWallet.Purpose, mainNet: Boolean) =
-        hdKeychain.getKeyByPath("m/${purpose}'/${if(mainNet) 1 else 0}'/0'")
+        hdKeychain.getKeyByPath("m/${purpose.value}'/${if(mainNet) 1 else 0}'/0'")
             .serializePublic(
                 HDExtendedKey.getVersion(
                     purpose.value,

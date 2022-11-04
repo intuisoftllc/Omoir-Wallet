@@ -41,6 +41,10 @@ interface LocalStoreRepository {
 
     fun updateSavedAddress(oldName: String, name: String, address: String)
 
+    fun saveBaseWalletSeed(words: List<String>)
+
+    fun getBaseWalletSeed(): List<String>
+
     fun deleteSavedAddress(name: String)
 
     fun updateAppTheme(theme: AppTheme)

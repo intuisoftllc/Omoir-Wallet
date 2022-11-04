@@ -20,6 +20,7 @@ import com.intuisoft.plaid.databinding.ActivityScanBarcodeBinding
 import com.intuisoft.plaid.util.Constants.ActivityResult.BARCODE_EXTRA
 import com.intuisoft.plaid.walletmanager.AbstractWalletManager
 import com.intuisoft.plaid.walletmanager.WalletManager
+import io.horizontalsystems.hdwalletkit.HDExtendedKey
 import org.koin.android.ext.android.inject
 import org.koin.core.component.KoinComponent
 
@@ -81,8 +82,13 @@ class BarcodeScannerActivity : BindingActivity<ActivityScanBarcodeBinding>(), Ko
 
                     if (barcodes.size() != 0 && walletManager.validAddress(address ?: "")) {
                         closeActivity(address!!)
+                    } else {
+                        try {
+                            HDExtendedKey.validate(address ?: "", true)
+                            closeActivity(address!!)
+                        } catch (e: Throwable) {}
                     }
-                } catch (e: Exception) {}
+                } catch (e: Throwable) {}
             }
         })
 

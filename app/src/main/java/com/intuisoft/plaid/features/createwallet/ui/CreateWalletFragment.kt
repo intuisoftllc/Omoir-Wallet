@@ -18,6 +18,7 @@ import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.FragmentConfiguration
 import com.intuisoft.plaid.androidwrappers.SettingsItemView
 import com.intuisoft.plaid.androidwrappers.hideSoftKeyboard
+import com.intuisoft.plaid.androidwrappers.navigate
 import com.intuisoft.plaid.databinding.FragmentCreateImportWalletBinding
 import com.intuisoft.plaid.features.createwallet.ZoomOutPageTransformer
 import com.intuisoft.plaid.features.createwallet.adapters.WalletBenefitsAdapter
@@ -45,6 +46,8 @@ class CreateWalletFragment : PinProtectedFragment<FragmentCreateImportWalletBind
         viewModel.setUseTestNet(false)
         viewModel.setEntropyStrength(Mnemonic.EntropyStrength.Default)
         viewModel.setLocalBip(HDWallet.Purpose.BIP84)
+        viewModel.setLocalPublicKey("")
+        viewModel.setLocalSeedPhrase(listOf())
 
         binding.advancedOptions.setOnClickListener {
             showAdvancedOptionsDialog()
@@ -53,6 +56,13 @@ class CreateWalletFragment : PinProtectedFragment<FragmentCreateImportWalletBind
         val adapter = WalletBenefitsAdapter(
             requireActivity()
         )
+
+        binding.importWallet.onClick {
+            navigate(
+                R.id.importWalletFragment,
+                Constants.Navigation.ANIMATED_ENTER_EXIT_RIGHT_NAV_OPTION
+            )
+        }
 
         binding.createNewWallet.onClick {
             findNavController().navigate(

@@ -93,7 +93,34 @@ class WithdrawalViewModel(
     }
 
     fun displayTotalBalance() {
-        _maximumSpend.postValue(getMaxSpend().from(getDisplayUnit().toRateType(), false).second!!)
+        if(selectedUTXOs.isEmpty()) {
+            _maximumSpend.postValue(
+                getMaxSpend().from(
+                    getDisplayUnit().toRateType(),
+                    false
+                ).second!!
+            )
+        } else if(selectedUTXOs.size == 1) {
+            _maximumSpend.postValue(
+                getApplication<PlaidApp>().getString(R.string.withdraw_selected_single_utxo_amount,
+                    getMaxSpend().from(
+                        getDisplayUnit().toRateType(),
+                        false
+                    ).second!!
+                )
+            )
+        }
+        else {
+            _maximumSpend.postValue(
+                getApplication<PlaidApp>().getString(R.string.withdraw_selected_utxo_amount,
+                    getMaxSpend().from(
+                        getDisplayUnit().toRateType(),
+                        false
+                    ).second!!,
+                    selectedUTXOs.size.toString()
+                )
+            )
+        }
     }
 
     fun spendMaxBalance() {

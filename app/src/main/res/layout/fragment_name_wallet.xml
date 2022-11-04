@@ -57,6 +57,7 @@
             android:maxLength="50"
             android:maxLines="1"
             android:padding="@dimen/horizontal_padding_size"
+            android:inputType="text"
             android:textColorHint="@color/color_disabled"
             android:textSize="14sp"
             tools:ignore="TextContrastCheck,TouchTargetSizeCheck" />

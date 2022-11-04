@@ -83,6 +83,29 @@ class SeedPhraseView(context: Context, attrs: AttributeSet?) : LinearLayout(cont
         }
     }
 
+    fun removeLastWord() {
+        if(currentWord > 0) {
+            seedWords[currentWord - 1].isVisible = false
+
+
+            if(currentWord == 0) {
+                container1?.isVisible = false
+            } else if(currentWord == 4) {
+                container2?.isVisible = false
+            } else if(currentWord ==8) {
+                container3?.isVisible = false
+            } else if(currentWord == 12) {
+                container4?.isVisible = false
+            } else if(currentWord == 16) {
+                container5?.isVisible = false
+            } else if(currentWord == 20) {
+                container6?.isVisible = false
+            }
+
+            currentWord--
+        }
+    }
+
     private fun showWordContainer() {
         when {
             (0..3).contains(currentWord) -> {
@@ -104,5 +127,9 @@ class SeedPhraseView(context: Context, attrs: AttributeSet?) : LinearLayout(cont
                 container6?.isVisible = true
             }
         }
+    }
+
+    interface RecoveryPhraseUpdatedListener {
+        fun onUpdate()
     }
 }

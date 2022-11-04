@@ -32,6 +32,7 @@ class BasicWalletDataDetail(
             }
 
             name.text = wallet.name
+            wallet.walletStateOrType(stateOrType, 0)
 
             lifecycleOwner?.let {
                 wallet.walletStateUpdated.observe(it, androidx.lifecycle.Observer {

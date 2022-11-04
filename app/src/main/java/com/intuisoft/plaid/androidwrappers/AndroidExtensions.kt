@@ -26,6 +26,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.R
 import com.google.android.material.snackbar.Snackbar
 import com.intuisoft.plaid.activities.MainActivity
 import com.intuisoft.plaid.model.LocalWalletModel
@@ -148,6 +149,8 @@ fun styledSnackBar(root: View, title: String, showTop: Boolean? = null, onDismis
             view.layoutParams = params
         }
     }
+
+    snack.view.findViewById<TextView>(R.id.snackbar_text).maxLines = 3
     snack.show()
 }
 

@@ -23,6 +23,10 @@ abstract class BindingFragment<T: ViewBinding> : Fragment(), FragmentActionBarDe
         (requireActivity() as MainActivity).setActionBarActionRight(actionBarActionRight())
     }
 
+    fun scanBarcode() {
+        (requireActivity() as MainActivity).scanBarcode()
+    }
+
     override fun onStateChanged(hasNetwork: Boolean) {
         if(!hasNetwork) {
             styledSnackBar(requireView(), Constants.Strings.NO_INTERNET, true)

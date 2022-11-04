@@ -1,17 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="parent_top_margin">40dp</dimen>
+    <dimen name="parent_top_margin_med">32dp</dimen>
     <dimen name="parent_top_vertical_bias">0.2</dimen>
     <dimen name="parent_top_vertical_bias_small">0.05</dimen>
     <dimen name="rounded_edge_radius">16dp</dimen>
+    <dimen name="horizontal_padding_size_small">4dp</dimen>
     <dimen name="horizontal_padding_size">16dp</dimen>
     <dimen name="horizontal_padding_size_large">40dp</dimen>
     <dimen name="horizontal_padding_size_xlarge">80dp</dimen>
     <dimen name="card_corner_radius">8dp</dimen>
     <dimen name="parent_bottom_margin">32dp</dimen>
     <dimen name="vertical_bias_25">0.25</dimen>
+    <dimen name="vertical_bias_10">0.10</dimen>
+    <dimen name="vertical_bias_05">0.05</dimen>
     <dimen name="vertical_bias_15">0.15</dimen>
     <dimen name="vertical_bias_40">0.4</dimen>
+    <dimen name="vertical_bias_80">0.8</dimen>
     <dimen name="vertical_bias_30">0.3</dimen>
     <dimen name="subtitle_icon_size">14dp</dimen>
     <dimen name="card_view_corner_radius">12dp</dimen>

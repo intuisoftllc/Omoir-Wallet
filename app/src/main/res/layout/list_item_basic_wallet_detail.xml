@@ -68,7 +68,7 @@
                     style="@style/TextStyle.Semibold.16"
                     android:textStyle="bold"
                     android:textColor="?attr/colorPrimary"
-                    tools:text="Bip 84 Wallet"/>
+                    tools:text="Testnet, Watch-Only"/>
             </LinearLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>

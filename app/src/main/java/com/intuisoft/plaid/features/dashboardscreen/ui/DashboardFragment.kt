@@ -54,6 +54,7 @@ class DashboardFragment : PinProtectedFragment<FragmentWalletDashboardBinding>()
         viewModel.getTransactions()
         viewModel.displayCurrentWallet()
         viewModel.showWalletBalance(requireContext())
+        viewModel.checkReadOnlyStatus()
         walletManager.stateChanged.observe(viewLifecycleOwner, Observer {
             binding.swipeContainer.isRefreshing = it == ManagerState.SYNCHRONIZING
         })
@@ -63,6 +64,10 @@ class DashboardFragment : PinProtectedFragment<FragmentWalletDashboardBinding>()
                 viewModel.syncWallet()
             }
         }
+
+        viewModel.readOnlyWallet.observe(viewLifecycleOwner, Observer {
+            binding.withdraw.enableButton(false)
+        })
 
         viewModel.displayWallet.observe(viewLifecycleOwner, Observer { wallet ->
             (requireActivity() as MainActivity).setActionBarTitle(wallet.name)

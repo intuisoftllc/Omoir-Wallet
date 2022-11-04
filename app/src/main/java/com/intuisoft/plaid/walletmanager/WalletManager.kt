@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.lifecycle.LiveData
 import com.docformative.docformative.remove
 import com.intuisoft.plaid.androidwrappers.SingleLiveData
+import com.intuisoft.plaid.androidwrappers.observeOnMain
 import com.intuisoft.plaid.local.WipeDataListener
 import com.intuisoft.plaid.model.LocalWalletModel
 import com.intuisoft.plaid.model.WalletState
@@ -13,8 +14,13 @@ import com.intuisoft.plaid.util.Constants
 import io.horizontalsystems.bitcoincore.BitcoinCore
 import io.horizontalsystems.bitcoincore.models.BalanceInfo
 import io.horizontalsystems.bitcoincore.models.TransactionInfo
+import io.horizontalsystems.bitcoincore.network.Network
 import io.horizontalsystems.bitcoinkit.BitcoinKit
+import io.horizontalsystems.bitcoinkit.MainNet
+import io.horizontalsystems.hdwalletkit.HDExtendedKey
+import io.horizontalsystems.hdwalletkit.HDExtendedKeyVersion
 import io.horizontalsystems.hdwalletkit.HDWallet
+import io.horizontalsystems.hdwalletkit.Mnemonic
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -31,7 +37,8 @@ class WalletManager(
     protected var running = false
     protected val _wallets: MutableList<LocalWalletModel> = mutableListOf()
     protected val localPassphrases: MutableMap<String,String> = mutableMapOf()
-    private var _baseWallet: BitcoinKit? = null
+    private var _baseMainNetWallet: BitcoinKit? = null
+    private var _baseTestNetWallet: BitcoinKit? = null
 
     open class BitcoinEventListener: BitcoinKit.Listener {}
 
@@ -41,23 +48,8 @@ class WalletManager(
                 running = true
 
                 loadingScope {
-                    if(_baseWallet == null) {
-                        _baseWallet = BitcoinKit(
-                            context = application,
-                            words = Constants.Strings.TEST_WALLET_1.split(" "),
-                            passphrase = "",
-                            walletId = Constants.Strings.BASE_WALLET,
-                            networkType = BitcoinKit.NetworkType.MainNet,
-                            peerSize = Constants.Limit.MAX_PEERS,
-                            gapLimit = 50,
-                            syncMode = BitcoinCore.SyncMode.Api(),
-                            confirmationsThreshold = 1,
-                            purpose = HDWallet.Purpose.BIP44
-                        )
-
-                        _baseWallet!!.refresh()
-                    }
-
+                    _baseMainNetWallet = createBaseWallet(_baseMainNetWallet, BitcoinKit.NetworkType.MainNet)
+                    _baseTestNetWallet = createBaseWallet(_baseTestNetWallet, BitcoinKit.NetworkType.TestNet)
                     localStoreRepository.setOnWipeDataListener(this@WalletManager)
                     updateWallets()
                 }
@@ -65,11 +57,41 @@ class WalletManager(
         }
     }
 
+    private fun createBaseWallet(baseWallet: BitcoinKit?, network: BitcoinKit.NetworkType): BitcoinKit {
+        if(baseWallet == null) {
+            var seed = localStoreRepository.getBaseWalletSeed()
+            if(seed.isEmpty()) {
+                seed = Mnemonic().generate(Mnemonic.EntropyStrength.VeryHigh)
+                localStoreRepository.saveBaseWalletSeed(seed)
+            }
+
+            val base = BitcoinKit(
+                context = application,
+                words = seed,
+                passphrase = "",
+                walletId = Constants.Strings.BASE_WALLET,
+                networkType = network,
+                peerSize = Constants.Limit.MAX_PEERS,
+                gapLimit = 50,
+                syncMode = BitcoinCore.SyncMode.Api(),
+                confirmationsThreshold = 1,
+                purpose = HDWallet.Purpose.BIP44
+            )
+
+            base.refresh() // todo: check to see if we even need to start them?
+            return base
+        } else
+            return baseWallet
+    }
+
     protected suspend fun loadingScope(scope: suspend () -> Unit) {
         var alreadySyncing = false
         if(state != ManagerState.SYNCHRONIZING) {
             state = ManagerState.SYNCHRONIZING
-        } else alreadySyncing = true
+        } else {
+            alreadySyncing = true
+        }
+
 
         scope()
 
@@ -109,7 +131,7 @@ class WalletManager(
     }
 
     override fun validAddress(address: String) : Boolean {
-        return _wallets.first().walletKit!!.isAddressValid(address)
+        return _baseMainNetWallet!!.isAddressValid(address) || _baseTestNetWallet!!.isAddressValid(address)
     }
 
     override fun arePeersReady() : Boolean {
@@ -207,17 +229,17 @@ class WalletManager(
        _balanceUpdated.postValue(0)
    }
 
+   @Synchronized
    override fun synchronizeAll() {
-       CoroutineScope(Dispatchers.IO).launch {
-           if(state == ManagerState.SYNCHRONIZING)
-               return@launch
+       if(state != ManagerState.SYNCHRONIZING) {
+           CoroutineScope(Dispatchers.IO).launch {
+               loadingScope {
+                   _wallets.forEach {
+                       synchronize(it)
+                   }
 
-           loadingScope {
-               _wallets.forEach {
-                   synchronize(it)
+                   _balanceUpdated.postValue(getTotalBalance())
                }
-
-               _balanceUpdated.postValue(getTotalBalance())
            }
        }
    }
@@ -234,7 +256,11 @@ class WalletManager(
        updateWallets()
    }
 
-   override fun getBaseWallet() = _baseWallet!!
+   override fun getBaseWallet(mainNet: Boolean) =
+       if(mainNet)
+           _baseMainNetWallet!!
+       else
+           _baseTestNetWallet!!
 
    override fun createWallet(
        name: String,
@@ -250,9 +276,56 @@ class WalletManager(
                        name,
                        uuid,
                        seed,
+                       "",
                        mutableListOf(),
                        bip.ordinal,
                        testnetWallet,
+                       true,
+                       false
+                   )
+               )
+           }
+       }
+
+       return uuid
+   }
+
+   override fun createWallet(
+       name: String,
+       pubKey: String
+   ): String {
+       val uuid = UUID.randomUUID().toString()
+       CoroutineScope(Dispatchers.IO).launch {
+           loadingScope {
+               var network = BitcoinKit.NetworkType.MainNet
+               if(pubKey.startsWith(HDExtendedKeyVersion.tpub.base58Prefix)
+                   || pubKey.startsWith(HDExtendedKeyVersion.upub.base58Prefix)
+                   || pubKey.startsWith(HDExtendedKeyVersion.vpub.base58Prefix)) {
+                   network = BitcoinKit.NetworkType.TestNet
+               }
+
+               val temp = BitcoinKit(
+                   context = application,
+                   extendedKey = HDExtendedKey(pubKey),
+                   walletId = uuid,
+                   networkType = network,
+                   peerSize = Constants.Limit.MAX_PEERS,
+                   gapLimit = 50,
+                   syncMode = BitcoinCore.SyncMode.Api(),
+                   confirmationsThreshold = localStoreRepository.getMinimumConfirmations()
+               )
+               temp.stop() // just in case
+
+               saveWallet(
+                   WalletIdentifier(
+                       name,
+                       uuid,
+                       listOf(),
+                       pubKey,
+                       mutableListOf(),
+                       temp.getPurpose().ordinal,
+                       network == BitcoinKit.NetworkType.TestNet,
+                       true,
                        true
                    )
                )
@@ -270,7 +343,7 @@ class WalletManager(
        _wallets.clear()
        localStoreRepository.getStoredWalletInfo().walletIdentifiers.forEach { identifier ->
            val passphrase = getWalletPassPhrase(identifier.walletUUID)
-           val model = LocalWalletModel.consume(identifier, passphrase)
+           val model = LocalWalletModel.consume(identifier, if(!identifier.readOnly) passphrase else "")
 
            // Store wallet hashes for passphrases
            if(identifier.walletHashIds?.find { it == model.hashId } == null) {
@@ -278,19 +351,33 @@ class WalletManager(
                localStoreRepository.setStoredWalletInfo(localStoreRepository.getStoredWalletInfo())
            }
 
-           model.walletKit =
-               BitcoinKit(
+           if(identifier.readOnly) {
+               model.walletKit = BitcoinKit(
                    context = application,
-                   words = identifier.seedPhrase,
-                   passphrase = passphrase,
+                   extendedKey = HDExtendedKey(identifier.pubKey),
                    walletId = model.hashId,
                    networkType = getWalletNetwork(model),
                    peerSize = Constants.Limit.MAX_PEERS,
                    gapLimit = 50,
                    syncMode = getWalletSyncMode(identifier.apiSyncMode),
-                   confirmationsThreshold = localStoreRepository.getMinimumConfirmations(),
-                   purpose = HDWallet.Purpose.values().find {  it.ordinal == identifier.bip }!!
+                   confirmationsThreshold = localStoreRepository.getMinimumConfirmations()
                )
+           } else {
+               model.walletKit =
+                   BitcoinKit(
+                       context = application,
+                       words = identifier.seedPhrase,
+                       passphrase = passphrase,
+                       walletId = model.hashId,
+                       networkType = getWalletNetwork(model),
+                       peerSize = Constants.Limit.MAX_PEERS,
+                       gapLimit = 50,
+                       syncMode = getWalletSyncMode(identifier.apiSyncMode),
+                       confirmationsThreshold = localStoreRepository.getMinimumConfirmations(),
+                       purpose = HDWallet.Purpose.values().find { it.ordinal == identifier.bip }!!
+                   )
+           }
+
 
            model.walletKit!!.listener =
                object: BitcoinEventListener() {

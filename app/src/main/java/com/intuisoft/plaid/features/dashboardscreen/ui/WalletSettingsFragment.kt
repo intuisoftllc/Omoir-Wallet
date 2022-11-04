@@ -32,6 +32,7 @@ import com.intuisoft.plaid.util.fragmentconfig.ConfigQrDisplayData
 import com.intuisoft.plaid.util.fragmentconfig.ConfigSeedData
 import io.horizontalsystems.bitcoinkit.BitcoinKit
 import io.horizontalsystems.hdwalletkit.HDWallet
+import kotlinx.android.synthetic.main.fragment_wallet_settings.*
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -56,6 +57,7 @@ class WalletSettingsFragment : PinProtectedFragment<FragmentWalletSettingsBindin
     override fun onConfiguration(configuration: FragmentConfiguration?) {
 
         viewModel.updateWalletSettings()
+        viewModel.checkReadOnlyStatus()
         viewModel.walletName.observe(viewLifecycleOwner, Observer {
             binding.renameWallet.setSubTitleText(it)
         })
@@ -65,6 +67,8 @@ class WalletSettingsFragment : PinProtectedFragment<FragmentWalletSettingsBindin
         }
 
         viewModel.walletBip.observe(viewLifecycleOwner, Observer {
+            binding.bip.disableView(true)
+
             when(it) {
                 HDWallet.Purpose.BIP84 -> {
                     binding.bip.setSubTitleText(getString(R.string.create_wallet_advanced_options_bip_1))
@@ -79,6 +83,8 @@ class WalletSettingsFragment : PinProtectedFragment<FragmentWalletSettingsBindin
         })
 
         viewModel.walletNetwork.observe(viewLifecycleOwner, Observer {
+            binding.network.disableView(true)
+
             if(it == BitcoinKit.NetworkType.TestNet) {
                 binding.network.setSubTitleText(getString(R.string.test_net))
             } else {
@@ -89,6 +95,12 @@ class WalletSettingsFragment : PinProtectedFragment<FragmentWalletSettingsBindin
         binding.syncType.onClick {
             showSyncTypeDialog()
         }
+
+        viewModel.readOnlyWallet.observe(viewLifecycleOwner, Observer {
+            binding.syncType.disableView(true)
+            binding.passphrase.disableView(true)
+            binding.seedPhrase.disableView(true)
+        })
 
         binding.seedPhrase.onClick {
             var bundle = bundleOf(

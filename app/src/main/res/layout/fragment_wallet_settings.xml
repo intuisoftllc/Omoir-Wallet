@@ -122,7 +122,6 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             app:settings_variant="normal"
-                            app:subtitle_text_color="@color/light_grey"
                             android:layout_marginBottom="@dimen/horizontal_padding_size"
                             app:item_title="@string/wallet_settings_network"
                             app:item_subtitle="Main Net" />
@@ -132,7 +131,6 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             app:settings_variant="normal"
-                            app:subtitle_text_color="@color/light_grey"
                             app:item_title="@string/wallet_settings_bip"
                             app:item_subtitle="Bip 84"/>
                     </LinearLayout>

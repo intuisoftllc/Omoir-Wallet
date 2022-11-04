@@ -29,6 +29,7 @@ class UserPreferences(
         const val DEFAULT_FEE_TYPE_KEY = "DEFAULT_FEE_TYPE_KEY"
         const val SAVED_ADDRESSES_KEY = "SAVED_ADDRESSES_KEY"
         const val MIN_CONFIRMATIONS_KEY = "MIN_CONFIRMATIONS_KEY"
+        const val BASE_WALLET = "BASE_WALLET"
     }
 
     var incorrectPinAttempts: Int
@@ -62,6 +63,14 @@ class UserPreferences(
         }
         set(unit) {
             putInt(BITCOIN_UNIT_KEY, unit.typeId)
+        }
+
+    var baseWalletSeed: String?
+        get() {
+            return getString(BASE_WALLET)
+        }
+        set(alias) {
+            putString(BASE_WALLET, alias)
         }
 
     var savedAddressInfo: SavedAddressInfo

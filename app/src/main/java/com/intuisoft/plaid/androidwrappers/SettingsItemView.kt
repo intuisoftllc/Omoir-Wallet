@@ -188,6 +188,13 @@ class SettingsItemView(context: Context, attrs: AttributeSet?) : LinearLayout(co
         }
     }
 
+    fun setIsClickable(clickable: Boolean) {
+        this.isClickable = clickable
+        switch?.isClickable = clickable
+        copy?.isClickable = clickable
+        radio?.isClickable = clickable
+    }
+
     fun setTitleColor(color: Int) {
         if(color != 0) {
             titleTv?.setTextColor(color)

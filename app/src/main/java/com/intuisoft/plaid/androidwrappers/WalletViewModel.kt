@@ -18,6 +18,7 @@ import io.horizontalsystems.bitcoincore.managers.SendValueErrors
 import io.horizontalsystems.bitcoincore.models.TransactionInfo
 import io.horizontalsystems.bitcoincore.storage.UnspentOutput
 import io.horizontalsystems.bitcoinkit.BitcoinKit
+import io.horizontalsystems.hdwalletkit.HDExtendedKey
 import io.horizontalsystems.hdwalletkit.HDWallet
 import io.horizontalsystems.hdwalletkit.Mnemonic
 import io.reactivex.disposables.CompositeDisposable
@@ -49,6 +50,9 @@ open class WalletViewModel(
 
     protected val _displayWallet = SingleLiveData<LocalWalletModel>()
     val displayWallet: LiveData<LocalWalletModel> = _displayWallet
+
+    protected val _readOnlyWallet = SingleLiveData<Unit>()
+    val readOnlyWallet: LiveData<Unit> = _readOnlyWallet
 
     protected val _walletName = SingleLiveData<String>()
     val walletName: LiveData<String> = _walletName
@@ -179,6 +183,10 @@ open class WalletViewModel(
         _userPassphrase.postValue(getWalletPassphrase())
     }
 
+    fun checkReadOnlyStatus() {
+        if(isReadOnly()) _readOnlyWallet.postValue(Unit)
+    }
+
     fun displayCurrentWallet() {
         localWallet?.let {
             _displayWallet.postValue(it)
@@ -189,9 +197,7 @@ open class WalletViewModel(
         entropyStrength: Mnemonic.EntropyStrength
     ) {
         viewModelScope.launch {
-//            val seed = Mnemonic().generate(entropyStrength)
-            val seed = "patient sort can island cute saddle shield crunch knock tourist butter budget".split(" ")
-            _seedPhraseGenerated.postValue(seed!!)
+            _seedPhraseGenerated.postValue(Mnemonic().generate(entropyStrength))
         }
     }
 
@@ -200,7 +206,20 @@ open class WalletViewModel(
     }
 
     fun isAddressValid(address: String): Boolean {
-        return walletManager.getBaseWallet().isAddressValid(address)
+        if(localWallet != null) {
+            return localWallet!!.walletKit!!.isAddressValid(address)
+        } else {
+            return walletManager.validAddress(address)
+        }
+    }
+
+    fun isPublicKeyAddressValid(address: String) : Boolean {
+        try {
+            HDExtendedKey.validate(address, true)
+            return true
+        } catch (e: Throwable) {
+            return false
+        }
     }
 
     fun getWalletPassphrase() = walletManager.getWalletPassphrase(localWallet!!)
@@ -213,8 +232,14 @@ open class WalletViewModel(
         localStoreRepository.updateBitcoinDisplayUnit(displayUnit)
     }
 
+    fun isReadOnly() = localWallet!!.walletKit!!.watchAccount
+
     fun getMasterPublicKey() : String {
-        return localWallet!!.walletKit!!.getMasterPublicKey()
+        if(localWallet!!.walletKit!!.watchAccount) {
+            return walletManager.findStoredWallet(localWallet!!.uuid)!!.pubKey
+        } else {
+            return localWallet!!.walletKit!!.getMasterPublicKey(!localWallet!!.testNetWallet)
+        }
     }
 
     fun getRecieveAddress() : String {
@@ -257,10 +282,6 @@ open class WalletViewModel(
         }
     }
 
-    /**
-     * Save wallet to dick every 1 minute
-     *
-     */
     protected fun commitWalletToDisk(
         walletName: String,
         seed: List<String>,
@@ -277,6 +298,26 @@ open class WalletViewModel(
                         seed = seed!!,
                         bip = bip,
                         testnetWallet = testNetWallet
+                    )
+
+                    _walletCreated.postValue(walletId)
+                }
+            }
+        }
+    }
+
+    protected fun commitWalletToDisk(
+        walletName: String,
+        pubKey: String
+    ) {
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                if (doesWalletExist(walletName)) {
+                    _walletCreationError.postValue(Unit)
+                } else {
+                    val walletId = walletManager.createWallet(
+                        name = walletName,
+                        pubKey = pubKey
                     )
 
                     _walletCreated.postValue(walletId)
