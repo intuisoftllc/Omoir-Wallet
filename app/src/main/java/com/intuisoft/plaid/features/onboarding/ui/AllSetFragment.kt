@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
+import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.core.widget.doAfterTextChanged
@@ -59,32 +60,32 @@ class AllSetFragment : PinProtectedFragment<FragmentOnboardingAllSetBinding>() {
                 binding.negativeButton.setButtonText(data.negativeText)
 
                 binding.positiveButton.onClick {
+                    val bundle = bundleOf(Constants.Navigation.WALLET_UUID_BUNDLE_ID to data.walletUUID)
+
+                    findNavController().popBackStack(R.id.homescreenFragment, false)
                     navigate(
                         data.positiveDestination,
+                        bundle,
                         navOptions {
                             anim {
                                 enter = android.R.anim.fade_in
                                 popEnter = android.R.anim.slide_in_left
-                            }
-
-                            popUpTo(R.id.pinFragment) {
-                                inclusive = true
                             }
                         }
                     )
                 }
 
                 binding.negativeButton.onClick {
+                    val bundle = bundleOf(Constants.Navigation.WALLET_UUID_BUNDLE_ID to data.walletUUID)
+
+                    findNavController().popBackStack(R.id.homescreenFragment, false)
                     navigate(
                         data.negativeDestination,
+                        bundle,
                         navOptions {
                             anim {
                                 enter = android.R.anim.fade_in
                                 popEnter = android.R.anim.slide_in_left
-                            }
-
-                            popUpTo(R.id.pinFragment) {
-                                inclusive = true
                             }
                         }
                     )

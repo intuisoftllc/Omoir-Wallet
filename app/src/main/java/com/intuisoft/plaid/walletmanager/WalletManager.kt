@@ -1,10 +1,7 @@
 package com.intuisoft.plaid.walletmanager
 
 import android.app.Application
-import androidx.lifecycle.LiveData
 import com.docformative.docformative.remove
-import com.intuisoft.plaid.androidwrappers.SingleLiveData
-import com.intuisoft.plaid.androidwrappers.observeOnMain
 import com.intuisoft.plaid.local.WipeDataListener
 import com.intuisoft.plaid.model.LocalWalletModel
 import com.intuisoft.plaid.model.WalletState
@@ -14,9 +11,7 @@ import com.intuisoft.plaid.util.Constants
 import io.horizontalsystems.bitcoincore.BitcoinCore
 import io.horizontalsystems.bitcoincore.models.BalanceInfo
 import io.horizontalsystems.bitcoincore.models.TransactionInfo
-import io.horizontalsystems.bitcoincore.network.Network
 import io.horizontalsystems.bitcoinkit.BitcoinKit
-import io.horizontalsystems.bitcoinkit.MainNet
 import io.horizontalsystems.hdwalletkit.HDExtendedKey
 import io.horizontalsystems.hdwalletkit.HDExtendedKeyVersion
 import io.horizontalsystems.hdwalletkit.HDWallet
@@ -26,7 +21,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.*
-import kotlin.collections.HashMap
 
 
 class WalletManager(
@@ -91,7 +85,6 @@ class WalletManager(
         } else {
             alreadySyncing = true
         }
-
 
         scope()
 
@@ -194,8 +187,13 @@ class WalletManager(
        return false
    }
 
-   override suspend fun getWallets(): List<LocalWalletModel> {
+   override suspend fun getWalletsAsync(): List<LocalWalletModel> {
        waitForSynchronization()
+       return _wallets
+   }
+
+    @Synchronized
+   override fun getWallets(): List<LocalWalletModel> {
        return _wallets
    }
 
@@ -262,75 +260,68 @@ class WalletManager(
        else
            _baseTestNetWallet!!
 
-   override fun createWallet(
+   override suspend fun createWallet(
        name: String,
        seed: List<String>,
        bip: HDWallet.Purpose,
        testnetWallet: Boolean
    ): String {
        val uuid = UUID.randomUUID().toString()
-       CoroutineScope(Dispatchers.IO).launch {
-           loadingScope {
-               saveWallet(
-                   WalletIdentifier(
-                       name,
-                       uuid,
-                       seed,
-                       "",
-                       mutableListOf(),
-                       bip.ordinal,
-                       testnetWallet,
-                       true,
-                       false
-                   )
-               )
-           }
-       }
 
+       saveWallet(
+           WalletIdentifier(
+               name,
+               uuid,
+               seed,
+               "",
+               mutableListOf(),
+               bip.ordinal,
+               testnetWallet,
+               true,
+               false
+           )
+       )
        return uuid
    }
 
-   override fun createWallet(
+   override suspend fun createWallet(
        name: String,
        pubKey: String
    ): String {
        val uuid = UUID.randomUUID().toString()
-       CoroutineScope(Dispatchers.IO).launch {
-           loadingScope {
-               var network = BitcoinKit.NetworkType.MainNet
-               if(pubKey.startsWith(HDExtendedKeyVersion.tpub.base58Prefix)
-                   || pubKey.startsWith(HDExtendedKeyVersion.upub.base58Prefix)
-                   || pubKey.startsWith(HDExtendedKeyVersion.vpub.base58Prefix)) {
-                   network = BitcoinKit.NetworkType.TestNet
-               }
 
-               val temp = BitcoinKit(
-                   context = application,
-                   extendedKey = HDExtendedKey(pubKey),
-                   walletId = uuid,
-                   networkType = network,
-                   peerSize = Constants.Limit.MAX_PEERS,
-                   gapLimit = 50,
-                   syncMode = BitcoinCore.SyncMode.Api(),
-                   confirmationsThreshold = localStoreRepository.getMinimumConfirmations()
-               )
-               temp.stop() // just in case
-
-               saveWallet(
-                   WalletIdentifier(
-                       name,
-                       uuid,
-                       listOf(),
-                       pubKey,
-                       mutableListOf(),
-                       temp.getPurpose().ordinal,
-                       network == BitcoinKit.NetworkType.TestNet,
-                       true,
-                       true
-                   )
-               )
-           }
+       var network = BitcoinKit.NetworkType.MainNet
+       if(pubKey.startsWith(HDExtendedKeyVersion.tpub.base58Prefix)
+           || pubKey.startsWith(HDExtendedKeyVersion.upub.base58Prefix)
+           || pubKey.startsWith(HDExtendedKeyVersion.vpub.base58Prefix)) {
+           network = BitcoinKit.NetworkType.TestNet
        }
+
+       val temp = BitcoinKit(
+           context = application,
+           extendedKey = HDExtendedKey(pubKey),
+           walletId = uuid,
+           networkType = network,
+           peerSize = Constants.Limit.MAX_PEERS,
+           gapLimit = 50,
+           syncMode = BitcoinCore.SyncMode.Api(),
+           confirmationsThreshold = localStoreRepository.getMinimumConfirmations()
+       )
+       temp.stop() // just in case
+
+       saveWallet(
+           WalletIdentifier(
+               name,
+               uuid,
+               listOf(),
+               pubKey,
+               mutableListOf(),
+               temp.getPurpose().ordinal,
+               network == BitcoinKit.NetworkType.TestNet,
+               true,
+               true
+           )
+       )
 
        return uuid
    }

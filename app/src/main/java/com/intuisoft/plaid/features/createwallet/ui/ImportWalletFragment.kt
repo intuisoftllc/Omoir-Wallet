@@ -17,11 +17,12 @@ import com.intuisoft.plaid.features.createwallet.viewmodel.CreateWalletViewModel
 import com.intuisoft.plaid.features.pin.ui.PinProtectedFragment
 import com.intuisoft.plaid.util.Constants
 import com.intuisoft.plaid.util.fragmentconfig.AllSetData
-import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import com.intuisoft.plaid.util.fragmentconfig.WalletConfigurationData
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
 class ImportWalletFragment : PinProtectedFragment<FragmentImportWalletBinding>() {
-    protected val viewModel: CreateWalletViewModel by sharedViewModel()
+    protected val viewModel: CreateWalletViewModel by viewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -29,12 +30,16 @@ class ImportWalletFragment : PinProtectedFragment<FragmentImportWalletBinding>()
     ): View? {
 
         _binding = FragmentImportWalletBinding.inflate(inflater, container, false)
+        setupConfiguration(viewModel,
+            listOf(
+                FragmentConfigurationType.CONFIGURATION_WALLET_DATA
+            )
+        )
         return binding.root
     }
 
     override fun onConfiguration(configuration: FragmentConfiguration?) {
-        viewModel.setLocalPublicKey("")
-        viewModel.setLocalSeedPhrase(listOf())
+        viewModel.setConfiguration(configuration!!.configData as WalletConfigurationData)
 
         binding.publicKeyImport.onClick {
             navigate(
@@ -44,8 +49,16 @@ class ImportWalletFragment : PinProtectedFragment<FragmentImportWalletBinding>()
         }
 
         binding.recoveryPhraseImport.onClick {
+            var bundle = bundleOf(
+                Constants.Navigation.FRAGMENT_CONFIG to FragmentConfiguration(
+                    configurationType = FragmentConfigurationType.CONFIGURATION_WALLET_DATA,
+                    configData = viewModel.getConfiguration()
+                )
+            )
+
             navigate(
                 R.id.recoveryPhraseImportFragment,
+                bundle,
                 Constants.Navigation.ANIMATED_SLIDE_UP_OPTION
             )
         }

@@ -8,6 +8,7 @@ import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.SingleLiveData
 import com.intuisoft.plaid.androidwrappers.WalletViewModel
 import com.intuisoft.plaid.repositories.LocalStoreRepository
+import com.intuisoft.plaid.util.fragmentconfig.WalletConfigurationData
 import com.intuisoft.plaid.walletmanager.AbstractWalletManager
 import io.horizontalsystems.hdwalletkit.HDWallet
 import io.horizontalsystems.hdwalletkit.Language
@@ -82,6 +83,23 @@ class CreateWalletViewModel(
 
     fun setLocalBip(bip: HDWallet.Purpose) {
         this.bip = bip
+    }
+
+    fun getConfiguration() =
+        WalletConfigurationData(
+            testNetWallet = useTestNet,
+            wordCount = entropyStrength.wordCount,
+            bip = bip.ordinal,
+            seedPhrase = seed,
+            publicKey = pubKey,
+        )
+
+    fun setConfiguration(config: WalletConfigurationData) {
+        useTestNet = config.testNetWallet
+        entropyStrength = Mnemonic.EntropyStrength.fromWordCount(config.wordCount)
+        bip = HDWallet.Purpose.values().find { it.ordinal == config.bip } ?: HDWallet.Purpose.BIP84
+        seed = config.seedPhrase.toMutableList()
+        pubKey = config.publicKey
     }
 
     fun removeLastWord() {

@@ -114,6 +114,7 @@ class FingerprintSetupFragment : BindingFragment<FragmentOnboardingFingerprintRe
                     negativeText = getString(R.string.goto_homescreen),
                     positiveDestination = R.id.createWalletFragment,
                     negativeDestination = R.id.homescreenFragment,
+                    walletUUID = ""
                 )
             )
         )

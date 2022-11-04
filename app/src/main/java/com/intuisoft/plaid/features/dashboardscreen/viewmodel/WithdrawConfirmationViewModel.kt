@@ -11,6 +11,7 @@ import com.intuisoft.plaid.androidwrappers.SingleLiveData
 import com.intuisoft.plaid.androidwrappers.WalletViewModel
 import com.intuisoft.plaid.model.BitcoinDisplayUnit
 import com.intuisoft.plaid.model.FeeType
+import com.intuisoft.plaid.model.LocalWalletModel
 import com.intuisoft.plaid.model.NetworkFeeRate
 import com.intuisoft.plaid.repositories.LocalStoreRepository
 import com.intuisoft.plaid.util.Constants
@@ -47,6 +48,9 @@ class WithdrawConfirmationViewModel(
     protected val _onDisplayExplanation = SingleLiveData<String>()
     val onDisplayExplanation: LiveData<String> = _onDisplayExplanation
 
+    protected val _onNetworkError = SingleLiveData<String>()
+    val onNetworkError: LiveData<String> = _onNetworkError
+
     protected val _onConfirm = SingleLiveData<Unit>()
     val onConfirm: LiveData<Unit> = _onConfirm
 
@@ -64,6 +68,13 @@ class WithdrawConfirmationViewModel(
     fun getNetworkFeeRate() = networkFeeRate
 
     fun getLocalAddress() = address
+
+    fun getWallets() = walletManager.getWallets()
+
+    fun canTransferToWallet(recepient: LocalWalletModel): Boolean {
+        return recepient.testNetWallet == localWallet!!.testNetWallet
+                && recepient.uuid != localWallet!!.uuid // ensure same network transferability
+    }
 
     fun animateSentAmount(period: Long) {
         if(period < 100) throw IllegalStateException("period cannot be less than 100")
@@ -115,13 +126,13 @@ class WithdrawConfirmationViewModel(
                 localWallet!!.walletKit!!.broadcast(fullTransaction)
                 return true
             } else {
-
+                walletManager.synchronizeAll()
                 // this protection ensures that our transaction will most likely propagate to the network successfully
-                _onDisplayExplanation.postValue(getApplication<PlaidApp>().getString(R.string.reconnecting_to_core))
+                _onNetworkError.postValue(getApplication<PlaidApp>().getString(R.string.reconnecting_to_core))
                 return false
             }
         } else {
-            _onDisplayExplanation.postValue(getApplication<PlaidApp>().getString(R.string.no_internet_connection))
+            _onNetworkError.postValue(getApplication<PlaidApp>().getString(R.string.no_internet_connection))
             return false
         }
     }

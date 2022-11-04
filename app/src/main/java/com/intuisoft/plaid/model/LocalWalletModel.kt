@@ -42,33 +42,39 @@ data class LocalWalletModel(
                     walletState.text = walletState.context.getString(R.string.syncing)
                 }
             } else -> {
-                if(testNetWallet) {
-                    if(walletKit!!.watchAccount) {
+                walletType(walletState)
+            }
+        }
+    }
+
+    fun walletType(
+        walletState: TextView
+    ) {
+        if(testNetWallet) {
+            if(walletKit!!.watchAccount) {
+                walletState.text =
+                    walletState.context.getString(R.string.wallet_dashboard_state_testnet_read_only)
+            } else {
+                walletState.text =
+                    walletState.context.getString(R.string.wallet_dashboard_state_testnet)
+            }
+        } else {
+            if(walletKit!!.watchAccount) {
+                walletState.text =
+                    walletState.context.getString(R.string.wallet_dashboard_state_mainnet_read_only)
+            } else {
+                when (walletKit!!.getPurpose()) {
+                    HDWallet.Purpose.BIP84 -> {
                         walletState.text =
-                            walletState.context.getString(R.string.wallet_dashboard_state_testnet_read_only)
-                    } else {
-                        walletState.text =
-                            walletState.context.getString(R.string.wallet_dashboard_state_testnet)
+                            walletState.context.getString(R.string.create_wallet_advanced_options_bip_1_short)
                     }
-                } else {
-                    if(walletKit!!.watchAccount) {
+                    HDWallet.Purpose.BIP49 -> {
                         walletState.text =
-                            walletState.context.getString(R.string.wallet_dashboard_state_mainnet_read_only)
-                    } else {
-                        when (walletKit!!.getPurpose()) {
-                            HDWallet.Purpose.BIP84 -> {
-                                walletState.text =
-                                    walletState.context.getString(R.string.create_wallet_advanced_options_bip_1_short)
-                            }
-                            HDWallet.Purpose.BIP49 -> {
-                                walletState.text =
-                                    walletState.context.getString(R.string.create_wallet_advanced_options_bip_2_short)
-                            }
-                            HDWallet.Purpose.BIP44 -> {
-                                walletState.text =
-                                    walletState.context.getString(R.string.create_wallet_advanced_options_bip_3_short)
-                            }
-                        }
+                            walletState.context.getString(R.string.create_wallet_advanced_options_bip_2_short)
+                    }
+                    HDWallet.Purpose.BIP44 -> {
+                        walletState.text =
+                            walletState.context.getString(R.string.create_wallet_advanced_options_bip_3_short)
                     }
                 }
             }

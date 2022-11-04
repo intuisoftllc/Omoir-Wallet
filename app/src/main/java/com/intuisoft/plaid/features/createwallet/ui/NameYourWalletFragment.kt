@@ -1,5 +1,6 @@
 package com.intuisoft.plaid.features.createwallet.ui
 
+import android.app.ProgressDialog
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -7,7 +8,9 @@ import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ProgressBar
 import androidx.core.os.bundleOf
+import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.*
@@ -16,11 +19,12 @@ import com.intuisoft.plaid.features.createwallet.viewmodel.CreateWalletViewModel
 import com.intuisoft.plaid.features.pin.ui.PinProtectedFragment
 import com.intuisoft.plaid.util.Constants
 import com.intuisoft.plaid.util.fragmentconfig.AllSetData
-import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import com.intuisoft.plaid.util.fragmentconfig.WalletConfigurationData
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
 class NameYourWalletFragment : PinProtectedFragment<FragmentNameWalletBinding>() {
-    protected val viewModel: CreateWalletViewModel by sharedViewModel()
+    protected val viewModel: CreateWalletViewModel by viewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -28,10 +32,17 @@ class NameYourWalletFragment : PinProtectedFragment<FragmentNameWalletBinding>()
     ): View? {
 
         _binding = FragmentNameWalletBinding.inflate(inflater, container, false)
+        setupConfiguration(viewModel,
+            listOf(
+                FragmentConfigurationType.CONFIGURATION_WALLET_DATA
+            )
+        )
         return binding.root
     }
 
     override fun onConfiguration(configuration: FragmentConfiguration?) {
+        viewModel.setConfiguration(configuration!!.configData as WalletConfigurationData)
+
         binding.confirm.enableButton(false)
         binding.name.setOnKeyListener(object : View.OnKeyListener {
             override fun onKey(v: View?, keyCode: Int, event: KeyEvent): Boolean {
@@ -63,11 +74,13 @@ class NameYourWalletFragment : PinProtectedFragment<FragmentNameWalletBinding>()
         })
 
         binding.confirm.onClick {
+            binding.loading.isVisible = true
             viewModel.commitWalletToDisk(binding.name.text.toString())
         }
 
         viewModel.walletCreationError.observe(viewLifecycleOwner, Observer {
-            styledSnackBar(requireView(), "Oops, failed to create wallet, please try again.")
+            binding.loading.isVisible = false
+            styledSnackBar(requireView(), getString(R.string.create_wallet_failure_error))
         })
 
         viewModel.walletCreated.observe(viewLifecycleOwner, Observer {
@@ -86,7 +99,8 @@ class NameYourWalletFragment : PinProtectedFragment<FragmentNameWalletBinding>()
                         negativeText = getString(R.string.create_wallet_success_negative_button),
                         positiveDestination = R.id.walletDashboardFragment,
                         negativeDestination = R.id.homescreenFragment,
-                    )
+                        walletUUID = it
+                    ),
                 )
             )
 

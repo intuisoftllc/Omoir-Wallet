@@ -11,5 +11,6 @@ data class AllSetData(
     val positiveText: String,
     val negativeText: String,
     val positiveDestination: Int,
-    val negativeDestination: Int
+    val negativeDestination: Int,
+    val walletUUID: String,
 ): Parcelable

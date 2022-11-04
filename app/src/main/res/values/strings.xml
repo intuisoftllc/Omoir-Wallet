@@ -245,6 +245,7 @@
     <string name="create_wallet_success_subtitle">Your bitcoin wallet has been created.\n\nPlease note that it may take some time before your transactions (if any) will appear in the wallet dashboard screen.</string>
     <string name="create_wallet_success_positive_button">Go to Wallet Dashboard</string>
     <string name="create_wallet_success_negative_button">Go to Home Screen</string>
+    <string name="create_wallet_failure_error">Oops, failed to create wallet, please try again.</string>
 <!--    Create Wallet Strings End -->
 
 <!--    Transaction Details Strings -->
@@ -309,6 +310,9 @@
     <string name="withdraw_confirmation_fee_suggestion">1</string>
     <string name="withdraw_confirmation_text_box_title_fee">Fee Sat/byte</string>
     <string name="withdraw_confirmation_advanced_options_address_book">Address Book</string>
+    <string name="withdraw_confirmation_advanced_options_transfer">Transfer To Another Wallet</string>
+    <string name="withdraw_confirmation_advanced_options_transfer_title">Wallet Transfer</string>
+    <string name="withdraw_confirmation_advanced_options_transfer_no_wallets">No Wallets Available</string>
     <string name="withdraw_confirmation_advanced_options_address_book_create">Add Address</string>
     <string name="withdraw_confirmation_dialog_title">Confirm Transaction</string>
     <string name="withdraw_confirmation_dialog_full_balance_alert">Note, this will spend your full balance!</string>
@@ -324,6 +328,8 @@
     <string name="withdraw_confirmation_error_invalid_address_test_net">Can\'t send testnet coins to the main chain, try checking your address and try again</string>
     <string name="withdraw_confirmation_error_invalid_address_main_net">Can\'t send bitcoin to the testnet network from the main chain, try checking your address and try again</string>
     <string name="withdraw_confirmation_dialog_success_fee">Fee: %1$s</string>
+    <string name="withdraw_confirmation_transfer_notice">Recipient address set to wallet \"%1$s\"</string>
+    <string name="withdraw_confirmation_transfer_list_item_message">Send To</string>
 <!--    Withdraw Confirmation Strings End -->
 
 <!--    Import Wallet Strings -->
@@ -370,7 +376,7 @@
     <string name="update">Update</string>
     <string name="bitcoin">Bitcoin</string>
     <string name="no_internet_connection">No Internet Connection!</string>
-    <string name="reconnecting_to_core">Reconnecting to bitcoin core, please wait…</string>
+    <string name="reconnecting_to_core">Syncing with the network, please wait…</string>
     <string name="advanced_options">Advanced Options</string>
     <string name="create_new_wallet">Create A New Wallet</string>
     <string name="available_balance">Available Balance</string>
@@ -387,6 +393,7 @@
     <string name="not_applicable">N/A</string>
     <string name="select_all">Select All</string>
     <string name="transaction_id">Transaction ID</string>
+    <string name="no_connection">Lost Connection to Servers…</string>
     <string name="syncing_percent">Syncing... (%1$s%%)</string>
 <!--    Generic Use Strings End -->
 

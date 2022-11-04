@@ -17,6 +17,7 @@ import android.view.animation.AnimationUtils
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
@@ -32,6 +33,7 @@ import com.intuisoft.plaid.activities.MainActivity
 import com.intuisoft.plaid.androidwrappers.*
 import com.intuisoft.plaid.databinding.FragmentWithdrawConfirmationBinding
 import com.intuisoft.plaid.features.dashboardscreen.adapters.AddressBookAdapter
+import com.intuisoft.plaid.features.dashboardscreen.adapters.TransferToWalletAdapter
 import com.intuisoft.plaid.features.dashboardscreen.viewmodel.WithdrawConfirmationViewModel
 import com.intuisoft.plaid.features.pin.ui.PinProtectedFragment
 import com.intuisoft.plaid.features.settings.ui.AddressBookFragment
@@ -110,6 +112,10 @@ class WithdrawConfirmationFragment : PinProtectedFragment<FragmentWithdrawConfir
 
         viewModel.onDisplayExplanation.observe(viewLifecycleOwner, Observer {
             styledSnackBar(requireView(), it, true)
+        })
+
+        viewModel.onNetworkError.observe(viewLifecycleOwner, Observer {
+            Toast.makeText(requireContext(), it, Toast.LENGTH_LONG).show()
         })
 
         binding.confirm.onClick {
@@ -283,6 +289,32 @@ class WithdrawConfirmationFragment : PinProtectedFragment<FragmentWithdrawConfir
         bottomSheetDialog.show()
     }
 
+    fun showSendToWalletBottomSheet() {
+        val bottomSheetDialog = BottomSheetDialog(requireContext())
+        bottomSheetDialog.setContentView(R.layout.bottom_sheet_wallet_transfer)
+        val noWallets = bottomSheetDialog.findViewById<TextView>(R.id.no_wallets)!!
+        val wallets = bottomSheetDialog.findViewById<RecyclerView>(R.id.wallets)!!
+        val walletsList = viewModel.getWallets().filter {
+            viewModel.canTransferToWallet(it)
+        }
+
+        if(walletsList.isEmpty()) {
+            noWallets.isVisible = true
+            wallets.isVisible = false
+        } else {
+            val adapter = TransferToWalletAdapter(localStoreRepository) {
+                binding.address.setText(it.walletKit!!.receiveAddress())
+                styledSnackBar(requireView(), getString(R.string.withdraw_confirmation_transfer_notice, it.name), true)
+                bottomSheetDialog.cancel()
+            }
+
+            wallets.adapter = adapter
+            adapter.addWallets(walletsList.toArrayList())
+        }
+
+        bottomSheetDialog.show()
+    }
+
     private fun showAdvancedOptionsDialog() {
         val bottomSheetDialog = BottomSheetDialog(requireContext())
         bottomSheetDialog.setContentView(com.intuisoft.plaid.R.layout.bottom_sheet_withdraw_advanced_options)
@@ -291,11 +323,17 @@ class WithdrawConfirmationFragment : PinProtectedFragment<FragmentWithdrawConfir
         val high = bottomSheetDialog.findViewById<RoundedButtonView>(R.id.fast)!!
         val feePerByte = bottomSheetDialog.findViewById<EditText>(R.id.fee_rate)!!
         val addressBook = bottomSheetDialog.findViewById<SettingsItemView>(R.id.address_book)!!
+        val sendToOtherWallets = bottomSheetDialog.findViewById<SettingsItemView>(R.id.transfer_to_wallet)!!
         val feeRate = viewModel.getNetworkFeeRate()
 
         addressBook.onClick {
             bottomSheetDialog.cancel()
             showAddressBookBottomSheet()
+        }
+
+        sendToOtherWallets.onClick {
+            bottomSheetDialog.cancel()
+            showSendToWalletBottomSheet()
         }
 
         low.onClick {

@@ -10,28 +10,29 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.NumberPicker
 import android.widget.TextView
+import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.tabs.TabLayoutMediator
+import com.google.gson.Gson
 import com.intuisoft.plaid.R
-import com.intuisoft.plaid.androidwrappers.FragmentConfiguration
-import com.intuisoft.plaid.androidwrappers.SettingsItemView
-import com.intuisoft.plaid.androidwrappers.hideSoftKeyboard
-import com.intuisoft.plaid.androidwrappers.navigate
+import com.intuisoft.plaid.androidwrappers.*
 import com.intuisoft.plaid.databinding.FragmentCreateImportWalletBinding
 import com.intuisoft.plaid.features.createwallet.ZoomOutPageTransformer
 import com.intuisoft.plaid.features.createwallet.adapters.WalletBenefitsAdapter
 import com.intuisoft.plaid.features.createwallet.viewmodel.CreateWalletViewModel
 import com.intuisoft.plaid.features.pin.ui.PinProtectedFragment
 import com.intuisoft.plaid.util.Constants
+import com.intuisoft.plaid.util.fragmentconfig.ConfigTransactionData
+import com.intuisoft.plaid.util.fragmentconfig.WalletConfigurationData
 import io.horizontalsystems.hdwalletkit.HDWallet
 import io.horizontalsystems.hdwalletkit.Mnemonic
-import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
 class CreateWalletFragment : PinProtectedFragment<FragmentCreateImportWalletBinding>() {
-    protected val viewModel: CreateWalletViewModel by sharedViewModel()
+    protected val viewModel: CreateWalletViewModel by viewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -39,16 +40,15 @@ class CreateWalletFragment : PinProtectedFragment<FragmentCreateImportWalletBind
     ): View? {
 
         _binding = FragmentCreateImportWalletBinding.inflate(inflater, container, false)
+        setupConfiguration(viewModel,
+            listOf(
+                FragmentConfigurationType.CONFIGURATION_WALLET_DATA
+            )
+        )
         return binding.root
     }
 
     override fun onConfiguration(configuration: FragmentConfiguration?) {
-        viewModel.setUseTestNet(false)
-        viewModel.setEntropyStrength(Mnemonic.EntropyStrength.Default)
-        viewModel.setLocalBip(HDWallet.Purpose.BIP84)
-        viewModel.setLocalPublicKey("")
-        viewModel.setLocalSeedPhrase(listOf())
-
         binding.advancedOptions.setOnClickListener {
             showAdvancedOptionsDialog()
         }
@@ -58,15 +58,31 @@ class CreateWalletFragment : PinProtectedFragment<FragmentCreateImportWalletBind
         )
 
         binding.importWallet.onClick {
+            var bundle = bundleOf(
+                Constants.Navigation.FRAGMENT_CONFIG to FragmentConfiguration(
+                    configurationType = FragmentConfigurationType.CONFIGURATION_WALLET_DATA,
+                    configData = viewModel.getConfiguration()
+                )
+            )
+
             navigate(
                 R.id.importWalletFragment,
+                bundle,
                 Constants.Navigation.ANIMATED_ENTER_EXIT_RIGHT_NAV_OPTION
             )
         }
 
         binding.createNewWallet.onClick {
-            findNavController().navigate(
-                CreateWalletFragmentDirections.actionCreateWalletFragmentToBackupWalletFragment(),
+            var bundle = bundleOf(
+                Constants.Navigation.FRAGMENT_CONFIG to FragmentConfiguration(
+                    configurationType = FragmentConfigurationType.CONFIGURATION_WALLET_DATA,
+                    configData = viewModel.getConfiguration()
+                )
+            )
+
+            navigate(
+                R.id.backupWalletFragment,
+                bundle,
                 Constants.Navigation.ANIMATED_ENTER_EXIT_RIGHT_NAV_OPTION
             )
         }

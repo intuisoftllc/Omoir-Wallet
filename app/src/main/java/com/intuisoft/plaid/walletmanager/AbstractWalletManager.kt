@@ -31,12 +31,13 @@ abstract class AbstractWalletManager {
     abstract suspend fun deleteWallet(localWallet: LocalWalletModel, onDeleteFinished: suspend () -> Unit)
     abstract suspend fun synchronize(wallet: LocalWalletModel)
     abstract fun doesWalletExist(uuid: String): Boolean
-    abstract suspend fun getWallets(): List<LocalWalletModel>
+    abstract suspend fun getWalletsAsync(): List<LocalWalletModel>
+    abstract fun getWallets(): List<LocalWalletModel>
     abstract fun synchronizeAll()
     abstract fun findLocalWallet(uuid: String): LocalWalletModel?
     abstract fun findStoredWallet(uuid: String): WalletIdentifier?
-    abstract fun createWallet(name: String, seed: List<String>, bip: HDWallet.Purpose, testnetWallet: Boolean): String
-    abstract fun createWallet(name: String, pubKey: String): String
+    abstract suspend fun createWallet(name: String, seed: List<String>, bip: HDWallet.Purpose, testnetWallet: Boolean): String
+    abstract suspend fun createWallet(name: String, pubKey: String): String
     abstract fun setWalletPassphrase(localWallet: LocalWalletModel, passphrase: String)
     abstract fun getWalletPassphrase(localWallet: LocalWalletModel): String
     abstract fun getBaseWallet(mainNet: Boolean = true): BitcoinKit

@@ -4,22 +4,25 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.FragmentConfiguration
 import com.intuisoft.plaid.androidwrappers.FragmentConfigurationType
+import com.intuisoft.plaid.androidwrappers.navigate
 import com.intuisoft.plaid.databinding.FragmentSeedPhraseBinding
 import com.intuisoft.plaid.features.createwallet.viewmodel.CreateWalletViewModel
 import com.intuisoft.plaid.features.pin.ui.PinProtectedFragment
 import com.intuisoft.plaid.util.Constants
 import com.intuisoft.plaid.util.fragmentconfig.ConfigSeedData
-import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import com.intuisoft.plaid.util.fragmentconfig.WalletConfigurationData
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
 class SeedPhraseFragment : PinProtectedFragment<FragmentSeedPhraseBinding>() {
-    protected val viewModel: CreateWalletViewModel by sharedViewModel()
+    protected val viewModel: CreateWalletViewModel by viewModel()
 
 
     override fun onCreateView(
@@ -28,7 +31,12 @@ class SeedPhraseFragment : PinProtectedFragment<FragmentSeedPhraseBinding>() {
     ): View? {
 
         _binding = FragmentSeedPhraseBinding.inflate(inflater, container, false)
-        setupConfiguration(viewModel, listOf(FragmentConfigurationType.CONFIGURATION_BASIC_SEED_SCREEN))
+        setupConfiguration(viewModel,
+            listOf(
+                FragmentConfigurationType.CONFIGURATION_BASIC_SEED_SCREEN,
+                FragmentConfigurationType.CONFIGURATION_WALLET_DATA
+            )
+        )
         return binding.root
     }
 
@@ -44,6 +52,7 @@ class SeedPhraseFragment : PinProtectedFragment<FragmentSeedPhraseBinding>() {
                 viewModel.showLocalSeedPhrase()
             }
             else  -> {
+                viewModel.setConfiguration(configuration!!.configData as WalletConfigurationData)
                 viewModel.generateNewWallet()
             }
         }
@@ -57,8 +66,16 @@ class SeedPhraseFragment : PinProtectedFragment<FragmentSeedPhraseBinding>() {
         })
 
         binding.continueButton.onClick {
-            findNavController().navigate(
-                SeedPhraseFragmentDirections.actionSeedPhraseFragmentToNameWalletFragment(),
+            var bundle = bundleOf(
+                Constants.Navigation.FRAGMENT_CONFIG to FragmentConfiguration(
+                    configurationType = FragmentConfigurationType.CONFIGURATION_WALLET_DATA,
+                    configData = viewModel.getConfiguration()
+                )
+            )
+
+            navigate(
+                R.id.nameWalletFragment,
+                bundle,
                 Constants.Navigation.ANIMATED_ENTER_EXIT_RIGHT_NAV_OPTION
             )
         }

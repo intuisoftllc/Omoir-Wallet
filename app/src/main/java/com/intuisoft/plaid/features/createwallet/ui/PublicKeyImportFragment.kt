@@ -22,11 +22,11 @@ import com.intuisoft.plaid.listeners.BarcodeResultListener
 import com.intuisoft.plaid.util.Constants
 import com.intuisoft.plaid.util.fragmentconfig.AllSetData
 import kotlinx.android.synthetic.main.fragment_public_key_import.*
-import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
 class PublicKeyImportFragment : PinProtectedFragment<FragmentPublicKeyImportBinding>(), BarcodeResultListener {
-    protected val viewModel: CreateWalletViewModel by sharedViewModel()
+    protected val viewModel: CreateWalletViewModel by viewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -48,8 +48,16 @@ class PublicKeyImportFragment : PinProtectedFragment<FragmentPublicKeyImportBind
         }
 
         viewModel.onConfirm.observe(viewLifecycleOwner, Observer {
+            var bundle = bundleOf(
+                Constants.Navigation.FRAGMENT_CONFIG to FragmentConfiguration(
+                    configurationType = FragmentConfigurationType.CONFIGURATION_WALLET_DATA,
+                    configData = viewModel.getConfiguration()
+                )
+            )
+
             navigate(
                 R.id.nameWalletFragment,
+                bundle,
                 Constants.Navigation.ANIMATED_ENTER_EXIT_RIGHT_NAV_OPTION
             )
         })
