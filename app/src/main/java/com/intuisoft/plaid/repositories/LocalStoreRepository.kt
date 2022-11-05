@@ -27,8 +27,6 @@ interface LocalStoreRepository {
 
     fun getDefaultFeeType(): FeeType
 
-    fun getWalletSyncTime(): Int
-
     fun setOnWipeDataListener(databaseListener: WipeDataListener)
 
     fun updateBitcoinDisplayUnit(displayUnit: BitcoinDisplayUnit)

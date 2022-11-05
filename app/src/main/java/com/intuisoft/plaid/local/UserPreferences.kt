@@ -24,7 +24,6 @@ class UserPreferences(
         const val APP_THEME_KEY = "APP_THEME_KEY"
         const val PIN_TIMEOUT_KEY = "PIN_TIMEOUT_KEY"
         const val VERSION_TAPPED_COUNT_KEY = "VERSION_TAPPED_COUNT_KEY"
-        const val LAST_SYNC_TIME_KEY = "LAST_SYNC_TIME_KEY"
         const val WALLET_INFO_KEY = "WALLET_INFO_KEY"
         const val DEFAULT_FEE_TYPE_KEY = "DEFAULT_FEE_TYPE_KEY"
         const val SAVED_ADDRESSES_KEY = "SAVED_ADDRESSES_KEY"
@@ -115,14 +114,6 @@ class UserPreferences(
         }
         set(attempts) {
             putInt(LAST_CHECKED_PIN_KEY, attempts)
-        }
-
-    var walletSyncTime: Int
-        get() {
-            return getInt(LAST_SYNC_TIME_KEY, 0)
-        }
-        set(time) {
-            putInt(LAST_SYNC_TIME_KEY, time)
         }
 
     var defaultFeeType: FeeType

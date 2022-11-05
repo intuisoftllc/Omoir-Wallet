@@ -55,6 +55,10 @@ class BasicWalletDataAdapter(
         }
     }
 
+    fun onWalletStateUpdated(wallet: LocalWalletModel) {
+        wallets.find { it.wallet.uuid == wallet.uuid }?.onWalletStateUpdated()
+    }
+
     fun addWallets(items: ArrayList<LocalWalletModel>) {
         wallets.clear()
         wallets.addAll(items.mapIndexed { index, wallet ->

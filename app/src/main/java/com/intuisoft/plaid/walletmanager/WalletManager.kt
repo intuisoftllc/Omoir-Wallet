@@ -2,12 +2,13 @@ package com.intuisoft.plaid.walletmanager
 
 import android.app.Application
 import com.docformative.docformative.remove
+import com.intuisoft.plaid.listeners.StateListener
 import com.intuisoft.plaid.local.WipeDataListener
 import com.intuisoft.plaid.model.LocalWalletModel
-import com.intuisoft.plaid.model.WalletState
 import com.intuisoft.plaid.network.sync.repository.SyncRepository
 import com.intuisoft.plaid.repositories.LocalStoreRepository
 import com.intuisoft.plaid.util.Constants
+import com.intuisoft.plaid.util.entensions.splitIntoGroupOf
 import io.horizontalsystems.bitcoincore.BitcoinCore
 import io.horizontalsystems.bitcoincore.models.BalanceInfo
 import io.horizontalsystems.bitcoincore.models.TransactionInfo
@@ -16,23 +17,41 @@ import io.horizontalsystems.hdwalletkit.HDExtendedKey
 import io.horizontalsystems.hdwalletkit.HDExtendedKeyVersion
 import io.horizontalsystems.hdwalletkit.HDWallet
 import io.horizontalsystems.hdwalletkit.Mnemonic
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import java.util.*
-
+import java.util.concurrent.atomic.AtomicBoolean
 
 class WalletManager(
     val application: Application,
     val localStoreRepository: LocalStoreRepository,
     val syncRepository: SyncRepository
 ): AbstractWalletManager(), WipeDataListener {
-    protected var running = false
-    protected val _wallets: MutableList<LocalWalletModel> = mutableListOf()
-    protected val localPassphrases: MutableMap<String,String> = mutableMapOf()
+    private var _running = AtomicBoolean(false)
+    private var running: Boolean
+        get() = _running.get()
+        set(value) {
+            _running.set(value)
+        }
+
+    private var _syncing = AtomicBoolean(false)
+    private var syncing: Boolean
+        get() = _syncing.get()
+        set(value) {
+            _syncing.set(value)
+            _fullySynced.postValue(!value)
+        }
+
+    private val _wallets: MutableList<LocalWalletModel> = mutableListOf()
+    private val localPassphrases: MutableMap<String,String> = mutableMapOf()
+    private var syncJobs: MutableList<Job> = mutableListOf()
+    private var masterSyncJob: Job? = null
+    private val mutex = Mutex()
     private var _baseMainNetWallet: BitcoinKit? = null
     private var _baseTestNetWallet: BitcoinKit? = null
+    private var currentWallet: LocalWalletModel? = null
+    private var stateListeners: MutableList<StateListener> = mutableListOf()
 
     open class BitcoinEventListener: BitcoinKit.Listener {}
 
@@ -41,12 +60,11 @@ class WalletManager(
             if(!running) {
                 running = true
 
-                loadingScope {
-                    _baseMainNetWallet = createBaseWallet(_baseMainNetWallet, BitcoinKit.NetworkType.MainNet)
-                    _baseTestNetWallet = createBaseWallet(_baseTestNetWallet, BitcoinKit.NetworkType.TestNet)
-                    localStoreRepository.setOnWipeDataListener(this@WalletManager)
-                    updateWallets()
-                }
+                _baseMainNetWallet = createBaseWallet(_baseMainNetWallet, BitcoinKit.NetworkType.MainNet)
+                _baseTestNetWallet = createBaseWallet(_baseTestNetWallet, BitcoinKit.NetworkType.TestNet)
+                localStoreRepository.setOnWipeDataListener(this@WalletManager)
+                updateWallets()
+                autoSync()
             }
         }
     }
@@ -76,20 +94,6 @@ class WalletManager(
             return base
         } else
             return baseWallet
-    }
-
-    protected suspend fun loadingScope(scope: suspend () -> Unit) {
-        var alreadySyncing = false
-        if(state != ManagerState.SYNCHRONIZING) {
-            state = ManagerState.SYNCHRONIZING
-        } else {
-            alreadySyncing = true
-        }
-
-        scope()
-
-        if(!alreadySyncing)
-            state = ManagerState.NONE
     }
 
     override fun updateWalletName(localWallet: LocalWalletModel, newName: String) {
@@ -171,8 +175,11 @@ class WalletManager(
     }
 
     override suspend fun synchronize(wallet: LocalWalletModel) {
-        loadingScope {
-            if(wallet.walletState == WalletState.NONE) {
+        if(!wallet.isSyncing) {
+            if(wallet.isSynced) {
+                onWalletStateUpdated(wallet)
+            } else {
+                wallet.walletKit!!.onEnterForeground()
                 wallet.walletKit!!.refresh()
             }
         }
@@ -188,7 +195,10 @@ class WalletManager(
    }
 
    override suspend fun getWalletsAsync(): List<LocalWalletModel> {
-       waitForSynchronization()
+       if(_wallets.isEmpty() &&localStoreRepository.getStoredWalletInfo().walletIdentifiers.isNotEmpty()) {
+           updateWallets()
+       }
+
        return _wallets
    }
 
@@ -197,22 +207,73 @@ class WalletManager(
        return _wallets
    }
 
-   private suspend fun waitForSynchronization() {
-       while(state == ManagerState.SYNCHRONIZING) {
-           delay(1)
-       }
-   }
+    private fun autoSync() {
+        CoroutineScope(Dispatchers.IO).launch {
+            while(true) {
+                delay(Constants.Time.AUTO_SYNC_TIME)
+                synchronizeAll()
+            }
+        }
+    }
 
     override fun stop() {
         CoroutineScope(Dispatchers.IO).launch {
-            loadingScope {
-                _wallets.forEach {
-                    it.walletKit?.stop()
-                }
+            cancelAllJobs()
 
-                _wallets.clear()
-                running = false
+            _wallets.forEach {
+                it.walletKit?.stop()
             }
+
+            _wallets.clear()
+            running = false
+        }
+    }
+
+    private suspend fun onWalletStateUpdated(wallet: LocalWalletModel) {
+        mutex.withLock {
+            stateListeners.forEach {
+                CoroutineScope(Dispatchers.Main).launch {
+                    it.onWalletStateUpdated(wallet)
+                }
+            }
+        }
+    }
+
+    override suspend fun addWalletSyncListener(listener: StateListener) {
+        mutex.withLock {
+            if(stateListeners.find { it == listener } == null) {
+                stateListeners.add(listener)
+            }
+        }
+    }
+
+    override suspend fun removeSyncListener(listener: StateListener) {
+        mutex.withLock {
+            stateListeners.remove { it == listener }
+        }
+    }
+
+    override fun enterWallet(wallet: LocalWalletModel) {
+        currentWallet = wallet
+        wallet.walletKit!!.onEnterForeground()
+    }
+
+    override fun exitWallet() {
+        if(currentWallet?.isSyncing != true)
+            currentWallet?.walletKit?.onEnterBackground()
+    }
+
+    private suspend fun cancelAllJobs() {
+        if(syncing) {
+            masterSyncJob?.cancel()
+            mutex.withLock {
+                syncJobs.forEach {
+                    it.cancel()
+                }
+                syncJobs.clear()
+            }
+
+            syncing = false
         }
     }
 
@@ -229,24 +290,67 @@ class WalletManager(
 
    @Synchronized
    override fun synchronizeAll() {
-       if(state != ManagerState.SYNCHRONIZING) {
-           CoroutineScope(Dispatchers.IO).launch {
-               loadingScope {
-                   _wallets.forEach {
-                       synchronize(it)
-                   }
+       if(!syncing && syncJobs.isEmpty()) {
+           syncing = true
 
-                   _balanceUpdated.postValue(getTotalBalance())
+           _wallets.filter { findStoredWallet(it.uuid)!!.apiSyncMode }.splitIntoGroupOf(3).forEach { wallets ->
+               syncJobs.add(
+                   CoroutineScope(Dispatchers.IO).launch(start = CoroutineStart.LAZY) {
+                       var startTime = System.currentTimeMillis()
+                       wallets.items.remove { it.uuid == currentWallet?.uuid }
+                       wallets.items.forEach {
+                           synchronize(it)
+                       }
+
+                       // wait for this group of wallets to sync
+                       while(!wallets.items.all { it.isSynced }) {
+                           delay(100)
+
+                           if((System.currentTimeMillis() - startTime) >= Constants.Time.SYNC_TIMEOUT) {
+                               with(wallets.items.iterator()) {
+                                   forEach {
+                                       if (it.syncPercentage == 0) { // restart stuck wallets
+                                           it.walletKit!!.restart()
+                                           startTime = System.currentTimeMillis()
+                                       }
+                                   }
+                               }
+                           }
+                       }
+
+                       wallets.items.forEach {
+                          it.walletKit!!.onEnterBackground()
+                       }
+                   }
+               )
+           }
+
+           _wallets.filter { !findStoredWallet(it.uuid)!!.apiSyncMode }.forEach {
+               CoroutineScope(Dispatchers.IO).launch {
+                   synchronize(it)
                }
+           }
+
+           masterSyncJob = CoroutineScope(Dispatchers.IO).launch {
+               syncJobs.forEach {
+                   it.start()
+                   it.join()
+               }
+
+               mutex.withLock {
+                   syncJobs.clear()
+               }
+
+               syncing = false
            }
        }
    }
 
-    override fun findLocalWallet(uuid: String): LocalWalletModel? =
-        _wallets.find { it.uuid == uuid }
+   override fun findLocalWallet(uuid: String): LocalWalletModel? =
+       _wallets.find { it.uuid == uuid }
 
-    override fun findStoredWallet(uuid: String): WalletIdentifier? =
-        localStoreRepository.getStoredWalletInfo().walletIdentifiers.find { it.walletUUID == uuid }
+   override fun findStoredWallet(uuid: String): WalletIdentifier? =
+       localStoreRepository.getStoredWalletInfo().walletIdentifiers.find { it.walletUUID == uuid }
 
    private fun saveWallet(wallet: WalletIdentifier) {
        localStoreRepository.getStoredWalletInfo().walletIdentifiers.add(wallet)
@@ -374,28 +478,25 @@ class WalletManager(
                object: BitcoinEventListener() {
                    override fun onBalanceUpdate(balance: BalanceInfo) {
                        super.onBalanceUpdate(balance)
-                       CoroutineScope(Dispatchers.IO).launch {
-                           synchronize(model)
-                       }
+                       _balanceUpdated.postValue(getTotalBalance())
                    }
 
                    override fun onKitStateUpdate(state: BitcoinCore.KitState) {
                        super.onKitStateUpdate(state)
 
                        when(state) {
-                           is BitcoinCore.KitState.Synced,
-                           is BitcoinCore.KitState.NotSynced -> {
-                               updateWalletState(WalletState.NONE, model, -1)
-                               _balanceUpdated.postValue(getTotalBalance())
+                           is BitcoinCore.KitState.NotSynced,
+                           is BitcoinCore.KitState.Synced -> {
+                               CoroutineScope(Dispatchers.Main).launch {
+                                   onWalletStateUpdated(model)
+                                   _balanceUpdated.postValue(getTotalBalance())
+                               }
                            }
 
-                           is BitcoinCore.KitState.Syncing -> {
-                               updateWalletState(WalletState.SYNCING, model, (state.progress * 100).toInt())
-
-                           }
-
-                           is BitcoinCore.KitState.ApiSyncing -> {
-                               updateWalletState(WalletState.SYNCING, model, -1)
+                           else -> {
+                               CoroutineScope(Dispatchers.Main).launch {
+                                   onWalletStateUpdated(model)
+                               }
                            }
                        }
                    }
@@ -413,11 +514,6 @@ class WalletManager(
        }
 
        synchronizeAll()
-   }
-
-   private fun updateWalletState(state: WalletState, wallet: LocalWalletModel, syncPercentage: Int) {
-       wallet.walletState = state
-       wallet.walletStateUpdated.postValue(syncPercentage)
    }
 
    companion object {

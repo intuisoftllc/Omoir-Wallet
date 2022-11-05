@@ -16,19 +16,19 @@ import com.intuisoft.plaid.androidwrappers.*
 import com.intuisoft.plaid.databinding.FragmentWalletDashboardBinding
 import com.intuisoft.plaid.features.homescreen.adapters.BasicTransactionAdapter
 import com.intuisoft.plaid.features.pin.ui.PinProtectedFragment
+import com.intuisoft.plaid.listeners.StateListener
 import com.intuisoft.plaid.model.BitcoinDisplayUnit
-import com.intuisoft.plaid.model.WalletState
+import com.intuisoft.plaid.model.LocalWalletModel
 import com.intuisoft.plaid.repositories.LocalStoreRepository
 import com.intuisoft.plaid.util.Constants
 import com.intuisoft.plaid.util.fragmentconfig.ConfigQrDisplayData
 import com.intuisoft.plaid.util.fragmentconfig.ConfigTransactionData
 import com.intuisoft.plaid.walletmanager.AbstractWalletManager
-import com.intuisoft.plaid.walletmanager.ManagerState
 import io.horizontalsystems.bitcoincore.models.TransactionInfo
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class DashboardFragment : PinProtectedFragment<FragmentWalletDashboardBinding>() {
+class DashboardFragment : PinProtectedFragment<FragmentWalletDashboardBinding>(), StateListener {
     protected val viewModel: WalletViewModel by viewModel()
     protected val localStoreRepository: LocalStoreRepository by inject()
     protected val walletManager: AbstractWalletManager by inject()
@@ -55,9 +55,8 @@ class DashboardFragment : PinProtectedFragment<FragmentWalletDashboardBinding>()
         viewModel.displayCurrentWallet()
         viewModel.showWalletBalance(requireContext())
         viewModel.checkReadOnlyStatus()
-        walletManager.stateChanged.observe(viewLifecycleOwner, Observer {
-            binding.swipeContainer.isRefreshing = it == ManagerState.SYNCHRONIZING
-        })
+        walletManager.enterWallet(viewModel.getWallet()!!)
+        viewModel.addWalletStateListener(this)
 
         binding.swipeContainer.setOnRefreshListener {
             if(binding.swipeContainer.isRefreshing) {
@@ -71,16 +70,7 @@ class DashboardFragment : PinProtectedFragment<FragmentWalletDashboardBinding>()
 
         viewModel.displayWallet.observe(viewLifecycleOwner, Observer { wallet ->
             (requireActivity() as MainActivity).setActionBarTitle(wallet.name)
-
-            wallet.walletStateUpdated.observe(viewLifecycleOwner, Observer {
-                (requireActivity() as MainActivity).setActionBarSubTitle(
-                    wallet.onWalletStateChanged(requireContext(), it, false, localStoreRepository)
-                )
-
-                if(wallet.walletState == WalletState.NONE)
-                    viewModel.getTransactions()
-            })
-
+            onWalletStateUpdated(wallet)
         })
 
         viewModel.walletBalance.observe(viewLifecycleOwner, Observer {
@@ -151,6 +141,25 @@ class DashboardFragment : PinProtectedFragment<FragmentWalletDashboardBinding>()
         )
     }
 
+    override fun onWalletStateUpdated(wallet: LocalWalletModel) {
+        if(wallet.uuid == viewModel.getWalletId()) {
+            activity?.let {
+                (it as MainActivity).setActionBarSubTitle(
+                    wallet.onWalletStateChanged(
+                        requireContext(),
+                        wallet.syncPercentage,
+                        false,
+                        localStoreRepository
+                    )
+                )
+
+                if (wallet.isSynced && wallet.isSynced)
+                    viewModel.getTransactions()
+                binding.swipeContainer.isRefreshing = wallet.isSyncing
+            }
+        }
+    }
+
     override fun actionBarVariant(): Int {
         return TopBarView.CENTER_ALIGN
     }
@@ -201,6 +210,7 @@ class DashboardFragment : PinProtectedFragment<FragmentWalletDashboardBinding>()
 
     override fun onDestroyView() {
         super.onDestroyView()
+        viewModel.removeWalletSyncListener(this)
         _binding = null
     }
 

@@ -6,12 +6,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
-import android.widget.EditText
 import android.widget.TextView
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.docformative.docformative.toArrayList
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -21,19 +19,18 @@ import com.intuisoft.plaid.databinding.FragmentWithdrawBinding
 import com.intuisoft.plaid.features.dashboardscreen.viewmodel.WithdrawalViewModel
 import com.intuisoft.plaid.features.homescreen.adapters.CoinControlAdapter
 import com.intuisoft.plaid.features.pin.ui.PinProtectedFragment
-import com.intuisoft.plaid.listeners.BarcodeResultListener
+import com.intuisoft.plaid.listeners.StateListener
 import com.intuisoft.plaid.model.BitcoinDisplayUnit
-import com.intuisoft.plaid.model.FeeType
+import com.intuisoft.plaid.model.LocalWalletModel
 import com.intuisoft.plaid.repositories.LocalStoreRepository
 import com.intuisoft.plaid.util.Constants
 import com.intuisoft.plaid.util.Constants.Navigation.ANIMATED_ENTER_EXIT_RIGHT_NAV_OPTION
-import com.intuisoft.plaid.util.fragmentconfig.AllSetData
 import com.intuisoft.plaid.util.fragmentconfig.SendFundsData
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
-class WithdrawalFragment : PinProtectedFragment<FragmentWithdrawBinding>() {
+class WithdrawalFragment : PinProtectedFragment<FragmentWithdrawBinding>(), StateListener {
     private val viewModel: WithdrawalViewModel by viewModel()
     private val localStoreRepository: LocalStoreRepository by inject()
 
@@ -50,7 +47,7 @@ class WithdrawalFragment : PinProtectedFragment<FragmentWithdrawBinding>() {
     }
 
     override fun onConfiguration(configuration: FragmentConfiguration?) {
-
+        viewModel.addWalletStateListener(this)
         viewModel.showWalletDisplayUnit()
 
         viewModel.walletDisplayUnit.observe(viewLifecycleOwner, Observer {
@@ -202,6 +199,12 @@ class WithdrawalFragment : PinProtectedFragment<FragmentWithdrawBinding>() {
         }
     }
 
+    override fun onWalletStateUpdated(wallet: LocalWalletModel) {
+        if(wallet.uuid == viewModel.getWalletId()) {
+            viewModel.showWalletDisplayUnit()
+        }
+    }
+
     fun showCoinControlBottomSheet() {
         val bottomSheetDialog = BottomSheetDialog(requireContext())
         bottomSheetDialog.setContentView(R.layout.bottom_sheet_coin_control)
@@ -246,6 +249,7 @@ class WithdrawalFragment : PinProtectedFragment<FragmentWithdrawBinding>() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        viewModel.removeWalletSyncListener(this)
         _binding = null
     }
 

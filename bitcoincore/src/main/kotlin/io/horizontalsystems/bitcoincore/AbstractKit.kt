@@ -35,6 +35,11 @@ abstract class AbstractKit {
         bitcoinCore.stop()
     }
 
+    fun restart() {
+        stop()
+        start()
+    }
+
     fun refresh() {
         bitcoinCore.refresh()
     }

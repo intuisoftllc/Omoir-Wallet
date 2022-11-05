@@ -215,7 +215,7 @@ class WithdrawConfirmationViewModel(
                     value = amountToSpend.getRawRate(),
                     address = address!!,
                     feeRate = feeRate,
-                    sortType = TransactionDataSortType.Bip69,
+                    sortType = TransactionDataSortType.Shuffle,
                     createOnly = true
                 )
             } else {
@@ -224,7 +224,7 @@ class WithdrawConfirmationViewModel(
                     value = amountToSpend.getRawRate(),
                     senderPay = true,
                     feeRate = feeRate,
-                    sortType = TransactionDataSortType.Bip69,
+                    sortType = TransactionDataSortType.Shuffle,
                     pluginData = mapOf(),
                     createOnly = true
                 )

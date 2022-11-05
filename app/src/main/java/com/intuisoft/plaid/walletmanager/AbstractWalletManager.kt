@@ -3,24 +3,17 @@ package com.intuisoft.plaid.walletmanager
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.intuisoft.plaid.androidwrappers.SingleLiveData
-import com.intuisoft.plaid.local.WipeDataListener
+import com.intuisoft.plaid.listeners.StateListener
 import com.intuisoft.plaid.model.LocalWalletModel
 import io.horizontalsystems.bitcoinkit.BitcoinKit
-import io.horizontalsystems.bitcoinkit.MainNet
 import io.horizontalsystems.hdwalletkit.HDWallet
 
 abstract class AbstractWalletManager {
-    protected val _stateChanged = SingleLiveData<ManagerState>()
-    val stateChanged: LiveData<ManagerState> = _stateChanged
-
     protected val _balanceUpdated = MutableLiveData<Long>()
     val balanceUpdated: LiveData<Long> = _balanceUpdated
 
-    var state = ManagerState.NONE
-        protected set(value) {
-            field = value
-            _stateChanged.postValue(field)
-        }
+    protected val _fullySynced = SingleLiveData<Boolean>()
+    val fullySynced: LiveData<Boolean> = _fullySynced
 
     abstract fun start()
     abstract fun stop()
@@ -34,6 +27,10 @@ abstract class AbstractWalletManager {
     abstract suspend fun getWalletsAsync(): List<LocalWalletModel>
     abstract fun getWallets(): List<LocalWalletModel>
     abstract fun synchronizeAll()
+    abstract fun enterWallet(wallet: LocalWalletModel)
+    abstract fun exitWallet()
+    abstract suspend fun addWalletSyncListener(listener: StateListener)
+    abstract suspend fun removeSyncListener(listener: StateListener)
     abstract fun findLocalWallet(uuid: String): LocalWalletModel?
     abstract fun findStoredWallet(uuid: String): WalletIdentifier?
     abstract suspend fun createWallet(name: String, seed: List<String>, bip: HDWallet.Purpose, testnetWallet: Boolean): String

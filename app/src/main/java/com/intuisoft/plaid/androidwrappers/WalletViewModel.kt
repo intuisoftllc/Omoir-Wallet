@@ -2,18 +2,13 @@ package com.intuisoft.plaid.androidwrappers
 
 import android.app.Application
 import android.content.Context
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
-import com.intuisoft.plaid.R
+import com.intuisoft.plaid.listeners.StateListener
 import com.intuisoft.plaid.model.BitcoinDisplayUnit
 import com.intuisoft.plaid.model.LocalWalletModel
-import com.intuisoft.plaid.model.WalletState
 import com.intuisoft.plaid.repositories.LocalStoreRepository
-import com.intuisoft.plaid.util.Constants
-import com.intuisoft.plaid.util.SimpleCoinNumberFormat
 import com.intuisoft.plaid.walletmanager.AbstractWalletManager
-import com.intuisoft.plaid.walletmanager.WalletManager
 import io.horizontalsystems.bitcoincore.managers.SendValueErrors
 import io.horizontalsystems.bitcoincore.models.TransactionInfo
 import io.horizontalsystems.bitcoincore.storage.UnspentOutput
@@ -80,7 +75,7 @@ open class WalletViewModel(
         walletManager.setWalletPassphrase(localWallet!!, passphrase)
     }
 
-    fun isWalletSyncing() = localWallet!!.walletState == WalletState.SYNCING
+    fun isWalletSyncing() = localWallet!!.isSyncing
 
     fun updateWalletSyncMode(apiSync: Boolean) {
         walletManager.updateWalletSyncMode(localWallet!!, apiSync)
@@ -205,6 +200,8 @@ open class WalletViewModel(
         localWallet = walletManager.findLocalWallet(uuid)
     }
 
+    fun getWallet() = localWallet
+
     fun isAddressValid(address: String): Boolean {
         if(localWallet != null) {
             return localWallet!!.walletKit!!.isAddressValid(address)
@@ -302,6 +299,22 @@ open class WalletViewModel(
 
                     _walletCreated.postValue(walletId)
                 }
+            }
+        }
+    }
+
+    fun addWalletStateListener(listener: StateListener) {
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                walletManager.addWalletSyncListener(listener)
+            }
+        }
+    }
+
+    fun removeWalletSyncListener(listener: StateListener) {
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                walletManager.removeSyncListener(listener)
             }
         }
     }

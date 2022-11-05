@@ -1,40 +1,30 @@
 package com.intuisoft.plaid.features.homescreen.ui
 
-import android.app.AlertDialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
-import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
-import androidx.navigation.fragment.findNavController
 import com.docformative.docformative.toArrayList
-import com.intuisoft.plaid.PlaidApp
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.activities.MainActivity
-import com.intuisoft.plaid.androidwrappers.FragmentConfiguration
-import com.intuisoft.plaid.androidwrappers.TopBarView
-import com.intuisoft.plaid.androidwrappers.navigate
-import com.intuisoft.plaid.androidwrappers.onBackPressedCallback
+import com.intuisoft.plaid.androidwrappers.*
 import com.intuisoft.plaid.databinding.FragmentHomescreenBinding
-import com.intuisoft.plaid.features.homescreen.adapters.BasicTransactionAdapter
 import com.intuisoft.plaid.features.homescreen.adapters.BasicWalletDataAdapter
 import com.intuisoft.plaid.features.homescreen.viewmodel.HomeScreenViewModel
 import com.intuisoft.plaid.features.pin.ui.PinProtectedFragment
+import com.intuisoft.plaid.listeners.StateListener
 import com.intuisoft.plaid.model.LocalWalletModel
 import com.intuisoft.plaid.repositories.LocalStoreRepository
-import com.intuisoft.plaid.util.Constants
 import com.intuisoft.plaid.walletmanager.AbstractWalletManager
-import com.intuisoft.plaid.walletmanager.ManagerState
-import com.intuisoft.plaid.walletmanager.WalletManager
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
-class HomescreenFragment : PinProtectedFragment<FragmentHomescreenBinding>() {
+class HomescreenFragment : PinProtectedFragment<FragmentHomescreenBinding>(), StateListener {
     protected val viewModel: HomeScreenViewModel by viewModel()
+    protected val walletVM: WalletViewModel by viewModel()
     protected val localStoreRepository: LocalStoreRepository by inject()
     protected val walletManager: AbstractWalletManager by inject()
 
@@ -59,11 +49,11 @@ class HomescreenFragment : PinProtectedFragment<FragmentHomescreenBinding>() {
         }
 
         viewModel.updateGreeting()
-        viewModel.showWallets()
-        viewModel.syncWallets()
+        walletManager.synchronizeAll()
+        walletVM.addWalletStateListener(this)
 
-        walletManager.stateChanged.observe(viewLifecycleOwner, Observer {
-            binding.swipeContainer.isRefreshing = it == ManagerState.SYNCHRONIZING
+        walletManager.fullySynced.observe(viewLifecycleOwner, Observer {
+            binding.swipeContainer.isRefreshing = !it
         })
 
         binding.swipeContainer.setOnRefreshListener {
@@ -94,6 +84,16 @@ class HomescreenFragment : PinProtectedFragment<FragmentHomescreenBinding>() {
         }
     }
 
+    override fun onWalletStateUpdated(wallet: LocalWalletModel) {
+        adapter.onWalletStateUpdated(wallet)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.showWallets()
+        walletManager.exitWallet()
+    }
+
     fun onWalletSelected(wallet: LocalWalletModel) {
         navigate(R.id.walletDashboardFragment, wallet)
     }
@@ -121,6 +121,11 @@ class HomescreenFragment : PinProtectedFragment<FragmentHomescreenBinding>() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        walletVM.removeWalletSyncListener(this)
     }
 
 }

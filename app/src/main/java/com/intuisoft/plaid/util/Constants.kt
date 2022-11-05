@@ -106,6 +106,8 @@ class Constants {
         const val TEN_MINUTES = 10 * ONE_MINUTE
         const val INSTANT = -1
         const val INSTANT_TIME_OFFSET = ((ONE_MINUTE * 60) * 24) * 10000
+        const val SYNC_TIMEOUT = 1000 * 10
+        const val AUTO_SYNC_TIME: Long = 1000 * TWO_MINUTES.toLong()
     }
 
     object ActivityResult {
@@ -125,6 +127,8 @@ class Constants {
         const val MAX_PEERS = 10
         const val PAGE_LIMIT = 50
         const val MIN_CONFIRMATIONS = 3
+        const val FREE_MAX_WALLETS = 4
+        const val PRO_MAX_WALLETS = 10
         const val DEFAULT_PIN_TIMEOUT = Time.INSTANT_TIME_OFFSET // check for pin only when user leaves the app by default
     }
 }

@@ -769,6 +769,14 @@ class BitcoinCore(
             else -> false
         }
 
+        fun isSyncing() : Boolean {
+            return this is Syncing || this is ApiSyncing
+        }
+
+        fun hasSynced() = this is Synced
+
+        fun syncPercentage() : Double = if(this is Syncing) progress else 0.0
+
         override fun toString() = when (this) {
             is Synced -> "Synced"
             is NotSynced -> "NotSynced-${this.exception.javaClass.simpleName}"

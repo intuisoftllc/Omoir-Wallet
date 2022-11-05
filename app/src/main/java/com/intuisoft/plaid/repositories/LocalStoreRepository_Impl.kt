@@ -50,10 +50,6 @@ class LocalStoreRepository_Impl(
         userPreferences.defaultFeeType = type
     }
 
-    override fun getWalletSyncTime(): Int {
-        return userPreferences.walletSyncTime
-    }
-
     override fun setOnWipeDataListener(listener: WipeDataListener) {
         wipeDataListener = listener
     }
