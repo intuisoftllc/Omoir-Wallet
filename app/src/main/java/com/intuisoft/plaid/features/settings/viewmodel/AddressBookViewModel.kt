@@ -5,17 +5,19 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
 import com.intuisoft.plaid.androidwrappers.SingleLiveData
 import com.intuisoft.plaid.androidwrappers.WalletViewModel
-import com.intuisoft.plaid.model.SavedAddressModel
-import com.intuisoft.plaid.repositories.LocalStoreRepository
+import com.intuisoft.plaid.common.model.SavedAddressModel
+import com.intuisoft.plaid.common.repositories.ApiRepository
+import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.walletmanager.AbstractWalletManager
 import kotlinx.coroutines.launch
 
 
 class AddressBookViewModel(
     application: Application,
+    apiRepository: ApiRepository,
     private val localStoreRepository: LocalStoreRepository,
     private val walletManager: AbstractWalletManager
-): WalletViewModel(application, localStoreRepository, walletManager) {
+): WalletViewModel(application, localStoreRepository, apiRepository, walletManager) {
 
     private val _addresses = SingleLiveData<List<SavedAddressModel>>()
     val addresses: LiveData<List<SavedAddressModel>> = _addresses

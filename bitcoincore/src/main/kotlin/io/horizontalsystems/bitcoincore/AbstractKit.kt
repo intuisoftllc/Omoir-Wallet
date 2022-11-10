@@ -24,6 +24,8 @@ abstract class AbstractKit {
 
     val syncState get() = bitcoinCore.syncState
 
+    val isRestored get() = bitcoinCore.isRestored
+
     val watchAccount: Boolean
         get() = bitcoinCore.watchAccount
 

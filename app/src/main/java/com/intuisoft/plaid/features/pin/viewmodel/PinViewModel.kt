@@ -2,8 +2,7 @@ package com.intuisoft.plaid.features.pin.viewmodel
 
 import android.app.Application
 import com.intuisoft.plaid.androidwrappers.BaseViewModel
-import com.intuisoft.plaid.local.UserPreferences
-import com.intuisoft.plaid.repositories.LocalStoreRepository
+import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.walletmanager.AbstractWalletManager
 import com.intuisoft.plaid.walletmanager.WalletManager
 

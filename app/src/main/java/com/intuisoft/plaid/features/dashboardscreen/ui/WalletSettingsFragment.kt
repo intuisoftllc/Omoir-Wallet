@@ -2,14 +2,10 @@ package com.intuisoft.plaid.features.dashboardscreen.ui
 
 import android.app.ProgressDialog
 import android.os.Bundle
-import android.text.InputType
-import android.text.method.HideReturnsTransformationMethod
 import android.text.method.PasswordTransformationMethod
-import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
@@ -27,7 +23,7 @@ import com.intuisoft.plaid.features.dashboardscreen.viewmodel.WalletSettingsView
 import com.intuisoft.plaid.features.pin.ui.PinProtectedFragment
 import com.intuisoft.plaid.features.settings.ui.SettingsFragment
 import com.intuisoft.plaid.features.settings.viewmodel.SettingsViewModel
-import com.intuisoft.plaid.util.Constants
+import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.util.fragmentconfig.ConfigQrDisplayData
 import com.intuisoft.plaid.util.fragmentconfig.ConfigSeedData
 import io.horizontalsystems.bitcoinkit.BitcoinKit
@@ -49,7 +45,7 @@ class WalletSettingsFragment : PinProtectedFragment<FragmentWalletSettingsBindin
         _binding = FragmentWalletSettingsBinding.inflate(inflater, container, false)
         setupConfiguration(viewModel, listOf())
 
-        viewModel.fromSettings = requireArguments().getBoolean(Constants.Navigation.FROM_SETTINGS)
+        viewModel.fromSettings = requireArguments().getBoolean(com.intuisoft.plaid.common.util.Constants.Navigation.FROM_SETTINGS)
         return binding.root
     }
 
@@ -92,19 +88,14 @@ class WalletSettingsFragment : PinProtectedFragment<FragmentWalletSettingsBindin
             }
         })
 
-        binding.syncType.onClick {
-            showSyncTypeDialog()
-        }
-
         viewModel.readOnlyWallet.observe(viewLifecycleOwner, Observer {
-            binding.syncType.disableView(true)
             binding.passphrase.disableView(true)
             binding.seedPhrase.disableView(true)
         })
 
         binding.seedPhrase.onClick {
             var bundle = bundleOf(
-                Constants.Navigation.FRAGMENT_CONFIG to FragmentConfiguration(
+                com.intuisoft.plaid.common.util.Constants.Navigation.FRAGMENT_CONFIG to FragmentConfiguration(
                     actionBarTitle = R.string.seed_phrase_basic_fragment_label,
                     actionBarSubtitle = 0,
                     actionBarVariant = TopBarView.CENTER_ALIGN,
@@ -130,7 +121,7 @@ class WalletSettingsFragment : PinProtectedFragment<FragmentWalletSettingsBindin
 
         binding.exportWallet.onClick {
             var bundle = bundleOf(
-                Constants.Navigation.FRAGMENT_CONFIG to FragmentConfiguration(
+                com.intuisoft.plaid.common.util.Constants.Navigation.FRAGMENT_CONFIG to FragmentConfiguration(
                     actionBarTitle = R.string.wallet_export_fragment_label,
                     actionBarSubtitle = 0,
                     actionBarVariant = TopBarView.CENTER_ALIGN,
@@ -143,7 +134,7 @@ class WalletSettingsFragment : PinProtectedFragment<FragmentWalletSettingsBindin
                         showClose = false
                     )
                 ),
-                Constants.Navigation.WALLET_UUID_BUNDLE_ID to viewModel.getWalletId()
+                com.intuisoft.plaid.common.util.Constants.Navigation.WALLET_UUID_BUNDLE_ID to viewModel.getWalletId()
             )
 
             navigate(
@@ -177,8 +168,8 @@ class WalletSettingsFragment : PinProtectedFragment<FragmentWalletSettingsBindin
                 onPositive = {
                     if(viewModel.isFingerprintEnabled()) {
                         validateFingerprint(
-                            title = Constants.Strings.SCAN_TO_ERASE_DATA,
-                            subTitle = Constants.Strings.USE_BIOMETRIC_REASON_5,
+                            title = com.intuisoft.plaid.common.util.Constants.Strings.SCAN_TO_ERASE_DATA,
+                            subTitle = com.intuisoft.plaid.common.util.Constants.Strings.USE_BIOMETRIC_REASON_5,
                             onSuccess = {
                                 wipeData()
                             }
@@ -209,33 +200,6 @@ class WalletSettingsFragment : PinProtectedFragment<FragmentWalletSettingsBindin
         } else {
             findNavController().popBackStack()
         }
-    }
-
-    private fun showSyncTypeDialog() {
-        val bottomSheetDialog = BottomSheetDialog(requireContext())
-        bottomSheetDialog.setContentView(R.layout.bottom_sheet_sync_type)
-        val coreSync = bottomSheetDialog.findViewById<SettingsItemView>(R.id.coreSync)
-        val apiSync = bottomSheetDialog.findViewById<SettingsItemView>(R.id.apiSync)
-
-        coreSync?.checkRadio(!viewModel.hasApiSyncMode())
-        apiSync?.checkRadio(viewModel.hasApiSyncMode())
-
-        coreSync?.onClick {
-            appSettingsViewModel.appRestartNeeded = true
-            viewModel.updateWalletSyncMode(false)
-            apiSync?.checkRadio(false)
-            coreSync.checkRadio(true)
-        }
-
-        apiSync?.onClick {
-            appSettingsViewModel.appRestartNeeded = true
-            viewModel.updateWalletSyncMode(true)
-            apiSync.checkRadio(true)
-            coreSync?.checkRadio(false)
-        }
-
-        bottomSheetDialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
-        bottomSheetDialog.show()
     }
 
     fun showPassphraseDialog() {
@@ -319,14 +283,14 @@ class WalletSettingsFragment : PinProtectedFragment<FragmentWalletSettingsBindin
 
         viewModel.deleteWallet {
             progressDialog.cancel()
-            navigate(R.id.splashFragment)
+            if(viewModel.fromSettings) {
+                appSettingsViewModel.appRestartNeeded = true
+                onNavigateBack()
+            } else {
+                navigate(R.id.splashFragment)
+            }
         }
     }
-
-    override fun onResume() {
-        super.onResume()
-    }
-
 
     override fun onDestroyView() {
         super.onDestroyView()

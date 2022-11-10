@@ -4,4 +4,5 @@ import com.intuisoft.plaid.model.LocalWalletModel
 
 interface StateListener {
     fun onWalletStateUpdated(wallet: LocalWalletModel)
+    fun onWalletAlreadySynced(wallet: LocalWalletModel)
 }

@@ -7,21 +7,20 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
-import com.google.gson.Gson
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.*
+import com.intuisoft.plaid.common.CommonService
 import com.intuisoft.plaid.databinding.FragmentTransactionDetailsBinding
-import com.intuisoft.plaid.features.dashboardscreen.viewmodel.WalletExportViewModel
 import com.intuisoft.plaid.features.pin.ui.PinProtectedFragment
-import com.intuisoft.plaid.repositories.LocalStoreRepository
-import com.intuisoft.plaid.util.Constants
+import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.util.Plural
-import com.intuisoft.plaid.util.SimpleCoinNumberFormat
+import com.intuisoft.plaid.common.util.SimpleCoinNumberFormat
 import com.intuisoft.plaid.util.SimpleTimeFormat.getDateByLocale
 import com.intuisoft.plaid.util.fragmentconfig.ConfigTransactionData
 import io.horizontalsystems.bitcoincore.models.TransactionInfo
 import io.horizontalsystems.bitcoincore.models.TransactionStatus
 import io.horizontalsystems.bitcoincore.models.TransactionType
+import io.horizontalsystems.bitcoinkit.BitcoinKit
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.*
@@ -48,7 +47,8 @@ class TransactionDetailsFragment : PinProtectedFragment<FragmentTransactionDetai
         configuration?.let {
             when(it.configurationType) {
                 FragmentConfigurationType.CONFIGURATION_TRANSACTION_DATA -> {
-                    val transaction = Gson().fromJson((it.configData as ConfigTransactionData).payload, TransactionInfo::class.java)
+                    val transaction = CommonService.getGsonInstance()
+                        .fromJson((it.configData as ConfigTransactionData).payload, TransactionInfo::class.java)
 
                     when(transaction.type) {
                         TransactionType.Incoming -> {
@@ -65,6 +65,10 @@ class TransactionDetailsFragment : PinProtectedFragment<FragmentTransactionDetai
                             binding.transactionType.setSubTitleText(getString(R.string.transaction_details_type_sent_to_self))
                             binding.transactionType.showSubtitleIcon(R.drawable.ic_sent_to_self)
                         }
+                    }
+
+                    if(viewModel.getWalletNetwork() == BitcoinKit.NetworkType.TestNet) {
+                        binding.viewOnBlockchain.setButtonText(getString(R.string.transaction_details_view_testnet_transaction_online))
                     }
 
                     binding.amount.setSubTitleText(SimpleCoinNumberFormat.format(localStoreRepository, transaction.amount, false))
@@ -84,7 +88,7 @@ class TransactionDetailsFragment : PinProtectedFragment<FragmentTransactionDetai
 
                     binding.transactionId.onClick {
                         requireContext().copyToClipboard(transaction.transactionHash, "transactionId")
-                        styledSnackBar(requireView(), Constants.Strings.COPIED_TO_CLIPBOARD, true)
+                        styledSnackBar(requireView(), com.intuisoft.plaid.common.util.Constants.Strings.COPIED_TO_CLIPBOARD, true)
                     }
 
                     when(transaction.blockHeight) {
@@ -113,15 +117,19 @@ class TransactionDetailsFragment : PinProtectedFragment<FragmentTransactionDetai
                         val text = getString(
                             R.string.transaction_details_share_text,
                             SimpleCoinNumberFormat.format(localStoreRepository, transaction.amount),
-                            SimpleCoinNumberFormat.format(localStoreRepository, transaction.fee!!),
-                            Constants.Strings.BLOCKCHAIN_COM_TX_URL + transaction.transactionHash
+                            if(transaction.fee != null) SimpleCoinNumberFormat.format(localStoreRepository, transaction.fee!!) else "N/A",
+                            if(viewModel.getWalletNetwork() == BitcoinKit.NetworkType.TestNet) com.intuisoft.plaid.common.util.Constants.Strings.BLOCK_CYPHER_TX_URL + transaction.transactionHash
+                            else com.intuisoft.plaid.common.util.Constants.Strings.BLOCK_CYPHER_TX_URL + transaction.transactionHash
                         )
                         val subject = getString(R.string.transaction_details_share_tag)
                         requireActivity().shareText(subject, text)
                     }
 
                     binding.viewOnBlockchain.onClick {
-                        viewOnBlockchainCom(Constants.Strings.BLOCKCHAIN_COM_TX_URL, transaction.transactionHash)
+                        if(viewModel.getWalletNetwork() == BitcoinKit.NetworkType.MainNet)
+                            viewOnBlockchainCom(com.intuisoft.plaid.common.util.Constants.Strings.BLOCKCHAIN_COM_TX_URL, transaction.transactionHash)
+                        else
+                            viewOnBlockchainCom(com.intuisoft.plaid.common.util.Constants.Strings.BLOCK_CYPHER_TX_URL, transaction.transactionHash)
                     }
                 }
             }

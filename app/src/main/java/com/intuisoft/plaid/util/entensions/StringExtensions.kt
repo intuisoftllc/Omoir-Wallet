@@ -8,13 +8,6 @@ fun String.sha256(): String {
     return BigInteger(1, md.digest(toByteArray())).toString(16).padStart(32, '0')
 }
 
-fun String.shiftRight(char: Char, amount: Int) : String {
-    var index = indexOf(char)
-    var str = this.replace(char.toString(), "")
-    str = str.replaceRange(index + amount, index + amount, char.toString())
-    return str
-}
-
 fun String.charsAfter(ch: Char) : Int {
     var charsFound = 0
 

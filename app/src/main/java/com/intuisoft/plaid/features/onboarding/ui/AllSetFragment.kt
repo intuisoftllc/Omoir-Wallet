@@ -1,29 +1,19 @@
 package com.intuisoft.plaid.features.onboarding.ui
 
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
-import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.OnBackPressedCallback
 import androidx.core.os.bundleOf
-import androidx.core.view.isVisible
-import androidx.core.widget.addTextChangedListener
-import androidx.core.widget.doAfterTextChanged
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navOptions
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.*
 import com.intuisoft.plaid.databinding.FragmentOnboardingAllSetBinding
 import com.intuisoft.plaid.features.onboarding.viewmodel.OnboardingViewModel
-import com.intuisoft.plaid.features.pin.ui.PinFragmentDirections
 import com.intuisoft.plaid.features.pin.ui.PinProtectedFragment
-import com.intuisoft.plaid.util.Constants
-import com.intuisoft.plaid.util.Constants.Limit.MAX_ALIAS_LENGTH
+import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.util.fragmentconfig.AllSetData
-import com.intuisoft.plaid.util.fragmentconfig.ConfigSeedData
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 
@@ -60,7 +50,7 @@ class AllSetFragment : PinProtectedFragment<FragmentOnboardingAllSetBinding>() {
                 binding.negativeButton.setButtonText(data.negativeText)
 
                 binding.positiveButton.onClick {
-                    val bundle = bundleOf(Constants.Navigation.WALLET_UUID_BUNDLE_ID to data.walletUUID)
+                    val bundle = bundleOf(com.intuisoft.plaid.common.util.Constants.Navigation.WALLET_UUID_BUNDLE_ID to data.walletUUID)
 
                     findNavController().popBackStack(R.id.homescreenFragment, false)
                     navigate(
@@ -76,7 +66,7 @@ class AllSetFragment : PinProtectedFragment<FragmentOnboardingAllSetBinding>() {
                 }
 
                 binding.negativeButton.onClick {
-                    val bundle = bundleOf(Constants.Navigation.WALLET_UUID_BUNDLE_ID to data.walletUUID)
+                    val bundle = bundleOf(com.intuisoft.plaid.common.util.Constants.Navigation.WALLET_UUID_BUNDLE_ID to data.walletUUID)
 
                     findNavController().popBackStack(R.id.homescreenFragment, false)
                     navigate(

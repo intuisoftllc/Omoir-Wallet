@@ -15,7 +15,7 @@ import com.intuisoft.plaid.androidwrappers.navigate
 import com.intuisoft.plaid.databinding.FragmentSeedPhraseBinding
 import com.intuisoft.plaid.features.createwallet.viewmodel.CreateWalletViewModel
 import com.intuisoft.plaid.features.pin.ui.PinProtectedFragment
-import com.intuisoft.plaid.util.Constants
+import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.util.fragmentconfig.ConfigSeedData
 import com.intuisoft.plaid.util.fragmentconfig.WalletConfigurationData
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -67,7 +67,7 @@ class SeedPhraseFragment : PinProtectedFragment<FragmentSeedPhraseBinding>() {
 
         binding.continueButton.onClick {
             var bundle = bundleOf(
-                Constants.Navigation.FRAGMENT_CONFIG to FragmentConfiguration(
+                com.intuisoft.plaid.common.util.Constants.Navigation.FRAGMENT_CONFIG to FragmentConfiguration(
                     configurationType = FragmentConfigurationType.CONFIGURATION_WALLET_DATA,
                     configData = viewModel.getConfiguration()
                 )
@@ -76,7 +76,7 @@ class SeedPhraseFragment : PinProtectedFragment<FragmentSeedPhraseBinding>() {
             navigate(
                 R.id.nameWalletFragment,
                 bundle,
-                Constants.Navigation.ANIMATED_ENTER_EXIT_RIGHT_NAV_OPTION
+                com.intuisoft.plaid.common.util.Constants.Navigation.ANIMATED_ENTER_EXIT_RIGHT_NAV_OPTION
             )
         }
     }

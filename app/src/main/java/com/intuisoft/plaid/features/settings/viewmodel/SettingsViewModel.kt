@@ -2,7 +2,6 @@ package com.intuisoft.plaid.features.settings.viewmodel
 
 import android.app.Application
 import android.content.Context
-import android.os.Build
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import com.intuisoft.plaid.BuildConfig
@@ -10,13 +9,10 @@ import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.BaseViewModel
 import com.intuisoft.plaid.androidwrappers.SingleLiveData
 import com.intuisoft.plaid.androidwrappers.navigate
-import com.intuisoft.plaid.local.UserPreferences
-import com.intuisoft.plaid.model.AppTheme
-import com.intuisoft.plaid.model.BitcoinDisplayUnit
-import com.intuisoft.plaid.repositories.LocalStoreRepository
-import com.intuisoft.plaid.util.Constants
+import com.intuisoft.plaid.common.model.AppTheme
+import com.intuisoft.plaid.common.model.BitcoinDisplayUnit
+import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.walletmanager.AbstractWalletManager
-import com.intuisoft.plaid.walletmanager.WalletManager
 
 class SettingsViewModel(
     application: Application,
@@ -75,16 +71,16 @@ class SettingsViewModel(
 
     fun pinTimeoutToString(context: Context, timeout: Int) : String =
         when(timeout) {
-            Constants.Time.ONE_MINUTE -> {
+            com.intuisoft.plaid.common.util.Constants.Time.ONE_MINUTE -> {
                 context.getString(R.string.settings_option_max_pin_timeout_variant_2)
             }
-            Constants.Time.TWO_MINUTES -> {
+            com.intuisoft.plaid.common.util.Constants.Time.TWO_MINUTES -> {
                 context.getString(R.string.settings_option_max_pin_timeout_variant_3)
             }
-            Constants.Time.FIVE_MINUTES -> {
+            com.intuisoft.plaid.common.util.Constants.Time.FIVE_MINUTES -> {
                 context.getString(R.string.settings_option_max_pin_timeout_variant_4)
             }
-            Constants.Time.TEN_MINUTES -> {
+            com.intuisoft.plaid.common.util.Constants.Time.TEN_MINUTES -> {
                 context.getString(R.string.settings_option_max_pin_timeout_variant_5)
             }
             else -> {

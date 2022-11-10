@@ -4,34 +4,24 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
-import com.docformative.docformative.toArrayList
-import com.intuisoft.plaid.activities.MainActivity
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.*
-import com.intuisoft.plaid.databinding.FragmentAppearanceBinding
 import com.intuisoft.plaid.databinding.FragmentManageWalletsBinding
 import com.intuisoft.plaid.features.homescreen.adapters.BasicWalletDataAdapter
 import com.intuisoft.plaid.features.pin.ui.PinProtectedFragment
-import com.intuisoft.plaid.features.settings.viewmodel.SettingsViewModel
-import com.intuisoft.plaid.features.settings.viewmodel.ViewWalletsViewModel
-import com.intuisoft.plaid.model.AppTheme
 import com.intuisoft.plaid.model.LocalWalletModel
-import com.intuisoft.plaid.repositories.LocalStoreRepository
-import com.intuisoft.plaid.util.Constants
-import com.intuisoft.plaid.util.fragmentconfig.ConfigQrDisplayData
+import com.intuisoft.plaid.common.repositories.LocalStoreRepository
+import com.intuisoft.plaid.common.util.Constants
+import com.intuisoft.plaid.common.util.extensions.toArrayList
 import com.intuisoft.plaid.walletmanager.AbstractWalletManager
-import com.intuisoft.plaid.walletmanager.WalletManager
 import org.koin.android.ext.android.inject
-import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
 class ViewWalletsFragment : PinProtectedFragment<FragmentManageWalletsBinding>() {
-    private val viewModel: ViewWalletsViewModel by inject()
     protected val localStoreRepository: LocalStoreRepository by inject()
     protected val walletManager: AbstractWalletManager by inject()
 
@@ -53,7 +43,7 @@ class ViewWalletsFragment : PinProtectedFragment<FragmentManageWalletsBinding>()
     override fun onConfiguration(configuration: FragmentConfiguration?) {
 
         binding.walletsList.adapter = adapter
-        viewModel.wallets.observe(viewLifecycleOwner, Observer {
+        walletManager.wallets.observe(viewLifecycleOwner, Observer {
             adapter.addWallets(it.toArrayList())
 
             binding.walletsList.isVisible = it.isNotEmpty()
@@ -64,19 +54,14 @@ class ViewWalletsFragment : PinProtectedFragment<FragmentManageWalletsBinding>()
 
     fun onWalletSelected(wallet: LocalWalletModel) {
         var bundle = bundleOf(
-            Constants.Navigation.FROM_SETTINGS to true,
-            Constants.Navigation.WALLET_UUID_BUNDLE_ID to wallet.uuid
+            com.intuisoft.plaid.common.util.Constants.Navigation.FROM_SETTINGS to true,
+            com.intuisoft.plaid.common.util.Constants.Navigation.WALLET_UUID_BUNDLE_ID to wallet.uuid
         )
 
         navigate(
             R.id.walletSettingsFragment,
             bundle
         )
-    }
-
-    override fun onResume() {
-        super.onResume()
-        viewModel.showWallets()
     }
 
     override fun onDestroyView() {

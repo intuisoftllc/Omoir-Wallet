@@ -12,7 +12,7 @@ import com.intuisoft.plaid.androidwrappers.BindingFragment
 import com.intuisoft.plaid.androidwrappers.TopBarView
 import com.intuisoft.plaid.databinding.FragmentSplashBinding
 import com.intuisoft.plaid.features.splash.viewmodel.SplashViewModel
-import com.intuisoft.plaid.util.Constants
+import com.intuisoft.plaid.common.util.Constants
 import org.koin.android.ext.android.inject
 
 class SplashFragment : BindingFragment<FragmentSplashBinding>() {
@@ -36,7 +36,7 @@ class SplashFragment : BindingFragment<FragmentSplashBinding>() {
 
         viewModel.resetPinCheckedTime()
         viewModel.nextDestination.observe(viewLifecycleOwner, Observer {
-            findNavController().navigate(it, Constants.Navigation.ANIMATED_FADE_IN_EXIT_NAV_OPTION)
+            findNavController().navigate(it, com.intuisoft.plaid.common.util.Constants.Navigation.ANIMATED_FADE_IN_EXIT_NAV_OPTION)
         })
     }
 

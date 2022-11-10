@@ -9,8 +9,7 @@ import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.BaseViewModel
 import com.intuisoft.plaid.features.splash.ui.SplashFragment
 import com.intuisoft.plaid.features.splash.ui.SplashFragmentDirections
-import com.intuisoft.plaid.local.UserPreferences
-import com.intuisoft.plaid.repositories.LocalStoreRepository
+import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.walletmanager.AbstractWalletManager
 import com.intuisoft.plaid.walletmanager.WalletManager
 import kotlinx.coroutines.delay

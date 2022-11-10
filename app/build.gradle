@@ -4,11 +4,13 @@ plugins {
     id 'kotlin-kapt'
     id 'kotlin-android-extensions'
     id 'androidx.navigation.safeargs'
+    id 'com.google.gms.google-services'
+    id 'com.google.firebase.crashlytics'
 }
 
-def apikeyPropertiesFile = rootProject.file("api_keys.properties")
-def apikeyProps = new Properties()
-apikeyProps.load(new FileInputStream(apikeyPropertiesFile))
+def propertiesFile = rootProject.file("app.properties")
+def properties = new Properties()
+properties.load(new FileInputStream(propertiesFile))
 
 android {
     compileSdk 33
@@ -30,20 +32,41 @@ android {
         }
     }
 
+    signingConfigs {
+        develop {
+            storeFile file("${project.rootDir}/keystores/app.keystore")
+            storePassword properties['KEY_PASSWORD']
+            keyAlias properties['KEY_ALIAS']
+            keyPassword properties['STORE_PASSWORD']
+        }
+
+        production {
+            storeFile file("${project.rootDir}/keystores/app.keystore")
+            storePassword properties['KEY_PASSWORD']
+            keyAlias properties['KEY_ALIAS']
+            keyPassword properties['STORE_PASSWORD']
+        }
+    }
+
     flavorDimensions "version"
     productFlavors {
         dev {
             versionNameSuffix = "-dev"
             applicationIdSuffix ".dev"
+            signingConfig signingConfigs.develop
             buildConfigField("String", "BLOCK_BOOK_SERVER_URL", "\"https://btcbook.nownodes.io/api/v2/\"")
-            buildConfigField("String", "NOW_NODES_CLIENT_SECRET", "\"${apikeyProps['NOW_NODES_TEST_CLIENT_SECRET']}\"")
+            buildConfigField("String", "NODE_SERVER_URL", "\"https://btc.nownodes.io/\"")
+            buildConfigField("String", "TEST_NET_NODE_SERVER_URL", "\"https://btc-testnet.nownodes.io/\"")
+            buildConfigField("String", "NOW_NODES_CLIENT_SECRET", "\"${properties['NOW_NODES_TEST_CLIENT_SECRET']}\"")
         }
 
         prod {
             versionNameSuffix = "-prod"
-            applicationIdSuffix ".prod"
+            signingConfig signingConfigs.production
             buildConfigField("String", "BLOCK_BOOK_SERVER_URL", "\"https://btcbook.nownodes.io/api/v2/\"")
-            buildConfigField("String", "NOW_NODES_CLIENT_SECRET", "\"${apikeyProps['NOW_NODES_CLIENT_SECRET']}\"")
+            buildConfigField("String", "NODE_SERVER_URL", "\"https://btc.nownodes.io/\"")
+            buildConfigField("String", "TEST_NET_NODE_SERVER_URL", "\"https://btc-testnet.nownodes.io/\"")
+            buildConfigField("String", "NOW_NODES_CLIENT_SECRET", "\"${properties['NOW_NODES_CLIENT_SECRET']}\"")
         }
     }
     compileOptions {
@@ -80,20 +103,16 @@ dependencies {
     implementation "io.insert-koin:koin-core:$koin_version"
 // No more koin-android-viewmodel, koin-android-scope, koin-android-fragment
 
-    implementation "com.squareup.okhttp3:okhttp:$okhttp_version"
-    implementation "com.squareup.okhttp3:logging-interceptor:$okhttp_version"
-    implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
-    implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
-    implementation "com.squareup.retrofit2:adapter-rxjava3:$retrofit_version"
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:$swipe_refresh_version"
 
-    implementation "androidx.room:room-runtime:$room_version"
-    kapt "androidx.room:room-compiler:$room_version" // For Kotlin use kapt instead of annotationProcessor
-    implementation "androidx.room:room-ktx:$room_version"
-    implementation "androidx.paging:paging-runtime-ktx:3.1.1"
-    implementation "androidx.paging:paging-runtime:3.1.1"
-    implementation 'com.google.android.gms:play-services-vision:20.1.3'
-    implementation 'com.tbuonomo:dotsindicator:4.3'
+    implementation "androidx.paging:paging-runtime-ktx:$paging_version"
+    implementation "androidx.paging:paging-runtime:$paging_version"
+    implementation "com.google.android.gms:play-services-vision:$google_vision_version"
+    implementation "com.tbuonomo:dotsindicator:$pager_view_dots_version"
+    implementation platform("com.google.firebase:firebase-bom:$firebase_bom_version")
+    implementation "com.google.firebase:firebase-analytics-ktx"
+    implementation "com.google.firebase:firebase-crashlytics-ktx:$firebase_version"
+    implementation "com.squareup.retrofit2:converter-gson:2.9.0"
 
 
     implementation 'com.journeyapps:zxing-android-embedded:4.3.0'
@@ -101,6 +120,7 @@ dependencies {
 
     implementation project(":bitcoinkit")
     implementation project(":hd-wallet-kit")
+    implementation project(":common")
 
     implementation 'io.reactivex.rxjava2:rxjava:2.2.19'
     implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'

@@ -8,7 +8,6 @@ import androidx.viewbinding.ViewBinding
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.activities.MainActivity
 import com.intuisoft.plaid.listeners.NetworkStateChangeListener
-import com.intuisoft.plaid.util.Constants
 
 abstract class BindingFragment<T: ViewBinding> : Fragment(), FragmentActionBarDelegate, NetworkStateChangeListener {
 

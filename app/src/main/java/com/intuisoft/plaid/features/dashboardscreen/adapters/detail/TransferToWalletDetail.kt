@@ -6,7 +6,7 @@ import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.BindingViewHolder
 import com.intuisoft.plaid.androidwrappers.ListItem
 import com.intuisoft.plaid.model.LocalWalletModel
-import com.intuisoft.plaid.repositories.LocalStoreRepository
+import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import kotlinx.android.synthetic.main.list_item_basic_wallet_detail.view.*
 
 

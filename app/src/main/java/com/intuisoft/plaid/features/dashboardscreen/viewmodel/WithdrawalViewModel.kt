@@ -1,33 +1,27 @@
 package com.intuisoft.plaid.features.dashboardscreen.viewmodel
 
 import android.app.Application
-import android.content.Context
-import android.widget.Toast
 import androidx.lifecycle.LiveData
 import com.intuisoft.plaid.PlaidApp
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.SingleLiveData
 import com.intuisoft.plaid.androidwrappers.WalletViewModel
-import com.intuisoft.plaid.model.BitcoinDisplayUnit
-import com.intuisoft.plaid.model.FeeType
-import com.intuisoft.plaid.model.NetworkFeeRate
-import com.intuisoft.plaid.repositories.LocalStoreRepository
-import com.intuisoft.plaid.util.Constants
-import com.intuisoft.plaid.util.NetworkUtil
-import com.intuisoft.plaid.util.RateConverter
+import com.intuisoft.plaid.common.model.BitcoinDisplayUnit
+import com.intuisoft.plaid.common.repositories.ApiRepository
+import com.intuisoft.plaid.common.repositories.LocalStoreRepository
+import com.intuisoft.plaid.common.util.RateConverter
 import com.intuisoft.plaid.util.entensions.addChars
 import com.intuisoft.plaid.util.entensions.charsAfter
 import com.intuisoft.plaid.walletmanager.AbstractWalletManager
-import io.horizontalsystems.bitcoincore.models.TransactionDataSortType
-import io.horizontalsystems.bitcoincore.storage.FullTransaction
 import io.horizontalsystems.bitcoincore.storage.UnspentOutput
 
 
 class WithdrawalViewModel(
     application: Application,
+    apiRepository: ApiRepository,
     private val localStoreRepository: LocalStoreRepository,
     private val walletManager: AbstractWalletManager
-): WalletViewModel(application, localStoreRepository, walletManager) {
+): WalletViewModel(application, localStoreRepository, apiRepository, walletManager) {
 
     protected val _localSpendAmount = SingleLiveData<String>()
     val localSpendAmount: LiveData<String> = _localSpendAmount
@@ -283,7 +277,8 @@ class WithdrawalViewModel(
         }
 
         if(getDisplayUnit() == BitcoinDisplayUnit.FIAT &&
-            (getMaxSpend().from(RateConverter.RateType.FIAT_RATE).first == tempRate.from(RateConverter.RateType.FIAT_RATE).first)) {
+            (getMaxSpend().from(RateConverter.RateType.FIAT_RATE).first == tempRate.from(
+                RateConverter.RateType.FIAT_RATE).first)) {
             // this solves a rounding issue for when a users balance causes entering the full balance to be slightly more than they have
             spendMaxBalance()
         } else if(!isSpendOverBalance(tempRate)) {

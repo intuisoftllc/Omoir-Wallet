@@ -1,12 +1,7 @@
 package com.intuisoft.plaid.activities
 
 import android.Manifest
-import android.content.Context
 import android.content.Intent
-import android.hardware.Camera
-import android.hardware.camera2.CameraAccessException
-import android.hardware.camera2.CameraManager
-import android.os.Build
 import android.os.Bundle
 import android.util.SparseArray
 import android.view.SurfaceHolder
@@ -17,10 +12,10 @@ import com.google.android.gms.vision.barcode.BarcodeDetector
 import com.intuisoft.plaid.androidwrappers.BindingActivity
 import com.intuisoft.plaid.androidwrappers.checkAppPermission
 import com.intuisoft.plaid.databinding.ActivityScanBarcodeBinding
-import com.intuisoft.plaid.util.Constants.ActivityResult.BARCODE_EXTRA
+import com.intuisoft.plaid.common.util.Constants.ActivityResult.BARCODE_EXTRA
 import com.intuisoft.plaid.walletmanager.AbstractWalletManager
-import com.intuisoft.plaid.walletmanager.WalletManager
 import io.horizontalsystems.hdwalletkit.HDExtendedKey
+import kotlinx.coroutines.runBlocking
 import org.koin.android.ext.android.inject
 import org.koin.core.component.KoinComponent
 
@@ -83,10 +78,8 @@ class BarcodeScannerActivity : BindingActivity<ActivityScanBarcodeBinding>(), Ko
                     if (barcodes.size() != 0 && walletManager.validAddress(address ?: "")) {
                         closeActivity(address!!)
                     } else {
-                        try {
-                            HDExtendedKey.validate(address ?: "", true)
-                            closeActivity(address!!)
-                        } catch (e: Throwable) {}
+                        HDExtendedKey.validate(address ?: "", true)
+                        closeActivity(address!!)
                     }
                 } catch (e: Throwable) {}
             }

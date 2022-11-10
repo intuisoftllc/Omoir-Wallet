@@ -1,6 +1,5 @@
 package com.intuisoft.plaid.features.createwallet.ui
 
-import android.app.ProgressDialog
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -8,7 +7,6 @@ import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ProgressBar
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
@@ -17,7 +15,7 @@ import com.intuisoft.plaid.androidwrappers.*
 import com.intuisoft.plaid.databinding.FragmentNameWalletBinding
 import com.intuisoft.plaid.features.createwallet.viewmodel.CreateWalletViewModel
 import com.intuisoft.plaid.features.pin.ui.PinProtectedFragment
-import com.intuisoft.plaid.util.Constants
+import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.util.fragmentconfig.AllSetData
 import com.intuisoft.plaid.util.fragmentconfig.WalletConfigurationData
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -42,6 +40,7 @@ class NameYourWalletFragment : PinProtectedFragment<FragmentNameWalletBinding>()
 
     override fun onConfiguration(configuration: FragmentConfiguration?) {
         viewModel.setConfiguration(configuration!!.configData as WalletConfigurationData)
+        ignoreOnBackPressed()
 
         binding.confirm.enableButton(false)
         binding.name.setOnKeyListener(object : View.OnKeyListener {
@@ -63,7 +62,7 @@ class NameYourWalletFragment : PinProtectedFragment<FragmentNameWalletBinding>()
 
         binding.name.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable) {
-                binding.confirm.enableButton(s.length > 0 && s.length <= Constants.Limit.MAX_ALIAS_LENGTH)
+                binding.confirm.enableButton(s.length > 0 && s.length <= com.intuisoft.plaid.common.util.Constants.Limit.MAX_ALIAS_LENGTH)
             }
 
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
@@ -75,17 +74,19 @@ class NameYourWalletFragment : PinProtectedFragment<FragmentNameWalletBinding>()
 
         binding.confirm.onClick {
             binding.loading.isVisible = true
+            binding.confirm.enableButton(false)
             viewModel.commitWalletToDisk(binding.name.text.toString())
         }
 
         viewModel.walletCreationError.observe(viewLifecycleOwner, Observer {
             binding.loading.isVisible = false
+            binding.confirm.enableButton(true)
             styledSnackBar(requireView(), getString(R.string.create_wallet_failure_error))
         })
 
         viewModel.walletCreated.observe(viewLifecycleOwner, Observer {
             var bundle = bundleOf(
-                Constants.Navigation.FRAGMENT_CONFIG to FragmentConfiguration(
+                com.intuisoft.plaid.common.util.Constants.Navigation.FRAGMENT_CONFIG to FragmentConfiguration(
                     actionBarTitle = 0,
                     actionBarSubtitle = 0,
                     actionBarVariant = 0,

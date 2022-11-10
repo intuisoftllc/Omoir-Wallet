@@ -4,10 +4,11 @@ import android.app.Application
 import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
+import com.intuisoft.plaid.common.model.BitcoinDisplayUnit
+import com.intuisoft.plaid.common.repositories.ApiRepository
 import com.intuisoft.plaid.listeners.StateListener
-import com.intuisoft.plaid.model.BitcoinDisplayUnit
 import com.intuisoft.plaid.model.LocalWalletModel
-import com.intuisoft.plaid.repositories.LocalStoreRepository
+import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.walletmanager.AbstractWalletManager
 import io.horizontalsystems.bitcoincore.managers.SendValueErrors
 import io.horizontalsystems.bitcoincore.models.TransactionInfo
@@ -18,6 +19,7 @@ import io.horizontalsystems.hdwalletkit.HDWallet
 import io.horizontalsystems.hdwalletkit.Mnemonic
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -25,6 +27,7 @@ import kotlinx.coroutines.withContext
 open class WalletViewModel(
     application: Application,
     private val localStoreRepository: LocalStoreRepository,
+    private val apiRepository: ApiRepository,
     private val walletManager: AbstractWalletManager
 ): BaseViewModel(application, localStoreRepository, walletManager) {
 
@@ -77,10 +80,6 @@ open class WalletViewModel(
 
     fun isWalletSyncing() = localWallet!!.isSyncing
 
-    fun updateWalletSyncMode(apiSync: Boolean) {
-        walletManager.updateWalletSyncMode(localWallet!!, apiSync)
-    }
-
     fun getConfirmations(transaction: TransactionInfo) : Int {
         val currentBlock = getCurrentBlock()
 
@@ -91,8 +90,6 @@ open class WalletViewModel(
     }
 
     fun getCurrentBlock() = localWallet!!.walletKit!!.lastBlockInfo?.height ?: 0
-
-    fun hasApiSyncMode() = walletManager.findStoredWallet(localWallet!!.uuid)!!.apiSyncMode
 
     fun calculateFee(sats: Long, feeRate: Int, address: String?, retry: Boolean = true) : Long {
         try {
@@ -124,6 +121,9 @@ open class WalletViewModel(
             return 0
         }
     }
+
+    suspend fun getSuggestedFees(testnetWallet: Boolean) =
+        apiRepository.getSuggestedFeeRate(testnetWallet)
 
     fun calculateFee(unspentOutputs: List<UnspentOutput>, sats: Long, feeRate: Int, address: String?, retry: Boolean = true) : Long {
         try {
@@ -166,6 +166,15 @@ open class WalletViewModel(
         _walletNetwork.postValue(getWalletNetwork())
     }
 
+    fun updateSuggestedFees() {
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                // go to network and get fee rates if we have passed the cache time
+                getSuggestedFees(false)
+            }
+        }
+    }
+
     fun showWalletDisplayUnit() {
         _walletDisplayUnit.postValue(localStoreRepository.getBitcoinDisplayUnit())
     }
@@ -198,6 +207,7 @@ open class WalletViewModel(
 
     fun setWallet(uuid: String) {
         localWallet = walletManager.findLocalWallet(uuid)
+        localWallet!!.walletKit!!.onEnterForeground()
     }
 
     fun getWallet() = localWallet
@@ -272,10 +282,8 @@ open class WalletViewModel(
     }
 
     fun syncWallet() {
-        viewModelScope.launch {
-            withContext(Dispatchers.IO) {
-                walletManager.synchronize(localWallet!!)
-            }
+        localWallet?.let {
+            walletManager.synchronize(it)
         }
     }
 
@@ -285,20 +293,18 @@ open class WalletViewModel(
         bip: HDWallet.Purpose,
         testNetWallet: Boolean
     ) {
-        viewModelScope.launch {
-            withContext(Dispatchers.IO) {
-                if (doesWalletExist(walletName)) {
-                    _walletCreationError.postValue(Unit)
-                } else {
-                    val walletId = walletManager.createWallet(
-                        name = walletName,
-                        seed = seed!!,
-                        bip = bip,
-                        testnetWallet = testNetWallet
-                    )
+        GlobalScope.launch {
+            if (doesWalletExist(walletName)) {
+                _walletCreationError.postValue(Unit)
+            } else {
+                val walletId = walletManager.createWallet(
+                    name = walletName,
+                    seed = seed!!,
+                    bip = bip,
+                    testnetWallet = testNetWallet
+                )
 
-                    _walletCreated.postValue(walletId)
-                }
+                _walletCreated.postValue(walletId)
             }
         }
     }
@@ -323,18 +329,16 @@ open class WalletViewModel(
         walletName: String,
         pubKey: String
     ) {
-        viewModelScope.launch {
-            withContext(Dispatchers.IO) {
-                if (doesWalletExist(walletName)) {
-                    _walletCreationError.postValue(Unit)
-                } else {
-                    val walletId = walletManager.createWallet(
-                        name = walletName,
-                        pubKey = pubKey
-                    )
+        GlobalScope.launch {
+            if (doesWalletExist(walletName)) {
+                _walletCreationError.postValue(Unit)
+            } else {
+                val walletId = walletManager.createWallet(
+                    name = walletName,
+                    pubKey = pubKey
+                )
 
-                    _walletCreated.postValue(walletId)
-                }
+                _walletCreated.postValue(walletId)
             }
         }
     }

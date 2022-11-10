@@ -31,8 +31,7 @@
             android:inputType="text"
             android:imeOptions="actionDone"
             android:textColorHint="@color/color_disabled"
-            android:textSize="14sp"
-            tools:ignore="TextContrastCheck,TouchTargetSizeCheck" />
+            android:textSize="14sp" />
     </androidx.cardview.widget.CardView>
 
 

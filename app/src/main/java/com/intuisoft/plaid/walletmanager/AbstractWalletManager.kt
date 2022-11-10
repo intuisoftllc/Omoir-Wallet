@@ -7,28 +7,29 @@ import com.intuisoft.plaid.listeners.StateListener
 import com.intuisoft.plaid.model.LocalWalletModel
 import io.horizontalsystems.bitcoinkit.BitcoinKit
 import io.horizontalsystems.hdwalletkit.HDWallet
+import java.util.concurrent.atomic.AtomicBoolean
 
 abstract class AbstractWalletManager {
+
     protected val _balanceUpdated = MutableLiveData<Long>()
     val balanceUpdated: LiveData<Long> = _balanceUpdated
 
-    protected val _fullySynced = SingleLiveData<Boolean>()
-    val fullySynced: LiveData<Boolean> = _fullySynced
+    protected val _onSyncing = MutableLiveData<Boolean>()
+    val onSyncing: LiveData<Boolean> = _onSyncing
+
+    protected val _wallets = MutableLiveData<List<LocalWalletModel>>()
+    val wallets: LiveData<List<LocalWalletModel>> = _wallets
 
     abstract fun start()
     abstract fun stop()
-    abstract fun updateWalletSyncMode(localWallet: LocalWalletModel, apiSync: Boolean)
     abstract fun updateWalletName(localWallet: LocalWalletModel, newName: String)
     abstract fun validAddress(address: String) : Boolean
-    abstract fun arePeersReady() : Boolean
+    abstract fun arePeersReady(localWallet: LocalWalletModel) : Boolean
     abstract suspend fun deleteWallet(localWallet: LocalWalletModel, onDeleteFinished: suspend () -> Unit)
-    abstract suspend fun synchronize(wallet: LocalWalletModel)
+    abstract fun synchronize(wallet: LocalWalletModel)
     abstract fun doesWalletExist(uuid: String): Boolean
-    abstract suspend fun getWalletsAsync(): List<LocalWalletModel>
     abstract fun getWallets(): List<LocalWalletModel>
     abstract fun synchronizeAll()
-    abstract fun enterWallet(wallet: LocalWalletModel)
-    abstract fun exitWallet()
     abstract suspend fun addWalletSyncListener(listener: StateListener)
     abstract suspend fun removeSyncListener(listener: StateListener)
     abstract fun findLocalWallet(uuid: String): LocalWalletModel?

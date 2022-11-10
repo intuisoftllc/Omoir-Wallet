@@ -1,15 +1,9 @@
 package com.intuisoft.plaid.features.onboarding.ui
 
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
-import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.OnBackPressedCallback
-import androidx.core.widget.addTextChangedListener
-import androidx.core.widget.doAfterTextChanged
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.intuisoft.plaid.R
@@ -20,8 +14,7 @@ import com.intuisoft.plaid.androidwrappers.TopBarView
 import com.intuisoft.plaid.databinding.FragmentOnboardingPinBinding
 import com.intuisoft.plaid.features.onboarding.viewmodel.OnboardingViewModel
 import com.intuisoft.plaid.features.pin.viewmodel.PinViewModel
-import com.intuisoft.plaid.util.Constants
-import com.intuisoft.plaid.util.Constants.Limit.MAX_ALIAS_LENGTH
+import com.intuisoft.plaid.common.util.Constants
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
@@ -69,12 +62,12 @@ class OnboardingPinFragment : BindingFragment<FragmentOnboardingPinBinding>() {
             if(it) {
                 findNavController().navigate(
                     OnboardingPinFragmentDirections.actionOnboardingPinSetupFragmentToFingerprintSetupFragment(),
-                    Constants.Navigation.ANIMATED_ENTER_EXIT_RIGHT_NAV_OPTION
+                    com.intuisoft.plaid.common.util.Constants.Navigation.ANIMATED_ENTER_EXIT_RIGHT_NAV_OPTION
                 )
             } else {
                 findNavController().navigate(
                     OnboardingPinFragmentDirections.actionOnboardingPinSetupFragmentToAllSetFragment(),
-                    Constants.Navigation.ANIMATED_ENTER_EXIT_RIGHT_NAV_OPTION
+                    com.intuisoft.plaid.common.util.Constants.Navigation.ANIMATED_ENTER_EXIT_RIGHT_NAV_OPTION
                 )
             }
         })
@@ -122,7 +115,7 @@ class OnboardingPinFragment : BindingFragment<FragmentOnboardingPinBinding>() {
             onEnroll = {
                 findNavController().navigate(
                     OnboardingPinFragmentDirections.actionOnboardingPinSetupFragmentToFingerprintSetupFragment(),
-                    Constants.Navigation.ANIMATED_ENTER_EXIT_RIGHT_NAV_OPTION
+                    com.intuisoft.plaid.common.util.Constants.Navigation.ANIMATED_ENTER_EXIT_RIGHT_NAV_OPTION
                 )
             }
         )

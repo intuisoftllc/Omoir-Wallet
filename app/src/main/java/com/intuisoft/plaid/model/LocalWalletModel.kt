@@ -2,10 +2,9 @@ package com.intuisoft.plaid.model
 
 import android.content.Context
 import android.widget.TextView
-import androidx.lifecycle.MutableLiveData
 import com.intuisoft.plaid.R
-import com.intuisoft.plaid.repositories.LocalStoreRepository
-import com.intuisoft.plaid.util.SimpleCoinNumberFormat
+import com.intuisoft.plaid.common.repositories.LocalStoreRepository
+import com.intuisoft.plaid.common.util.SimpleCoinNumberFormat
 import com.intuisoft.plaid.util.entensions.sha256
 import com.intuisoft.plaid.walletmanager.WalletIdentifier
 import io.horizontalsystems.bitcoinkit.BitcoinKit
@@ -25,6 +24,9 @@ data class LocalWalletModel(
 
     val isSynced: Boolean
         get() = walletKit!!.syncState.hasSynced()
+
+    val isRestored: Boolean
+        get() = walletKit!!.isRestored
 
     val notStarted: Boolean
         get() = !isSynced && !isSynced
@@ -115,7 +117,7 @@ data class LocalWalletModel(
                 name = walletIdentifier.name,
                 uuid = walletIdentifier.walletUUID,
                 hashId = (walletIdentifier.walletUUID + passphrase).sha256(),
-                testNetWallet = walletIdentifier.isTestNet
+                testNetWallet = walletIdentifier.isTestNet,
             )
     }
 }

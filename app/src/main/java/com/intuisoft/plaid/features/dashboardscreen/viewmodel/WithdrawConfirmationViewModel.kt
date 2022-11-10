@@ -1,40 +1,36 @@
 package com.intuisoft.plaid.features.dashboardscreen.viewmodel
 
 import android.app.Application
-import android.content.Context
-import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
 import com.intuisoft.plaid.PlaidApp
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.SingleLiveData
 import com.intuisoft.plaid.androidwrappers.WalletViewModel
-import com.intuisoft.plaid.model.BitcoinDisplayUnit
-import com.intuisoft.plaid.model.FeeType
+import com.intuisoft.plaid.common.model.FeeType
 import com.intuisoft.plaid.model.LocalWalletModel
-import com.intuisoft.plaid.model.NetworkFeeRate
-import com.intuisoft.plaid.repositories.LocalStoreRepository
-import com.intuisoft.plaid.util.Constants
+import com.intuisoft.plaid.common.model.NetworkFeeRate
+import com.intuisoft.plaid.common.repositories.ApiRepository
+import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.util.NetworkUtil
-import com.intuisoft.plaid.util.RateConverter
-import com.intuisoft.plaid.util.entensions.addChars
-import com.intuisoft.plaid.util.entensions.charsAfter
+import com.intuisoft.plaid.common.util.RateConverter
 import com.intuisoft.plaid.walletmanager.AbstractWalletManager
 import io.horizontalsystems.bitcoincore.models.TransactionDataSortType
 import io.horizontalsystems.bitcoincore.storage.FullTransaction
 import io.horizontalsystems.bitcoincore.storage.UnspentOutput
 import io.horizontalsystems.bitcoinkit.BitcoinKit
-import io.horizontalsystems.hdwalletkit.HDExtendedKey
-import io.horizontalsystems.hdwalletkit.HDExtendedKeyVersion
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 
 class WithdrawConfirmationViewModel(
     application: Application,
+    apiRepository: ApiRepository,
     private val localStoreRepository: LocalStoreRepository,
     private val walletManager: AbstractWalletManager
-): WalletViewModel(application, localStoreRepository, walletManager) {
+): WalletViewModel(application, localStoreRepository, apiRepository, walletManager) {
 
     protected val _onInputRejected = SingleLiveData<Unit>()
     val onInputRejected: LiveData<Unit> = _onInputRejected
@@ -71,6 +67,22 @@ class WithdrawConfirmationViewModel(
 
     fun getWallets() = walletManager.getWallets()
 
+    fun setNetworkFeeRate() {
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                val suggestedRates = getSuggestedFees(
+                    this@WithdrawConfirmationViewModel.getWalletNetwork() == BitcoinKit.NetworkType.TestNet
+                )
+
+                suggestedRates?.let {
+                    this@WithdrawConfirmationViewModel.networkFeeRate = it
+                }
+
+                setDefaultFeeRate()
+            }
+        }
+    }
+
     fun canTransferToWallet(recepient: LocalWalletModel): Boolean {
         return recepient.testNetWallet == localWallet!!.testNetWallet
                 && recepient.uuid != localWallet!!.uuid // ensure same network transferability
@@ -104,7 +116,7 @@ class WithdrawConfirmationViewModel(
         }
     }
 
-    fun setDefaultFeeRate() {
+    private fun setDefaultFeeRate() {
         when(localStoreRepository.getDefaultFeeType()) {
             FeeType.LOW -> {
                 feeRate = networkFeeRate.lowFee
@@ -122,15 +134,9 @@ class WithdrawConfirmationViewModel(
 
     fun broadcast(fullTransaction: FullTransaction): Boolean {
         if(NetworkUtil.hasInternet(getApplication<PlaidApp>())) {
-            if(walletManager.arePeersReady()) {
-                localWallet!!.walletKit!!.broadcast(fullTransaction)
-                return true
-            } else {
-                walletManager.synchronizeAll()
-                // this protection ensures that our transaction will most likely propagate to the network successfully
-                _onNetworkError.postValue(getApplication<PlaidApp>().getString(R.string.reconnecting_to_core))
-                return false
-            }
+            localWallet!!.walletKit!!.broadcast(fullTransaction)
+            walletManager.synchronize(localWallet!!)
+            return true
         } else {
             _onNetworkError.postValue(getApplication<PlaidApp>().getString(R.string.no_internet_connection))
             return false

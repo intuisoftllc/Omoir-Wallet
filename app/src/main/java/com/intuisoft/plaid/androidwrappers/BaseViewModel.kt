@@ -2,7 +2,6 @@ package com.intuisoft.plaid.androidwrappers
 
 import android.app.Activity
 import android.app.Application
-import android.content.Context
 import android.content.Intent
 import android.hardware.biometrics.BiometricManager
 import android.os.Build
@@ -11,20 +10,11 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.intuisoft.plaid.local.UserPreferences
-import com.intuisoft.plaid.model.LocalWalletModel
-import com.intuisoft.plaid.repositories.LocalStoreRepository
-import com.intuisoft.plaid.util.Constants
+import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.walletmanager.AbstractWalletManager
-import com.intuisoft.plaid.walletmanager.WalletManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
-import java.io.File
-import java.security.SecureRandom
-import java.util.*
-import java.util.concurrent.TimeUnit
 
 open class BaseViewModel(
     application: Application,

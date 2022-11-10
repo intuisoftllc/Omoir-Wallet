@@ -9,9 +9,7 @@ import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.BindingViewHolder
 import com.intuisoft.plaid.databinding.ListItemSavedAddressBinding
 import com.intuisoft.plaid.features.settings.adapters.detail.SavedAddressDetail
-import com.intuisoft.plaid.model.SavedAddressModel
-import com.intuisoft.plaid.repositories.LocalStoreRepository
-import io.horizontalsystems.bitcoincore.models.TransactionInfo
+import com.intuisoft.plaid.common.model.SavedAddressModel
 
 
 class AddressBookAdapter(

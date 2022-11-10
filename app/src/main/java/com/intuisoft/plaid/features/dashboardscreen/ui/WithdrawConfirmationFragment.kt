@@ -1,7 +1,6 @@
 package com.intuisoft.plaid.features.dashboardscreen.ui
 
 import android.Manifest
-import android.animation.ValueAnimator
 import android.app.Dialog
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
@@ -23,9 +22,7 @@ import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.navOptions
 import androidx.recyclerview.widget.RecyclerView
-import com.docformative.docformative.toArrayList
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_EXPANDED
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.intuisoft.plaid.R
@@ -37,14 +34,13 @@ import com.intuisoft.plaid.features.dashboardscreen.adapters.TransferToWalletAda
 import com.intuisoft.plaid.features.dashboardscreen.viewmodel.WithdrawConfirmationViewModel
 import com.intuisoft.plaid.features.pin.ui.PinProtectedFragment
 import com.intuisoft.plaid.features.settings.ui.AddressBookFragment
-import com.intuisoft.plaid.features.settings.ui.SettingsFragment
 import com.intuisoft.plaid.features.settings.viewmodel.AddressBookViewModel
 import com.intuisoft.plaid.listeners.BarcodeResultListener
-import com.intuisoft.plaid.model.FeeType
-import com.intuisoft.plaid.repositories.LocalStoreRepository
-import com.intuisoft.plaid.util.Constants
+import com.intuisoft.plaid.common.model.FeeType
+import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.util.Plural
-import com.intuisoft.plaid.util.SimpleCoinNumberFormat
+import com.intuisoft.plaid.common.util.SimpleCoinNumberFormat
+import com.intuisoft.plaid.common.util.extensions.toArrayList
 import com.intuisoft.plaid.util.fragmentconfig.SendFundsData
 import io.horizontalsystems.bitcoincore.extensions.toHexString
 import io.horizontalsystems.bitcoincore.serializers.TransactionSerializer
@@ -79,7 +75,7 @@ class WithdrawConfirmationFragment : PinProtectedFragment<FragmentWithdrawConfir
 
         viewModel.updateUTXOs(data.spendFrom.toMutableList())
         viewModel.updateSendAmount(data.amountToSend)
-        viewModel.setDefaultFeeRate()
+        viewModel.setNetworkFeeRate()
 
         binding.scan.onClick {
             requireActivity().checkAppPermission(Manifest.permission.CAMERA, 100) {
@@ -199,9 +195,22 @@ class WithdrawConfirmationFragment : PinProtectedFragment<FragmentWithdrawConfir
             }
 
             broadcastTransaction.onClick {
-                if(viewModel.broadcast(transaction)) {
-                    bottomSheetDialog.dismiss()
-                    showAlertDialogButtonClicked(feePaid)
+                if(viewModel.isFingerprintEnabled()) {
+                    validateFingerprint(
+                        title = com.intuisoft.plaid.common.util.Constants.Strings.USE_BIOMETRIC_AUTH,
+                        subTitle = com.intuisoft.plaid.common.util.Constants.Strings.USE_BIOMETRIC_REASON_6,
+                        onSuccess = {
+                            if(viewModel.broadcast(transaction)) {
+                                bottomSheetDialog.dismiss()
+                                showAlertDialogButtonClicked(feePaid)
+                            }
+                        }
+                    )
+                } else {
+                    if(viewModel.broadcast(transaction)) {
+                        bottomSheetDialog.dismiss()
+                        showAlertDialogButtonClicked(feePaid)
+                    }
                 }
             }
 
@@ -233,7 +242,7 @@ class WithdrawConfirmationFragment : PinProtectedFragment<FragmentWithdrawConfir
         done.onClick {
             dialog.cancel()
             val bundle = bundleOf(
-                Constants.Navigation.WALLET_UUID_BUNDLE_ID to viewModel.getWalletId()
+                com.intuisoft.plaid.common.util.Constants.Navigation.WALLET_UUID_BUNDLE_ID to viewModel.getWalletId()
             )
 
             findNavController().popBackStack(R.id.walletDashboardFragment, false)
@@ -317,7 +326,7 @@ class WithdrawConfirmationFragment : PinProtectedFragment<FragmentWithdrawConfir
 
     private fun showAdvancedOptionsDialog() {
         val bottomSheetDialog = BottomSheetDialog(requireContext())
-        bottomSheetDialog.setContentView(com.intuisoft.plaid.R.layout.bottom_sheet_withdraw_advanced_options)
+        bottomSheetDialog.setContentView(R.layout.bottom_sheet_withdraw_advanced_options)
         val low = bottomSheetDialog.findViewById<RoundedButtonView>(R.id.slow)!!
         val med = bottomSheetDialog.findViewById<RoundedButtonView>(R.id.med)!!
         val high = bottomSheetDialog.findViewById<RoundedButtonView>(R.id.fast)!!

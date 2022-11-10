@@ -30,7 +30,7 @@ import com.google.android.material.R
 import com.google.android.material.snackbar.Snackbar
 import com.intuisoft.plaid.activities.MainActivity
 import com.intuisoft.plaid.model.LocalWalletModel
-import com.intuisoft.plaid.util.Constants
+import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.util.entensions.getColorFromAttr
 import java.util.concurrent.Executor
 
@@ -91,9 +91,9 @@ fun Fragment.onBackPressedCallback(onBackPressed: () -> Unit) {
 
 
 fun Fragment.validateFingerprint(
-    title: String = Constants.Strings.USE_BIOMETRIC_AUTH,
-    subTitle: String = Constants.Strings.USE_BIOMETRIC_REASON_1,
-    negativeText: String = Constants.Strings.SKIP_FOR_NOW,
+    title: String = com.intuisoft.plaid.common.util.Constants.Strings.USE_BIOMETRIC_AUTH,
+    subTitle: String = com.intuisoft.plaid.common.util.Constants.Strings.USE_BIOMETRIC_REASON_1,
+    negativeText: String = com.intuisoft.plaid.common.util.Constants.Strings.SKIP_FOR_NOW,
     onFail: (() -> Unit)? = null,
     onError: (() -> Unit)? = null,
     onSuccess: () -> Unit
@@ -154,8 +154,8 @@ fun styledSnackBar(root: View, title: String, showTop: Boolean? = null, onDismis
     snack.show()
 }
 
-fun Fragment.navigate(navId: Int, wallet: LocalWalletModel, options: NavOptions = Constants.Navigation.ANIMATED_FADE_IN_EXIT_NAV_OPTION) {
-    val bundle = bundleOf(Constants.Navigation.WALLET_UUID_BUNDLE_ID to wallet.uuid)
+fun Fragment.navigate(navId: Int, wallet: LocalWalletModel, options: NavOptions = com.intuisoft.plaid.common.util.Constants.Navigation.ANIMATED_FADE_IN_EXIT_NAV_OPTION) {
+    val bundle = bundleOf(com.intuisoft.plaid.common.util.Constants.Navigation.WALLET_UUID_BUNDLE_ID to wallet.uuid)
     findNavController().navigate(
         navId,
         bundle,
@@ -163,8 +163,8 @@ fun Fragment.navigate(navId: Int, wallet: LocalWalletModel, options: NavOptions 
     )
 }
 
-fun Fragment.navigate(navId: Int, uuid: String, options: NavOptions = Constants.Navigation.ANIMATED_FADE_IN_EXIT_NAV_OPTION) {
-    val bundle = bundleOf(Constants.Navigation.WALLET_UUID_BUNDLE_ID to uuid)
+fun Fragment.navigate(navId: Int, uuid: String, options: NavOptions = com.intuisoft.plaid.common.util.Constants.Navigation.ANIMATED_FADE_IN_EXIT_NAV_OPTION) {
+    val bundle = bundleOf(com.intuisoft.plaid.common.util.Constants.Navigation.WALLET_UUID_BUNDLE_ID to uuid)
     findNavController().navigate(
         navId,
         bundle,
@@ -172,7 +172,7 @@ fun Fragment.navigate(navId: Int, uuid: String, options: NavOptions = Constants.
     )
 }
 
-fun Fragment.navigate(navId: Int, options: NavOptions = Constants.Navigation.ANIMATED_FADE_IN_EXIT_NAV_OPTION) {
+fun Fragment.navigate(navId: Int, options: NavOptions = com.intuisoft.plaid.common.util.Constants.Navigation.ANIMATED_FADE_IN_EXIT_NAV_OPTION) {
     findNavController().navigate(
         navId,
         null,
@@ -180,7 +180,7 @@ fun Fragment.navigate(navId: Int, options: NavOptions = Constants.Navigation.ANI
     )
 }
 
-fun Fragment.navigate(navId: Int, bundle: Bundle, options: NavOptions = Constants.Navigation.ANIMATED_FADE_IN_EXIT_NAV_OPTION) {
+fun Fragment.navigate(navId: Int, bundle: Bundle, options: NavOptions = com.intuisoft.plaid.common.util.Constants.Navigation.ANIMATED_FADE_IN_EXIT_NAV_OPTION) {
     findNavController().navigate(
         navId,
         bundle,

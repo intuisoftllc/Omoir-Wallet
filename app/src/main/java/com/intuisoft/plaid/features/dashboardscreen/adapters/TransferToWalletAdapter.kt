@@ -11,7 +11,7 @@ import com.intuisoft.plaid.databinding.ListItemBasicWalletDetailBinding
 import com.intuisoft.plaid.features.dashboardscreen.adapters.detail.TransferToWalletDetail
 import com.intuisoft.plaid.features.homescreen.adapters.detail.BasicWalletDataDetail
 import com.intuisoft.plaid.model.LocalWalletModel
-import com.intuisoft.plaid.repositories.LocalStoreRepository
+import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 
 
 class TransferToWalletAdapter(

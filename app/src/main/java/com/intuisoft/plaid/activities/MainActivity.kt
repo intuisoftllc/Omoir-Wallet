@@ -19,7 +19,7 @@ import com.intuisoft.plaid.features.splash.ui.SplashFragment
 import com.intuisoft.plaid.listeners.BarcodeResultListener
 import com.intuisoft.plaid.listeners.NetworkStateChangeListener
 import com.intuisoft.plaid.recievers.NetworkChangeReceiver
-import com.intuisoft.plaid.util.Constants
+import com.intuisoft.plaid.common.util.Constants
 
 
 class MainActivity : BindingActivity<ActivityMainBinding>(), ActionBarDelegate {
@@ -39,7 +39,7 @@ class MainActivity : BindingActivity<ActivityMainBinding>(), ActionBarDelegate {
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
 
             if (result.resultCode == Activity.RESULT_OK) {
-                val bitcoinAddress = result.data?.getStringExtra(Constants.ActivityResult.BARCODE_EXTRA)
+                val bitcoinAddress = result.data?.getStringExtra(com.intuisoft.plaid.common.util.Constants.ActivityResult.BARCODE_EXTRA)
                 bitcoinAddress?.let {
                     val listener = supportFragmentManager.currentNavigationFragment as? BarcodeResultListener
                     listener?.onAddressReceived(it)

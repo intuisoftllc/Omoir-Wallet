@@ -109,15 +109,6 @@
                             app:item_subtitle="@string/wallet_settings_export_description" />
 
                         <com.intuisoft.plaid.androidwrappers.SettingsItemView
-                            android:id="@+id/sync_type"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            app:settings_variant="normal"
-                            android:layout_marginBottom="@dimen/horizontal_padding_size"
-                            app:item_title="@string/wallet_settings_sync_type"
-                            app:item_subtitle="@string/wallet_settings_sync_type_description" />
-
-                        <com.intuisoft.plaid.androidwrappers.SettingsItemView
                             android:id="@+id/network"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"

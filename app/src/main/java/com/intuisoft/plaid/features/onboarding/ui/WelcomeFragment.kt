@@ -7,9 +7,6 @@ import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.OnBackPressedCallback
-import androidx.core.widget.addTextChangedListener
-import androidx.core.widget.doAfterTextChanged
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.intuisoft.plaid.R
@@ -19,13 +16,11 @@ import com.intuisoft.plaid.androidwrappers.hideSoftKeyboard
 import com.intuisoft.plaid.androidwrappers.ignoreOnBackPressed
 import com.intuisoft.plaid.databinding.FragmentOnboardingWelcomeBinding
 import com.intuisoft.plaid.features.onboarding.viewmodel.OnboardingViewModel
-import com.intuisoft.plaid.util.Constants
-import com.intuisoft.plaid.util.Constants.Limit.MAX_ALIAS_LENGTH
+import com.intuisoft.plaid.common.util.Constants
+import com.intuisoft.plaid.common.util.Constants.Limit.MAX_ALIAS_LENGTH
 import com.intuisoft.plaid.walletmanager.AbstractWalletManager
-import com.intuisoft.plaid.walletmanager.WalletManager
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
-import org.koin.core.component.inject
 
 
 class WelcomeFragment : BindingFragment<FragmentOnboardingWelcomeBinding>() {
@@ -131,6 +126,6 @@ class WelcomeFragment : BindingFragment<FragmentOnboardingWelcomeBinding>() {
         viewModel.updateAlias(binding.name.text.toString())
 
         findNavController().navigate(WelcomeFragmentDirections.actionWelcomeFragmentToOnboardingPinSetupFragment(),
-            Constants.Navigation.ANIMATED_ENTER_EXIT_RIGHT_NAV_OPTION)
+            com.intuisoft.plaid.common.util.Constants.Navigation.ANIMATED_ENTER_EXIT_RIGHT_NAV_OPTION)
     }
 }

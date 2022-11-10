@@ -1,8 +1,6 @@
 package com.intuisoft.plaid.features.createwallet.ui
 
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
@@ -15,17 +13,11 @@ import androidx.core.widget.doOnTextChanged
 import androidx.lifecycle.Observer
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.*
-import com.intuisoft.plaid.databinding.FragmentImportWalletBinding
-import com.intuisoft.plaid.databinding.FragmentNameWalletBinding
-import com.intuisoft.plaid.databinding.FragmentPublicKeyImportBinding
 import com.intuisoft.plaid.databinding.FragmentRecoveryPhraseImportBinding
 import com.intuisoft.plaid.features.createwallet.viewmodel.CreateWalletViewModel
 import com.intuisoft.plaid.features.pin.ui.PinProtectedFragment
-import com.intuisoft.plaid.listeners.BarcodeResultListener
-import com.intuisoft.plaid.util.Constants
-import com.intuisoft.plaid.util.fragmentconfig.AllSetData
+import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.util.fragmentconfig.WalletConfigurationData
-import io.horizontalsystems.hdwalletkit.Mnemonic
 import kotlinx.android.synthetic.main.fragment_public_key_import.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -140,7 +132,7 @@ class RecoveryPhraseImportFragment : PinProtectedFragment<FragmentRecoveryPhrase
 
         viewModel.onConfirm.observe(viewLifecycleOwner, Observer {
             var bundle = bundleOf(
-                Constants.Navigation.FRAGMENT_CONFIG to FragmentConfiguration(
+                com.intuisoft.plaid.common.util.Constants.Navigation.FRAGMENT_CONFIG to FragmentConfiguration(
                     configurationType = FragmentConfigurationType.CONFIGURATION_WALLET_DATA,
                     configData = viewModel.getConfiguration()
                 )
@@ -149,7 +141,7 @@ class RecoveryPhraseImportFragment : PinProtectedFragment<FragmentRecoveryPhrase
             navigate(
                 R.id.nameWalletFragment,
                 bundle,
-                Constants.Navigation.ANIMATED_ENTER_EXIT_RIGHT_NAV_OPTION
+                com.intuisoft.plaid.common.util.Constants.Navigation.ANIMATED_ENTER_EXIT_RIGHT_NAV_OPTION
             )
         })
 

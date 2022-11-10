@@ -1,21 +1,14 @@
 package com.intuisoft.plaid.features.createwallet.ui
 
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
-import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
 import android.widget.NumberPicker
 import android.widget.TextView
 import androidx.core.os.bundleOf
-import androidx.navigation.fragment.findNavController
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.google.android.material.tabs.TabLayoutMediator
-import com.google.gson.Gson
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.*
 import com.intuisoft.plaid.databinding.FragmentCreateImportWalletBinding
@@ -23,9 +16,7 @@ import com.intuisoft.plaid.features.createwallet.ZoomOutPageTransformer
 import com.intuisoft.plaid.features.createwallet.adapters.WalletBenefitsAdapter
 import com.intuisoft.plaid.features.createwallet.viewmodel.CreateWalletViewModel
 import com.intuisoft.plaid.features.pin.ui.PinProtectedFragment
-import com.intuisoft.plaid.util.Constants
-import com.intuisoft.plaid.util.fragmentconfig.ConfigTransactionData
-import com.intuisoft.plaid.util.fragmentconfig.WalletConfigurationData
+import com.intuisoft.plaid.common.util.Constants
 import io.horizontalsystems.hdwalletkit.HDWallet
 import io.horizontalsystems.hdwalletkit.Mnemonic
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -59,7 +50,7 @@ class CreateWalletFragment : PinProtectedFragment<FragmentCreateImportWalletBind
 
         binding.importWallet.onClick {
             var bundle = bundleOf(
-                Constants.Navigation.FRAGMENT_CONFIG to FragmentConfiguration(
+                com.intuisoft.plaid.common.util.Constants.Navigation.FRAGMENT_CONFIG to FragmentConfiguration(
                     configurationType = FragmentConfigurationType.CONFIGURATION_WALLET_DATA,
                     configData = viewModel.getConfiguration()
                 )
@@ -68,13 +59,13 @@ class CreateWalletFragment : PinProtectedFragment<FragmentCreateImportWalletBind
             navigate(
                 R.id.importWalletFragment,
                 bundle,
-                Constants.Navigation.ANIMATED_ENTER_EXIT_RIGHT_NAV_OPTION
+                com.intuisoft.plaid.common.util.Constants.Navigation.ANIMATED_ENTER_EXIT_RIGHT_NAV_OPTION
             )
         }
 
         binding.createNewWallet.onClick {
             var bundle = bundleOf(
-                Constants.Navigation.FRAGMENT_CONFIG to FragmentConfiguration(
+                com.intuisoft.plaid.common.util.Constants.Navigation.FRAGMENT_CONFIG to FragmentConfiguration(
                     configurationType = FragmentConfigurationType.CONFIGURATION_WALLET_DATA,
                     configData = viewModel.getConfiguration()
                 )
@@ -83,7 +74,7 @@ class CreateWalletFragment : PinProtectedFragment<FragmentCreateImportWalletBind
             navigate(
                 R.id.backupWalletFragment,
                 bundle,
-                Constants.Navigation.ANIMATED_ENTER_EXIT_RIGHT_NAV_OPTION
+                com.intuisoft.plaid.common.util.Constants.Navigation.ANIMATED_ENTER_EXIT_RIGHT_NAV_OPTION
             )
         }
 
@@ -95,32 +86,33 @@ class CreateWalletFragment : PinProtectedFragment<FragmentCreateImportWalletBind
     private fun showAdvancedOptionsDialog() {
         val bottomSheetDialog = BottomSheetDialog(requireContext())
         bottomSheetDialog.setContentView(R.layout.bottom_sheet_advanced_options_create_wallet)
-        val mainNet = bottomSheetDialog.findViewById<SettingsItemView>(R.id.mainNetOption)
-        val testNet = bottomSheetDialog.findViewById<SettingsItemView>(R.id.testNetOption)
-        val entropyStrength = bottomSheetDialog.findViewById<SettingsItemView>(R.id.entropyOption)
-        val bip = bottomSheetDialog.findViewById<SettingsItemView>(R.id.bipOption)
+        val mainNet = bottomSheetDialog.findViewById<SettingsItemView>(R.id.mainNetOption)!!
+        val testNet = bottomSheetDialog.findViewById<SettingsItemView>(R.id.testNetOption)!!
+        val entropyStrength = bottomSheetDialog.findViewById<SettingsItemView>(R.id.entropyOption)!!
+        val bip = bottomSheetDialog.findViewById<SettingsItemView>(R.id.bipOption)!!
 
-        testNet?.checkRadio(viewModel.useTestNet)
-        mainNet?.checkRadio(!viewModel.useTestNet)
+        testNet.checkRadio(viewModel.useTestNet)
+        mainNet.checkRadio(!viewModel.useTestNet)
 
-        mainNet?.onClick {
-            viewModel.setUseTestNet(false)
-            testNet?.checkRadio(false)
-            mainNet.checkRadio(true)
+        mainNet.onRadioClicked { view, it ->
+            viewModel.setUseTestNet(!it)
+            testNet.checkRadio(!it)
+            mainNet.checkRadio(it)
         }
 
-        testNet?.onClick {
-            viewModel.setUseTestNet(true)
-            testNet.checkRadio(true)
-            mainNet?.checkRadio(false)
+
+        testNet.onRadioClicked { view, it ->
+            viewModel.setUseTestNet(it)
+            testNet.checkRadio(it)
+            mainNet.checkRadio(!it)
         }
 
-        entropyStrength?.onClick {
+        entropyStrength.onClick {
             bottomSheetDialog.cancel()
             showEntropyStrengthDialog()
         }
 
-        bip?.onClick {
+        bip.onClick {
             bottomSheetDialog.cancel()
             showBipDialog()
         }

@@ -517,6 +517,7 @@ class BitcoinCore(
     val balance get() = dataProvider.balance
     val lastBlockInfo get() = dataProvider.lastBlockInfo
     val syncState get() = syncManager.syncState
+    val isRestored get() = syncManager.isRestored
 
     var listener: Listener? = null
 

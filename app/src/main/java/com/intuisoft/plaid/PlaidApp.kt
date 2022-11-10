@@ -3,11 +3,9 @@ package com.intuisoft.plaid
 import android.app.Activity
 import android.app.Application
 import android.os.Bundle
+import com.intuisoft.plaid.common.CommonService
+import com.intuisoft.plaid.common.local.UserPreferences
 import com.intuisoft.plaid.di.*
-import com.intuisoft.plaid.local.UserPreferences
-import com.intuisoft.plaid.util.Constants
-import com.intuisoft.plaid.util.SimpleCoinNumberFormat
-import com.intuisoft.plaid.walletmanager.WalletManager
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.component.KoinComponent
@@ -20,6 +18,13 @@ class PlaidApp : Application(), Application.ActivityLifecycleCallbacks, KoinComp
 
     override fun onCreate() {
         super.onCreate()
+        CommonService.create(
+            this,
+            BuildConfig.NOW_NODES_CLIENT_SECRET,
+            BuildConfig.BLOCK_BOOK_SERVER_URL,
+            BuildConfig.NODE_SERVER_URL,
+            BuildConfig.TEST_NET_NODE_SERVER_URL
+        )
 
         startKoin {
             androidLogger(Level.DEBUG)
@@ -28,12 +33,10 @@ class PlaidApp : Application(), Application.ActivityLifecycleCallbacks, KoinComp
                 listOf(
                     viewModelModule,
                     preferencesModule,
-                    okhttpModule,
-                    retrofitModule,
-                    InterceptorModule,
                     localRepositoriesModule,
+                    apiRepositoriesModule,
                     walletManagerModule,
-                    syncModule
+                    blockBooksModule
                 )
             )
         }
@@ -54,7 +57,7 @@ class PlaidApp : Application(), Application.ActivityLifecycleCallbacks, KoinComp
     }
 
     override fun onActivityStopped(p0: Activity) {
-        if(preferences.pinTimeout == Constants.Time.INSTANT_TIME_OFFSET) {
+        if(preferences.pinTimeout == com.intuisoft.plaid.common.util.Constants.Time.INSTANT_TIME_OFFSET) {
             preferences.lastCheckPin = 0
         }
     }

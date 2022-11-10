@@ -3,9 +3,7 @@ package com.intuisoft.plaid.features.settings.adapters.detail
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.BindingViewHolder
 import com.intuisoft.plaid.androidwrappers.ListItem
-import com.intuisoft.plaid.model.SavedAddressModel
-import com.intuisoft.plaid.repositories.LocalStoreRepository
-import io.horizontalsystems.bitcoincore.models.TransactionInfo
+import com.intuisoft.plaid.common.model.SavedAddressModel
 import kotlinx.android.synthetic.main.list_item_saved_address.view.*
 
 

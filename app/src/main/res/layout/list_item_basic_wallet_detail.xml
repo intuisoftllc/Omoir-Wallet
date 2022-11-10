@@ -16,8 +16,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:cardCornerRadius="@dimen/card_view_corner_radius"
         android:layout_marginHorizontal="@dimen/card_view_elevation"
-        android:layout_marginBottom="@dimen/card_view_elevation"
-        android:layout_marginTop="@dimen/horizontal_padding_size"
+        android:layout_marginBottom="@dimen/horizontal_padding_size"
+        android:layout_marginTop="@dimen/card_view_elevation"
         app:layout_constraintHorizontal_bias="0">
 
         <androidx.constraintlayout.widget.ConstraintLayout

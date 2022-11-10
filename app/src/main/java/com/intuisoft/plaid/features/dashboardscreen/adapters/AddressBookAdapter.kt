@@ -5,15 +5,11 @@ import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import androidx.recyclerview.widget.RecyclerView
-import com.docformative.docformative.remove
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.BindingViewHolder
 import com.intuisoft.plaid.databinding.ListItemSavedAddressBinding
 import com.intuisoft.plaid.features.dashboardscreen.adapters.detail.SavedAddressItemDetail
-import com.intuisoft.plaid.features.dashboardscreen.adapters.detail.UnspentOutputDetail
-import com.intuisoft.plaid.model.SavedAddressModel
-import com.intuisoft.plaid.repositories.LocalStoreRepository
-import io.horizontalsystems.bitcoincore.storage.UnspentOutput
+import com.intuisoft.plaid.common.model.SavedAddressModel
 
 
 class AddressBookAdapter(

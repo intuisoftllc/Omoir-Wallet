@@ -263,6 +263,7 @@
     <string name="transaction_details_status_processed">Processed</string>
     <string name="transaction_details_share_text">Check out this transaction for amount: %1$s, with fee: %2$s.\nYou can view this transaction at: %3$s</string>
     <string name="transaction_details_share_tag">Bitcoin Transaction</string>
+    <string name="transaction_details_view_testnet_transaction_online">View on blockcypher.com</string>
 <!--    Transaction Details Strings End -->
 
 
@@ -304,9 +305,9 @@
 <!--    Withdraw Confirmation Strings -->
     <string name="withdraw_confirmation_address_suggestion">bc1qgrkgrv9a43...</string>
     <string name="withdraw_confirmation_address_text_box_title">What address would you like to send funds to?</string>
-    <string name="withdraw_confirmation_speed_slow">Slow</string>
-    <string name="withdraw_confirmation_speed_med">Med</string>
-    <string name="withdraw_confirmation_speed_fast">Fast</string>
+    <string name="withdraw_confirmation_speed_slow">Slow\n+6hrs</string>
+    <string name="withdraw_confirmation_speed_med">Med\n&#60;1hr</string>
+    <string name="withdraw_confirmation_speed_fast">Fast\n~10m</string>
     <string name="withdraw_confirmation_fee_suggestion">1</string>
     <string name="withdraw_confirmation_text_box_title_fee">Fee Sat/byte</string>
     <string name="withdraw_confirmation_advanced_options_address_book">Address Book</string>

@@ -6,17 +6,18 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
-import com.docformative.docformative.toArrayList
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.activities.MainActivity
 import com.intuisoft.plaid.androidwrappers.*
+import com.intuisoft.plaid.common.CommonService
 import com.intuisoft.plaid.databinding.FragmentHomescreenBinding
 import com.intuisoft.plaid.features.homescreen.adapters.BasicWalletDataAdapter
 import com.intuisoft.plaid.features.homescreen.viewmodel.HomeScreenViewModel
 import com.intuisoft.plaid.features.pin.ui.PinProtectedFragment
 import com.intuisoft.plaid.listeners.StateListener
 import com.intuisoft.plaid.model.LocalWalletModel
-import com.intuisoft.plaid.repositories.LocalStoreRepository
+import com.intuisoft.plaid.common.repositories.LocalStoreRepository
+import com.intuisoft.plaid.common.util.extensions.toArrayList
 import com.intuisoft.plaid.walletmanager.AbstractWalletManager
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -52,18 +53,15 @@ class HomescreenFragment : PinProtectedFragment<FragmentHomescreenBinding>(), St
         walletManager.synchronizeAll()
         walletVM.addWalletStateListener(this)
 
-        walletManager.fullySynced.observe(viewLifecycleOwner, Observer {
-            binding.swipeContainer.isRefreshing = !it
+        walletManager.onSyncing.observe(viewLifecycleOwner, Observer {
+            binding.swipeContainer.isRefreshing = it
         })
 
         binding.swipeContainer.setOnRefreshListener {
             if(binding.swipeContainer.isRefreshing) {
                 walletManager.synchronizeAll()
-            } else {
-                viewModel.showWallets()
             }
         }
-
 
         binding.walletsView.walletsList.adapter = adapter
         viewModel.homeScreenGreeting.observe(viewLifecycleOwner, Observer {
@@ -71,7 +69,7 @@ class HomescreenFragment : PinProtectedFragment<FragmentHomescreenBinding>(), St
             (requireActivity() as MainActivity).setActionBarSubTitle(it.first + ",")
         })
 
-        viewModel.wallets.observe(viewLifecycleOwner, Observer {
+        walletManager.wallets.observe(viewLifecycleOwner, Observer {
             adapter.addWallets(it.toArrayList())
 
             binding.walletsView.walletsList.isVisible = it.isNotEmpty()
@@ -88,10 +86,12 @@ class HomescreenFragment : PinProtectedFragment<FragmentHomescreenBinding>(), St
         adapter.onWalletStateUpdated(wallet)
     }
 
+    override fun onWalletAlreadySynced(wallet: LocalWalletModel) {
+        // ignore
+    }
+
     override fun onResume() {
         super.onResume()
-        viewModel.showWallets()
-        walletManager.exitWallet()
     }
 
     fun onWalletSelected(wallet: LocalWalletModel) {

@@ -12,7 +12,7 @@ import com.intuisoft.plaid.androidwrappers.TopBarView
 import com.intuisoft.plaid.databinding.FragmentBitcoinUnitBinding
 import com.intuisoft.plaid.features.pin.ui.PinProtectedFragment
 import com.intuisoft.plaid.features.settings.viewmodel.SettingsViewModel
-import com.intuisoft.plaid.model.BitcoinDisplayUnit
+import com.intuisoft.plaid.common.model.BitcoinDisplayUnit
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 

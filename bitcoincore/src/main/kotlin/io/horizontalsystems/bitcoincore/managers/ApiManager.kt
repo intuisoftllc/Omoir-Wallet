@@ -1,8 +1,10 @@
 package io.horizontalsystems.bitcoincore.managers
 
+import android.util.Log
 import com.eclipsesource.json.Json
 import com.eclipsesource.json.JsonValue
 import io.horizontalsystems.bitcoincore.utils.NetworkUtils
+import kotlinx.coroutines.runBlocking
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import java.io.BufferedOutputStream

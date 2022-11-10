@@ -11,7 +11,7 @@ import androidx.lifecycle.Observer
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.*
 import com.intuisoft.plaid.databinding.FragmentOnboardingFingerprintRegistrationBinding
-import com.intuisoft.plaid.util.Constants
+import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.util.fragmentconfig.AllSetData
 
 
@@ -100,7 +100,7 @@ class FingerprintSetupFragment : BindingFragment<FragmentOnboardingFingerprintRe
 
     fun onNextStep() {
         var bundle = bundleOf(
-            Constants.Navigation.FRAGMENT_CONFIG to FragmentConfiguration(
+            com.intuisoft.plaid.common.util.Constants.Navigation.FRAGMENT_CONFIG to FragmentConfiguration(
                 actionBarTitle = 0,
                 actionBarSubtitle = 0,
                 actionBarVariant = 0,

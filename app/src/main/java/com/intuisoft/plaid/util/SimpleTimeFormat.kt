@@ -17,22 +17,21 @@ object SimpleTimeFormat {
         val minute: Long = TimeUnit.MILLISECONDS.toMinutes(dateDiff)
         val hour: Long = TimeUnit.MILLISECONDS.toHours(dateDiff)
         val day: Long = TimeUnit.MILLISECONDS.toDays(dateDiff)
+        val week = day / 7
+        val month = week / 4
+        val year = month / 12
         if (second < 60) {
-            convTime = "$second Seconds $suffix"
+            convTime = Plural.of("Second", second) + " $suffix"
         } else if (minute < 60) {
-            convTime = "$minute Minutes $suffix"
+            convTime = Plural.of("Minute", minute) + " $suffix"
         } else if (hour < 24) {
-            convTime = "$hour Hours $suffix"
-        } else if (day >= 7) {
-            convTime = if (day > 360) {
-                (day / 360).toString() + " Years " + suffix
-            } else if (day > 30) {
-                (day / 30).toString() + " Months " + suffix
-            } else {
-                (day / 7).toString() + " Week " + suffix
-            }
-        } else if (day < 7) {
-            convTime = "$day Days $suffix"
+            convTime = Plural.of("Hour", hour) + " $suffix"
+        } else if (day < 30) {
+            convTime = Plural.of("Day", day) + " $suffix"
+        } else if (month < 12) {
+            convTime = Plural.of("Month", month) + " $suffix"
+        } else {
+            convTime = Plural.of("Year", year) + " $suffix"
         }
 
         return convTime

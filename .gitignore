@@ -1,1 +1,5 @@
-api_keys.properties
+app.properties
+keystore/
+.gradle/
+.idea/
+app/google-services.json

@@ -7,7 +7,8 @@ import com.intuisoft.plaid.PlaidApp
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.SingleLiveData
 import com.intuisoft.plaid.androidwrappers.WalletViewModel
-import com.intuisoft.plaid.repositories.LocalStoreRepository
+import com.intuisoft.plaid.common.repositories.ApiRepository
+import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.util.fragmentconfig.WalletConfigurationData
 import com.intuisoft.plaid.walletmanager.AbstractWalletManager
 import io.horizontalsystems.hdwalletkit.HDWallet
@@ -19,8 +20,9 @@ import io.horizontalsystems.hdwalletkit.WordList
 class CreateWalletViewModel(
     application: Application,
     localStoreRepository: LocalStoreRepository,
+    apiRepository: ApiRepository,
     private val walletManager: AbstractWalletManager
-): WalletViewModel(application, localStoreRepository, walletManager) {
+): WalletViewModel(application, localStoreRepository, apiRepository, walletManager) {
 
     protected val _onInputRejected = SingleLiveData<Unit>()
     val onInputRejected: LiveData<Unit> = _onInputRejected
@@ -129,8 +131,10 @@ class CreateWalletViewModel(
     }
 
     fun updateWordSuggestions(word: String) {
-        if(word.isNotEmpty()) {
-            val suggestions = WordList.wordList(Language.English).fetchSuggestions(word)
+        val trimmed = word.trim()
+
+        if(trimmed.isNotEmpty()) {
+            val suggestions = WordList.wordList(Language.English).fetchSuggestions(trimmed)
 
             when {
                 suggestions.isEmpty() -> {
@@ -206,27 +210,33 @@ class CreateWalletViewModel(
     }
 
     private fun addWord(word: String) {
-        seed.add(word)
-        _onAddWord.postValue(word)
+        val trimmed = word.trim()
+
+        seed.add(trimmed)
+        _onAddWord.postValue(trimmed)
         onWordAdded()
     }
 
     fun addWordToList(word: String, partialWordSupport: Boolean = false) {
-        if(WordList.wordList(Language.English).validWord(word)) {
+        val trimmed = word.trim()
+        if(WordList.wordList(Language.English).validWord(trimmed)) {
             if(seed.size < maxWords) {
-                addWord(word)
+                addWord(trimmed)
             } else {
                 onMaxWords()
             }
 
             checkSeedSize()
-        } else {
-            val suggestions = WordList.wordList(Language.English).fetchSuggestions(word)
+        } else if(partialWordSupport) {
+            val suggestions = WordList.wordList(Language.English).fetchSuggestions(trimmed)
             if(suggestions.size == 1) {
                 addWord(suggestions[0])
+                checkSeedSize()
             } else {
                 onInvalidWord()
             }
+        }  else {
+            onInvalidWord()
         }
     }
 

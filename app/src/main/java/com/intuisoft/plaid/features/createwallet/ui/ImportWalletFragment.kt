@@ -1,22 +1,16 @@
 package com.intuisoft.plaid.features.createwallet.ui
 
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
-import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
-import androidx.lifecycle.Observer
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.*
 import com.intuisoft.plaid.databinding.FragmentImportWalletBinding
-import com.intuisoft.plaid.databinding.FragmentNameWalletBinding
 import com.intuisoft.plaid.features.createwallet.viewmodel.CreateWalletViewModel
 import com.intuisoft.plaid.features.pin.ui.PinProtectedFragment
-import com.intuisoft.plaid.util.Constants
-import com.intuisoft.plaid.util.fragmentconfig.AllSetData
+import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.util.fragmentconfig.WalletConfigurationData
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -44,13 +38,13 @@ class ImportWalletFragment : PinProtectedFragment<FragmentImportWalletBinding>()
         binding.publicKeyImport.onClick {
             navigate(
                 R.id.publicKeyImportFragment,
-                Constants.Navigation.ANIMATED_SLIDE_UP_OPTION
+                com.intuisoft.plaid.common.util.Constants.Navigation.ANIMATED_SLIDE_UP_OPTION
             )
         }
 
         binding.recoveryPhraseImport.onClick {
             var bundle = bundleOf(
-                Constants.Navigation.FRAGMENT_CONFIG to FragmentConfiguration(
+                com.intuisoft.plaid.common.util.Constants.Navigation.FRAGMENT_CONFIG to FragmentConfiguration(
                     configurationType = FragmentConfigurationType.CONFIGURATION_WALLET_DATA,
                     configData = viewModel.getConfiguration()
                 )
@@ -59,7 +53,7 @@ class ImportWalletFragment : PinProtectedFragment<FragmentImportWalletBinding>()
             navigate(
                 R.id.recoveryPhraseImportFragment,
                 bundle,
-                Constants.Navigation.ANIMATED_SLIDE_UP_OPTION
+                com.intuisoft.plaid.common.util.Constants.Navigation.ANIMATED_SLIDE_UP_OPTION
             )
         }
     }

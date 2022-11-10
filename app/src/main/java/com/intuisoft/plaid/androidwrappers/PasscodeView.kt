@@ -4,11 +4,9 @@ import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.ObjectAnimator
 import android.content.Context
-import android.graphics.PorterDuff
 import android.text.TextUtils
 import android.util.AttributeSet
 import android.util.TypedValue
-import android.view.SoundEffectConstants
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
@@ -18,19 +16,16 @@ import android.widget.TextView
 import androidx.annotation.IntDef
 import androidx.annotation.NonNull
 import androidx.annotation.Nullable
-import androidx.biometric.BiometricPrompt
-import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.PasscodeView.PasscodeViewType.Companion.TYPE_CHECK_PASSCODE
 import com.intuisoft.plaid.androidwrappers.PasscodeView.PasscodeViewType.Companion.TYPE_SET_PASSCODE
-import com.intuisoft.plaid.local.UserPreferences
+import com.intuisoft.plaid.common.local.UserPreferences
 import com.intuisoft.plaid.util.entensions.getColorFromAttr
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.lang.annotation.Retention
 import java.lang.annotation.RetentionPolicy
-import java.util.concurrent.Executor
 
 
 /**

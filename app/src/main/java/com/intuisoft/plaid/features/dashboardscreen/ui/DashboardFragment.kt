@@ -8,19 +8,19 @@ import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
-import com.docformative.docformative.toArrayList
-import com.google.gson.Gson
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.activities.MainActivity
 import com.intuisoft.plaid.androidwrappers.*
+import com.intuisoft.plaid.common.CommonService
+import com.intuisoft.plaid.common.model.BitcoinDisplayUnit
 import com.intuisoft.plaid.databinding.FragmentWalletDashboardBinding
 import com.intuisoft.plaid.features.homescreen.adapters.BasicTransactionAdapter
 import com.intuisoft.plaid.features.pin.ui.PinProtectedFragment
 import com.intuisoft.plaid.listeners.StateListener
-import com.intuisoft.plaid.model.BitcoinDisplayUnit
 import com.intuisoft.plaid.model.LocalWalletModel
-import com.intuisoft.plaid.repositories.LocalStoreRepository
-import com.intuisoft.plaid.util.Constants
+import com.intuisoft.plaid.common.repositories.LocalStoreRepository
+import com.intuisoft.plaid.common.util.Constants
+import com.intuisoft.plaid.common.util.extensions.toArrayList
 import com.intuisoft.plaid.util.fragmentconfig.ConfigQrDisplayData
 import com.intuisoft.plaid.util.fragmentconfig.ConfigTransactionData
 import com.intuisoft.plaid.walletmanager.AbstractWalletManager
@@ -55,8 +55,8 @@ class DashboardFragment : PinProtectedFragment<FragmentWalletDashboardBinding>()
         viewModel.displayCurrentWallet()
         viewModel.showWalletBalance(requireContext())
         viewModel.checkReadOnlyStatus()
-        walletManager.enterWallet(viewModel.getWallet()!!)
         viewModel.addWalletStateListener(this)
+        viewModel.updateSuggestedFees()
 
         binding.swipeContainer.setOnRefreshListener {
             if(binding.swipeContainer.isRefreshing) {
@@ -128,7 +128,7 @@ class DashboardFragment : PinProtectedFragment<FragmentWalletDashboardBinding>()
             Constants.Navigation.FRAGMENT_CONFIG to FragmentConfiguration(
                 configurationType = FragmentConfigurationType.CONFIGURATION_TRANSACTION_DATA,
                 configData = ConfigTransactionData(
-                    payload = Gson().toJson(transaction)
+                    payload = CommonService.getGsonInstance().toJson(transaction)
                 )
             ),
             Constants.Navigation.WALLET_UUID_BUNDLE_ID to viewModel.getWalletId()
@@ -142,21 +142,25 @@ class DashboardFragment : PinProtectedFragment<FragmentWalletDashboardBinding>()
     }
 
     override fun onWalletStateUpdated(wallet: LocalWalletModel) {
-        if(wallet.uuid == viewModel.getWalletId()) {
-            activity?.let {
-                (it as MainActivity).setActionBarSubTitle(
-                    wallet.onWalletStateChanged(
-                        requireContext(),
-                        wallet.syncPercentage,
-                        false,
-                        localStoreRepository
-                    )
+        if(wallet.uuid == viewModel.getWalletId() && activity != null && _binding != null) {
+            (requireActivity() as MainActivity).setActionBarSubTitle(
+                wallet.onWalletStateChanged(
+                    requireContext(),
+                    wallet.syncPercentage,
+                    false,
+                    localStoreRepository
                 )
+            )
 
-                if (wallet.isSynced && wallet.isSynced)
-                    viewModel.getTransactions()
-                binding.swipeContainer.isRefreshing = wallet.isSyncing
-            }
+            if (wallet.isSynced && wallet.isSynced)
+                viewModel.getTransactions()
+            binding.swipeContainer.isRefreshing = wallet.isSyncing
+        }
+    }
+
+    override fun onWalletAlreadySynced(wallet: LocalWalletModel) {
+        if(wallet.uuid == viewModel.getWalletId() && activity != null && _binding != null) {
+            binding.swipeContainer.isRefreshing = false
         }
     }
 

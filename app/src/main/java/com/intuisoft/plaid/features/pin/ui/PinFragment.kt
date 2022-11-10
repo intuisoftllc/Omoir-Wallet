@@ -2,28 +2,17 @@ package com.intuisoft.plaid.features.pin.ui
 
 import android.app.ProgressDialog
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
-import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.biometric.BiometricPrompt
-import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import androidx.navigation.navOptions
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.*
 import com.intuisoft.plaid.databinding.FragmentPinBinding
-import com.intuisoft.plaid.features.onboarding.ui.WelcomeFragmentDirections
-import com.intuisoft.plaid.features.onboarding.viewmodel.OnboardingViewModel
 import com.intuisoft.plaid.features.pin.viewmodel.PinViewModel
-import com.intuisoft.plaid.util.Constants
+import com.intuisoft.plaid.common.util.Constants
 import org.koin.android.ext.android.inject
-import org.koin.androidx.viewmodel.ext.android.sharedViewModel
-import org.koin.androidx.viewmodel.ext.android.viewModel
-import java.util.concurrent.Executor
 
 class PinFragment: BindingFragment<FragmentPinBinding>() {
     private val pinViewModel: PinViewModel by inject()
@@ -103,8 +92,8 @@ class PinFragment: BindingFragment<FragmentPinBinding>() {
                         listener.onScanFail()
                     },
 
-                    subTitle = Constants.Strings.USE_BIOMETRIC_REASON_2,
-                    negativeText = Constants.Strings.USE_PIN
+                    subTitle = com.intuisoft.plaid.common.util.Constants.Strings.USE_BIOMETRIC_REASON_2,
+                    negativeText = com.intuisoft.plaid.common.util.Constants.Strings.USE_PIN
                 )
             }
 

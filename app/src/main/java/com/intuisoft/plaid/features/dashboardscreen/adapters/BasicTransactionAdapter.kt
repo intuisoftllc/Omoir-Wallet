@@ -9,7 +9,7 @@ import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.BindingViewHolder
 import com.intuisoft.plaid.databinding.ListItemBasicTransactionDetailBinding
 import com.intuisoft.plaid.features.dashboardscreen.adapters.detail.BasicTransactionDetail
-import com.intuisoft.plaid.repositories.LocalStoreRepository
+import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import io.horizontalsystems.bitcoincore.models.TransactionInfo
 
 
