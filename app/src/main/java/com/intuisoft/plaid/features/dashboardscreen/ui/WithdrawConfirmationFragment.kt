@@ -163,7 +163,7 @@ class WithdrawConfirmationFragment : PinProtectedFragment<FragmentWithdrawConfir
             }
 
             amount.setSubTitleText(amountValue)
-            feeAmount.setSubTitleText(SimpleCoinNumberFormat.format(localStoreRepository, feePaid, true))
+            feeAmount.setSubTitleText(SimpleCoinNumberFormat.format(localStoreRepository, feePaid, false))
             satPerByte.setSubTitleText("${Plural.of("sat", viewModel.getFeeRate().toLong())}/vbyte")
 
             rawTransaction.onClick {

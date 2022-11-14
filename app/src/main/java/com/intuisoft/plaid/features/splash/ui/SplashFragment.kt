@@ -10,6 +10,7 @@ import androidx.navigation.fragment.findNavController
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.BindingFragment
 import com.intuisoft.plaid.androidwrappers.TopBarView
+import com.intuisoft.plaid.androidwrappers.ignoreOnBackPressed
 import com.intuisoft.plaid.databinding.FragmentSplashBinding
 import com.intuisoft.plaid.features.splash.viewmodel.SplashViewModel
 import com.intuisoft.plaid.common.util.Constants
@@ -31,12 +32,13 @@ class SplashFragment : BindingFragment<FragmentSplashBinding>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         animateLogo()
+        ignoreOnBackPressed()
         viewModel.startWalletManager()
         viewModel.nextScreen()
 
         viewModel.resetPinCheckedTime()
         viewModel.nextDestination.observe(viewLifecycleOwner, Observer {
-            findNavController().navigate(it, com.intuisoft.plaid.common.util.Constants.Navigation.ANIMATED_FADE_IN_EXIT_NAV_OPTION)
+            findNavController().navigate(it, Constants.Navigation.ANIMATED_FADE_IN_EXIT_NAV_OPTION)
         })
     }
 

@@ -216,7 +216,7 @@ class WithdrawalFragment : PinProtectedFragment<FragmentWithdrawBinding>(), Stat
         val selectAll = bottomSheetDialog.findViewById<RoundedButtonView>(R.id.select_all)!!
         val noUTXOs = bottomSheetDialog.findViewById<TextView>(R.id.no_utxos)!!
         val unspentOutputsList = bottomSheetDialog.findViewById<RecyclerView>(R.id.utxos)!!
-        val utxos = viewModel.getUnspentOutputs()
+        val utxos = viewModel.getUnspentOutputs().sortedBy { it.output.value }.reversed()
 
         if(utxos.isEmpty()) {
             selectAll.enableButton(false)

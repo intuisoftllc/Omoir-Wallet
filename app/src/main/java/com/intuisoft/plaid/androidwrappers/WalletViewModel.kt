@@ -2,6 +2,7 @@ package com.intuisoft.plaid.androidwrappers
 
 import android.app.Application
 import android.content.Context
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
 import com.intuisoft.plaid.common.model.BitcoinDisplayUnit
@@ -205,9 +206,14 @@ open class WalletViewModel(
         }
     }
 
-    fun setWallet(uuid: String) {
+    fun setWallet(uuid: String, fragment: Fragment) {
         localWallet = walletManager.findLocalWallet(uuid)
-        localWallet!!.walletKit!!.onEnterForeground()
+
+        if(localWallet!= null) {
+            localWallet!!.walletKit!!.onEnterForeground()
+        } else {
+            softRestart(fragment)
+        }
     }
 
     fun getWallet() = localWallet

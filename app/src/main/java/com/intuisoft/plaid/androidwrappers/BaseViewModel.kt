@@ -6,10 +6,13 @@ import android.content.Intent
 import android.hardware.biometrics.BiometricManager
 import android.os.Build
 import android.provider.Settings
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.intuisoft.plaid.PlaidApp
+import com.intuisoft.plaid.R
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.walletmanager.AbstractWalletManager
 import kotlinx.coroutines.Dispatchers
@@ -106,5 +109,10 @@ open class BaseViewModel(
                 }
             }
         }
+    }
+
+    fun softRestart(fragment: Fragment) {
+        walletManager.stop()
+        fragment.navigate(R.id.splashFragment)
     }
 }

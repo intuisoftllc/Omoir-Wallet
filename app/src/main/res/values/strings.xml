@@ -323,7 +323,7 @@
     <string name="withdraw_confirmation_dialog_info_tx_id">Transaction ID</string>
     <string name="withdraw_confirmation_dialog_info_send_to">Sending To</string>
     <string name="withdraw_confirmation_dialog_info_tx_amount">Amount</string>
-    <string name="withdraw_confirmation_dialog_info_fee">Fee</string>
+    <string name="withdraw_confirmation_dialog_info_fee">Total Fee</string>
     <string name="withdraw_confirmation_dialog_info_fee_rate">Fee Rate</string>
     <string name="withdraw_confirmation_error_invalid_address">You must enter a valid bitcoin address to send to</string>
     <string name="withdraw_confirmation_error_invalid_address_test_net">Can\'t send testnet coins to the main chain, try checking your address and try again</string>

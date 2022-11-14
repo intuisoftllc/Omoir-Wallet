@@ -24,8 +24,8 @@ abstract class ConfigurableFragment<T: ViewBinding> : BindingFragment<T>() {
         this.baseVM = baseVM
         this.configTypes = configTypes
 
-        if(arguments != null && requireArguments().getParcelable<FragmentConfiguration>(com.intuisoft.plaid.common.util.Constants.Navigation.FRAGMENT_CONFIG) != null) {
-            baseVM.currentConfig = requireArguments().getParcelable(com.intuisoft.plaid.common.util.Constants.Navigation.FRAGMENT_CONFIG)
+        if(arguments != null && requireArguments().getParcelable<FragmentConfiguration>(Constants.Navigation.FRAGMENT_CONFIG) != null) {
+            baseVM.currentConfig = requireArguments().getParcelable(Constants.Navigation.FRAGMENT_CONFIG)
         } else {
             baseVM.currentConfig = null
         }
@@ -35,8 +35,8 @@ abstract class ConfigurableFragment<T: ViewBinding> : BindingFragment<T>() {
         this.baseVM = walletVM
         this.configTypes = configTypes
 
-        if(arguments != null && requireArguments().getParcelable<FragmentConfiguration>(com.intuisoft.plaid.common.util.Constants.Navigation.FRAGMENT_CONFIG) != null) {
-            baseVM!!.currentConfig = requireArguments().getParcelable(com.intuisoft.plaid.common.util.Constants.Navigation.FRAGMENT_CONFIG)
+        if(arguments != null && requireArguments().getParcelable<FragmentConfiguration>(Constants.Navigation.FRAGMENT_CONFIG) != null) {
+            baseVM!!.currentConfig = requireArguments().getParcelable(Constants.Navigation.FRAGMENT_CONFIG)
 
             baseVM!!.currentConfig?.let {
                 if(configTypes.find { it == baseVM!!.currentConfig!!.configurationType } == null) {
@@ -47,8 +47,8 @@ abstract class ConfigurableFragment<T: ViewBinding> : BindingFragment<T>() {
             baseVM!!.currentConfig = null
         }
 
-        if(arguments != null && requireArguments().getString(com.intuisoft.plaid.common.util.Constants.Navigation.WALLET_UUID_BUNDLE_ID) != null) {
-            walletVM.setWallet(requireArguments().getString(com.intuisoft.plaid.common.util.Constants.Navigation.WALLET_UUID_BUNDLE_ID)!!)
+        if(arguments != null && requireArguments().getString(Constants.Navigation.WALLET_UUID_BUNDLE_ID) != null) {
+            walletVM.setWallet(requireArguments().getString(Constants.Navigation.WALLET_UUID_BUNDLE_ID)!!, this)
         }
     }
 

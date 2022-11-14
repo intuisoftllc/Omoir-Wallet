@@ -52,8 +52,7 @@ class SettingsViewModel(
 
     fun restartApp(fragment: Fragment) {
         appRestartNeeded = false
-        walletManager.stop()
-        fragment.navigate(R.id.splashFragment)
+        softRestart(fragment)
     }
 
     fun saveMinimumConfirmation(min: Int) {
