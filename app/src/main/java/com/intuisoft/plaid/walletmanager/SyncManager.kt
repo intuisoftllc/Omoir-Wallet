@@ -2,6 +2,8 @@ package com.intuisoft.plaid.walletmanager
 
 import android.app.Application
 import com.intuisoft.plaid.PlaidApp
+import com.intuisoft.plaid.common.model.DevicePerformanceLevel
+import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.model.LocalWalletModel
 import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.common.util.extensions.remove
@@ -12,7 +14,8 @@ import java.util.concurrent.CopyOnWriteArrayList
 import java.util.concurrent.atomic.AtomicBoolean
 
 class SyncManager(
-    private val application: Application
+    private val application: Application,
+    private val localStoreRepository: LocalStoreRepository
 ) {
     private val _wallets: CopyOnWriteArrayList<LocalWalletModel> = CopyOnWriteArrayList()
     private var syncJobs: MutableList<Job> = mutableListOf()
@@ -138,12 +141,28 @@ class SyncManager(
         return false
     }
 
+    fun getSyncGrouping(): Int {
+        return when(localStoreRepository.getDevicePerformanceLevel()) {
+            DevicePerformanceLevel.DEFAULT -> {
+                1
+            }
+
+            DevicePerformanceLevel.MED -> {
+                2
+            }
+
+            DevicePerformanceLevel.HIGH -> {
+                3
+            }
+        }
+    }
+
     fun syncWallets() {
         if(running && !syncing && syncJobs.isEmpty()) {
             syncing = true
 
             _wallets
-                .splitIntoGroupOf(3)
+                .splitIntoGroupOf(getSyncGrouping())
                 .forEach { group ->
                     syncJobs.add(
                         lazyRunInBackground {

@@ -32,13 +32,14 @@ val apiRepositoriesModule = module {
 val walletManagerModule = module {
 
     single { provideWalletManager(get(), get(), get()) }
-    single { provideWalletSyncer(get()) }
+    single { provideWalletSyncer(get(), get()) }
 }
 
 fun provideWalletSyncer(
-    application: Application
+    application: Application,
+    localStoreRepository: LocalStoreRepository
 ): SyncManager {
-    return SyncManager(application)
+    return SyncManager(application, localStoreRepository)
 }
 
 fun provideWalletManager(

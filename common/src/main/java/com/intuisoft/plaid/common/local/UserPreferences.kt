@@ -29,6 +29,7 @@ class UserPreferences(
         const val MIN_CONFIRMATIONS_KEY = "MIN_CONFIRMATIONS_KEY"
         const val BASE_WALLET = "BASE_WALLET"
         const val FEE_RATE_UPDATE_TIME = "FEE_RATE_UPDATE_TIME"
+        const val DEVICE_PERFORMANCE = "DEVICE_PERFORMANCE"
     }
 
     var incorrectPinAttempts: Int
@@ -53,6 +54,15 @@ class UserPreferences(
         }
         set(min) {
             putInt(MIN_CONFIRMATIONS_KEY, min)
+        }
+
+    var devicePerformanceLevel: DevicePerformanceLevel?
+        get() {
+            val level = getInt(DEVICE_PERFORMANCE, -1)
+            return DevicePerformanceLevel.values().find { it.ordinal == level }
+        }
+        set(level) {
+            putInt(DEVICE_PERFORMANCE, level?.ordinal ?: -1)
         }
 
     var bitcoinDisplayUnit: BitcoinDisplayUnit

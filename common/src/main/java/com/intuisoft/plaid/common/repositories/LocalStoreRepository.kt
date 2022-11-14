@@ -1,5 +1,6 @@
 package com.intuisoft.plaid.common.repositories
 
+import android.bluetooth.BluetoothClass.Device
 import com.intuisoft.plaid.common.listeners.WipeDataListener
 import com.intuisoft.plaid.common.local.db.listeners.DatabaseListener
 import com.intuisoft.plaid.common.model.*
@@ -13,6 +14,8 @@ interface LocalStoreRepository {
     fun getPinEntryLimit(): Int
 
     fun getMinimumConfirmations(): Int
+
+    fun getDevicePerformanceLevel(): DevicePerformanceLevel
 
     fun setMinConfirmations(minConfirmations: Int)
 

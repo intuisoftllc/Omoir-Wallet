@@ -31,6 +31,10 @@ class LocalStoreRepository_Impl(
         return userPreferences.minConfirmations
     }
 
+    override fun getDevicePerformanceLevel(): DevicePerformanceLevel {
+        return userPreferences.devicePerformanceLevel ?: DevicePerformanceLevel.DEFAULT
+    }
+
     override fun setMinConfirmations(minConfirmations: Int) {
         userPreferences.minConfirmations = minConfirmations
     }
