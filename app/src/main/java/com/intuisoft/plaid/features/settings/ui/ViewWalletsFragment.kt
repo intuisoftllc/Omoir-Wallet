@@ -11,7 +11,7 @@ import androidx.navigation.fragment.findNavController
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.*
 import com.intuisoft.plaid.databinding.FragmentManageWalletsBinding
-import com.intuisoft.plaid.features.homescreen.adapters.BasicWalletDataAdapter
+import com.intuisoft.plaid.features.homescreen.free.adapters.BasicWalletDataAdapter
 import com.intuisoft.plaid.features.pin.ui.PinProtectedFragment
 import com.intuisoft.plaid.model.LocalWalletModel
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository

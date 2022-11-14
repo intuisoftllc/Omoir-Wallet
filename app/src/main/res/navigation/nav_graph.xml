@@ -18,6 +18,10 @@
         <action
             android:id="@+id/action_SplashFragment_to_HomescreenFragment"
             app:destination="@+id/homescreenFragment" />
+
+        <action
+            android:id="@+id/action_SplashFragment_to_ProHomescreenFragment"
+            app:destination="@+id/proHomescreenFragment" />
     </fragment>
 
 
@@ -34,7 +38,7 @@
 
     <fragment
         android:id="@+id/homescreenFragment"
-        android:name="com.intuisoft.plaid.features.homescreen.ui.HomescreenFragment"
+        android:name="com.intuisoft.plaid.features.homescreen.free.ui.HomescreenFragment"
         android:label="@string/homescreen_fragment_label"
         tools:layout="@layout/fragment_homescreen">
 
@@ -48,6 +52,13 @@
         <action
             android:id="@+id/action_HomescreenFragment_to_WalletDashboardFlow"
             app:destination="@+id/walletDashboardFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/proHomescreenFragment"
+        android:name="com.intuisoft.plaid.features.homescreen.pro.ui.ProHomescreenFragment"
+        android:label="@string/homescreen_fragment_label"
+        tools:layout="@layout/fragment_pro_homescreen">
     </fragment>
 
 

@@ -29,7 +29,7 @@ class SplashViewModel(
             delay(SPLASH_DURATION.toLong())
 
             if(localStoreRepository.getUserPin() != null && localStoreRepository.getUserAlias() != null) {
-                _nextDestination.postValue(SplashFragmentDirections.actionSplashFragmentToHomescreenFragment())
+                _nextDestination.postValue(SplashFragmentDirections.actionSplashFragmentToProHomescreenFragment())
             } else {
                 _nextDestination.postValue(SplashFragmentDirections.actionSplashFragmentToOnboardingFragment())
             }

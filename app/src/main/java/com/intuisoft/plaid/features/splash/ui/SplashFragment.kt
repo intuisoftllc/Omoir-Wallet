@@ -31,9 +31,10 @@ class SplashFragment : BindingFragment<FragmentSplashBinding>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        viewModel.startWalletManager()
+
         animateLogo()
         ignoreOnBackPressed()
-        viewModel.startWalletManager()
         viewModel.nextScreen()
 
         viewModel.resetPinCheckedTime()

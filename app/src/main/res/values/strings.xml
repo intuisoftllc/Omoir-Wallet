@@ -17,6 +17,10 @@
     <string name="all_set_description">Congratulations on taking the first step towards your financial sovernty.\n\nPlaid Crypto Wallet™ gives you the tools you need to take your cryptocurrency journey to the next level. Get started by creating a new wallet or navigating to the main screen.</string>
 <!--    On-boarding All Set Strings End -->
 
+<!--    Pro Homescreen Strings -->
+    <string name="pro_homescreen_full_balance_title">Total Balance</string>
+<!--    Pro Homescreen Strings End -->
+
 <!--  Pin Screen Strings -->
     <string name="create_pin_tip_message">Create a pin up to 8 digits</string>
     <string name="incorrect_pin_length_tip_message">Pin must be at least 4 digits</string>
@@ -385,6 +389,7 @@
     <string name="amount">Amount</string>
     <string name="fee">Fee</string>
     <string name="send">Send</string>
+    <string name="wallets">Wallets</string>
     <string name="proceed_anyway">Proceed Anyway</string>
     <string name="done">Done</string>
     <string name="share">share</string>

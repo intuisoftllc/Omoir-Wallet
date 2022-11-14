@@ -72,6 +72,7 @@
             <flag name="no_bar" value="0" />
             <flag name="left_align" value="1" />
             <flag name="center_align" value="2" />
+            <flag name="center_align_white" value="4" />
         </attr>
         <attr name="primary_text" format="string"/>
         <attr name="secondary_text" format="string"/>

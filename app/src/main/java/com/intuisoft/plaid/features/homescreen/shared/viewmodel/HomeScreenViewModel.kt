@@ -1,4 +1,4 @@
-package com.intuisoft.plaid.features.homescreen.viewmodel
+package com.intuisoft.plaid.features.homescreen.shared.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.LiveData

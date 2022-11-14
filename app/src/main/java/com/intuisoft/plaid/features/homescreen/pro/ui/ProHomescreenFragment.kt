@@ -1,4 +1,4 @@
-package com.intuisoft.plaid.features.homescreen.ui
+package com.intuisoft.plaid.features.homescreen.pro.ui
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -6,30 +6,36 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.GridLayoutManager
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.activities.MainActivity
 import com.intuisoft.plaid.androidwrappers.*
 import com.intuisoft.plaid.common.CommonService
+import com.intuisoft.plaid.common.model.BitcoinDisplayUnit
 import com.intuisoft.plaid.databinding.FragmentHomescreenBinding
-import com.intuisoft.plaid.features.homescreen.adapters.BasicWalletDataAdapter
-import com.intuisoft.plaid.features.homescreen.viewmodel.HomeScreenViewModel
+import com.intuisoft.plaid.features.homescreen.free.adapters.BasicWalletDataAdapter
+import com.intuisoft.plaid.features.homescreen.shared.viewmodel.HomeScreenViewModel
 import com.intuisoft.plaid.features.pin.ui.PinProtectedFragment
 import com.intuisoft.plaid.listeners.StateListener
 import com.intuisoft.plaid.model.LocalWalletModel
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
+import com.intuisoft.plaid.common.util.SimpleCoinNumberFormat
 import com.intuisoft.plaid.common.util.extensions.toArrayList
+import com.intuisoft.plaid.databinding.FragmentProHomescreenBinding
+import com.intuisoft.plaid.features.homescreen.pro.adapters.ProWalletDataAdapter
+import com.intuisoft.plaid.features.homescreen.pro.adapters.detail.ProWalletDataDetail
 import com.intuisoft.plaid.walletmanager.AbstractWalletManager
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
-class HomescreenFragment : PinProtectedFragment<FragmentHomescreenBinding>(), StateListener {
+class ProHomescreenFragment : PinProtectedFragment<FragmentProHomescreenBinding>(), StateListener {
     protected val viewModel: HomeScreenViewModel by viewModel()
     protected val walletVM: WalletViewModel by viewModel()
     protected val localStoreRepository: LocalStoreRepository by inject()
     protected val walletManager: AbstractWalletManager by inject()
 
-    private val adapter = BasicWalletDataAdapter(
+    private val adapter = ProWalletDataAdapter(
         onWalletSelected = ::onWalletSelected,
         localStoreRepository = localStoreRepository
     )
@@ -39,7 +45,7 @@ class HomescreenFragment : PinProtectedFragment<FragmentHomescreenBinding>(), St
         savedInstanceState: Bundle?
     ): View? {
 
-        _binding = FragmentHomescreenBinding.inflate(inflater, container, false)
+        _binding = FragmentProHomescreenBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -63,7 +69,31 @@ class HomescreenFragment : PinProtectedFragment<FragmentHomescreenBinding>(), St
             }
         }
 
-        binding.walletsView.walletsList.adapter = adapter
+        walletManager.balanceUpdated.observe(viewLifecycleOwner, Observer {
+            binding.totalBalance.text = SimpleCoinNumberFormat.format(localStoreRepository, it, false)
+        })
+
+        binding.totalBalance.setOnClickListener {
+            when (walletVM.getDisplayUnit()) {
+                BitcoinDisplayUnit.BTC -> {
+                    walletVM.setDisplayUnit(BitcoinDisplayUnit.SATS)
+                }
+
+                BitcoinDisplayUnit.SATS -> {
+                    walletVM.setDisplayUnit(BitcoinDisplayUnit.FIAT)
+                }
+
+                BitcoinDisplayUnit.FIAT -> {
+                    walletVM.setDisplayUnit(BitcoinDisplayUnit.BTC)
+                }
+            }
+
+            adapter.updateConversion()
+            binding.totalBalance.text = SimpleCoinNumberFormat.format(localStoreRepository, walletManager.balanceUpdated.value ?: 0, false)
+        }
+
+        binding.walletsList.adapter = adapter
+        binding.walletsList.layoutManager = GridLayoutManager(requireContext(), 2)
         viewModel.homeScreenGreeting.observe(viewLifecycleOwner, Observer {
             (requireActivity() as MainActivity).setActionBarTitle(it.second)
             (requireActivity() as MainActivity).setActionBarSubTitle(it.first + ",")
@@ -72,8 +102,8 @@ class HomescreenFragment : PinProtectedFragment<FragmentHomescreenBinding>(), St
         walletManager.wallets.observe(viewLifecycleOwner, Observer {
             adapter.addWallets(it.toArrayList())
 
-            binding.walletsView.walletsList.isVisible = it.isNotEmpty()
-            binding.walletsView.noWalletsContainer.isVisible = it.isEmpty()
+            binding.walletsList.isVisible = it.isNotEmpty()
+            binding.noWalletsContainer.isVisible = it.isEmpty()
         })
 
         binding.createWallet.setOnClickListener {

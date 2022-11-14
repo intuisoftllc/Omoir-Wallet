@@ -141,7 +141,7 @@ class SyncManager(
         return false
     }
 
-    fun getSyncGrouping(): Int {
+    fun getSyncGrouping(): Int { // todo: prevent user from syncing more wallets than allowed based on performance specs
         return when(localStoreRepository.getDevicePerformanceLevel()) {
             DevicePerformanceLevel.DEFAULT -> {
                 1

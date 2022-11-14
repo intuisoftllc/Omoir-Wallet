@@ -1,22 +1,22 @@
-package com.intuisoft.plaid.features.homescreen.adapters.detail
+package com.intuisoft.plaid.features.homescreen.pro.adapters.detail
 
 import android.view.View
-import androidx.lifecycle.LifecycleOwner
+import android.widget.TextView
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.BindingViewHolder
 import com.intuisoft.plaid.androidwrappers.ListItem
 import com.intuisoft.plaid.model.LocalWalletModel
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
-import kotlinx.android.synthetic.main.list_item_basic_wallet_detail.view.*
+import kotlinx.android.synthetic.main.list_item_pro_wallet_detail.view.*
 
 
-class BasicWalletDataDetail(
+class ProWalletDataDetail(
     val wallet: LocalWalletModel,
     val onClick: (LocalWalletModel) -> Unit,
     val localStoreRepository: LocalStoreRepository
 ) : ListItem {
     override val layoutId: Int
-        get() = R.layout.list_item_basic_wallet_detail
+        get() = R.layout.list_item_pro_wallet_detail
     var view: View? = null
 
     override fun bind(holder: BindingViewHolder) {
@@ -28,6 +28,7 @@ class BasicWalletDataDetail(
             }
 
             name.text = wallet.name
+            balance.text = wallet.getBalance(localStoreRepository, true)
             wallet.walletStateOrType(stateOrType, 0)
         }
     }
@@ -35,6 +36,7 @@ class BasicWalletDataDetail(
     fun onWalletStateUpdated() {
         view?.let {
             wallet.walletStateOrType(it.findViewById(R.id.stateOrType), wallet.syncPercentage)
+            it.findViewById<TextView>(R.id.balance).text = wallet.getBalance(localStoreRepository, true)
         }
     }
 }

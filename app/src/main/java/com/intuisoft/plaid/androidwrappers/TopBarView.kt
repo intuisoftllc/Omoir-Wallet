@@ -29,6 +29,7 @@ class TopBarView(context: Context, attrs: AttributeSet?) : LinearLayout(context,
         const val NO_BAR = 0
         const val LEFT_ALIGN = 1
         const val CENTER_ALIGN = 2
+        const val CENTER_ALIGN_WHITE = 4
     }
 
     init {
@@ -54,6 +55,7 @@ class TopBarView(context: Context, attrs: AttributeSet?) : LinearLayout(context,
             LEFT_ALIGN -> {
                 findViewById<ConstraintLayout>(R.id.top_bar_variant_left_align).isVisible = true
                 findViewById<ConstraintLayout>(R.id.top_bar_variant_center_align).isVisible = false
+                findViewById<ConstraintLayout>(R.id.top_bar_variant_center_align_white).isVisible = false
                 primary_text_tv = findViewById(R.id.primary_text)
                 secondary_text_tv = findViewById(R.id.secondary_text)
                 right_action_iv = findViewById(R.id.action_right)
@@ -62,14 +64,25 @@ class TopBarView(context: Context, attrs: AttributeSet?) : LinearLayout(context,
             CENTER_ALIGN -> {
                 findViewById<ConstraintLayout>(R.id.top_bar_variant_left_align).isVisible = false
                 findViewById<ConstraintLayout>(R.id.top_bar_variant_center_align).isVisible = true
+                findViewById<ConstraintLayout>(R.id.top_bar_variant_center_align_white).isVisible = false
                 primary_text_tv = findViewById(R.id.center_variant_primary_text)
                 secondary_text_tv = findViewById(R.id.center_variant_secondary_text)
                 right_action_iv = findViewById(R.id.center_variant_action_right)
                 left_action_iv = findViewById(R.id.center_variant_action_left)
             }
+            CENTER_ALIGN_WHITE -> {
+                findViewById<ConstraintLayout>(R.id.top_bar_variant_left_align).isVisible = false
+                findViewById<ConstraintLayout>(R.id.top_bar_variant_center_align).isVisible = false
+                findViewById<ConstraintLayout>(R.id.top_bar_variant_center_align_white).isVisible = true
+                primary_text_tv = findViewById(R.id.white_center_variant_primary_text)
+                secondary_text_tv = findViewById(R.id.white_center_variant_secondary_text)
+                right_action_iv = findViewById(R.id.white_center_variant_action_right)
+                left_action_iv = findViewById(R.id.white_center_variant_action_left)
+            }
             else -> { // no bar
                 findViewById<ConstraintLayout>(R.id.top_bar_variant_left_align).isVisible = false
                 findViewById<ConstraintLayout>(R.id.top_bar_variant_center_align).isVisible = false
+                findViewById<ConstraintLayout>(R.id.top_bar_variant_center_align_white).isVisible = false
             }
         }
 

@@ -1,4 +1,4 @@
-package com.intuisoft.plaid.features.homescreen.adapters
+package com.intuisoft.plaid.features.homescreen.pro.adapters
 
 import android.view.View
 import android.view.ViewGroup
@@ -8,17 +8,19 @@ import androidx.recyclerview.widget.RecyclerView
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.BindingViewHolder
 import com.intuisoft.plaid.databinding.ListItemBasicWalletDetailBinding
-import com.intuisoft.plaid.features.homescreen.adapters.detail.BasicWalletDataDetail
+import com.intuisoft.plaid.features.homescreen.free.adapters.detail.BasicWalletDataDetail
 import com.intuisoft.plaid.model.LocalWalletModel
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
+import com.intuisoft.plaid.databinding.ListItemProWalletDetailBinding
+import com.intuisoft.plaid.features.homescreen.pro.adapters.detail.ProWalletDataDetail
 
 
-class BasicWalletDataAdapter(
+class ProWalletDataAdapter(
     private val onWalletSelected: (LocalWalletModel) -> Unit,
     private val localStoreRepository: LocalStoreRepository
 ) : RecyclerView.Adapter<BindingViewHolder>() {
 
-    var wallets = arrayListOf<BasicWalletDataDetail>()
+    var wallets = arrayListOf<ProWalletDataDetail>()
     private var lastPosition = -1
 
     override fun onCreateViewHolder(
@@ -26,8 +28,8 @@ class BasicWalletDataAdapter(
         viewType: Int
     ): BindingViewHolder {
         return when (viewType) {
-            R.layout.list_item_basic_wallet_detail -> {
-                BindingViewHolder.create(parent, ListItemBasicWalletDetailBinding::inflate)
+            R.layout.list_item_pro_wallet_detail -> {
+                BindingViewHolder.create(parent, ListItemProWalletDetailBinding::inflate)
             }
             else -> throw IllegalArgumentException("Invalid BindingViewHolder Type")
         }
@@ -55,6 +57,12 @@ class BasicWalletDataAdapter(
         }
     }
 
+    fun updateConversion() {
+        wallets.forEach {
+            it.onWalletStateUpdated()
+        }
+    }
+
     fun onWalletStateUpdated(wallet: LocalWalletModel) {
         wallets.find { it.wallet.uuid == wallet.uuid }?.onWalletStateUpdated()
     }
@@ -62,7 +70,7 @@ class BasicWalletDataAdapter(
     fun addWallets(items: ArrayList<LocalWalletModel>) {
         wallets.clear()
         wallets.addAll(items.mapIndexed { index, wallet ->
-            BasicWalletDataDetail(wallet, onWalletSelected, localStoreRepository)
+            ProWalletDataDetail(wallet, onWalletSelected, localStoreRepository)
         })
 
         notifyDataSetChanged()

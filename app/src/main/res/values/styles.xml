@@ -23,6 +23,11 @@
         <item name="lineSpacing">20dp</item>
     </style>
 
+    <style name="TextStyle.Semibold.18">
+        <item name="android:textSize">18sp</item>
+        <item name="lineSpacing">22dp</item>
+    </style>
+
     <style name="TextStyle.Semibold.24">
         <item name="android:textSize">24sp</item>
         <item name="lineSpacing">29dp</item>

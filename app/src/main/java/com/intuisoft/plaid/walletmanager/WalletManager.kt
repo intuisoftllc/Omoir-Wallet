@@ -377,6 +377,7 @@ class WalletManager(
            }
        )
 
+       _balanceUpdated.postValue(getTotalBalance())
        synchronizeAll()
    }
 

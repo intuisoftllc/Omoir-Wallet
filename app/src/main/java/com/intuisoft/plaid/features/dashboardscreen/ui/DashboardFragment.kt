@@ -165,7 +165,7 @@ class DashboardFragment : PinProtectedFragment<FragmentWalletDashboardBinding>()
     }
 
     override fun actionBarVariant(): Int {
-        return TopBarView.CENTER_ALIGN
+        return TopBarView.CENTER_ALIGN_WHITE
     }
 
     override fun navigationId(): Int {

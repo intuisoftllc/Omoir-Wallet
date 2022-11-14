@@ -1,4 +1,4 @@
-package com.intuisoft.plaid.features.dashboardscreen.adapters
+package com.intuisoft.plaid.features.homescreen.free.adapters
 
 import android.view.View
 import android.view.ViewGroup
@@ -8,18 +8,17 @@ import androidx.recyclerview.widget.RecyclerView
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.BindingViewHolder
 import com.intuisoft.plaid.databinding.ListItemBasicWalletDetailBinding
-import com.intuisoft.plaid.features.dashboardscreen.adapters.detail.TransferToWalletDetail
 import com.intuisoft.plaid.features.homescreen.free.adapters.detail.BasicWalletDataDetail
 import com.intuisoft.plaid.model.LocalWalletModel
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 
 
-class TransferToWalletAdapter(
-    private val localStoreRepository: LocalStoreRepository,
-    private val onWalletSelected: (LocalWalletModel) -> Unit
+class BasicWalletDataAdapter(
+    private val onWalletSelected: (LocalWalletModel) -> Unit,
+    private val localStoreRepository: LocalStoreRepository
 ) : RecyclerView.Adapter<BindingViewHolder>() {
 
-    var wallets = arrayListOf<TransferToWalletDetail>()
+    var wallets = arrayListOf<BasicWalletDataDetail>()
     private var lastPosition = -1
 
     override fun onCreateViewHolder(
@@ -56,10 +55,14 @@ class TransferToWalletAdapter(
         }
     }
 
+    fun onWalletStateUpdated(wallet: LocalWalletModel) {
+        wallets.find { it.wallet.uuid == wallet.uuid }?.onWalletStateUpdated()
+    }
+
     fun addWallets(items: ArrayList<LocalWalletModel>) {
         wallets.clear()
         wallets.addAll(items.mapIndexed { index, wallet ->
-            TransferToWalletDetail(wallet, onWalletSelected, localStoreRepository)
+            BasicWalletDataDetail(wallet, onWalletSelected, localStoreRepository)
         })
 
         notifyDataSetChanged()
