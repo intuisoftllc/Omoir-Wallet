@@ -315,6 +315,13 @@
             app:popUpToInclusive="true"/>
     </fragment>
 
+    <fragment
+        android:id="@+id/swapFragment"
+        android:name="com.intuisoft.plaid.features.dashboardscreen.ui.SwapFragment"
+        android:label="@string/swap_fragment_label"
+        tools:layout="@layout/fragment_swap">
+    </fragment>
+
     <action
         android:id="@+id/action_global_pinFragment"
         app:destination="@+id/pinFragment" />

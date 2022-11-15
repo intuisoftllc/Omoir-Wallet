@@ -30,6 +30,7 @@ class UserPreferences(
         const val BASE_WALLET = "BASE_WALLET"
         const val FEE_RATE_UPDATE_TIME = "FEE_RATE_UPDATE_TIME"
         const val DEVICE_PERFORMANCE = "DEVICE_PERFORMANCE"
+        const val PRO_ENABLED = "PRO_ENABLED"
     }
 
     var incorrectPinAttempts: Int
@@ -208,6 +209,14 @@ class UserPreferences(
         }
         set(enable) {
             putBool(FINGERPRINT_SECURITY_KEY, enable)
+        }
+
+    var isProEnabled: Boolean
+        get() {
+            return getBool(PRO_ENABLED, false)
+        }
+        set(enable) {
+            putBool(PRO_ENABLED, enable)
         }
 
     fun putBool(key: String, value: Boolean) {

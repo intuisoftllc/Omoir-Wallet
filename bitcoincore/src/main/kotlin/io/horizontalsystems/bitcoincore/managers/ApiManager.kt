@@ -3,6 +3,7 @@ package io.horizontalsystems.bitcoincore.managers
 import android.util.Log
 import com.eclipsesource.json.Json
 import com.eclipsesource.json.JsonValue
+import io.horizontalsystems.bitcoincore.BitcoinCore
 import io.horizontalsystems.bitcoincore.utils.NetworkUtils
 import kotlinx.coroutines.runBlocking
 import okhttp3.OkHttpClient
@@ -23,7 +24,7 @@ class ApiManager(private val host: String) {
     fun get(resource: String): JsonValue {
         val url = "$host/$resource"
 
-        logger.info("Fetching $url")
+        if(BitcoinCore.loggingEnabled)  logger.info("Fetching $url")
 
         return try {
             URL(url)
@@ -46,7 +47,7 @@ class ApiManager(private val host: String) {
         try {
             val path = "$host/$resource"
 
-            logger.info("Fetching $path")
+            if(BitcoinCore.loggingEnabled)  logger.info("Fetching $path")
 
             val url = URL(path)
             val urlConnection = url.openConnection() as HttpURLConnection

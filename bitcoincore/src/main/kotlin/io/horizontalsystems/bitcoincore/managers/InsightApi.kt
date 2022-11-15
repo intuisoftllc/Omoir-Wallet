@@ -1,5 +1,6 @@
 package io.horizontalsystems.bitcoincore.managers
 
+import io.horizontalsystems.bitcoincore.BitcoinCore
 import io.horizontalsystems.bitcoincore.core.IInitialSyncApi
 import java.util.logging.Logger
 
@@ -9,7 +10,7 @@ class InsightApi(host: String) : IInitialSyncApi {
     private val logger = Logger.getLogger("InsightApi")
 
     override fun getTransactions(addresses: List<String>): List<TransactionItem> {
-        logger.info("Request transactions for ${addresses.size} addresses: [${addresses.first()}, ...]")
+        if(BitcoinCore.loggingEnabled)  logger.info("Request transactions for ${addresses.size} addresses: [${addresses.first()}, ...]")
 
         val transactions = mutableListOf<TransactionItem>()
 

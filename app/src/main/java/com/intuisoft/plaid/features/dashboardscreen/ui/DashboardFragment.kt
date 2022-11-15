@@ -58,6 +58,10 @@ class DashboardFragment : PinProtectedFragment<FragmentWalletDashboardBinding>()
         viewModel.addWalletStateListener(this)
         viewModel.updateSuggestedFees()
 
+        onBackPressedCallback {
+            onNavigateBottomBarPrimaryFragmentBackwards(localStoreRepository)
+        }
+
         binding.swipeContainer.setOnRefreshListener {
             if(binding.swipeContainer.isRefreshing) {
                 viewModel.syncWallet()
@@ -164,6 +168,10 @@ class DashboardFragment : PinProtectedFragment<FragmentWalletDashboardBinding>()
         }
     }
 
+    override fun onNavigateTo(destination: Int) {
+        navigate(destination, viewModel.getWalletId())
+    }
+
     override fun actionBarVariant(): Int {
         return TopBarView.CENTER_ALIGN_WHITE
     }
@@ -181,7 +189,7 @@ class DashboardFragment : PinProtectedFragment<FragmentWalletDashboardBinding>()
     }
 
     override fun onActionLeft() {
-        findNavController().popBackStack()
+        onNavigateBottomBarPrimaryFragmentBackwards(localStoreRepository)
     }
 
     override fun onActionRight() {

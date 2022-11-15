@@ -815,5 +815,8 @@ class BitcoinCore(
         object ReadOnlyCore : CoreError()
     }
 
+    companion object {
+        var loggingEnabled: Boolean = false
+    }
 
 }

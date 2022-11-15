@@ -1,5 +1,6 @@
 package io.horizontalsystems.bitcoincore.blocks
 
+import io.horizontalsystems.bitcoincore.BitcoinCore
 import io.horizontalsystems.bitcoincore.core.IBlockSyncListener
 import io.horizontalsystems.bitcoincore.models.InventoryItem
 import io.horizontalsystems.bitcoincore.models.MerkleBlock
@@ -129,7 +130,7 @@ class InitialBlockDownload(
                     syncPeer = nonSyncedPeer
                     blockSyncer.downloadStarted()
 
-                    logger.info("Start syncing peer ${nonSyncedPeer.host}")
+                    if(BitcoinCore.loggingEnabled)  logger.info("Start syncing peer ${nonSyncedPeer.host}")
 
                     downloadBlockchain()
                 }
@@ -184,7 +185,7 @@ class InitialBlockDownload(
 
                     blockSyncer.downloadCompleted()
                     peer.sendMempoolMessage()
-                    logger.info("Peer synced ${peer.host}")
+                    if(BitcoinCore.loggingEnabled)  logger.info("Peer synced ${peer.host}")
                     syncPeer = null
                     assignNextSyncPeer()
                     peerSyncListeners.forEach { it.onPeerSynced(peer) }

@@ -134,7 +134,7 @@ class WalletSettingsFragment : PinProtectedFragment<FragmentWalletSettingsBindin
                         showClose = false
                     )
                 ),
-                com.intuisoft.plaid.common.util.Constants.Navigation.WALLET_UUID_BUNDLE_ID to viewModel.getWalletId()
+                Constants.Navigation.WALLET_UUID_BUNDLE_ID to viewModel.getWalletId()
             )
 
             navigate(

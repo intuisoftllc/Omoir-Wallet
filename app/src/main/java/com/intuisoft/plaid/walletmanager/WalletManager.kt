@@ -1,6 +1,8 @@
 package com.intuisoft.plaid.walletmanager
 
 import android.app.Application
+import android.util.Log
+import android.widget.Toast
 import com.intuisoft.plaid.common.listeners.WipeDataListener
 import com.intuisoft.plaid.listeners.StateListener
 import com.intuisoft.plaid.model.LocalWalletModel
@@ -41,6 +43,7 @@ class WalletManager(
             localStoreRepository.setOnWipeDataListener(this@WalletManager)
             syncer.start()
             syncer.addListener(this@WalletManager)
+            Log.e("LOOK", "start()")
             updateWallets()
         }
     }
@@ -225,6 +228,7 @@ class WalletManager(
    private fun saveWallet(wallet: WalletIdentifier) {
        localStoreRepository.getStoredWalletInfo().walletIdentifiers.add(wallet)
        localStoreRepository.setStoredWalletInfo(localStoreRepository.getStoredWalletInfo())
+       Log.e("LOOK", "saveWallet()")
        updateWallets()
        syncer.startAutoSync()
    }
@@ -288,6 +292,7 @@ class WalletManager(
    }
 
    private fun updateWallets() {
+       Log.e("LOOK", "update wallets")
        syncer.stopAllWallets()
        syncer.clearWallets()
 

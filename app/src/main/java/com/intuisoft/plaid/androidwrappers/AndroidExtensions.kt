@@ -154,8 +154,8 @@ fun styledSnackBar(root: View, title: String, showTop: Boolean? = null, onDismis
     snack.show()
 }
 
-fun Fragment.navigate(navId: Int, wallet: LocalWalletModel, options: NavOptions = com.intuisoft.plaid.common.util.Constants.Navigation.ANIMATED_FADE_IN_EXIT_NAV_OPTION) {
-    val bundle = bundleOf(com.intuisoft.plaid.common.util.Constants.Navigation.WALLET_UUID_BUNDLE_ID to wallet.uuid)
+fun Fragment.navigate(navId: Int, wallet: LocalWalletModel, options: NavOptions = Constants.Navigation.ANIMATED_FADE_IN_EXIT_NAV_OPTION) {
+    val bundle = bundleOf(Constants.Navigation.WALLET_UUID_BUNDLE_ID to wallet.uuid)
     findNavController().navigate(
         navId,
         bundle,
@@ -163,8 +163,8 @@ fun Fragment.navigate(navId: Int, wallet: LocalWalletModel, options: NavOptions 
     )
 }
 
-fun Fragment.navigate(navId: Int, uuid: String, options: NavOptions = com.intuisoft.plaid.common.util.Constants.Navigation.ANIMATED_FADE_IN_EXIT_NAV_OPTION) {
-    val bundle = bundleOf(com.intuisoft.plaid.common.util.Constants.Navigation.WALLET_UUID_BUNDLE_ID to uuid)
+fun Fragment.navigate(navId: Int, uuid: String, options: NavOptions = Constants.Navigation.ANIMATED_FADE_IN_EXIT_NAV_OPTION) {
+    val bundle = bundleOf(Constants.Navigation.WALLET_UUID_BUNDLE_ID to uuid)
     findNavController().navigate(
         navId,
         bundle,
@@ -172,7 +172,7 @@ fun Fragment.navigate(navId: Int, uuid: String, options: NavOptions = com.intuis
     )
 }
 
-fun Fragment.navigate(navId: Int, options: NavOptions = com.intuisoft.plaid.common.util.Constants.Navigation.ANIMATED_FADE_IN_EXIT_NAV_OPTION) {
+fun Fragment.navigate(navId: Int, options: NavOptions = Constants.Navigation.ANIMATED_FADE_IN_EXIT_NAV_OPTION) {
     findNavController().navigate(
         navId,
         null,
@@ -180,7 +180,7 @@ fun Fragment.navigate(navId: Int, options: NavOptions = com.intuisoft.plaid.comm
     )
 }
 
-fun Fragment.navigate(navId: Int, bundle: Bundle, options: NavOptions = com.intuisoft.plaid.common.util.Constants.Navigation.ANIMATED_FADE_IN_EXIT_NAV_OPTION) {
+fun Fragment.navigate(navId: Int, bundle: Bundle, options: NavOptions = Constants.Navigation.ANIMATED_FADE_IN_EXIT_NAV_OPTION) {
     findNavController().navigate(
         navId,
         bundle,
@@ -240,4 +240,9 @@ fun Activity.checkAppPermission(permission: String, requestCode: Int, onAlreadyG
 fun Context.openLink(url: String) {
     val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
     startActivity(browserIntent)
+}
+
+
+fun Fragment.toast(message: String) {
+    Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
 }

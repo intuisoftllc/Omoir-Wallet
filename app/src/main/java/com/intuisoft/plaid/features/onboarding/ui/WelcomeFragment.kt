@@ -84,6 +84,10 @@ class WelcomeFragment : BindingFragment<FragmentOnboardingWelcomeBinding>() {
         return 0
     }
 
+    override fun onNavigateTo(destination: Int) {
+        // ignore
+    }
+
     override fun actionBarVariant(): Int {
         return TopBarView.NO_BAR
     }

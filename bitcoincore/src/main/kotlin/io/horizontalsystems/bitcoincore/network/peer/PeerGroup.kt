@@ -1,5 +1,6 @@
 package io.horizontalsystems.bitcoincore.network.peer
 
+import io.horizontalsystems.bitcoincore.BitcoinCore
 import io.horizontalsystems.bitcoincore.core.IConnectionManager
 import io.horizontalsystems.bitcoincore.core.IPeerAddressManager
 import io.horizontalsystems.bitcoincore.core.IPeerAddressManagerListener
@@ -92,7 +93,7 @@ class PeerGroup(
 
         when (e) {
             null -> {
-                logger.info("Peer ${peer.host} disconnected.")
+                if(BitcoinCore.loggingEnabled)  logger.info("Peer ${peer.host} disconnected.")
                 hostManager.markSuccess(peer.host)
             }
             is PeerTimer.Error.Timeout -> {

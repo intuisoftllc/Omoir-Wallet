@@ -1,9 +1,11 @@
 package com.intuisoft.plaid.features.homescreen.pro.ui
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
@@ -56,8 +58,6 @@ class ProHomescreenFragment : PinProtectedFragment<FragmentProHomescreenBinding>
         }
 
         viewModel.updateGreeting()
-        walletManager.synchronizeAll()
-        walletVM.addWalletStateListener(this)
 
         walletManager.onSyncing.observe(viewLifecycleOwner, Observer {
             binding.swipeContainer.isRefreshing = it
@@ -69,8 +69,9 @@ class ProHomescreenFragment : PinProtectedFragment<FragmentProHomescreenBinding>
             }
         }
 
+        showTotalBalance(walletManager.balanceUpdated.value ?: 0)
         walletManager.balanceUpdated.observe(viewLifecycleOwner, Observer {
-            binding.totalBalance.text = SimpleCoinNumberFormat.format(localStoreRepository, it, false)
+            showTotalBalance(it)
         })
 
         binding.totalBalance.setOnClickListener {
@@ -89,7 +90,7 @@ class ProHomescreenFragment : PinProtectedFragment<FragmentProHomescreenBinding>
             }
 
             adapter.updateConversion()
-            binding.totalBalance.text = SimpleCoinNumberFormat.format(localStoreRepository, walletManager.balanceUpdated.value ?: 0, false)
+            showTotalBalance(walletManager.balanceUpdated.value ?: 0)
         }
 
         binding.walletsList.adapter = adapter
@@ -107,9 +108,16 @@ class ProHomescreenFragment : PinProtectedFragment<FragmentProHomescreenBinding>
         })
 
         binding.createWallet.setOnClickListener {
-            // todo: limit to 5 for free version
+            // todo: limit to 10 for pro version
             navigate(R.id.createWalletFragment)
         }
+
+        walletManager.synchronizeAll()
+        walletVM.addWalletStateListener(this)
+    }
+
+    fun showTotalBalance(totalBalance: Long) {
+        binding.totalBalance.text = SimpleCoinNumberFormat.format(localStoreRepository, totalBalance, false)
     }
 
     override fun onWalletStateUpdated(wallet: LocalWalletModel) {

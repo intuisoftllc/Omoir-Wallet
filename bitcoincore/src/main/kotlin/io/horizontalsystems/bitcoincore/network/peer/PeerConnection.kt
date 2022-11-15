@@ -1,5 +1,6 @@
 package io.horizontalsystems.bitcoincore.network.peer
 
+import io.horizontalsystems.bitcoincore.BitcoinCore
 import io.horizontalsystems.bitcoincore.io.BitcoinInput
 import io.horizontalsystems.bitcoincore.network.Network
 import io.horizontalsystems.bitcoincore.network.messages.IMessage
@@ -50,7 +51,7 @@ class PeerConnection(
             val inputStream = socket.getInputStream()
             val bitcoinInput = BitcoinInput(inputStream)
 
-            logger.info("Socket $host connected.")
+            if(BitcoinCore.loggingEnabled)  logger.info("Socket $host connected.")
 
             listener.socketConnected(socket.inetAddress)
 
@@ -64,7 +65,7 @@ class PeerConnection(
                 // try receive message:
                 while (isRunning && inputStream.available() > 0) {
                     val parsedMsg = networkMessageParser.parseMessage(bitcoinInput)
-                    logger.info("<= $parsedMsg")
+                    if(BitcoinCore.loggingEnabled)  logger.info("<= $parsedMsg")
                     listener.onMessage(parsedMsg)
                 }
             }
@@ -92,7 +93,7 @@ class PeerConnection(
         sendingExecutor.execute {
             if (isRunning) {
                 try {
-                    logger.info("=> $message")
+                    if(BitcoinCore.loggingEnabled)  logger.info("=> $message")
                     outputStream?.write(networkMessageSerializer.serialize(message))
                 } catch (e: Exception) {
                     close(e)

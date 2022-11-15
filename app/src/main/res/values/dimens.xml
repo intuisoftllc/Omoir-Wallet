@@ -40,5 +40,6 @@
     <dimen name="margin_6">6dp</dimen>
     <dimen name="margin_4">4dp</dimen>
     <dimen name="margin_3">3dp</dimen>
+    <dimen name="margin_2">2dp</dimen>
     <!--  Margin dimens end -->
 </resources>

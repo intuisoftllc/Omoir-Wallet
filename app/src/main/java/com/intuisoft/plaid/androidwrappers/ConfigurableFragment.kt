@@ -2,7 +2,10 @@ package com.intuisoft.plaid.androidwrappers
 
 import android.os.Bundle
 import android.view.View
+import androidx.navigation.fragment.findNavController
 import androidx.viewbinding.ViewBinding
+import com.intuisoft.plaid.R
+import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.common.util.Constants
 
 
@@ -56,6 +59,20 @@ abstract class ConfigurableFragment<T: ViewBinding> : BindingFragment<T>() {
         return baseVM!!.currentConfig != null
     }
 
+    fun onNavigateBottomBarSecondaryFragmentBackwards(localStoreRepository: LocalStoreRepository) {
+        if(localStoreRepository.isProEnabled())
+            findNavController().popBackStack(R.id.walletDashboardFragment, false) // todo: change to pro dashboard
+        else
+            findNavController().popBackStack(R.id.walletDashboardFragment, false)
+    }
+
+    fun onNavigateBottomBarPrimaryFragmentBackwards(localStoreRepository: LocalStoreRepository) {
+        if(localStoreRepository.isProEnabled())
+            findNavController().popBackStack(R.id.proHomescreenFragment, false)
+        else
+            findNavController().popBackStack(R.id.homescreenFragment, false)
+    }
+
     override fun actionBarSubtitle(): Int {
         configTypes.forEach {
             if(baseVM!!.hasConfiguration(it))
@@ -99,6 +116,10 @@ abstract class ConfigurableFragment<T: ViewBinding> : BindingFragment<T>() {
         }
 
         return 0
+    }
+
+    override fun onNavigateTo(destination: Int) {
+        // ignore
     }
 
     override fun onSubtitleClicked() {

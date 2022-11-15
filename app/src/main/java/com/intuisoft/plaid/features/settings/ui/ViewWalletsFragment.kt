@@ -54,8 +54,8 @@ class ViewWalletsFragment : PinProtectedFragment<FragmentManageWalletsBinding>()
 
     fun onWalletSelected(wallet: LocalWalletModel) {
         var bundle = bundleOf(
-            com.intuisoft.plaid.common.util.Constants.Navigation.FROM_SETTINGS to true,
-            com.intuisoft.plaid.common.util.Constants.Navigation.WALLET_UUID_BUNDLE_ID to wallet.uuid
+            Constants.Navigation.FROM_SETTINGS to true,
+            Constants.Navigation.WALLET_UUID_BUNDLE_ID to wallet.uuid
         )
 
         navigate(

@@ -59,6 +59,10 @@ class SplashFragment : BindingFragment<FragmentSplashBinding>() {
         return 0
     }
 
+    override fun onNavigateTo(destination: Int) {
+        // ignore
+    }
+
     override fun onActionLeft() {
         // ignore
     }

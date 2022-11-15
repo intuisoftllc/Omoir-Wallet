@@ -104,6 +104,9 @@ class PinFragment: BindingFragment<FragmentPinBinding>() {
         return TopBarView.NO_BAR
     }
 
+    override fun onNavigateTo(destination: Int) {
+        // ignore
+    }
 
     override fun actionBarTitle(): Int {
         return 0

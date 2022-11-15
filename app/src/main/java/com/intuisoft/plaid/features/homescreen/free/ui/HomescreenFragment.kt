@@ -65,7 +65,6 @@ class HomescreenFragment : PinProtectedFragment<FragmentHomescreenBinding>(), St
         }
 
         binding.walletsView.walletsList.adapter = adapter
-//        binding.walletsView.walletsList.layoutManager = GridLayoutManager(requireContext(), 2)
         viewModel.homeScreenGreeting.observe(viewLifecycleOwner, Observer {
             (requireActivity() as MainActivity).setActionBarTitle(it.second)
             (requireActivity() as MainActivity).setActionBarSubTitle(it.first + ",")

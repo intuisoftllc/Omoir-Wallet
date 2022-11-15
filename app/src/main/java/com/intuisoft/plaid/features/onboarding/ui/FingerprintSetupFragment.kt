@@ -56,6 +56,10 @@ class FingerprintSetupFragment : BindingFragment<FragmentOnboardingFingerprintRe
         })
     }
 
+    override fun onNavigateTo(destination: Int) {
+        // ignore
+    }
+
     override fun actionBarTitle(): Int {
         return 0
     }

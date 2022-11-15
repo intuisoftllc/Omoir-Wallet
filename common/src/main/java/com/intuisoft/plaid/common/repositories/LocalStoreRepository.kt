@@ -19,6 +19,10 @@ interface LocalStoreRepository {
 
     fun setMinConfirmations(minConfirmations: Int)
 
+    fun isProEnabled(): Boolean
+
+    fun setProEnabled(enable: Boolean)
+
     fun setMaxPinEntryLimit(limit: Int)
 
     fun resetPinEntries()

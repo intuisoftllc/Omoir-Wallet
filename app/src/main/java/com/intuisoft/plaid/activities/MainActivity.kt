@@ -9,28 +9,39 @@ import android.view.MenuItem
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.DrawableRes
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.view.isVisible
+import androidx.navigation.NavController
 import androidx.navigation.findNavController
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.navigateUp
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.*
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.*
+import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.databinding.ActivityMainBinding
 import com.intuisoft.plaid.features.splash.ui.SplashFragment
 import com.intuisoft.plaid.listeners.BarcodeResultListener
 import com.intuisoft.plaid.listeners.NetworkStateChangeListener
 import com.intuisoft.plaid.recievers.NetworkChangeReceiver
 import com.intuisoft.plaid.common.util.Constants
+import com.intuisoft.plaid.walletmanager.AbstractWalletManager
+import com.intuisoft.plaid.walletmanager.WalletManager
+import org.koin.android.ext.android.inject
 
 
 class MainActivity : BindingActivity<ActivityMainBinding>(), ActionBarDelegate {
-
-    private lateinit var appBarConfiguration: AppBarConfiguration
     lateinit var receiver: NetworkChangeReceiver
     lateinit var intentFilter: IntentFilter
+    protected val localStoreRepository: LocalStoreRepository by inject()
+    protected val walletManager: AbstractWalletManager by inject()
 
     companion object {
         private val TOP_LEVEL_DESTINATIONS = setOf(
             R.id.homescreenFragment
+        )
+
+        private val TOP_LEVEL_BOTTOM_BAR_DESTINATIONS = setOf(
+            R.id.walletDashboardFragment,
+            R.id.swapFragment
         )
 
     }
@@ -39,7 +50,7 @@ class MainActivity : BindingActivity<ActivityMainBinding>(), ActionBarDelegate {
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
 
             if (result.resultCode == Activity.RESULT_OK) {
-                val bitcoinAddress = result.data?.getStringExtra(com.intuisoft.plaid.common.util.Constants.ActivityResult.BARCODE_EXTRA)
+                val bitcoinAddress = result.data?.getStringExtra(Constants.ActivityResult.BARCODE_EXTRA)
                 bitcoinAddress?.let {
                     val listener = supportFragmentManager.currentNavigationFragment as? BarcodeResultListener
                     listener?.onAddressReceived(it)
@@ -63,6 +74,50 @@ class MainActivity : BindingActivity<ActivityMainBinding>(), ActionBarDelegate {
         }
 
         intentFilter = IntentFilter("android.net.conn.CONNECTIVITY_CHANGE")
+        setupBottomNavigationBar()
+    }
+
+    private fun setupBottomNavigationBar() {
+        val navController = getNavController()
+
+        if(localStoreRepository.isProEnabled()) {
+
+        } else {
+            binding.bottomBar.setConfiguration(
+                getString(R.string.wallet), R.drawable.ic_bottom_bar_wallet_selected, R.drawable.ic_bottom_bar_wallet_unselected,
+                "", 0, 0,
+                R.drawable.ic_bottom_bar_swap_selected, R.drawable.ic_bottom_bar_swap_unselected,
+                getString(R.string.market), R.drawable.ic_bottom_bar_market_selected, R.drawable.ic_bottom_bar_market_unselected,
+                "", 0, 0,
+                R.color.brand_color_dark_blue, R.color.text_grey
+            )
+
+            binding.bottomBar.setupDestinations(
+                R.id.walletDashboardFragment,
+                0,
+                R.id.swapFragment,
+                0, // todo: market fragment
+                0
+            )
+        }
+
+        binding.bottomBar.onItemClicked { destination ->
+            val delegate = supportFragmentManager.currentNavigationFragment as? FragmentBottomBarBarDelegate
+            delegate?.let { fragment ->
+                if(delegate.navigationId() != destination && destination != 0) {
+                    delegate.onNavigateTo(destination)
+                }
+            }
+        }
+
+        setBottomNavVisibility(navController)
+    }
+
+    private fun setBottomNavVisibility(navController: NavController) {
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            binding.bottomBar.onDestinationChanged(destination.id)
+            binding.bottomBar.isVisible = TOP_LEVEL_BOTTOM_BAR_DESTINATIONS.contains(destination.id)
+        }
     }
 
     override fun onResume() {
@@ -121,6 +176,14 @@ class MainActivity : BindingActivity<ActivityMainBinding>(), ActionBarDelegate {
                     ?.onSubtitleClicked()
             }
         }
+    }
+
+
+
+    private fun getNavController(): NavController {
+        val navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main) as NavHostFragment
+        return navHostFragment.navController
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

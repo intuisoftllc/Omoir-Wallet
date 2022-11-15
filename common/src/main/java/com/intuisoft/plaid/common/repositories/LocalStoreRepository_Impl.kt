@@ -39,6 +39,14 @@ class LocalStoreRepository_Impl(
         userPreferences.minConfirmations = minConfirmations
     }
 
+    override fun isProEnabled(): Boolean {
+        return userPreferences.isProEnabled
+    }
+
+    override fun setProEnabled(enable: Boolean) {
+        userPreferences.isProEnabled = enable
+    }
+
     override fun setMaxPinEntryLimit(limit: Int) {
         userPreferences.maxPinAttempts = limit
     }

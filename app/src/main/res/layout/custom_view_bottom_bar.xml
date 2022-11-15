@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:gravity="center_vertical"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/grey_white"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+
+            <LinearLayout
+                android:id="@+id/item_1_container"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:layout_weight="1"
+                android:paddingVertical="@dimen/margin_2"
+                android:layout_marginVertical="@dimen/margin_10"
+                android:background="@drawable/bottom_bar_item_ripple"
+                android:layout_marginHorizontal="@dimen/margin_4"
+                android:gravity="center">
+
+                <ImageView
+                    android:id="@+id/bottom_bar_item_1_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_bottom_bar_wallet_selected"/>
+
+                <TextView
+                    android:id="@+id/bottom_bar_item_1_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Wallet"
+                    style="@style/TextStyle.Medium.12"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/item_2_container"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_weight="1"
+                android:paddingVertical="@dimen/margin_2"
+                android:layout_marginVertical="@dimen/margin_10"
+                android:background="@drawable/bottom_bar_item_ripple"
+                android:layout_marginHorizontal="@dimen/margin_4"
+                android:gravity="center">
+
+                <ImageView
+                    android:id="@+id/bottom_bar_item_2_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_bottom_bar_market_unselected"/>
+
+                <TextView
+                    android:id="@+id/bottom_bar_item_2_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Market"
+                    style="@style/TextStyle.Medium.12"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/item_3_container"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_weight="1"
+                android:layout_marginVertical="@dimen/margin_10"
+                android:layout_marginHorizontal="@dimen/margin_4"
+                android:gravity="center">
+
+                <ImageView
+                    android:id="@+id/bottom_bar_item_3_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_bottom_bar_swap_selected"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/item_4_container"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_weight="1"
+                android:paddingVertical="@dimen/margin_2"
+                android:layout_marginVertical="@dimen/margin_10"
+                android:background="@drawable/bottom_bar_item_ripple"
+                android:layout_marginHorizontal="@dimen/margin_4"
+                android:gravity="center">
+
+                <ImageView
+                    android:id="@+id/bottom_bar_item_4_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_bottom_bar_atp_unselected"/>
+
+                <TextView
+                    android:id="@+id/bottom_bar_item_4_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="ATP"
+                    style="@style/TextStyle.Medium.12"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/item_5_container"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_weight="1"
+                android:paddingVertical="@dimen/margin_2"
+                android:layout_marginVertical="@dimen/margin_10"
+                android:background="@drawable/bottom_bar_item_ripple"
+                android:layout_marginHorizontal="@dimen/margin_4"
+                android:gravity="center">
+
+                <ImageView
+                    android:id="@+id/bottom_bar_item_5_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_bottom_bar_reports_unselected"/>
+
+                <TextView
+                    android:id="@+id/bottom_bar_item_5_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Reports"
+                    style="@style/TextStyle.Medium.12"/>
+            </LinearLayout>
+
+        </LinearLayout>
+</LinearLayout>

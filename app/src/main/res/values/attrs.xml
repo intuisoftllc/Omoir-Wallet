@@ -79,4 +79,24 @@
         <attr name="right_action" format="reference"/>
         <attr name="left_action" format="reference"/>
     </declare-styleable>
+
+    <declare-styleable name="BottomBarView">
+        <attr name="item_1_text" format="string"/>
+        <attr name="item_1_icon_unselected" format="reference"/>
+        <attr name="item_1_icon_selected" format="reference"/>
+        <attr name="item_2_text" format="string"/>
+        <attr name="item_2_icon_unselected" format="reference"/>
+        <attr name="item_2_icon_selected" format="reference"/>
+        <attr name="item_3_icon_unselected" format="reference"/>
+        <attr name="item_3_icon_selected" format="reference"/>
+        <attr name="item_4_text" format="string"/>
+        <attr name="item_4_icon_unselected" format="reference"/>
+        <attr name="item_4_icon_selected" format="reference"/>
+        <attr name="item_5_text" format="string"/>
+        <attr name="item_5_icon_unselected" format="reference"/>
+        <attr name="item_5_icon_selected" format="reference"/>
+
+        <attr name="item_text_color_selected" format="color"/>
+        <attr name="item_text_color_unselected" format="color"/>
+    </declare-styleable>
 </resources>

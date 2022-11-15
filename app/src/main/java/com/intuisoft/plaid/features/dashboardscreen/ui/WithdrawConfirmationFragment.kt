@@ -241,10 +241,6 @@ class WithdrawConfirmationFragment : PinProtectedFragment<FragmentWithdrawConfir
         viewModel.animateSentAmount(800)
         done.onClick {
             dialog.cancel()
-            val bundle = bundleOf(
-                com.intuisoft.plaid.common.util.Constants.Navigation.WALLET_UUID_BUNDLE_ID to viewModel.getWalletId()
-            )
-
             findNavController().popBackStack(R.id.walletDashboardFragment, false)
         }
 

@@ -9,7 +9,7 @@ import com.intuisoft.plaid.R
 import com.intuisoft.plaid.activities.MainActivity
 import com.intuisoft.plaid.listeners.NetworkStateChangeListener
 
-abstract class BindingFragment<T: ViewBinding> : Fragment(), FragmentActionBarDelegate, NetworkStateChangeListener {
+abstract class BindingFragment<T: ViewBinding> : Fragment(), FragmentActionBarDelegate, NetworkStateChangeListener, FragmentBottomBarBarDelegate {
 
     protected var _binding: T? = null
     protected val binding get() = _binding!!
@@ -33,8 +33,6 @@ abstract class BindingFragment<T: ViewBinding> : Fragment(), FragmentActionBarDe
             Toast.makeText(requireContext(), getString(R.string.no_connection), Toast.LENGTH_LONG).show()
         }
     }
-
-    abstract fun navigationId() : Int
 
     override fun onDestroy() {
         super.onDestroy()

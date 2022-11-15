@@ -1,6 +1,7 @@
 package com.intuisoft.plaid.walletmanager
 
 import android.app.Application
+import android.util.Log
 import com.intuisoft.plaid.PlaidApp
 import com.intuisoft.plaid.common.model.DevicePerformanceLevel
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
@@ -61,6 +62,7 @@ class SyncManager(
     }
 
     fun clearWallets() {
+        Log.e("LOOK", "wallets cleared")
         _wallets.clear()
     }
 
