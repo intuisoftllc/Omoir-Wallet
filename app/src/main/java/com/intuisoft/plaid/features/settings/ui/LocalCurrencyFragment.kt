@@ -4,21 +4,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.FragmentConfiguration
 import com.intuisoft.plaid.androidwrappers.TopBarView
-import com.intuisoft.plaid.databinding.FragmentAppearanceBinding
 import com.intuisoft.plaid.features.pin.ui.PinProtectedFragment
 import com.intuisoft.plaid.features.settings.viewmodel.SettingsViewModel
-import com.intuisoft.plaid.common.model.AppTheme
 import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.common.util.SimpleCurrencyFormat
 import com.intuisoft.plaid.databinding.FragmentLocalCurrencyBinding
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
-import java.util.*
 
 
 class LocalCurrencyFragment : PinProtectedFragment<FragmentLocalCurrencyBinding>() {
@@ -37,9 +33,9 @@ class LocalCurrencyFragment : PinProtectedFragment<FragmentLocalCurrencyBinding>
     override fun onConfiguration(configuration: FragmentConfiguration?) {
         viewModel.updateLocalCurrencySetting()
 
-        binding.usd.setTitleText(SimpleCurrencyFormat.formatBasicName(Constants.LocalCurrency.USD))
-        binding.cad.setTitleText(SimpleCurrencyFormat.formatBasicName(Constants.LocalCurrency.CANADA))
-        binding.euro.setTitleText(SimpleCurrencyFormat.formatBasicName(Constants.LocalCurrency.EURO))
+        binding.usd.setTitleText(SimpleCurrencyFormat.formatTypeBasic(Constants.LocalCurrency.USD))
+        binding.cad.setTitleText(SimpleCurrencyFormat.formatTypeBasic(Constants.LocalCurrency.CANADA))
+        binding.euro.setTitleText(SimpleCurrencyFormat.formatTypeBasic(Constants.LocalCurrency.EURO))
 
 
         viewModel.localCurrencySetting.observe(viewLifecycleOwner, Observer {

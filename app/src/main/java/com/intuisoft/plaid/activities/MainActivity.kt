@@ -41,7 +41,8 @@ class MainActivity : BindingActivity<ActivityMainBinding>(), ActionBarDelegate {
 
         private val TOP_LEVEL_BOTTOM_BAR_DESTINATIONS = setOf(
             R.id.walletDashboardFragment,
-            R.id.swapFragment
+            R.id.swapFragment,
+            R.id.marketFragment
         )
 
     }
@@ -96,7 +97,7 @@ class MainActivity : BindingActivity<ActivityMainBinding>(), ActionBarDelegate {
                 R.id.walletDashboardFragment,
                 0,
                 R.id.swapFragment,
-                0, // todo: market fragment
+                R.id.marketFragment,
                 0
             )
         }
@@ -155,6 +156,14 @@ class MainActivity : BindingActivity<ActivityMainBinding>(), ActionBarDelegate {
 
     override fun setActionBarVariant(variant: Int) {
         binding.toolbar.setBarStyle(variant)
+
+        if(variant == TopBarView.CENTER_ALIGN_WHITE) {
+            isLightStatusBar = true
+            statusBarColor = getColor(R.color.background_color)
+        } else {
+            isLightStatusBar = false
+            statusBarColor = getColor(R.color.brand_color_dark_blue)
+        }
 
         binding.toolbar.setOnActionLeftClick {
             if(supportFragmentManager.currentNavigationFragment is FragmentActionBarDelegate) {

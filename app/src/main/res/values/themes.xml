@@ -8,6 +8,7 @@
         <item name="colorOnPrimarySurface">@color/grey_white</item>
         <item name="android:windowBackground">@color/background_color</item>
         <item name="bottomSheetDialogTheme">@style/ThemeOverlay.Plaid.BottomSheetDialog</item>
+        <item name="spark_SparkViewStyle">@style/SparkViewStyle</item>
 
         <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/brand_color_accent_3</item>
@@ -38,4 +39,20 @@
     <style name="Theme.Plaid.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="Theme.Plaid.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="SparkViewStyle" parent="spark_SparkView">
+        <item name="spark_lineColor">?attr/colorPrimaryVariant</item>
+        <item name="spark_lineWidth">@dimen/spark_line_width</item>
+        <item name="spark_cornerRadius">@dimen/spark_line_radius</item>
+        <item name="spark_fill">false</item>
+
+        <item name="spark_baseLineColor">?attr/colorPrimary</item>
+        <item name="spark_baseLineWidth">@dimen/spark_line_width</item>
+
+        <item name="spark_scrubLineColor">?attr/colorPrimaryVariant</item>
+        <item name="spark_scrubLineWidth">@dimen/spark_scrub_line_width</item>
+        <item name="spark_scrubEnabled">true</item>
+
+        <item name="spark_animateChanges">true</item>
+    </style>
 </resources>

@@ -2,6 +2,8 @@
 <resources>
     <dimen name="parent_top_margin">40dp</dimen>
     <dimen name="parent_top_margin_med">32dp</dimen>
+    <dimen name="parent_top_margin_small">24dp</dimen>
+    <dimen name="parent_top_margin_xsmall">16dp</dimen>
     <dimen name="parent_top_vertical_bias">0.2</dimen>
     <dimen name="parent_top_vertical_bias_small">0.05</dimen>
     <dimen name="rounded_edge_radius">16dp</dimen>
@@ -22,6 +24,10 @@
     <dimen name="card_view_corner_radius">12dp</dimen>
     <dimen name="card_view_elevation">1dp</dimen>
     <dimen name="qr_code_size">250dp</dimen>
+    <dimen name="spark_line_width">2dp</dimen>
+    <dimen name="spark_scrub_line_width">1dp</dimen>
+    <dimen name="spark_line_radius">12dp</dimen>
+    <dimen name="spark_chart_height">220dp</dimen>
 
     <!--  margin dimens -->
     <dimen name="margin_64">64dp</dimen>

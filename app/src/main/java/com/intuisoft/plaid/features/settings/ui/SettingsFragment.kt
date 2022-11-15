@@ -28,9 +28,7 @@ import com.intuisoft.plaid.features.settings.viewmodel.SettingsViewModel
 import com.intuisoft.plaid.common.model.BitcoinDisplayUnit
 import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.common.util.SimpleCurrencyFormat
-import kotlinx.android.synthetic.main.custom_view_settings_item.*
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
-import java.util.*
 
 
 class SettingsFragment : PinProtectedFragment<FragmentSettingsBinding>() {
@@ -124,7 +122,7 @@ class SettingsFragment : PinProtectedFragment<FragmentSettingsBinding>() {
         }
 
         viewModel.localCurrencySetting.observe(viewLifecycleOwner, Observer {
-            binding.localCurrency.setSubTitleText(SimpleCurrencyFormat.formatBasicName(it))
+            binding.localCurrency.setSubTitleText(SimpleCurrencyFormat.formatTypeBasic(it))
         })
 
         binding.updatePin.onClick {

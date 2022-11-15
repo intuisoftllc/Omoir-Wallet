@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingHorizontal="@dimen/margin_10"
+    android:gravity="center">
+
+        <TextView
+            android:id="@+id/time_period"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="1D"
+            android:textStyle="bold"
+            style="@style/TextStyle.Regular.12"
+            android:layout_weight="1"
+            android:layout_gravity="center"
+            android:gravity="center"/>
+
+        <ImageView
+            android:id="@+id/indicator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_line_chart_time_period_indicator"
+            android:layout_marginTop="@dimen/margin_10"/>
+</LinearLayout>

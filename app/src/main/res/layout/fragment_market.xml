@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:elevation="@dimen/margin_2"
+        android:layout_marginTop="@dimen/parent_top_margin_med"
+        android:layout_marginHorizontal="@dimen/horizontal_padding_size"
+        app:layout_constraintStart_toStartOf="parent"
+        app:cardCornerRadius="@dimen/card_corner_radius"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/parent_top_margin_small"
+                android:layout_gravity="center"
+                style="@style/TextStyle.Medium.14"
+                android:textColor="@color/text_grey"
+                android:text="Bitcoin (BTC)"/>
+
+            <TextView
+                android:id="@+id/price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_8"
+                android:layout_gravity="center"
+                style="@style/TextStyle.Bold.24"
+                android:textColor="?attr/colorPrimaryVariant"
+                android:text="$24,473.48"/>
+
+            <TextView
+                android:id="@+id/percentage_gain"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_4"
+                android:layout_gravity="center"
+                style="@style/TextStyle.Regular.16"
+                android:textStyle="bold"
+                android:textColor="@color/alt_error_color"
+                android:text="-5.68%"/>
+
+
+            <com.robinhood.spark.SparkView
+                android:id="@+id/sparkview"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/spark_chart_height"
+                android:layout_marginTop="@dimen/parent_top_margin_med"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="@dimen/parent_top_margin_small">
+
+                <com.intuisoft.plaid.androidwrappers.ChartTimePeriodIndicatorView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    app:is_selected="true"
+                    app:time_period_text="1D"/>
+
+                <com.intuisoft.plaid.androidwrappers.ChartTimePeriodIndicatorView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    app:time_period_text="1W"
+                    app:is_selected="false"/>
+
+                <com.intuisoft.plaid.androidwrappers.ChartTimePeriodIndicatorView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    app:is_selected="false"
+                    app:time_period_text="1M"/>
+
+                <com.intuisoft.plaid.androidwrappers.ChartTimePeriodIndicatorView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    app:is_selected="false"
+                    app:time_period_text="3M"/>
+
+                <com.intuisoft.plaid.androidwrappers.ChartTimePeriodIndicatorView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    app:is_selected="false"
+                    app:time_period_text="6M"/>
+
+                <com.intuisoft.plaid.androidwrappers.ChartTimePeriodIndicatorView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    app:is_selected="false"
+                    app:time_period_text="1Y"/>
+
+                <com.intuisoft.plaid.androidwrappers.ChartTimePeriodIndicatorView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    app:is_selected="false"
+                    app:time_period_text="All"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -416,6 +416,7 @@
     <string name="settings_fragment_label">Settings</string>
     <string name="wallet_settings_fragment_label">Wallet Settings</string>
     <string name="swap_fragment_label">Swap</string>
+    <string name="market_fragment_label">Market</string>
     <string name="wallet_export_fragment_label">Export Wallet</string>
     <string name="display_unit_fragment_label">Bitcoin Unit</string>
     <string name="appearance_fragment_label">Appearance</string>

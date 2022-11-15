@@ -330,6 +330,13 @@
         tools:layout="@layout/fragment_swap">
     </fragment>
 
+    <fragment
+        android:id="@+id/marketFragment"
+        android:name="com.intuisoft.plaid.features.dashboardscreen.ui.MarketFragment"
+        android:label="@string/market_fragment_label"
+        tools:layout="@layout/fragment_market">
+    </fragment>
+
     <action
         android:id="@+id/action_global_pinFragment"
         app:destination="@+id/pinFragment" />

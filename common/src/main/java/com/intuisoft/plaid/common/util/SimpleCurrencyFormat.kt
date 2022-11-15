@@ -5,7 +5,7 @@ import java.util.*
 
 object SimpleCurrencyFormat {
 
-    fun formatBasicName(localCurrency: String) : String {
+    fun formatTypeBasic(localCurrency: String) : String {
         val currency = Currency.getInstance(localCurrency)
         return "${currency.displayName} (${currency.symbol})"
     }
