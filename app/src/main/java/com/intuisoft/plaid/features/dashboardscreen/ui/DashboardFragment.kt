@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
-import androidx.navigation.fragment.findNavController
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.activities.MainActivity
 import com.intuisoft.plaid.androidwrappers.*
@@ -56,7 +55,7 @@ class DashboardFragment : PinProtectedFragment<FragmentWalletDashboardBinding>()
         viewModel.showWalletBalance(requireContext())
         viewModel.checkReadOnlyStatus()
         viewModel.addWalletStateListener(this)
-        viewModel.updateSuggestedFees()
+        viewModel.refreshLocalCache()
 
         onBackPressedCallback {
             onNavigateBottomBarPrimaryFragmentBackwards(localStoreRepository)

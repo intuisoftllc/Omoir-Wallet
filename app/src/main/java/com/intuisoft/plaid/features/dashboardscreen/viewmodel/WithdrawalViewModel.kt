@@ -10,6 +10,7 @@ import com.intuisoft.plaid.common.model.BitcoinDisplayUnit
 import com.intuisoft.plaid.common.repositories.ApiRepository
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.common.util.RateConverter
+import com.intuisoft.plaid.common.util.SimpleCurrencyFormat
 import com.intuisoft.plaid.util.entensions.addChars
 import com.intuisoft.plaid.util.entensions.charsAfter
 import com.intuisoft.plaid.walletmanager.AbstractWalletManager
@@ -41,7 +42,7 @@ class WithdrawalViewModel(
     protected val _onNextStep = SingleLiveData<Unit>()
     val onNextStep: LiveData<Unit> = _onNextStep
 
-    private var amountToSpend: RateConverter = RateConverter(19000.0)
+    private var amountToSpend: RateConverter = RateConverter(localStoreRepository.getRateFor(localStoreRepository.getLocalCurrency())?.rate ?: 0.0)
     private var internalAmountString: String = "0"
     private var selectedUTXOs: MutableList<UnspentOutput> = mutableListOf()
     private var overBalanceErrors = 0
@@ -63,11 +64,22 @@ class WithdrawalViewModel(
     }
 
     fun displaySpendAmount() {
-        val spend = amountToSpend.from(getDisplayUnit().toRateType(), false)
+        val spend = amountToSpend.from(getDisplayUnit().toRateType(),
+            localStoreRepository.getLocalCurrency(),false)
 
-        if((countFloatingZeros() > 0 && internalAmountString.find { it == '.'} != null)
+        if(getDisplayUnit().toRateType() == RateConverter.RateType.FIAT_RATE) {
+            if(decimalPlace == 0 && !decimalEntry) {
+                _localSpendAmount.postValue(spend.second!!.replace(".00", ""))
+            } else if(decimalPlace == 0 && decimalEntry) {
+                _localSpendAmount.postValue(spend.second!!.replace(".00", "."))
+            } else if(decimalPlace == 1 && internalAmountString.find { it == '.'} != null) {
+                _localSpendAmount.postValue(spend.second!!.replace(".${internalAmountString.last()}0", ".${internalAmountString.last()}"))
+            } else {
+                _localSpendAmount.postValue(spend.second!!)
+            }
+        } else if((countFloatingZeros() > 0 && internalAmountString.find { it == '.'} != null)
             || (decimalEntry && countFloatingZeros() == 0)) {
-            var finalAmount = spend.first
+            var finalAmount = if(getDisplayUnit().toRateType() != RateConverter.RateType.FIAT_RATE) spend.first else spend.second
             if(spend.first.find { it == '.' } == null) {
                 finalAmount += ".".addChars('0', countFloatingZeros())
             } else {
@@ -91,6 +103,7 @@ class WithdrawalViewModel(
             _maximumSpend.postValue(
                 getMaxSpend().from(
                     getDisplayUnit().toRateType(),
+                    localStoreRepository.getLocalCurrency(),
                     false
                 ).second!!
             )
@@ -99,6 +112,7 @@ class WithdrawalViewModel(
                 getApplication<PlaidApp>().getString(R.string.withdraw_selected_single_utxo_amount,
                     getMaxSpend().from(
                         getDisplayUnit().toRateType(),
+                        localStoreRepository.getLocalCurrency(),
                         false
                     ).second!!
                 )
@@ -109,6 +123,7 @@ class WithdrawalViewModel(
                 getApplication<PlaidApp>().getString(R.string.withdraw_selected_utxo_amount,
                     getMaxSpend().from(
                         getDisplayUnit().toRateType(),
+                        localStoreRepository.getLocalCurrency(),
                         false
                     ).second!!,
                     selectedUTXOs.size.toString()
@@ -146,7 +161,14 @@ class WithdrawalViewModel(
     }
 
     private fun setInternalAmount() {
-        internalAmountString = amountToSpend.from(getDisplayUnit().toRateType(), false).first!!
+        if(amountToSpend.getRawRate() != 0L) {
+            internalAmountString = amountToSpend.from(
+                getDisplayUnit().toRateType(),
+                localStoreRepository.getLocalCurrency(), false
+            ).first!!
+        } else {
+            internalAmountString = "0"
+        }
 
         when(getDisplayUnit()) {
             BitcoinDisplayUnit.SATS -> {
@@ -176,7 +198,7 @@ class WithdrawalViewModel(
     ) {
         if(!decimalEntry) {
             if(number == 0 && (internalAmountString.isEmpty()
-                        || internalAmountString.replace(",", "").toDouble() == 0.0))
+                        || normalizeInternalAmount().toDouble() == 0.0))
                 return
 
             internalAmountString += number
@@ -189,6 +211,10 @@ class WithdrawalViewModel(
         else if(number != 0 || (number == 0 && amountToSpend.getRawRate() > 0)) {
             overBalanceError()
         }
+    }
+
+    fun normalizeInternalAmount(): String {
+        return internalAmountString.replace(",", "").replace(SimpleCurrencyFormat.getSymbol(localStoreRepository.getLocalCurrency()), "")
     }
 
     fun decreaseBy(singleNum: Boolean) {
@@ -204,7 +230,7 @@ class WithdrawalViewModel(
             amountToSpend.setLocalRate(RateConverter.RateType.SATOSHI_RATE, 0.0)
         }
         else {
-            amountToSpend.setLocalRate(getDisplayUnit().toRateType(), internalAmountString.replace(",", "").toDouble())
+            amountToSpend.setLocalRate(getDisplayUnit().toRateType(), normalizeInternalAmount().toDouble())
         }
 
         if(decimalPlace == 0 && decimalEntry) {
@@ -216,10 +242,11 @@ class WithdrawalViewModel(
 
         if(amountToSpend.getRawRate() == 0L && decimalEntry) {
             decimalEntry = false
+            decimalPlace = 0
             internalAmountString = ""
         }
 
-        internalAmountString = internalAmountString.replace(",", "")
+        internalAmountString = normalizeInternalAmount()
         displaySpendAmount()
     }
 
@@ -247,7 +274,7 @@ class WithdrawalViewModel(
 
         when(getDisplayUnit()) {
             BitcoinDisplayUnit.SATS -> {
-                if(number == 0 && (internalAmountString.isEmpty() || (internalAmountString.replace(",", "").toDouble() != 0.0)))
+                if(number == 0 && (internalAmountString.isEmpty() || (normalizeInternalAmount().toDouble() != 0.0)))
                     internalAmountString += "0"
                 else if(number != 0)
                     internalAmountString += number
@@ -273,12 +300,12 @@ class WithdrawalViewModel(
             tempRate.setLocalRate(RateConverter.RateType.SATOSHI_RATE, 0.0)
         }
         else {
-            tempRate.setLocalRate(getDisplayUnit().toRateType(), internalAmountString.replace(",", "").toDouble())
+            tempRate.setLocalRate(getDisplayUnit().toRateType(), normalizeInternalAmount().toDouble())
         }
 
         if(getDisplayUnit() == BitcoinDisplayUnit.FIAT &&
-            (getMaxSpend().from(RateConverter.RateType.FIAT_RATE).first == tempRate.from(
-                RateConverter.RateType.FIAT_RATE).first)) {
+            (getMaxSpend().from(RateConverter.RateType.FIAT_RATE, localStoreRepository.getLocalCurrency()).first ==
+                    tempRate.from(RateConverter.RateType.FIAT_RATE, localStoreRepository.getLocalCurrency()).first)) {
             // this solves a rounding issue for when a users balance causes entering the full balance to be slightly more than they have
             spendMaxBalance()
         } else if(!isSpendOverBalance(tempRate)) {

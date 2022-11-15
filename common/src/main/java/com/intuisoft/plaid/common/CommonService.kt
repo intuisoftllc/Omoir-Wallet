@@ -8,6 +8,7 @@ import androidx.security.crypto.MasterKeys
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.intuisoft.plaid.common.local.UserPreferences
+import com.intuisoft.plaid.common.local.db.LocalCurrencyRateDao
 import com.intuisoft.plaid.common.network.adapters.LocalDateAdapter
 import com.intuisoft.plaid.common.network.interceptors.ApiKeyInterceptor
 import com.intuisoft.plaid.common.network.interceptors.AppConnectionMonitor
@@ -21,6 +22,8 @@ import com.intuisoft.plaid.common.repositories.LocalStoreRepository_Impl
 import com.intuisoft.plaid.common.local.db.PlaidDatabase
 import com.intuisoft.plaid.common.local.db.SuggestedFeeRate
 import com.intuisoft.plaid.common.local.db.SuggestedFeeRateDao
+import com.intuisoft.plaid.common.network.nownodes.api.BlockchainInfoApi
+import com.intuisoft.plaid.common.network.nownodes.repository.BlockchainInfoRepository
 import com.intuisoft.plaid.common.repositories.ApiRepository
 import com.intuisoft.plaid.common.repositories.ApiRepository_Impl
 import com.intuisoft.plaid.common.repositories.db.DatabaseRepository
@@ -40,6 +43,7 @@ object CommonService {
     private var apiRepository: ApiRepository? = null
     private var blockBookRepository: BlockBookRepository? = null
     private var nodeRepository: NodeRepository? = null
+    private var blockchainInfoRepository: BlockchainInfoRepository? = null
     private var testNetNodeRepository: NodeRepository? = null
     private var databaseRepository: DatabaseRepository? = null
     private var application: Application? = null
@@ -47,6 +51,7 @@ object CommonService {
     private var nowNodesBlockBookApiUrl: String? = ""
     private var nowNodesNodeApiUrl: String? = ""
     private var nowNodesTestNetNodeApiUrl: String? = ""
+    private var blockchainInfoApiUrl: String? = ""
 
     fun getPrefsInstance(): UserPreferences {
         if(userPreferences == null) {
@@ -72,7 +77,8 @@ object CommonService {
             apiRepository = provideApiRepository(
                 getLocalStoreInstance(),
                 getNodeRepositoryInstance(),
-                getTestNetNodeRepositoryInstance()
+                getTestNetNodeRepositoryInstance(),
+                getBlockchainInfoRepositoryInstance()
             )
         }
 
@@ -139,11 +145,31 @@ object CommonService {
         return testNetNodeRepository!!
     }
 
+    fun getBlockchainInfoRepositoryInstance(): BlockchainInfoRepository {
+        if(blockchainInfoRepository == null) {
+            blockchainInfoRepository = BlockchainInfoRepository.create(
+                provideBlockchainInfoApi(
+                    provideBlockchainInfoRetrofit(
+                        provideBaseHttpClient(
+                            provideConnectivityInterceptor()
+                        ),
+                        getGsonInstance()
+                    )
+                )
+            )
+        }
+
+        return blockchainInfoRepository!!
+    }
+
     fun getDatabaseRepositoryInstance(): DatabaseRepository {
         if(databaseRepository == null) {
             databaseRepository = provideDatabaseRepository(
                 provideDatabase(application!!),
                 provideSuggestedFeeRateDao(
+                    application!!
+                ),
+                provideLocalCurrencyRateDao(
                     application!!
                 )
             )
@@ -161,13 +187,15 @@ object CommonService {
         nowNodesSecret: String,
         nowNodesBlockBookURL: String,
         nodeApiUrl: String,
-        testNetNodeApiUrl: String
+        testNetNodeApiUrl: String,
+        blockchainInfoApiUrl: String
     ) {
         provideApplication(application)
         provideNowNodesSecret(nowNodesSecret)
         provideNowNodesBlockBookApiUrl(nowNodesBlockBookURL)
         provideNowNodesNodeApiUrl(nodeApiUrl)
         provideNowNodesTestNetNodeApiUrl(testNetNodeApiUrl)
+        provideBlockchainInfoApiUrl(blockchainInfoApiUrl)
 
         // create singleton instance of all classes
         getPrefsInstance()
@@ -176,6 +204,7 @@ object CommonService {
         getNodeRepositoryInstance()
         getTestNetNodeRepositoryInstance()
         getDatabaseRepositoryInstance()
+        getBlockchainInfoRepositoryInstance()
     }
 
     // providers
@@ -199,6 +228,10 @@ object CommonService {
         this.nowNodesTestNetNodeApiUrl = url
     }
 
+    private fun provideBlockchainInfoApiUrl(url: String) {
+        this.blockchainInfoApiUrl = url
+    }
+
     private fun provideDatabase(
         context: Context
     ): PlaidDatabase {
@@ -211,11 +244,18 @@ object CommonService {
         return PlaidDatabase.getInstance(context).suggestedFeeRateDao()
     }
 
+    private fun provideLocalCurrencyRateDao(
+        context: Context
+    ): LocalCurrencyRateDao {
+        return PlaidDatabase.getInstance(context).localCurrencyRateDao()
+    }
+
     private fun provideDatabaseRepository(
         database: PlaidDatabase,
-        suggestedFeeRateDao: SuggestedFeeRateDao
+        suggestedFeeRateDao: SuggestedFeeRateDao,
+        localCurrencyRateDao: LocalCurrencyRateDao,
     ): DatabaseRepository {
-        return DatabaseRepository_Impl(database, suggestedFeeRateDao)
+        return DatabaseRepository_Impl(database, suggestedFeeRateDao, localCurrencyRateDao)
     }
 
     private fun provideApiKeyInterceptor() =
@@ -234,9 +274,10 @@ object CommonService {
     private fun provideApiRepository(
         localStoreRepository: LocalStoreRepository,
         nodeRepository: NodeRepository,
-        testNetNodeRepository: NodeRepository
+        testNetNodeRepository: NodeRepository,
+        blockchainInfoRepository: BlockchainInfoRepository
     ): ApiRepository {
-        return ApiRepository_Impl(localStoreRepository, nodeRepository, testNetNodeRepository)
+        return ApiRepository_Impl(localStoreRepository, nodeRepository, testNetNodeRepository, blockchainInfoRepository)
     }
 
     private fun provideGson(): Gson {
@@ -302,6 +343,19 @@ object CommonService {
             .build()
     }
 
+    private fun provideBlockchainInfoRetrofit(
+        okHttpClient: OkHttpClient,
+        gson: Gson
+    ): Retrofit {
+        return Retrofit.Builder()
+            .client(okHttpClient)
+            .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
+            .baseUrl(blockchainInfoApiUrl!!)
+//        .addConverterFactory(NullOnEmptyBodyConverterFactory())
+            .addConverterFactory(GsonConverterFactory.create(gson))
+            .build()
+    }
+
     private fun provideBaseRetrofit(baseHttpClient: OkHttpClient, gson: Gson): Retrofit {
         return Retrofit.Builder()
             .client(baseHttpClient)
@@ -348,4 +402,7 @@ object CommonService {
 
     private fun provideNodeApi(manager: Retrofit): NodeApi =
         manager.create(NodeApi::class.java)
+
+    private fun provideBlockchainInfoApi(manager: Retrofit): BlockchainInfoApi =
+        manager.create(BlockchainInfoApi::class.java)
 }

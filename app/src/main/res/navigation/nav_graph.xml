@@ -228,6 +228,14 @@
     </fragment>
 
     <fragment
+        android:id="@+id/localCurrencyFragment"
+        android:name="com.intuisoft.plaid.features.settings.ui.LocalCurrencyFragment"
+        android:label="@string/local_currency_fragment_label"
+        tools:layout="@layout/fragment_local_currency">
+
+    </fragment>
+
+    <fragment
         android:id="@+id/viewWalletsFragment"
         android:name="com.intuisoft.plaid.features.settings.ui.ViewWalletsFragment"
         android:label="@string/manage_wallets_fragment_label"

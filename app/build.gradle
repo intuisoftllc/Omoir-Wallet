@@ -57,6 +57,7 @@ android {
             buildConfigField("String", "BLOCK_BOOK_SERVER_URL", "\"https://btcbook.nownodes.io/api/v2/\"")
             buildConfigField("String", "NODE_SERVER_URL", "\"https://btc.nownodes.io/\"")
             buildConfigField("String", "TEST_NET_NODE_SERVER_URL", "\"https://btc-testnet.nownodes.io/\"")
+            buildConfigField("String", "BLOCKCHAIN_INFO_SERVER_URL", "\"https://api.blockchain.info/\"")
             buildConfigField("String", "NOW_NODES_CLIENT_SECRET", "\"${properties['NOW_NODES_TEST_CLIENT_SECRET']}\"")
         }
 
@@ -66,6 +67,7 @@ android {
             buildConfigField("String", "BLOCK_BOOK_SERVER_URL", "\"https://btcbook.nownodes.io/api/v2/\"")
             buildConfigField("String", "NODE_SERVER_URL", "\"https://btc.nownodes.io/\"")
             buildConfigField("String", "TEST_NET_NODE_SERVER_URL", "\"https://btc-testnet.nownodes.io/\"")
+            buildConfigField("String", "BLOCKCHAIN_INFO_SERVER_URL", "\"https://api.blockchain.info/\"")
             buildConfigField("String", "NOW_NODES_CLIENT_SECRET", "\"${properties['NOW_NODES_CLIENT_SECRET']}\"")
         }
     }

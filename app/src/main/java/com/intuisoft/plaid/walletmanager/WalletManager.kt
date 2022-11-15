@@ -1,14 +1,12 @@
 package com.intuisoft.plaid.walletmanager
 
 import android.app.Application
-import android.util.Log
-import android.widget.Toast
 import com.intuisoft.plaid.common.listeners.WipeDataListener
-import com.intuisoft.plaid.listeners.StateListener
-import com.intuisoft.plaid.model.LocalWalletModel
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.common.util.extensions.remove
+import com.intuisoft.plaid.listeners.StateListener
+import com.intuisoft.plaid.model.LocalWalletModel
 import io.horizontalsystems.bitcoincore.BitcoinCore
 import io.horizontalsystems.bitcoincore.models.BalanceInfo
 import io.horizontalsystems.bitcoincore.models.TransactionInfo
@@ -20,6 +18,7 @@ import io.horizontalsystems.hdwalletkit.Mnemonic
 import kotlinx.coroutines.*
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import java.text.NumberFormat
 import java.util.*
 
 class WalletManager(
@@ -43,7 +42,6 @@ class WalletManager(
             localStoreRepository.setOnWipeDataListener(this@WalletManager)
             syncer.start()
             syncer.addListener(this@WalletManager)
-            Log.e("LOOK", "start()")
             updateWallets()
         }
     }
@@ -228,7 +226,6 @@ class WalletManager(
    private fun saveWallet(wallet: WalletIdentifier) {
        localStoreRepository.getStoredWalletInfo().walletIdentifiers.add(wallet)
        localStoreRepository.setStoredWalletInfo(localStoreRepository.getStoredWalletInfo())
-       Log.e("LOOK", "saveWallet()")
        updateWallets()
        syncer.startAutoSync()
    }
@@ -292,7 +289,6 @@ class WalletManager(
    }
 
    private fun updateWallets() {
-       Log.e("LOOK", "update wallets")
        syncer.stopAllWallets()
        syncer.clearWallets()
 

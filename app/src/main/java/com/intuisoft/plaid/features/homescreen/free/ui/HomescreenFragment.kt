@@ -53,6 +53,7 @@ class HomescreenFragment : PinProtectedFragment<FragmentHomescreenBinding>(), St
         viewModel.updateGreeting()
         walletManager.synchronizeAll()
         walletVM.addWalletStateListener(this)
+        walletVM.refreshLocalCache()
 
         walletManager.onSyncing.observe(viewLifecycleOwner, Observer {
             binding.swipeContainer.isRefreshing = it

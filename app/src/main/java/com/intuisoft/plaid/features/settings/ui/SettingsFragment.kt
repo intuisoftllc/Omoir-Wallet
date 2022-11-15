@@ -21,13 +21,16 @@ import androidx.navigation.navOptions
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.*
+import com.intuisoft.plaid.common.model.AppTheme
 import com.intuisoft.plaid.databinding.FragmentSettingsBinding
 import com.intuisoft.plaid.features.pin.ui.PinProtectedFragment
 import com.intuisoft.plaid.features.settings.viewmodel.SettingsViewModel
 import com.intuisoft.plaid.common.model.BitcoinDisplayUnit
 import com.intuisoft.plaid.common.util.Constants
+import com.intuisoft.plaid.common.util.SimpleCurrencyFormat
 import kotlinx.android.synthetic.main.custom_view_settings_item.*
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import java.util.*
 
 
 class SettingsFragment : PinProtectedFragment<FragmentSettingsBinding>() {
@@ -81,10 +84,24 @@ class SettingsFragment : PinProtectedFragment<FragmentSettingsBinding>() {
             binding.changeName.setSubTitleText(it)
         })
 
+        viewModel.appThemeSetting.observe(viewLifecycleOwner, Observer {
+            when(it) {
+                AppTheme.LIGHT -> {
+                    binding.appearance.setSubTitleText(getString(R.string.settings_option_appearance_light))
+                }
+                AppTheme.DARK -> {
+                    binding.appearance.setSubTitleText(getString(R.string.settings_option_appearance_dark))
+                }
+                AppTheme.AUTO -> {
+                    binding.appearance.setSubTitleText(getString(R.string.settings_option_appearance_auto))
+                }
+            }
+        })
+
         binding.bitcoinUnit.onClick {
             navigate(
                 R.id.displayUnitFragment,
-                com.intuisoft.plaid.common.util.Constants.Navigation.ANIMATED_ENTER_EXIT_RIGHT_NAV_OPTION
+                Constants.Navigation.ANIMATED_ENTER_EXIT_RIGHT_NAV_OPTION
             )
         }
 
@@ -95,9 +112,20 @@ class SettingsFragment : PinProtectedFragment<FragmentSettingsBinding>() {
         binding.appearance.onClick {
             navigate(
                 R.id.appearanceFragment,
-                com.intuisoft.plaid.common.util.Constants.Navigation.ANIMATED_ENTER_EXIT_RIGHT_NAV_OPTION
+                Constants.Navigation.ANIMATED_ENTER_EXIT_RIGHT_NAV_OPTION
             )
         }
+
+        binding.localCurrency.onClick {
+            navigate(
+                R.id.localCurrencyFragment,
+                Constants.Navigation.ANIMATED_ENTER_EXIT_RIGHT_NAV_OPTION
+            )
+        }
+
+        viewModel.localCurrencySetting.observe(viewLifecycleOwner, Observer {
+            binding.localCurrency.setSubTitleText(SimpleCurrencyFormat.formatBasicName(it))
+        })
 
         binding.updatePin.onClick {
             navigate(
@@ -123,7 +151,7 @@ class SettingsFragment : PinProtectedFragment<FragmentSettingsBinding>() {
 
             bottomSheetDialog.setOnCancelListener {
                 if(newLimit != originalLimit) {
-                    if (newLimit <= com.intuisoft.plaid.common.util.Constants.Limit.MIN_RECOMMENDED_PIN_ATTEMPTS) {
+                    if (newLimit <= Constants.Limit.MIN_RECOMMENDED_PIN_ATTEMPTS) {
                         warningDialog(
                             context = requireContext(),
                             title = getString(R.string.low_pin_entry_title),
@@ -165,16 +193,16 @@ class SettingsFragment : PinProtectedFragment<FragmentSettingsBinding>() {
             )
 
             when(viewModel.getPinTimeout()) {
-                com.intuisoft.plaid.common.util.Constants.Time.ONE_MINUTE -> {
+                Constants.Time.ONE_MINUTE -> {
                     numberPicker?.value = 1
                 }
-                com.intuisoft.plaid.common.util.Constants.Time.TWO_MINUTES -> {
+                Constants.Time.TWO_MINUTES -> {
                     numberPicker?.value = 2
                 }
-                com.intuisoft.plaid.common.util.Constants.Time.FIVE_MINUTES -> {
+                Constants.Time.FIVE_MINUTES -> {
                     numberPicker?.value = 3
                 }
-                com.intuisoft.plaid.common.util.Constants.Time.TEN_MINUTES -> {
+                Constants.Time.TEN_MINUTES -> {
                     numberPicker?.value = 4
                 }
                 else -> {
@@ -186,19 +214,19 @@ class SettingsFragment : PinProtectedFragment<FragmentSettingsBinding>() {
             numberPicker?.setOnValueChangedListener { picker, oldVal, newVal ->
                 when(newVal) {
                     1 -> {
-                        viewModel.savePinTimeout(com.intuisoft.plaid.common.util.Constants.Time.ONE_MINUTE)
+                        viewModel.savePinTimeout(Constants.Time.ONE_MINUTE)
                     }
                     2 -> {
-                        viewModel.savePinTimeout(com.intuisoft.plaid.common.util.Constants.Time.TWO_MINUTES)
+                        viewModel.savePinTimeout(Constants.Time.TWO_MINUTES)
                     }
                     3 -> {
-                        viewModel.savePinTimeout(com.intuisoft.plaid.common.util.Constants.Time.FIVE_MINUTES)
+                        viewModel.savePinTimeout(Constants.Time.FIVE_MINUTES)
                     }
                     4 -> {
-                        viewModel.savePinTimeout(com.intuisoft.plaid.common.util.Constants.Time.TEN_MINUTES)
+                        viewModel.savePinTimeout(Constants.Time.TEN_MINUTES)
                     }
                     else -> {
-                        viewModel.savePinTimeout(com.intuisoft.plaid.common.util.Constants.Time.INSTANT)
+                        viewModel.savePinTimeout(Constants.Time.INSTANT)
                     }
                 }
             }
@@ -254,8 +282,8 @@ class SettingsFragment : PinProtectedFragment<FragmentSettingsBinding>() {
                     binding.fingerprint.setSwitchChecked(true)
 
                     validateFingerprint(
-                        title = com.intuisoft.plaid.common.util.Constants.Strings.DISABLE_BIOMETRIC_AUTH,
-                        subTitle = com.intuisoft.plaid.common.util.Constants.Strings.USE_BIOMETRIC_REASON_4,
+                        title = Constants.Strings.DISABLE_BIOMETRIC_AUTH,
+                        subTitle = Constants.Strings.USE_BIOMETRIC_REASON_4,
                         onSuccess = {
                             viewModel.saveFingerprintRegistered(false)
                             binding.fingerprint.setSwitchChecked(false)
@@ -272,14 +300,14 @@ class SettingsFragment : PinProtectedFragment<FragmentSettingsBinding>() {
         binding.viewWallets.onClick {
             navigate(
                 R.id.viewWalletsFragment,
-                com.intuisoft.plaid.common.util.Constants.Navigation.ANIMATED_ENTER_EXIT_RIGHT_NAV_OPTION
+                Constants.Navigation.ANIMATED_ENTER_EXIT_RIGHT_NAV_OPTION
             )
         }
 
         binding.addressBook.onClick {
             navigate(
                 R.id.addressBookFragment,
-                com.intuisoft.plaid.common.util.Constants.Navigation.ANIMATED_ENTER_EXIT_RIGHT_NAV_OPTION
+                Constants.Navigation.ANIMATED_ENTER_EXIT_RIGHT_NAV_OPTION
             )
         }
 
@@ -319,8 +347,8 @@ class SettingsFragment : PinProtectedFragment<FragmentSettingsBinding>() {
                 onPositive = {
                     if(viewModel.isFingerprintEnabled()) {
                         validateFingerprint(
-                            title = com.intuisoft.plaid.common.util.Constants.Strings.SCAN_TO_ERASE_DATA,
-                            subTitle = com.intuisoft.plaid.common.util.Constants.Strings.USE_BIOMETRIC_REASON_3,
+                            title = Constants.Strings.SCAN_TO_ERASE_DATA,
+                            subTitle = Constants.Strings.USE_BIOMETRIC_REASON_3,
                             onSuccess = {
                                 wipeData()
                             }
@@ -341,7 +369,7 @@ class SettingsFragment : PinProtectedFragment<FragmentSettingsBinding>() {
             styledSnackBar(requireView(), "You have unleashed the memes!") {
                 navigate(
                     R.id.memeFragment,
-                    com.intuisoft.plaid.common.util.Constants.Navigation.ANIMATED_ENTER_EXIT_RIGHT_NAV_OPTION
+                    Constants.Navigation.ANIMATED_ENTER_EXIT_RIGHT_NAV_OPTION
                 )
             }
         })
@@ -383,14 +411,14 @@ class SettingsFragment : PinProtectedFragment<FragmentSettingsBinding>() {
         binding.credits.onClick {
             navigate(
                 R.id.creditsFragment,
-                com.intuisoft.plaid.common.util.Constants.Navigation.ANIMATED_ENTER_EXIT_RIGHT_NAV_OPTION
+                Constants.Navigation.ANIMATED_ENTER_EXIT_RIGHT_NAV_OPTION
             )
         }
 
         binding.aboutUs.onClick {
             navigate(
                 R.id.aboutUsFragment,
-                com.intuisoft.plaid.common.util.Constants.Navigation.ANIMATED_ENTER_EXIT_RIGHT_NAV_OPTION
+                Constants.Navigation.ANIMATED_ENTER_EXIT_RIGHT_NAV_OPTION
             )
         }
     }

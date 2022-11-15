@@ -7,7 +7,7 @@ class Constants {
 
     object Database {
         const val DB_NAME = "plaid.db"
-        const val DB_VERSION = 2
+        const val DB_VERSION = 3
     }
 
     object Files {
@@ -96,7 +96,7 @@ class Constants {
         const val INSTANT_TIME_OFFSET = ((ONE_MINUTE * 60) * 24) * 10000
         const val SYNC_TIMEOUT = MILLS_PER_SEC * 8
         const val AUTO_SYNC_TIME: Long = (MILLS_PER_SEC * TWO_MINUTES).toLong()
-        const val FEE_RATE_UPDATE_TIME: Long = (MILLS_PER_SEC * TEN_MINUTES).toLong()
+        const val GENERAL_CACHE_UPDATE_TIME: Long = (MILLS_PER_SEC * TEN_MINUTES).toLong()
     }
 
     object ActivityResult {
@@ -117,5 +117,11 @@ class Constants {
         const val SYNC_RESTART_LIMIT = 6
         const val DEFAULT_PIN_TIMEOUT =
             Time.INSTANT_TIME_OFFSET // check for pin only when user leaves the app by default
+    }
+
+    object LocalCurrency {
+        const val USD = "USD"
+        const val EURO = "EUR"
+        const val CANADA = "CAD"
     }
 }

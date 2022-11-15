@@ -54,7 +54,7 @@ class WithdrawConfirmationViewModel(
     private var address: String? = null
     private var invalidAddressErrors = 0
     private var selectedUTXOs: MutableList<String> = mutableListOf()
-    private var amountToSpend: RateConverter = RateConverter(19000.0)
+    private var amountToSpend: RateConverter = RateConverter(localStoreRepository.getRateFor(localStoreRepository.getLocalCurrency())?.rate ?: 0.0)
     private var networkFeeRate: NetworkFeeRate = NetworkFeeRate(1, 2, 6)
 
     fun getFeeRate() = feeRate
@@ -105,14 +105,16 @@ class WithdrawConfirmationViewModel(
 
             var count = 1
             while(count < 99) {
-                _onAnimateSentAmount.postValue(temp.from(getDisplayUnit().toRateType(), false).second!!)
+                _onAnimateSentAmount.postValue(temp.from(getDisplayUnit().toRateType(),
+                    localStoreRepository.getLocalCurrency(), false).second!!)
 
                 temp.setLocalRate(RateConverter.RateType.SATOSHI_RATE, temp.getRawRate() + multiplier.toDouble())
                 delay(sleepTime)
                 count++
             }
 
-            _onAnimateSentAmount.postValue(amountToSpend.from(getDisplayUnit().toRateType(), false).second!!)
+            _onAnimateSentAmount.postValue(amountToSpend.from(getDisplayUnit().toRateType(),
+                localStoreRepository.getLocalCurrency(), false).second!!)
         }
     }
 
@@ -205,29 +207,32 @@ class WithdrawConfirmationViewModel(
         } else feeRate = rate
     }
 
-    fun adjustLocalSpendToFitFee() {
+    private fun adjustLocalSpendToFitFee(spend: RateConverter) {
         if(selectedUTXOs.isNotEmpty()) {
-            amountToSpend.setLocalRate(RateConverter.RateType.SATOSHI_RATE, localWallet!!.walletKit!!.maximumSpendableValue(utxoToUnspentOutput(), address, feeRate).toDouble())
+            spend.setLocalRate(RateConverter.RateType.SATOSHI_RATE, localWallet!!.walletKit!!.maximumSpendableValue(utxoToUnspentOutput(), address, feeRate).toDouble())
         } else {
-            amountToSpend.setLocalRate(RateConverter.RateType.SATOSHI_RATE, localWallet!!.walletKit!!.maximumSpendableValue(address, feeRate).toDouble())
+            spend.setLocalRate(RateConverter.RateType.SATOSHI_RATE, localWallet!!.walletKit!!.maximumSpendableValue(address, feeRate).toDouble())
         }
     }
 
-    fun createTransaction() : FullTransaction? {
+    fun createTransaction(fullSpend: Boolean) : Pair<RateConverter, FullTransaction>? {
         try {
+            val spend = amountToSpend.clone()
+            if(fullSpend) adjustLocalSpendToFitFee(spend)
+
             if(selectedUTXOs.isNotEmpty()) {
-                return localWallet!!.walletKit!!.redeem(
+                return spend to localWallet!!.walletKit!!.redeem(
                     unspentOutputs = utxoToUnspentOutput(),
-                    value = amountToSpend.getRawRate(),
+                    value = spend.getRawRate(),
                     address = address!!,
                     feeRate = feeRate,
                     sortType = TransactionDataSortType.Shuffle,
                     createOnly = true
                 )
             } else {
-                return localWallet!!.walletKit!!.send(
+                return spend to localWallet!!.walletKit!!.send(
                     address = address!!,
-                    value = amountToSpend.getRawRate(),
+                    value = spend.getRawRate(),
                     senderPay = true,
                     feeRate = feeRate,
                     sortType = TransactionDataSortType.Shuffle,

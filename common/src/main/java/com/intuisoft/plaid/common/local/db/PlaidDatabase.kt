@@ -8,7 +8,10 @@ import com.intuisoft.plaid.common.local.db.listeners.DatabaseListener
 import com.intuisoft.plaid.common.model.NetworkFeeRate
 import com.intuisoft.plaid.common.util.Constants
 
-@Database(entities = arrayOf(SuggestedFeeRate::class), version = Constants.Database.DB_VERSION)
+@Database(
+    entities = arrayOf(SuggestedFeeRate::class, LocalCurrencyRate::class),
+    version = Constants.Database.DB_VERSION
+)
 abstract class PlaidDatabase : RoomDatabase() {
     private var listener: DatabaseListener? = null
 
@@ -29,6 +32,7 @@ abstract class PlaidDatabase : RoomDatabase() {
         private fun create(context: Context): PlaidDatabase =
             Room.databaseBuilder(context, PlaidDatabase::class.java, DATABASE_NAME)
                 .fallbackToDestructiveMigration()
+                .allowMainThreadQueries()
                 .build()
 
         fun getInstance(context: Context): PlaidDatabase =
@@ -36,4 +40,6 @@ abstract class PlaidDatabase : RoomDatabase() {
     }
 
     abstract fun suggestedFeeRateDao(): SuggestedFeeRateDao
+
+    abstract fun localCurrencyRateDao(): LocalCurrencyRateDao
 }

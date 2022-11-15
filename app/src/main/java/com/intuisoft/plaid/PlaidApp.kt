@@ -27,7 +27,8 @@ class PlaidApp : Application(), Application.ActivityLifecycleCallbacks, KoinComp
             BuildConfig.NOW_NODES_CLIENT_SECRET,
             BuildConfig.BLOCK_BOOK_SERVER_URL,
             BuildConfig.NODE_SERVER_URL,
-            BuildConfig.TEST_NET_NODE_SERVER_URL
+            BuildConfig.TEST_NET_NODE_SERVER_URL,
+            BuildConfig.BLOCKCHAIN_INFO_SERVER_URL
         )
 
         devicePerformance = DevicePerformance.create(this)

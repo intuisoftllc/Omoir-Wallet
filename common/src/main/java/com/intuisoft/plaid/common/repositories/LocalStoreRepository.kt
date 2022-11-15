@@ -4,6 +4,7 @@ import android.bluetooth.BluetoothClass.Device
 import com.intuisoft.plaid.common.listeners.WipeDataListener
 import com.intuisoft.plaid.common.local.db.listeners.DatabaseListener
 import com.intuisoft.plaid.common.model.*
+import java.util.Currency
 
 interface LocalStoreRepository {
 
@@ -18,6 +19,10 @@ interface LocalStoreRepository {
     fun getDevicePerformanceLevel(): DevicePerformanceLevel
 
     fun setMinConfirmations(minConfirmations: Int)
+
+    fun getLocalCurrency(): String
+
+    fun setLocalCurrency(localCurrency: String)
 
     fun isProEnabled(): Boolean
 
@@ -67,6 +72,10 @@ interface LocalStoreRepository {
 
     fun getLastFeeRateUpdateTime(): Long
 
+    fun setLastCurrencyRateUpdate(time: Long)
+
+    fun getLastCurrencyRateUpdateTime(): Long
+
     fun updateVersionTappedCount()
 
     fun versionTapLimitReached(): Boolean
@@ -86,6 +95,12 @@ interface LocalStoreRepository {
     fun setStoredWalletInfo(storedWalletInfo: StoredWalletInfo?)
 
     fun isFingerprintEnabled(): Boolean
+
+    fun getRateFor(currencyCode: String): LocalCurrencyRateModel?
+
+    suspend fun setLocalRates(rates: List<LocalCurrencyRateModel>)
+
+    fun getAllRates(): List<LocalCurrencyRateModel>
 
     suspend fun wipeAllData(onWipeFinished: suspend () -> Unit)
 

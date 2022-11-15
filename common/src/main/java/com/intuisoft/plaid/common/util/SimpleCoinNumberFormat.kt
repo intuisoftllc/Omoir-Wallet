@@ -7,20 +7,22 @@ import java.text.DecimalFormat
 object SimpleCoinNumberFormat {
 
     fun format(localStoreRepository: LocalStoreRepository, sats: Long, shortenSats: Boolean = true) : String {
-        val converter = RateConverter(19000.0)
+        val converter = RateConverter(localStoreRepository.getRateFor(localStoreRepository.getLocalCurrency())?.rate ?: 0.0)
         converter.setLocalRate(RateConverter.RateType.SATOSHI_RATE, sats.toDouble())
 
         when(localStoreRepository.getBitcoinDisplayUnit()) {
             BitcoinDisplayUnit.BTC -> {
-                return converter.from(RateConverter.RateType.BTC_RATE).second
+                return converter.from(RateConverter.RateType.BTC_RATE, localStoreRepository.getLocalCurrency()).second
             }
 
             BitcoinDisplayUnit.SATS -> {
-                return converter.from(RateConverter.RateType.SATOSHI_RATE, shortenSats).second
+                return converter.from(RateConverter.RateType.SATOSHI_RATE,
+                    localStoreRepository.getLocalCurrency(), shortenSats).second
             }
 
             BitcoinDisplayUnit.FIAT -> {
-                return converter.from(RateConverter.RateType.FIAT_RATE, true).second
+                return converter.from(RateConverter.RateType.FIAT_RATE,
+                    localStoreRepository.getLocalCurrency(),true).second
             }
         }
     }

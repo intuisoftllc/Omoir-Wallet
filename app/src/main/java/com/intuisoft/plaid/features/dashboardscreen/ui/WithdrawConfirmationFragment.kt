@@ -132,11 +132,8 @@ class WithdrawConfirmationFragment : PinProtectedFragment<FragmentWithdrawConfir
     }
 
     private fun showConfirmTransactionDialog(fullSpend: Boolean) {
-        if(fullSpend) {
-            viewModel.adjustLocalSpendToFitFee()
-        }
 
-        viewModel.createTransaction()?.let { transaction ->
+        viewModel.createTransaction(fullSpend)?.let { (spend, transaction) ->
 
             val bottomSheetDialog = BottomSheetDialog(requireContext())
             bottomSheetDialog.setContentView(R.layout.bottom_sheet_confirm_withdrawl)
@@ -157,7 +154,8 @@ class WithdrawConfirmationFragment : PinProtectedFragment<FragmentWithdrawConfir
             txId.setSubTitleText(transaction.header.hash.toHexString())
             to.setSubTitleText(viewModel.getLocalAddress() ?: "")
 
-            var amountValue = viewModel.getSpendAmount().from(viewModel.getDisplayUnit().toRateType(), false).second
+            var amountValue = spend.from(viewModel.getDisplayUnit().toRateType(),
+                localStoreRepository.getLocalCurrency(), false).second
             if(fullSpend) {
                 amountValue += " ${getString(R.string.withdraw_confirmation_dialog_adjusted_balance)}"
             }

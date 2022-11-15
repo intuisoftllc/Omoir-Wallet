@@ -5,7 +5,6 @@ import kotlin.math.roundToLong
 class RateConverter(
     private var fiatRate: Double
 ) {
-
     private var localBTC : Long = 0
 
     fun getRawRate() = localBTC
@@ -49,7 +48,7 @@ class RateConverter(
         }
     }
 
-    fun from(type: RateType, shortenSats: Boolean = true) : Pair<String, String> {
+    fun from(type: RateType, localCurrency: String, shortenSats: Boolean = true) : Pair<String, String> {
         when(type) {
             RateType.SATOSHI_RATE -> {
                 val basic: String
@@ -76,8 +75,8 @@ class RateConverter(
             }
 
             RateType.FIAT_RATE -> {
-                val basic = SimpleCoinNumberFormat.formatCurrency(getRawFiatRate())!!
-                val postfixed = prefixPostfixValue(SimpleCoinNumberFormat.formatCurrency(getRawFiatRate())!!, type)
+                val basic = SimpleCurrencyFormat.formatValue(localCurrency, getRawFiatRate(), true)!!
+                val postfixed = prefixPostfixValue(SimpleCurrencyFormat.formatValue(localCurrency, getRawFiatRate())!!, type)
 
                 return Pair(basic, postfixed)
             }
@@ -100,7 +99,7 @@ class RateConverter(
                 }
 
                 RateType.FIAT_RATE -> {
-                    return "$ $value"
+                    return "$value"
                 }
             }
         }

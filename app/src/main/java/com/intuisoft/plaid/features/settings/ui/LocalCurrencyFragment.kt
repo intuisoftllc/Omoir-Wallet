@@ -14,10 +14,14 @@ import com.intuisoft.plaid.databinding.FragmentAppearanceBinding
 import com.intuisoft.plaid.features.pin.ui.PinProtectedFragment
 import com.intuisoft.plaid.features.settings.viewmodel.SettingsViewModel
 import com.intuisoft.plaid.common.model.AppTheme
+import com.intuisoft.plaid.common.util.Constants
+import com.intuisoft.plaid.common.util.SimpleCurrencyFormat
+import com.intuisoft.plaid.databinding.FragmentLocalCurrencyBinding
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import java.util.*
 
 
-class AppearanceFragment : PinProtectedFragment<FragmentAppearanceBinding>() {
+class LocalCurrencyFragment : PinProtectedFragment<FragmentLocalCurrencyBinding>() {
     private val viewModel: SettingsViewModel by sharedViewModel()
 
     override fun onCreateView(
@@ -25,37 +29,40 @@ class AppearanceFragment : PinProtectedFragment<FragmentAppearanceBinding>() {
         savedInstanceState: Bundle?
     ): View? {
 
-        _binding = FragmentAppearanceBinding.inflate(inflater, container, false)
+        _binding = FragmentLocalCurrencyBinding.inflate(inflater, container, false)
         return binding.root
 
     }
 
     override fun onConfiguration(configuration: FragmentConfiguration?) {
-        viewModel.updateAppThemeSetting()
-        viewModel.appThemeSetting.observe(viewLifecycleOwner, Observer {
-            binding.appearanceLight.checkRadio(it == AppTheme.LIGHT)
-            binding.appearanceDark.checkRadio(it == AppTheme.DARK)
-            binding.appearanceAuto.checkRadio(it == AppTheme.AUTO)
+        viewModel.updateLocalCurrencySetting()
+
+        binding.usd.setTitleText(SimpleCurrencyFormat.formatBasicName(Constants.LocalCurrency.USD))
+        binding.cad.setTitleText(SimpleCurrencyFormat.formatBasicName(Constants.LocalCurrency.CANADA))
+        binding.euro.setTitleText(SimpleCurrencyFormat.formatBasicName(Constants.LocalCurrency.EURO))
+
+
+        viewModel.localCurrencySetting.observe(viewLifecycleOwner, Observer {
+            binding.usd.checkRadio(it == Constants.LocalCurrency.USD)
+            binding.cad.checkRadio(it == Constants.LocalCurrency.CANADA)
+            binding.euro.checkRadio(it == Constants.LocalCurrency.EURO)
         })
 
-        binding.appearanceLight.onRadioClicked { settingsItemView, checked ->
+        binding.usd.onRadioClicked { settingsItemView, checked ->
             if(checked) {
-                viewModel.saveAppTheme(AppTheme.LIGHT)
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                viewModel.saveLocalCurrency(Constants.LocalCurrency.USD)
             }
         }
 
-        binding.appearanceDark.onRadioClicked { settingsItemView, checked ->
+        binding.cad.onRadioClicked { settingsItemView, checked ->
             if(checked) {
-                viewModel.saveAppTheme(AppTheme.DARK)
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                viewModel.saveLocalCurrency(Constants.LocalCurrency.CANADA)
             }
         }
 
-        binding.appearanceAuto.onRadioClicked { settingsItemView, checked ->
+        binding.euro.onRadioClicked { settingsItemView, checked ->
             if(checked) {
-                viewModel.saveAppTheme(AppTheme.AUTO)
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+                viewModel.saveLocalCurrency(Constants.LocalCurrency.EURO)
             }
         }
     }

@@ -31,6 +31,8 @@ class UserPreferences(
         const val FEE_RATE_UPDATE_TIME = "FEE_RATE_UPDATE_TIME"
         const val DEVICE_PERFORMANCE = "DEVICE_PERFORMANCE"
         const val PRO_ENABLED = "PRO_ENABLED"
+        const val LOCAL_CURRENCY = "LOCAL_CURRENCY"
+        const val CURRENCY_RATE_LAST_UPDATE_TIME = "CURRENCY_RATE_LAST_UPDATE_TIME"
     }
 
     var incorrectPinAttempts: Int
@@ -152,6 +154,14 @@ class UserPreferences(
             putLong(FEE_RATE_UPDATE_TIME, time)
         }
 
+    var lastCurrencyRateUpdateTime: Long
+        get() {
+            return getLong(CURRENCY_RATE_LAST_UPDATE_TIME, 0)
+        }
+        set(time) {
+            putLong(CURRENCY_RATE_LAST_UPDATE_TIME, time)
+        }
+
     var versionTappedCount: Int
         get() {
             return getInt(VERSION_TAPPED_COUNT_KEY, 0)
@@ -174,6 +184,14 @@ class UserPreferences(
         }
         set(pin) {
             putString(USER_PIN_KEY, pin)
+        }
+
+    var localCurrency: String
+        get() {
+            return getString(LOCAL_CURRENCY) ?: Constants.LocalCurrency.USD
+        }
+        set(local) {
+            putString(LOCAL_CURRENCY, local)
         }
 
     var storedWalletInfo: StoredWalletInfo

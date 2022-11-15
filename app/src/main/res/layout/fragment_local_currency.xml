@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.intuisoft.plaid.androidwrappers.SettingsItemView
+        android:id="@+id/usd"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:settings_variant="radio"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:show_radio="true"/>
+
+    <com.intuisoft.plaid.androidwrappers.SettingsItemView
+        android:id="@+id/cad"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:settings_variant="radio"
+        android:layout_marginTop="@dimen/horizontal_padding_size"
+        app:layout_constraintTop_toBottomOf="@id/usd"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:show_radio="true"/>
+
+    <com.intuisoft.plaid.androidwrappers.SettingsItemView
+        android:id="@+id/euro"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:settings_variant="radio"
+        android:layout_marginTop="@dimen/horizontal_padding_size"
+        app:layout_constraintTop_toBottomOf="@id/cad"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:show_radio="true"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

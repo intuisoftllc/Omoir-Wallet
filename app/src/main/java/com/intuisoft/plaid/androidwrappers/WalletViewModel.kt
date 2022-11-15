@@ -167,12 +167,10 @@ open class WalletViewModel(
         _walletNetwork.postValue(getWalletNetwork())
     }
 
-    fun updateSuggestedFees() {
-        viewModelScope.launch {
-            withContext(Dispatchers.IO) {
-                // go to network and get fee rates if we have passed the cache time
-                getSuggestedFees(false)
-            }
+    fun refreshLocalCache() {
+        GlobalScope.launch {
+            // go to network and get fee rates if we have passed the cache time
+            apiRepository.refreshLocalCache()
         }
     }
 

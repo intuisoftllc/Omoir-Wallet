@@ -58,6 +58,7 @@ class ProHomescreenFragment : PinProtectedFragment<FragmentProHomescreenBinding>
         }
 
         viewModel.updateGreeting()
+        walletVM.refreshLocalCache()
 
         walletManager.onSyncing.observe(viewLifecycleOwner, Observer {
             binding.swipeContainer.isRefreshing = it

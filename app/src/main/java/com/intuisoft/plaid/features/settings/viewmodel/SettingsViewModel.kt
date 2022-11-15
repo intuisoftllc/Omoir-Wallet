@@ -35,6 +35,9 @@ class SettingsViewModel(
     private val _appVersionSetting = SingleLiveData<String>()
     val appVersionSetting: LiveData<String> = _appVersionSetting
 
+    private val _localCurrencySetting = SingleLiveData<String>()
+    val localCurrencySetting: LiveData<String> = _localCurrencySetting
+
     private val _nameSetting = SingleLiveData<String>()
     val nameSetting: LiveData<String> = _nameSetting
 
@@ -66,6 +69,7 @@ class SettingsViewModel(
         updateFingerprintRegisteredSetting()
         updateAppVersionSetting()
         updateNameSetting()
+        updateLocalCurrencySetting()
     }
 
     fun pinTimeoutToString(context: Context, timeout: Int) : String =
@@ -107,6 +111,10 @@ class SettingsViewModel(
         _appThemeSetting.postValue(localStoreRepository.getAppTheme())
     }
 
+    fun updateLocalCurrencySetting() {
+        _localCurrencySetting.postValue(localStoreRepository.getLocalCurrency())
+    }
+
     fun updatePinTimeoutSetting() {
         _pinTimeoutSetting.postValue(localStoreRepository.getPinTimeout())
     }
@@ -122,6 +130,11 @@ class SettingsViewModel(
     fun saveName(name: String) {
         localStoreRepository.updateUserAlias(name)
         updateNameSetting()
+    }
+
+    fun saveLocalCurrency(localCurrency: String) {
+        localStoreRepository.setLocalCurrency(localCurrency)
+        updateLocalCurrencySetting()
     }
 
     fun saveAppTheme(theme: AppTheme) {

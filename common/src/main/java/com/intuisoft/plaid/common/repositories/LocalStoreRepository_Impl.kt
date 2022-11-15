@@ -6,6 +6,7 @@ import com.intuisoft.plaid.common.listeners.WipeDataListener
 import com.intuisoft.plaid.common.local.db.listeners.DatabaseListener
 import com.intuisoft.plaid.common.model.*
 import com.intuisoft.plaid.common.repositories.db.DatabaseRepository
+import kotlinx.coroutines.runBlocking
 
 class LocalStoreRepository_Impl(
     private val userPreferences: UserPreferences,
@@ -14,6 +15,7 @@ class LocalStoreRepository_Impl(
 
     private var wipeDataListener: WipeDataListener? = null
     private var cachedStoredWalletInfo: StoredWalletInfo? = null
+    private var cachedLocalCurrency: StoredWalletInfo? = null
 
     override fun increaseIncorrectPinAttempts() {
         userPreferences.incorrectPinAttempts = userPreferences.incorrectPinAttempts + 1
@@ -37,6 +39,14 @@ class LocalStoreRepository_Impl(
 
     override fun setMinConfirmations(minConfirmations: Int) {
         userPreferences.minConfirmations = minConfirmations
+    }
+
+    override fun getLocalCurrency(): String {
+        return userPreferences.localCurrency
+    }
+
+    override fun setLocalCurrency(localCurrency: String) {
+        userPreferences.localCurrency = localCurrency
     }
 
     override fun isProEnabled(): Boolean {
@@ -151,6 +161,14 @@ class LocalStoreRepository_Impl(
         return userPreferences.lastFeeRateUpdateTime
     }
 
+    override fun setLastCurrencyRateUpdate(time: Long) {
+        userPreferences.lastCurrencyRateUpdateTime = time
+    }
+
+    override fun getLastCurrencyRateUpdateTime(): Long {
+        return userPreferences.lastCurrencyRateUpdateTime
+    }
+
     override fun getPinTimeout(): Int {
         return userPreferences.pinTimeout
     }
@@ -203,6 +221,22 @@ class LocalStoreRepository_Impl(
 
     override fun isFingerprintEnabled(): Boolean {
         return userPreferences.fingerprintSecurity
+    }
+
+    override fun getRateFor(currencyCode: String): LocalCurrencyRateModel? {
+        return runBlocking {
+            return@runBlocking databaseRepository.getRateFor(currencyCode)
+        }
+    }
+
+    override suspend fun setLocalRates(rates: List<LocalCurrencyRateModel>) {
+        databaseRepository.setLocalRates(rates)
+    }
+
+    override fun getAllRates(): List<LocalCurrencyRateModel> {
+        return runBlocking {
+            return@runBlocking databaseRepository.getAllRates()
+        }
     }
 
     override suspend fun wipeAllData(onWipeFinished: suspend () -> Unit) {

@@ -68,7 +68,16 @@
                         android:layout_height="wrap_content"
                         app:settings_variant="normal"
                         app:item_title="@string/settings_option_appearance"
+                        android:layout_marginBottom="@dimen/horizontal_padding_size"
                         app:item_subtitle="@string/settings_option_appearance_auto"/>
+
+                    <com.intuisoft.plaid.androidwrappers.SettingsItemView
+                        android:id="@+id/local_currency"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:settings_variant="normal"
+                        app:item_title="@string/settings_option_local_currency"
+                        app:item_subtitle="@string/settings_option_local_currency_hint"/>
                 </LinearLayout>
 
             </androidx.cardview.widget.CardView>

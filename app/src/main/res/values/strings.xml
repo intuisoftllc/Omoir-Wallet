@@ -70,6 +70,8 @@
     <string name="settings_option_enable_fingerprint_description">Require fingerprint for signing transactions</string>
     <string name="settings_option_max_pin_attempts_description">Set the max amount of times to enter a pin</string>
     <string name="settings_option_appearance">Appearance</string>
+    <string name="settings_option_local_currency">Set Local Currency</string>
+    <string name="settings_option_local_currency_hint">USD ($)</string>
     <string name="settings_option_appearance_light">Light mode</string>
     <string name="settings_option_appearance_dark">Dark mode</string>
     <string name="settings_option_appearance_auto">Determined by the system</string>
@@ -417,6 +419,7 @@
     <string name="wallet_export_fragment_label">Export Wallet</string>
     <string name="display_unit_fragment_label">Bitcoin Unit</string>
     <string name="appearance_fragment_label">Appearance</string>
+    <string name="local_currency_fragment_label">Local Currency</string>
     <string name="address_book_fragment_label">Address Book</string>
     <string name="manage_wallets_fragment_label">Manage Wallets</string>
     <string name="withdraw_fragment_label">Send BTC</string>

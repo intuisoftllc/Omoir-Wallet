@@ -24,6 +24,7 @@ import com.intuisoft.plaid.model.LocalWalletModel
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.common.util.Constants.Navigation.ANIMATED_ENTER_EXIT_RIGHT_NAV_OPTION
+import com.intuisoft.plaid.common.util.SimpleCurrencyFormat
 import com.intuisoft.plaid.common.util.extensions.toArrayList
 import com.intuisoft.plaid.util.fragmentconfig.SendFundsData
 import org.koin.android.ext.android.inject
@@ -49,8 +50,9 @@ class WithdrawalFragment : PinProtectedFragment<FragmentWithdrawBinding>(), Stat
     override fun onConfiguration(configuration: FragmentConfiguration?) {
         viewModel.addWalletStateListener(this)
         viewModel.showWalletDisplayUnit()
-        viewModel.updateSuggestedFees()
+        viewModel.refreshLocalCache()
 
+        binding.currency.setButtonText(SimpleCurrencyFormat.getSymbol(localStoreRepository.getLocalCurrency()))
         viewModel.walletDisplayUnit.observe(viewLifecycleOwner, Observer {
             when(it) {
                 BitcoinDisplayUnit.BTC -> {

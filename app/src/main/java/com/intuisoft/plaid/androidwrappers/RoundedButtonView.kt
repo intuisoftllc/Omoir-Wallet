@@ -58,10 +58,12 @@ class RoundedButtonView(context: Context, attrs: AttributeSet?) : LinearLayout(c
     }
 
     fun setButtonText(value: String) {
+        text = value
         button?.text = value
     }
 
     private fun setButtonTextPosition(value: Int) {
+        btnGravity = value
         when(value) {
             CENTER -> {
                 button?.gravity = Gravity.CENTER
@@ -133,21 +135,25 @@ class RoundedButtonView(context: Context, attrs: AttributeSet?) : LinearLayout(c
     }
 
     private fun setTextSize(value: Float) {
+        textSize = value
         button?.textSize = value
     }
 
     private fun setTextAllCaps(value: Boolean) {
+        allCaps = value
         button?.isAllCaps = value
     }
 
     private fun setPadding(value: Float) {
         if(value != 0f) {
+            padding = value
             button?.setPadding(resources.dpToPixels(value).toInt(), 0, resources.dpToPixels(value).toInt(), 0)
         }
     }
 
     fun setTint(value: Int) {
         if(value != 0) {
+            tint = value
             button?.tint(value)
         }
     }
@@ -161,6 +167,7 @@ class RoundedButtonView(context: Context, attrs: AttributeSet?) : LinearLayout(c
     }
 
     private fun setDrawableRight(drawable: Int) {
+        drawableRight = drawable
         button?.setCompoundDrawablesWithIntrinsicBounds(0, 0, drawable, 0)
     }
 
