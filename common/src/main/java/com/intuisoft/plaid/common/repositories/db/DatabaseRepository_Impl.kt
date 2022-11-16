@@ -9,7 +9,8 @@ class DatabaseRepository_Impl(
     private val suggestedFeeRateDao: SuggestedFeeRateDao,
     private val basicPriceDataDao: BasicPriceDataDao,
     private val baseNetworkDataDao: BaseMarketDataDao,
-    private val extendedNetworkDataDao: ExtendedNetworkDataDao
+    private val extendedNetworkDataDao: ExtendedNetworkDataDao,
+    private val tickerCharPriceChartDataDao: TickerPriceChartDataDao
 ) : DatabaseRepository {
 
     override suspend fun getSuggestedFeeRate(testNetWallet: Boolean): NetworkFeeRate? =
@@ -25,6 +26,14 @@ class DatabaseRepository_Impl(
 
     override suspend fun setExtendedNetworkData(extendedData: ExtendedNetworkDataModel, testNetWallet: Boolean) {
         extendedNetworkDataDao.insert(ExtendedNetworkData.consume(testNetWallet, extendedData))
+        database.onUpdate()
+    }
+
+    override suspend fun getTickerPriceChartData(currencyCode: String, intervalType: ChartIntervalType): List<ChartDataModel>? =
+        tickerCharPriceChartDataDao.getChartDataFor(intervalType.ordinal, currencyCode)?.from()
+
+    override suspend fun setTickerPriceChartData(data: List<ChartDataModel>, currencyCode: String, intervalType: ChartIntervalType) {
+        tickerCharPriceChartDataDao.insert(TickerPriceChartData.consume(intervalType, data, currencyCode))
         database.onUpdate()
     }
 
@@ -56,6 +65,9 @@ class DatabaseRepository_Impl(
     override suspend fun deleteAllData() {
         suggestedFeeRateDao.deleteTable()
         basicPriceDataDao.deleteTable()
+        baseNetworkDataDao.deleteTable()
+        extendedNetworkDataDao.deleteTable()
+        tickerCharPriceChartDataDao.deleteTable()
         database.onUpdate()
     }
 

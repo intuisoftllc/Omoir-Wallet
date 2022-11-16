@@ -185,6 +185,14 @@ class LocalStoreRepository_Impl(
         return userPreferences.lastExtendedMarketDataUpdateTime
     }
 
+    override fun setLastTickerPriceChartDataUpdate(time: Long) {
+        userPreferences.lastTickerPriceChartDataUpdateTime = time
+    }
+
+    override fun getLastTickerPriceChartDataUpdateTime(): Long {
+        return userPreferences.lastTickerPriceChartDataUpdateTime
+    }
+
     override fun getPinTimeout(): Int {
         return userPreferences.pinTimeout
     }
@@ -278,6 +286,23 @@ class LocalStoreRepository_Impl(
     override fun getAllRates(): List<BasicPriceDataModel> {
         return runBlocking {
             return@runBlocking databaseRepository.getAllRates()
+        }
+    }
+
+    override suspend fun setTickerPriceChartData(
+        data: List<ChartDataModel>,
+        currencyCode: String,
+        intervalType: ChartIntervalType
+    ) {
+        databaseRepository.setTickerPriceChartData(data, currencyCode, intervalType)
+    }
+
+    override fun getTickerPriceChartData(
+        currencyCode: String,
+        intervalType: ChartIntervalType
+    ): List<ChartDataModel>? {
+        return runBlocking {
+            return@runBlocking databaseRepository.getTickerPriceChartData(currencyCode, intervalType)
         }
     }
 

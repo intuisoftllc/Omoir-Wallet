@@ -4,15 +4,18 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 import com.intuisoft.plaid.common.local.db.listeners.DatabaseListener
 import com.intuisoft.plaid.common.util.Constants
 
+@TypeConverters(value = [LongListItemConverter::class, FloatListItemConverter::class])
 @Database(
     entities = arrayOf(
         SuggestedFeeRate::class,
         BasicPriceData::class,
         BasicNetworkData::class,
-        ExtendedNetworkData::class
+        ExtendedNetworkData::class,
+        TickerPriceChartData::class
     ),
     version = Constants.Database.DB_VERSION
 )
@@ -50,4 +53,6 @@ abstract class PlaidDatabase : RoomDatabase() {
     abstract fun baseMarketDataDao(): BaseMarketDataDao
 
     abstract fun extendedMarketDataDao(): ExtendedNetworkDataDao
+
+    abstract fun tickerPriceChartDataDao(): TickerPriceChartDataDao
 }

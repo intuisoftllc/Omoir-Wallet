@@ -38,6 +38,8 @@ class ChartTimePeriodIndicatorView(context: Context, attrs: AttributeSet?) : Lin
         }
     }
 
+    fun getIndicatorView() = indicator_iv!!
+
     fun selectTimePeriod(select: Boolean) {
         if(select) {
             indicator_iv!!.visibility = View.VISIBLE

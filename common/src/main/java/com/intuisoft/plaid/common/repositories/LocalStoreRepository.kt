@@ -82,6 +82,10 @@ interface LocalStoreRepository {
 
     fun getLastExtendedMarketDataUpdateTime(): Long
 
+    fun getLastTickerPriceChartDataUpdateTime(): Long
+
+    fun setLastTickerPriceChartDataUpdate(time: Long)
+
     fun updateVersionTappedCount()
 
     fun versionTapLimitReached(): Boolean
@@ -115,6 +119,10 @@ interface LocalStoreRepository {
     suspend fun setExtendedNetworkData(testnetWallet: Boolean, extendedData: ExtendedNetworkDataModel)
 
     fun getAllRates(): List<BasicPriceDataModel>
+
+    suspend fun setTickerPriceChartData(data: List<ChartDataModel>, currencyCode: String, intervalType: ChartIntervalType)
+
+    fun getTickerPriceChartData(currencyCode: String, intervalType: ChartIntervalType): List<ChartDataModel>?
 
     suspend fun wipeAllData(onWipeFinished: suspend () -> Unit)
 

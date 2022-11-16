@@ -64,6 +64,12 @@ class ApiRepository_Impl(
         return localStoreRepository.getExtendedNetworkData(testNetWallet)
     }
 
+    /* On-Demand Call */
+    override suspend fun getTickerPriceChartData(intervalType: ChartIntervalType): List<ChartDataModel>? {
+        updateTickerPriceChartDataUpdateTime(intervalType)
+        return localStoreRepository.getTickerPriceChartData(localStoreRepository.getLocalCurrency(), intervalType)
+    }
+
     private suspend fun updateSuggestedFeeRates() {
         if((System.currentTimeMillis() - localStoreRepository.getLastFeeRateUpdateTime()) > Constants.Time.GENERAL_CACHE_UPDATE_TIME) {
             val mainNetResult = nodeRepository.getFeeSuggestions()
@@ -123,6 +129,23 @@ class ApiRepository_Impl(
                 )
 
                 localStoreRepository.setLastExtendedMarketDataUpdate(System.currentTimeMillis())
+            }
+        }
+    }
+
+    private suspend fun updateTickerPriceChartDataUpdateTime(intervalType: ChartIntervalType) {
+        if((System.currentTimeMillis() - localStoreRepository.getLastTickerPriceChartDataUpdateTime()) > Constants.Time.GENERAL_CACHE_UPDATE_TIME_MED
+            || localStoreRepository.getTickerPriceChartData(localStoreRepository.getLocalCurrency(), intervalType) == null) {
+            val data = coingeckoRepository.getChartData(intervalType, localStoreRepository.getLocalCurrency())
+
+            if(data.isSuccess) {
+                localStoreRepository.setTickerPriceChartData(
+                    data.getOrThrow(),
+                    localStoreRepository.getLocalCurrency(),
+                    intervalType
+                )
+
+                localStoreRepository.setLastTickerPriceChartDataUpdate(System.currentTimeMillis())
             }
         }
     }

@@ -35,6 +35,7 @@ class UserPreferences(
         const val CURRENCY_RATE_LAST_UPDATE_TIME = "CURRENCY_RATE_LAST_UPDATE_TIME"
         const val BASE_MARKET_DATA_LAST_UPDATE_TIME = "BASE_MARKET_DATA_LAST_UPDATE_TIME"
         const val EXTENDED_MARKET_DATA_LAST_UPDATE_TIME = "EXTENDED_MARKET_DATA_LAST_UPDATE_TIME"
+        const val TICKER_PRICE_CHART_LAST_UPDATE_TIME = "TICKER_PRICE_CHART_LAST_UPDATE_TIME"
     }
 
     var incorrectPinAttempts: Int
@@ -178,6 +179,14 @@ class UserPreferences(
         }
         set(time) {
             putLong(EXTENDED_MARKET_DATA_LAST_UPDATE_TIME, time)
+        }
+
+    var lastTickerPriceChartDataUpdateTime: Long
+        get() {
+            return getLong(TICKER_PRICE_CHART_LAST_UPDATE_TIME, 0)
+        }
+        set(time) {
+            putLong(TICKER_PRICE_CHART_LAST_UPDATE_TIME, time)
         }
 
     var versionTappedCount: Int

@@ -193,6 +193,9 @@ object CommonService {
                 ),
                 provideExtendedMarketDataDao(
                     application!!
+                ),
+                provideTickerPriceDataDao(
+                    application!!
                 )
             )
         }
@@ -291,14 +294,28 @@ object CommonService {
         return PlaidDatabase.getInstance(context).extendedMarketDataDao()
     }
 
+    private fun provideTickerPriceDataDao(
+        context: Context
+    ): TickerPriceChartDataDao {
+        return PlaidDatabase.getInstance(context).tickerPriceChartDataDao()
+    }
+
     private fun provideDatabaseRepository(
         database: PlaidDatabase,
         suggestedFeeRateDao: SuggestedFeeRateDao,
         basicPriceDataDao: BasicPriceDataDao,
         baseMarketDataDao: BaseMarketDataDao,
-        extendedNetworkDataDao: ExtendedNetworkDataDao
+        extendedNetworkDataDao: ExtendedNetworkDataDao,
+        tickerPriceChartDataDao: TickerPriceChartDataDao
     ): DatabaseRepository {
-        return DatabaseRepository_Impl(database, suggestedFeeRateDao, basicPriceDataDao, baseMarketDataDao, extendedNetworkDataDao)
+        return DatabaseRepository_Impl(
+            database,
+            suggestedFeeRateDao,
+            basicPriceDataDao,
+            baseMarketDataDao,
+            extendedNetworkDataDao,
+            tickerPriceChartDataDao
+        )
     }
 
     private fun provideApiKeyInterceptor() =

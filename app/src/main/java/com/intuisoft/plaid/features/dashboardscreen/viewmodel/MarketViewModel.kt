@@ -7,6 +7,8 @@ import com.intuisoft.plaid.PlaidApp
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.SingleLiveData
 import com.intuisoft.plaid.androidwrappers.WalletViewModel
+import com.intuisoft.plaid.common.model.ChartDataModel
+import com.intuisoft.plaid.common.model.ChartIntervalType
 import com.intuisoft.plaid.common.model.CongestionRating
 import com.intuisoft.plaid.common.repositories.ApiRepository
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
@@ -69,6 +71,17 @@ class MarketViewModel(
 
     protected val _congestionRating = SingleLiveData<CongestionRating>()
     val congestionRating: LiveData<CongestionRating> = _congestionRating
+
+    protected val _chartData = SingleLiveData<List<ChartDataModel>>()
+    val chartData: LiveData<List<ChartDataModel>> = _chartData
+
+    protected val _tickerPrice = SingleLiveData<String>()
+    val tickerPrice: LiveData<String> = _tickerPrice
+
+    protected val _percentageGain = SingleLiveData<Double>()
+    val percentageGain: LiveData<Double> = _percentageGain
+
+    private var intervalType = ChartIntervalType.INTERVAL_1DAY
 
     fun updateBasicMarketData() {
         viewModelScope.launch {
@@ -139,4 +152,42 @@ class MarketViewModel(
             }
         }
     }
+
+    fun setTickerPrice() {
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                _tickerPrice.postValue(SimpleCurrencyFormat.formatValue(localStoreRepository.getLocalCurrency(), apiRepository.getBasicTickerData().price))
+
+                getChartData()?.let {
+                    val gain = 100 * ((it.last().value - it.first().value) / it.first().value)
+                    _percentageGain.postValue(gain.toDouble())
+                }
+            }
+        }
+    }
+
+    fun changeChartInterval(intervalType: ChartIntervalType) {
+        if(intervalType != this.intervalType) {
+            this.intervalType = intervalType
+            updateChartData()
+            setTickerPrice()
+        }
+    }
+
+
+
+    fun updateChartData() {
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                val data = getChartData()
+
+                if(data != null)
+                    _chartData.postValue(data!!)
+                else
+                    _couldNotLoadData.postValue(Unit)
+            }
+        }
+    }
+
+    private suspend fun getChartData() = apiRepository.getTickerPriceChartData(intervalType)
 }

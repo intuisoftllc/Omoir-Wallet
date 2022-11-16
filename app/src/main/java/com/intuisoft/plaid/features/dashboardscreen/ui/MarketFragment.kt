@@ -20,6 +20,8 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.*
+import com.intuisoft.plaid.common.model.ChartDataModel
+import com.intuisoft.plaid.common.model.ChartIntervalType
 import com.intuisoft.plaid.common.model.CongestionRating
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.databinding.FragmentWalletSettingsBinding
@@ -28,10 +30,13 @@ import com.intuisoft.plaid.features.pin.ui.PinProtectedFragment
 import com.intuisoft.plaid.features.settings.ui.SettingsFragment
 import com.intuisoft.plaid.features.settings.viewmodel.SettingsViewModel
 import com.intuisoft.plaid.common.util.Constants
+import com.intuisoft.plaid.common.util.SimpleCoinNumberFormat
+import com.intuisoft.plaid.common.util.SimpleCurrencyFormat
 import com.intuisoft.plaid.databinding.FragmentMarketBinding
 import com.intuisoft.plaid.databinding.FragmentSwapBinding
 import com.intuisoft.plaid.features.dashboardscreen.adapters.BasicLineChartAdapter
 import com.intuisoft.plaid.features.dashboardscreen.viewmodel.MarketViewModel
+import com.intuisoft.plaid.util.SimpleTimeFormat
 import com.intuisoft.plaid.util.fragmentconfig.ConfigQrDisplayData
 import com.intuisoft.plaid.util.fragmentconfig.ConfigSeedData
 import io.horizontalsystems.bitcoinkit.BitcoinKit
@@ -40,6 +45,7 @@ import kotlinx.android.synthetic.main.fragment_wallet_settings.*
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import java.util.*
 import kotlin.random.Random
 import kotlin.random.nextLong
 
@@ -47,6 +53,8 @@ import kotlin.random.nextLong
 class MarketFragment : PinProtectedFragment<FragmentMarketBinding>() {
     private val viewModel: MarketViewModel by viewModel()
     private val localStore: LocalStoreRepository by inject()
+
+    val adapter = BasicLineChartAdapter()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -59,30 +67,119 @@ class MarketFragment : PinProtectedFragment<FragmentMarketBinding>() {
         return binding.root
     }
 
-
     override fun onConfiguration(configuration: FragmentConfiguration?) {
         onBackPressedCallback {
             onNavigateBottomBarSecondaryFragmentBackwards(localStore)
         }
 
-        val adapter = BasicLineChartAdapter()
         binding.sparkview.setAdapter(adapter)
         binding.sparkview.isScrubEnabled = true
         binding.sparkview.setScrubListener {
-            binding.price.text = "${it?.toString()}"
+
+            if(it != null) {
+                val data = it as ChartDataModel
+                binding.percentageGain.visibility = View.INVISIBLE
+                binding.scrubTime.visibility = View.VISIBLE
+                binding.price.text = SimpleCurrencyFormat.formatValue(
+                    localStore.getLocalCurrency(),
+                    data.value.toDouble()
+                )
+
+                binding.scrubTime.text = SimpleTimeFormat.getDateByLocale(data.time, Locale.US.language)
+            } else {
+                binding.percentageGain.visibility = View.VISIBLE
+                binding.scrubTime.visibility = View.INVISIBLE
+                viewModel.setTickerPrice()
+            }
         }
 
-        val series = mutableListOf<Float>()
-
-        var x = 0
-        while(x < 270) {
-            x++
-            var f = x - 30L
-            if(f < 0) f = 0
-            series.add(Random.nextLong((f)..(x )).toFloat())
+        binding.interval1day.setOnClickListener {
+            viewModel.changeChartInterval(ChartIntervalType.INTERVAL_1DAY)
+            binding.interval1day.selectTimePeriod(true)
+            binding.interval1week.selectTimePeriod(false)
+            binding.interval1Month.selectTimePeriod(false)
+            binding.interval3Month.selectTimePeriod(false)
+            binding.interval6Month.selectTimePeriod(false)
+            binding.interval1Year.selectTimePeriod(false)
+            binding.intervalMax.selectTimePeriod(false)
         }
 
-        adapter.setItems(series.toFloatArray())
+        binding.interval1week.setOnClickListener {
+            viewModel.changeChartInterval(ChartIntervalType.INTERVAL_1WEEK)
+            binding.interval1day.selectTimePeriod(false)
+            binding.interval1week.selectTimePeriod(true)
+            binding.interval1Month.selectTimePeriod(false)
+            binding.interval3Month.selectTimePeriod(false)
+            binding.interval6Month.selectTimePeriod(false)
+            binding.interval1Year.selectTimePeriod(false)
+            binding.intervalMax.selectTimePeriod(false)
+        }
+
+        binding.interval1Month.setOnClickListener {
+            viewModel.changeChartInterval(ChartIntervalType.INTERVAL_1MONTH)
+            binding.interval1day.selectTimePeriod(false)
+            binding.interval1week.selectTimePeriod(false)
+            binding.interval1Month.selectTimePeriod(true)
+            binding.interval3Month.selectTimePeriod(false)
+            binding.interval6Month.selectTimePeriod(false)
+            binding.interval1Year.selectTimePeriod(false)
+            binding.intervalMax.selectTimePeriod(false)
+        }
+
+        binding.interval3Month.setOnClickListener {
+            viewModel.changeChartInterval(ChartIntervalType.INTERVAL_3MONTHS)
+            binding.interval1day.selectTimePeriod(false)
+            binding.interval1week.selectTimePeriod(false)
+            binding.interval1Month.selectTimePeriod(false)
+            binding.interval3Month.selectTimePeriod(true)
+            binding.interval6Month.selectTimePeriod(false)
+            binding.interval1Year.selectTimePeriod(false)
+            binding.intervalMax.selectTimePeriod(false)
+        }
+
+        binding.interval6Month.setOnClickListener {
+            viewModel.changeChartInterval(ChartIntervalType.INTERVAL_6MONTHS)
+            binding.interval1day.selectTimePeriod(false)
+            binding.interval1week.selectTimePeriod(false)
+            binding.interval1Month.selectTimePeriod(false)
+            binding.interval3Month.selectTimePeriod(false)
+            binding.interval6Month.selectTimePeriod(true)
+            binding.interval1Year.selectTimePeriod(false)
+            binding.intervalMax.selectTimePeriod(false)
+        }
+
+        binding.interval1Year.setOnClickListener {
+            viewModel.changeChartInterval(ChartIntervalType.INTERVAL_1YEAR)
+            binding.interval1day.selectTimePeriod(false)
+            binding.interval1week.selectTimePeriod(false)
+            binding.interval1Month.selectTimePeriod(false)
+            binding.interval3Month.selectTimePeriod(false)
+            binding.interval6Month.selectTimePeriod(false)
+            binding.interval1Year.selectTimePeriod(true)
+            binding.intervalMax.selectTimePeriod(false)
+        }
+
+        binding.intervalMax.setOnClickListener {
+            viewModel.changeChartInterval(ChartIntervalType.INTERVAL_ALL_TIME)
+            binding.interval1day.selectTimePeriod(false)
+            binding.interval1week.selectTimePeriod(false)
+            binding.interval1Month.selectTimePeriod(false)
+            binding.interval3Month.selectTimePeriod(false)
+            binding.interval6Month.selectTimePeriod(false)
+            binding.interval1Year.selectTimePeriod(false)
+            binding.intervalMax.selectTimePeriod(true)
+        }
+
+        viewModel.percentageGain.observe(viewLifecycleOwner, Observer {
+            binding.percentageGain.text = SimpleCoinNumberFormat.formatCurrency(it) + "%"
+
+            if(it > 0.0) {
+                binding.percentageGain.setTextColor(resources.getColor(R.color.success_color))
+            } else {
+                binding.percentageGain.setTextColor(resources.getColor(R.color.alt_error_color))
+            }
+        })
+
         viewModel.maxSupply.observe(viewLifecycleOwner, Observer {
             binding.maxSupply.text = it
         })
@@ -186,8 +283,16 @@ class MarketFragment : PinProtectedFragment<FragmentMarketBinding>() {
             binding.avgConfTime.text = it
         })
 
+        viewModel.tickerPrice.observe(viewLifecycleOwner, Observer {
+            binding.price.text = it
+        })
+
         viewModel.hideMainChainDataContainer.observe(viewLifecycleOwner, Observer {
             binding.mainChainExtendedDataContainer.isVisible = false
+        })
+
+        viewModel.chartData.observe(viewLifecycleOwner, Observer {
+            adapter.setItems(it)
         })
     }
 
@@ -195,6 +300,8 @@ class MarketFragment : PinProtectedFragment<FragmentMarketBinding>() {
         super.onResume()
         viewModel.updateBasicMarketData()
         viewModel.updateExtendedMarketData()
+        viewModel.updateChartData()
+        viewModel.setTickerPrice()
     }
 
     fun openLink(url: String) {

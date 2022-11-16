@@ -7,7 +7,7 @@ class Constants {
 
     object Database {
         const val DB_NAME = "plaid.db"
-        const val DB_VERSION = 6
+        const val DB_VERSION = 8
     }
 
     object Files {
@@ -98,6 +98,7 @@ class Constants {
         const val AUTO_SYNC_TIME: Long = (MILLS_PER_SEC * TWO_MINUTES).toLong()
         const val GENERAL_CACHE_UPDATE_TIME: Long = (MILLS_PER_SEC * TEN_MINUTES).toLong()
         const val GENERAL_CACHE_UPDATE_TIME_SHORT: Long = (MILLS_PER_SEC * ONE_MINUTE).toLong()
+        const val GENERAL_CACHE_UPDATE_TIME_MED: Long = (MILLS_PER_SEC * TWO_MINUTES).toLong()
     }
 
     object ActivityResult {

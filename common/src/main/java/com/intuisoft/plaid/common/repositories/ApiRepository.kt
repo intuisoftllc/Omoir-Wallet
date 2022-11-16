@@ -12,5 +12,7 @@ interface ApiRepository {
 
     suspend fun getExtendedMarketData(testnetWallet: Boolean): ExtendedNetworkDataModel?
 
+    suspend fun getTickerPriceChartData(intervalType: ChartIntervalType): List<ChartDataModel>?
+
     suspend fun refreshLocalCache()
 }

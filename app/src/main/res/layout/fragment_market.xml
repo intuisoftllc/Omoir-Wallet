@@ -54,18 +54,47 @@
                             android:layout_gravity="center"
                             style="@style/TextStyle.Bold.24"
                             android:textColor="?attr/colorPrimaryVariant"
-                            android:text="$24,473.48"/>
+                            android:text="$0"/>
 
-                        <TextView
-                            android:id="@+id/percentage_gain"
-                            android:layout_width="wrap_content"
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="@dimen/margin_4"
-                            android:layout_gravity="center"
-                            style="@style/TextStyle.Regular.16"
-                            android:textStyle="bold"
-                            android:textColor="@color/alt_error_color"
-                            android:text="-5.68%"/>
+                            android:layout_gravity="center">
+
+                            <TextView
+                                android:id="@+id/percentage_gain"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/margin_4"
+                                android:layout_gravity="center"
+                                style="@style/TextStyle.Regular.16"
+                                android:textStyle="bold"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"
+                                android:text=""/>
+
+                            <TextView
+                                android:id="@+id/scrub_time"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/margin_4"
+                                android:layout_gravity="center"
+                                style="@style/TextStyle.Regular.14"
+                                android:textStyle="bold"
+                                android:visibility="invisible"
+                                android:background="@drawable/shape_rounded_button_unselected"
+                                android:backgroundTint="?attr/colorOnSecondary"
+                                android:paddingVertical="@dimen/margin_4"
+                                android:paddingHorizontal="@dimen/margin_8"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"
+                                android:textColor="?attr/colorSecondary"
+                                android:text=""/>
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
 
 
                         <com.robinhood.spark.SparkView
@@ -81,64 +110,78 @@
                             android:layout_marginTop="@dimen/parent_top_margin_small">
 
                             <com.intuisoft.plaid.androidwrappers.ChartTimePeriodIndicatorView
+                                android:id="@+id/interval1day"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
+                                android:background="@drawable/bottom_bar_item_ripple"
                                 android:layout_gravity="center"
                                 android:gravity="center"
                                 app:is_selected="true"
                                 app:time_period_text="@string/one_day"/>
 
                             <com.intuisoft.plaid.androidwrappers.ChartTimePeriodIndicatorView
+                                android:id="@+id/interval1week"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:layout_gravity="center"
+                                android:background="@drawable/bottom_bar_item_ripple"
                                 android:gravity="center"
                                 app:time_period_text="@string/one_week"
                                 app:is_selected="false"/>
 
                             <com.intuisoft.plaid.androidwrappers.ChartTimePeriodIndicatorView
+                                android:id="@+id/interval1Month"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:layout_gravity="center"
+                                android:background="@drawable/bottom_bar_item_ripple"
                                 android:gravity="center"
                                 app:is_selected="false"
                                 app:time_period_text="@string/one_month"/>
 
                             <com.intuisoft.plaid.androidwrappers.ChartTimePeriodIndicatorView
+                                android:id="@+id/interval3Month"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:layout_gravity="center"
+                                android:background="@drawable/bottom_bar_item_ripple"
                                 android:gravity="center"
                                 app:is_selected="false"
                                 app:time_period_text="@string/three_months"/>
 
                             <com.intuisoft.plaid.androidwrappers.ChartTimePeriodIndicatorView
+                                android:id="@+id/interval6Month"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:layout_gravity="center"
+                                android:background="@drawable/bottom_bar_item_ripple"
                                 android:gravity="center"
                                 app:is_selected="false"
                                 app:time_period_text="@string/six_months"/>
 
                             <com.intuisoft.plaid.androidwrappers.ChartTimePeriodIndicatorView
+                                android:id="@+id/interval1Year"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:layout_gravity="center"
+                                android:background="@drawable/bottom_bar_item_ripple"
                                 android:gravity="center"
                                 app:is_selected="false"
                                 app:time_period_text="@string/one_year"/>
 
                             <com.intuisoft.plaid.androidwrappers.ChartTimePeriodIndicatorView
+                                android:id="@+id/intervalMax"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:layout_gravity="center"
+                                android:background="@drawable/bottom_bar_item_ripple"
                                 android:gravity="center"
                                 app:is_selected="false"
                                 app:time_period_text="@string/all"/>

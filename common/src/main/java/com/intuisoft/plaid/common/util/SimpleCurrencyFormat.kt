@@ -29,4 +29,21 @@ object SimpleCurrencyFormat {
             return "$"
         else return Currency.getInstance(localCurrency).symbol
     }
+
+    fun getCurrencyCodeId(currencyCode: String): Int {
+        return when(currencyCode) {
+            Constants.LocalCurrency.USD -> {
+                1
+            }
+            Constants.LocalCurrency.CANADA -> {
+                2
+            }
+            Constants.LocalCurrency.EURO -> {
+                3
+            }
+            else -> {
+                0
+            }
+        }
+    }
 }

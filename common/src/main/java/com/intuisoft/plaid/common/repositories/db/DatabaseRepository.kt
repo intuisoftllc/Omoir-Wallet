@@ -18,6 +18,10 @@ interface DatabaseRepository {
 
     suspend fun getBasicNetworkData(): BasicNetworkDataModel?
 
+    suspend fun getTickerPriceChartData(currencyCode: String, intervalType: ChartIntervalType): List<ChartDataModel>?
+
+    suspend fun setTickerPriceChartData(data: List<ChartDataModel>, currencyCode: String, intervalType: ChartIntervalType)
+
     suspend fun setBasicNetworkData(circulatingSupply: Long, memPoolTx: Int)
 
     suspend fun getRateFor(currencyCode: String): BasicPriceDataModel?
