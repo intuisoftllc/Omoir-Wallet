@@ -42,7 +42,7 @@ class WithdrawalViewModel(
     protected val _onNextStep = SingleLiveData<Unit>()
     val onNextStep: LiveData<Unit> = _onNextStep
 
-    private var amountToSpend: RateConverter = RateConverter(localStoreRepository.getRateFor(localStoreRepository.getLocalCurrency())?.rate ?: 0.0)
+    private var amountToSpend: RateConverter = RateConverter(localStoreRepository.getRateFor(localStoreRepository.getLocalCurrency())?.currentPrice ?: 0.0)
     private var internalAmountString: String = "0"
     private var selectedUTXOs: MutableList<UnspentOutput> = mutableListOf()
     private var overBalanceErrors = 0

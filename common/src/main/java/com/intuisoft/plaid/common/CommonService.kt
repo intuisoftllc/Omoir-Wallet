@@ -8,22 +8,18 @@ import androidx.security.crypto.MasterKeys
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.intuisoft.plaid.common.local.UserPreferences
-import com.intuisoft.plaid.common.local.db.LocalCurrencyRateDao
+import com.intuisoft.plaid.common.local.db.*
 import com.intuisoft.plaid.common.network.adapters.LocalDateAdapter
 import com.intuisoft.plaid.common.network.interceptors.ApiKeyInterceptor
 import com.intuisoft.plaid.common.network.interceptors.AppConnectionMonitor
 import com.intuisoft.plaid.common.network.interceptors.ConnectivityInterceptor
-import com.intuisoft.plaid.common.network.nownodes.api.BlockBookApi
-import com.intuisoft.plaid.common.network.nownodes.api.NodeApi
+import com.intuisoft.plaid.common.network.nownodes.api.*
 import com.intuisoft.plaid.common.network.nownodes.repository.BlockBookRepository
 import com.intuisoft.plaid.common.network.nownodes.repository.NodeRepository
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository_Impl
-import com.intuisoft.plaid.common.local.db.PlaidDatabase
-import com.intuisoft.plaid.common.local.db.SuggestedFeeRate
-import com.intuisoft.plaid.common.local.db.SuggestedFeeRateDao
-import com.intuisoft.plaid.common.network.nownodes.api.BlockchainInfoApi
 import com.intuisoft.plaid.common.network.nownodes.repository.BlockchainInfoRepository
+import com.intuisoft.plaid.common.network.nownodes.repository.CoingeckoRepository
 import com.intuisoft.plaid.common.repositories.ApiRepository
 import com.intuisoft.plaid.common.repositories.ApiRepository_Impl
 import com.intuisoft.plaid.common.repositories.db.DatabaseRepository
@@ -44,6 +40,7 @@ object CommonService {
     private var blockBookRepository: BlockBookRepository? = null
     private var nodeRepository: NodeRepository? = null
     private var blockchainInfoRepository: BlockchainInfoRepository? = null
+    private var coingeckoRepository: CoingeckoRepository? = null
     private var testNetNodeRepository: NodeRepository? = null
     private var databaseRepository: DatabaseRepository? = null
     private var application: Application? = null
@@ -52,6 +49,7 @@ object CommonService {
     private var nowNodesNodeApiUrl: String? = ""
     private var nowNodesTestNetNodeApiUrl: String? = ""
     private var blockchainInfoApiUrl: String? = ""
+    private var coingeckoApiUrl: String? = ""
 
     fun getPrefsInstance(): UserPreferences {
         if(userPreferences == null) {
@@ -78,7 +76,8 @@ object CommonService {
                 getLocalStoreInstance(),
                 getNodeRepositoryInstance(),
                 getTestNetNodeRepositoryInstance(),
-                getBlockchainInfoRepositoryInstance()
+                getBlockchainInfoRepositoryInstance(),
+                getCoingeckoRepositoryInstance()
             )
         }
 
@@ -162,6 +161,23 @@ object CommonService {
         return blockchainInfoRepository!!
     }
 
+    fun getCoingeckoRepositoryInstance(): CoingeckoRepository {
+        if(coingeckoRepository == null) {
+            coingeckoRepository = CoingeckoRepository.create(
+                provideCoingeckoApi(
+                    provideCoingeckoRetrofit(
+                        provideBaseHttpClient(
+                            provideConnectivityInterceptor()
+                        ),
+                        getGsonInstance()
+                    )
+                )
+            )
+        }
+
+        return coingeckoRepository!!
+    }
+
     fun getDatabaseRepositoryInstance(): DatabaseRepository {
         if(databaseRepository == null) {
             databaseRepository = provideDatabaseRepository(
@@ -170,6 +186,12 @@ object CommonService {
                     application!!
                 ),
                 provideLocalCurrencyRateDao(
+                    application!!
+                ),
+                provideBasicMarketDataDao(
+                    application!!
+                ),
+                provideExtendedMarketDataDao(
                     application!!
                 )
             )
@@ -188,7 +210,8 @@ object CommonService {
         nowNodesBlockBookURL: String,
         nodeApiUrl: String,
         testNetNodeApiUrl: String,
-        blockchainInfoApiUrl: String
+        blockchainInfoApiUrl: String,
+        coingeckoApiUrl: String
     ) {
         provideApplication(application)
         provideNowNodesSecret(nowNodesSecret)
@@ -196,6 +219,7 @@ object CommonService {
         provideNowNodesNodeApiUrl(nodeApiUrl)
         provideNowNodesTestNetNodeApiUrl(testNetNodeApiUrl)
         provideBlockchainInfoApiUrl(blockchainInfoApiUrl)
+        provideCoingeckoApiUrl(coingeckoApiUrl)
 
         // create singleton instance of all classes
         getPrefsInstance()
@@ -205,6 +229,7 @@ object CommonService {
         getTestNetNodeRepositoryInstance()
         getDatabaseRepositoryInstance()
         getBlockchainInfoRepositoryInstance()
+        getCoingeckoRepositoryInstance()
     }
 
     // providers
@@ -232,6 +257,10 @@ object CommonService {
         this.blockchainInfoApiUrl = url
     }
 
+    private fun provideCoingeckoApiUrl(url: String) {
+        this.coingeckoApiUrl = url
+    }
+
     private fun provideDatabase(
         context: Context
     ): PlaidDatabase {
@@ -246,16 +275,30 @@ object CommonService {
 
     private fun provideLocalCurrencyRateDao(
         context: Context
-    ): LocalCurrencyRateDao {
+    ): BasicPriceDataDao {
         return PlaidDatabase.getInstance(context).localCurrencyRateDao()
+    }
+
+    private fun provideBasicMarketDataDao(
+        context: Context
+    ): BaseMarketDataDao {
+        return PlaidDatabase.getInstance(context).baseMarketDataDao()
+    }
+
+    private fun provideExtendedMarketDataDao(
+        context: Context
+    ): ExtendedNetworkDataDao {
+        return PlaidDatabase.getInstance(context).extendedMarketDataDao()
     }
 
     private fun provideDatabaseRepository(
         database: PlaidDatabase,
         suggestedFeeRateDao: SuggestedFeeRateDao,
-        localCurrencyRateDao: LocalCurrencyRateDao,
+        basicPriceDataDao: BasicPriceDataDao,
+        baseMarketDataDao: BaseMarketDataDao,
+        extendedNetworkDataDao: ExtendedNetworkDataDao
     ): DatabaseRepository {
-        return DatabaseRepository_Impl(database, suggestedFeeRateDao, localCurrencyRateDao)
+        return DatabaseRepository_Impl(database, suggestedFeeRateDao, basicPriceDataDao, baseMarketDataDao, extendedNetworkDataDao)
     }
 
     private fun provideApiKeyInterceptor() =
@@ -275,9 +318,16 @@ object CommonService {
         localStoreRepository: LocalStoreRepository,
         nodeRepository: NodeRepository,
         testNetNodeRepository: NodeRepository,
-        blockchainInfoRepository: BlockchainInfoRepository
+        blockchainInfoRepository: BlockchainInfoRepository,
+        coingeckoRepository: CoingeckoRepository
     ): ApiRepository {
-        return ApiRepository_Impl(localStoreRepository, nodeRepository, testNetNodeRepository, blockchainInfoRepository)
+        return ApiRepository_Impl(
+            localStoreRepository,
+            nodeRepository,
+            testNetNodeRepository,
+            blockchainInfoRepository,
+            coingeckoRepository
+        )
     }
 
     private fun provideGson(): Gson {
@@ -356,6 +406,19 @@ object CommonService {
             .build()
     }
 
+    private fun provideCoingeckoRetrofit(
+        okHttpClient: OkHttpClient,
+        gson: Gson
+    ): Retrofit {
+        return Retrofit.Builder()
+            .client(okHttpClient)
+            .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
+            .baseUrl(coingeckoApiUrl!!)
+//        .addConverterFactory(NullOnEmptyBodyConverterFactory())
+            .addConverterFactory(GsonConverterFactory.create(gson))
+            .build()
+    }
+
     private fun provideBaseRetrofit(baseHttpClient: OkHttpClient, gson: Gson): Retrofit {
         return Retrofit.Builder()
             .client(baseHttpClient)
@@ -405,4 +468,7 @@ object CommonService {
 
     private fun provideBlockchainInfoApi(manager: Retrofit): BlockchainInfoApi =
         manager.create(BlockchainInfoApi::class.java)
+
+    private fun provideCoingeckoApi(manager: Retrofit): CoingeckoApi =
+        manager.create(CoingeckoApi::class.java)
 }

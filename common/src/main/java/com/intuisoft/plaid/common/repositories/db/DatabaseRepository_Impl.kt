@@ -2,13 +2,14 @@ package com.intuisoft.plaid.common.repositories.db
 
 import com.intuisoft.plaid.common.local.db.*
 import com.intuisoft.plaid.common.local.db.listeners.DatabaseListener
-import com.intuisoft.plaid.common.model.LocalCurrencyRateModel
-import com.intuisoft.plaid.common.model.NetworkFeeRate
+import com.intuisoft.plaid.common.model.*
 
 class DatabaseRepository_Impl(
     private val database: PlaidDatabase,
     private val suggestedFeeRateDao: SuggestedFeeRateDao,
-    private val localCurrencyRateDao: LocalCurrencyRateDao
+    private val basicPriceDataDao: BasicPriceDataDao,
+    private val baseNetworkDataDao: BaseMarketDataDao,
+    private val extendedNetworkDataDao: ExtendedNetworkDataDao
 ) : DatabaseRepository {
 
     override suspend fun getSuggestedFeeRate(testNetWallet: Boolean): NetworkFeeRate? =
@@ -19,22 +20,42 @@ class DatabaseRepository_Impl(
         database.onUpdate()
     }
 
-    override suspend fun getAllRates(): List<LocalCurrencyRateModel> {
-        return localCurrencyRateDao.getAllRates().map { it.from() }
+    override suspend fun getExtendedNetworkData(testNetWallet: Boolean): ExtendedNetworkDataModel? =
+        extendedNetworkDataDao.getExtendedNetworkData(testNetWallet)?.from()
+
+    override suspend fun setExtendedNetworkData(extendedData: ExtendedNetworkDataModel, testNetWallet: Boolean) {
+        extendedNetworkDataDao.insert(ExtendedNetworkData.consume(testNetWallet, extendedData))
+        database.onUpdate()
     }
 
-    override suspend fun getRateFor(currencyCode: String): LocalCurrencyRateModel? {
-        return localCurrencyRateDao.getRateFor(currencyCode)?.from()
+    override suspend fun getAllRates(): List<BasicPriceDataModel> {
+        return basicPriceDataDao.getAllRates().map { it.from() }
     }
 
-    override suspend fun setLocalRates(rates: List<LocalCurrencyRateModel>) {
-        localCurrencyRateDao.insert(rates.map { LocalCurrencyRate.consume(it.currencyCode, it.rate) })
+    override suspend fun getRateFor(currencyCode: String): BasicPriceDataModel? {
+        return basicPriceDataDao.getRateFor(currencyCode)?.from()
+    }
+
+    override suspend fun getBasicNetworkData(): BasicNetworkDataModel? {
+        return baseNetworkDataDao.getNetworkData()?.from()
+    }
+
+    override suspend fun setBasicNetworkData(
+        circulatingSupply: Long,
+        memPoolTx: Int
+    ) {
+        baseNetworkDataDao.insert(BasicNetworkData.consume(circulatingSupply, memPoolTx))
+        database.onUpdate()
+    }
+
+    override suspend fun setRates(rates: List<BasicPriceDataModel>) {
+        basicPriceDataDao.insert(rates.map { BasicPriceData.consume(it.marketCap, it.currencyCode, it.currentPrice) })
         database.onUpdate()
     }
 
     override suspend fun deleteAllData() {
         suggestedFeeRateDao.deleteTable()
-        localCurrencyRateDao.deleteTable()
+        basicPriceDataDao.deleteTable()
         database.onUpdate()
     }
 

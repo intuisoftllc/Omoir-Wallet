@@ -54,7 +54,7 @@ class WithdrawConfirmationViewModel(
     private var address: String? = null
     private var invalidAddressErrors = 0
     private var selectedUTXOs: MutableList<String> = mutableListOf()
-    private var amountToSpend: RateConverter = RateConverter(localStoreRepository.getRateFor(localStoreRepository.getLocalCurrency())?.rate ?: 0.0)
+    private var amountToSpend: RateConverter = RateConverter(localStoreRepository.getRateFor(localStoreRepository.getLocalCurrency())?.currentPrice ?: 0.0)
     private var networkFeeRate: NetworkFeeRate = NetworkFeeRate(1, 2, 6)
 
     fun getFeeRate() = feeRate

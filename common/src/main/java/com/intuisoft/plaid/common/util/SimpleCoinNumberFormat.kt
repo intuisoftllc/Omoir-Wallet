@@ -7,7 +7,7 @@ import java.text.DecimalFormat
 object SimpleCoinNumberFormat {
 
     fun format(localStoreRepository: LocalStoreRepository, sats: Long, shortenSats: Boolean = true) : String {
-        val converter = RateConverter(localStoreRepository.getRateFor(localStoreRepository.getLocalCurrency())?.rate ?: 0.0)
+        val converter = RateConverter(localStoreRepository.getRateFor(localStoreRepository.getLocalCurrency())?.currentPrice ?: 0.0)
         converter.setLocalRate(RateConverter.RateType.SATOSHI_RATE, sats.toDouble())
 
         when(localStoreRepository.getBitcoinDisplayUnit()) {
@@ -87,7 +87,7 @@ object SimpleCoinNumberFormat {
         return df.format(value)
     }
 
-    fun formatFullBalance(value: Long): String? {
+    fun format(value: Long): String? {
         val df = DecimalFormat("###,###,###,###,###")
         return df.format(value)
     }

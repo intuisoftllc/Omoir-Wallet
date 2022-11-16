@@ -11,10 +11,13 @@
     <color name="error_color">#EA4159</color>
     <color name="soft_error_color">#F6B0BA</color>
     <color name="alt_error_color">#A33242</color>
+    <color name="warning_color">#FFB800</color>
     <color name="black">#FF000000</color>
     <color name="alt_black">#222222</color>
     <color name="grey_white">#F1F0F0</color>
     <color name="color_disabled">#CACACA</color>
+    <color name="color_disabled_overlay">#DAF1F0F0</color>
+    <color name="alt_color_disabled">#F4F4F5</color>
     <color name="grey">#A8AFBF</color>
     <color name="light_grey">#A8AFBF</color>
     <color name="white">#FFFFFFFF</color>

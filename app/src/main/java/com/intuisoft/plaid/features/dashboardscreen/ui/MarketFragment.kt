@@ -1,6 +1,8 @@
 package com.intuisoft.plaid.features.dashboardscreen.ui
 
 import android.app.ProgressDialog
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.text.method.PasswordTransformationMethod
 import android.view.LayoutInflater
@@ -18,6 +20,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.*
+import com.intuisoft.plaid.common.model.CongestionRating
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.databinding.FragmentWalletSettingsBinding
 import com.intuisoft.plaid.features.dashboardscreen.viewmodel.WalletSettingsViewModel
@@ -28,6 +31,7 @@ import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.databinding.FragmentMarketBinding
 import com.intuisoft.plaid.databinding.FragmentSwapBinding
 import com.intuisoft.plaid.features.dashboardscreen.adapters.BasicLineChartAdapter
+import com.intuisoft.plaid.features.dashboardscreen.viewmodel.MarketViewModel
 import com.intuisoft.plaid.util.fragmentconfig.ConfigQrDisplayData
 import com.intuisoft.plaid.util.fragmentconfig.ConfigSeedData
 import io.horizontalsystems.bitcoinkit.BitcoinKit
@@ -41,8 +45,7 @@ import kotlin.random.nextLong
 
 
 class MarketFragment : PinProtectedFragment<FragmentMarketBinding>() {
-    private val viewModel: WalletSettingsViewModel by viewModel()
-    private val appSettingsViewModel: SettingsViewModel by sharedViewModel()
+    private val viewModel: MarketViewModel by viewModel()
     private val localStore: LocalStoreRepository by inject()
 
     override fun onCreateView(
@@ -72,7 +75,7 @@ class MarketFragment : PinProtectedFragment<FragmentMarketBinding>() {
         val series = mutableListOf<Float>()
 
         var x = 0
-        while(x < 150) {
+        while(x < 270) {
             x++
             var f = x - 30L
             if(f < 0) f = 0
@@ -80,8 +83,124 @@ class MarketFragment : PinProtectedFragment<FragmentMarketBinding>() {
         }
 
         adapter.setItems(series.toFloatArray())
+        viewModel.maxSupply.observe(viewLifecycleOwner, Observer {
+            binding.maxSupply.text = it
+        })
+
+        viewModel.circulatingSupply.observe(viewLifecycleOwner, Observer {
+            binding.circulatingSupply.text = it
+        })
+
+        viewModel.marketCap.observe(viewLifecycleOwner, Observer {
+            binding.marketCap.text = it
+        })
+
+        if(!localStore.isProEnabled()) {
+            binding.height.text = ""
+            binding.difficulty.text = ""
+            binding.blockchainSize.text = ""
+            binding.avgTxSize.text = ""
+            binding.avgFeeRate.text = ""
+            binding.unconfirmedTxs.text = ""
+            binding.avgConfTime.text = ""
+        }
+
+        viewModel.congestionRating.observe(viewLifecycleOwner, Observer {
+            when(it) {
+                CongestionRating.NA -> {
+                    binding.congestionRating.setTextColor(resources.getColor(R.color.text_grey))
+                    binding.congestionRating.text = getString(R.string.market_data_congestion_rating_6)
+                }
+                CongestionRating.LIGHT -> {
+                    binding.congestionRating.setTextColor(resources.getColor(R.color.success_color))
+                    binding.congestionRating.text = getString(R.string.market_data_congestion_rating_1)
+                }
+                CongestionRating.NORMAL -> {
+                    binding.congestionRating.setTextColor(resources.getColor(R.color.text_grey))
+                    binding.congestionRating.text = getString(R.string.market_data_congestion_rating_2)
+                }
+                CongestionRating.MED -> {
+                    binding.congestionRating.setTextColor(resources.getColor(R.color.warning_color))
+                    binding.congestionRating.text = getString(R.string.market_data_congestion_rating_3)
+                }
+                CongestionRating.BUSY -> {
+                    binding.congestionRating.setTextColor(resources.getColor(R.color.warning_color))
+                    binding.congestionRating.text = getString(R.string.market_data_congestion_rating_4)
+                }
+                CongestionRating.CONGESTED -> {
+                    binding.congestionRating.setTextColor(resources.getColor(R.color.error_color))
+                    binding.congestionRating.text = getString(R.string.market_data_congestion_rating_5)
+                }
+            }
+        })
+
+        binding.bitcoinDescription.setOnClickListener {
+            openLink(getString(R.string.market_data_what_is_bitcoin_link))
+        }
+
+        binding.bitcoinOrg.setOnClickListener {
+            openLink(getString(R.string.market_data_bitcoin_org_link))
+        }
+
+        binding.explorer.setOnClickListener {
+            openLink(getString(R.string.market_data_bitcoin_explorer_link))
+        }
+
+        binding.marketData.setOnClickListener {
+            openLink(getString(R.string.market_data_bitcoin_market_external_link))
+        }
+
+        viewModel.couldNotLoadData.observe(viewLifecycleOwner, Observer {
+
+        })
+
+        viewModel.network.observe(viewLifecycleOwner, Observer {
+            binding.network.text = it
+        })
+
+        viewModel.blockHeight.observe(viewLifecycleOwner, Observer {
+            binding.height.text = it
+        })
+
+        viewModel.difficulty.observe(viewLifecycleOwner, Observer {
+            binding.difficulty.text = it
+        })
+
+        viewModel.blockchainSize.observe(viewLifecycleOwner, Observer {
+            binding.blockchainSize.text = it
+        })
+
+        viewModel.avgTxSize.observe(viewLifecycleOwner, Observer {
+            binding.avgTxSize.text = it
+        })
+
+        viewModel.avgFeeRate.observe(viewLifecycleOwner, Observer {
+            binding.avgFeeRate.text = it
+        })
+
+        viewModel.unconfirmedTxs.observe(viewLifecycleOwner, Observer {
+            binding.unconfirmedTxs.text = it
+        })
+
+        viewModel.avgConfTime.observe(viewLifecycleOwner, Observer {
+            binding.avgConfTime.text = it
+        })
+
+        viewModel.hideMainChainDataContainer.observe(viewLifecycleOwner, Observer {
+            binding.mainChainExtendedDataContainer.isVisible = false
+        })
     }
 
+    override fun onResume() {
+        super.onResume()
+        viewModel.updateBasicMarketData()
+        viewModel.updateExtendedMarketData()
+    }
+
+    fun openLink(url: String) {
+        val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse("$url"))
+        startActivity(browserIntent)
+    }
 
     override fun onNavigateTo(destination: Int) {
         navigate(destination, viewModel.getWalletId())

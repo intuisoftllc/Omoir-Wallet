@@ -1,7 +1,6 @@
 package com.intuisoft.plaid.common.util.extensions
 
 import android.text.Editable
-import android.widget.EditText
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import kotlinx.coroutines.Dispatchers
@@ -10,6 +9,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
+import java.text.CharacterIterator
+import java.text.StringCharacterIterator
 
 @FlowPreview
 public fun <T> (suspend () -> T).asFlow(): Flow<T> = flow {
@@ -108,4 +109,17 @@ public suspend fun <T> LiveData<T>.await(): T {
             }
         }
     }
+}
+
+fun Long.humanReadableByteCountSI(): String? {
+    var bytes = this
+    if (-1000 < bytes && bytes < 1000) {
+        return "$bytes B"
+    }
+    val ci: CharacterIterator = StringCharacterIterator("kMGTPE")
+    while (bytes <= -999950 || bytes >= 999950) {
+        bytes /= 1000
+        ci.next()
+    }
+    return java.lang.String.format("%.1f %cB", bytes / 1000.0, ci.current())
 }

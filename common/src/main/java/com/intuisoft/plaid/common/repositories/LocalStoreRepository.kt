@@ -1,10 +1,8 @@
 package com.intuisoft.plaid.common.repositories
 
-import android.bluetooth.BluetoothClass.Device
 import com.intuisoft.plaid.common.listeners.WipeDataListener
 import com.intuisoft.plaid.common.local.db.listeners.DatabaseListener
 import com.intuisoft.plaid.common.model.*
-import java.util.Currency
 
 interface LocalStoreRepository {
 
@@ -76,6 +74,14 @@ interface LocalStoreRepository {
 
     fun getLastCurrencyRateUpdateTime(): Long
 
+    fun setLastBasicNetworkDataUpdate(time: Long)
+
+    fun getLastBasicNetworkDataUpdateTime(): Long
+
+    fun setLastExtendedMarketDataUpdate(time: Long)
+
+    fun getLastExtendedMarketDataUpdateTime(): Long
+
     fun updateVersionTappedCount()
 
     fun versionTapLimitReached(): Boolean
@@ -96,11 +102,19 @@ interface LocalStoreRepository {
 
     fun isFingerprintEnabled(): Boolean
 
-    fun getRateFor(currencyCode: String): LocalCurrencyRateModel?
+    fun getRateFor(currencyCode: String): BasicPriceDataModel?
 
-    suspend fun setLocalRates(rates: List<LocalCurrencyRateModel>)
+    suspend fun setRates(rates: List<BasicPriceDataModel>)
 
-    fun getAllRates(): List<LocalCurrencyRateModel>
+    fun getBasicNetworkData(): BasicNetworkDataModel?
+
+    suspend fun setBasicNetworkData(circulatingSupply: Long, memPoolTxCount: Int)
+
+    fun getExtendedNetworkData(testnetWallet: Boolean): ExtendedNetworkDataModel?
+
+    suspend fun setExtendedNetworkData(testnetWallet: Boolean, extendedData: ExtendedNetworkDataModel)
+
+    fun getAllRates(): List<BasicPriceDataModel>
 
     suspend fun wipeAllData(onWipeFinished: suspend () -> Unit)
 

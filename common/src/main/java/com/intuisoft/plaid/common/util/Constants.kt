@@ -7,7 +7,7 @@ class Constants {
 
     object Database {
         const val DB_NAME = "plaid.db"
-        const val DB_VERSION = 3
+        const val DB_VERSION = 6
     }
 
     object Files {
@@ -97,6 +97,7 @@ class Constants {
         const val SYNC_TIMEOUT = MILLS_PER_SEC * 8
         const val AUTO_SYNC_TIME: Long = (MILLS_PER_SEC * TWO_MINUTES).toLong()
         const val GENERAL_CACHE_UPDATE_TIME: Long = (MILLS_PER_SEC * TEN_MINUTES).toLong()
+        const val GENERAL_CACHE_UPDATE_TIME_SHORT: Long = (MILLS_PER_SEC * ONE_MINUTE).toLong()
     }
 
     object ActivityResult {
@@ -123,5 +124,12 @@ class Constants {
         const val USD = "USD"
         const val EURO = "EUR"
         const val CANADA = "CAD"
+    }
+
+    object CongestionRating {
+        val LIGHT = (0..2000)
+        val NORMAL = (2001..4500)
+        val MED = (4501..6500)
+        val BUSY = (6501..10000)
     }
 }

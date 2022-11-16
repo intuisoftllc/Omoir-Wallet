@@ -6,24 +6,24 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 
 @Dao
-interface LocalCurrencyRateDao {
+interface BasicPriceDataDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(rates: List<LocalCurrencyRate>)
+    suspend fun insert(rates: List<BasicPriceData>)
 
     @Query("""
-        SELECT * from local_currency_rate
+        SELECT * from basic_price_data
          WHERE currency_code = :currencyCode
          ORDER BY id ASC LIMIT 1
     """)
-    fun getRateFor(currencyCode: String) : LocalCurrencyRate?
+    fun getRateFor(currencyCode: String) : BasicPriceData?
 
     @Query("""
-        SELECT * from local_currency_rate
+        SELECT * from basic_price_data
          ORDER BY id ASC
     """)
-    fun getAllRates() : List<LocalCurrencyRate>
+    fun getAllRates() : List<BasicPriceData>
 
-    @Query("DELETE FROM local_currency_rate")
+    @Query("DELETE FROM basic_price_data")
     fun deleteTable()
 }

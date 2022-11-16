@@ -352,6 +352,42 @@
     <string name="import_public_key_error_invalid_address">You must enter a valid bitcoin address to import</string>
 <!--    Import Public Key Strings End -->
 
+<!--    Market Strings -->
+    <string name="market_bitcoin_ticker_title">Bitcoin (BTC)</string>
+    <string name="market_data_title_1">About Bitcoin</string>
+    <string name="market_data_title_2">Market Data</string>
+    <string name="market_data_bitcoin_description">Bitcoin is the first worldwide decentralized cryptocurrency that can be transferred peer-to-peer without a third party or middleman. It uses nodes to relay transactions and miners to validate and add them to the blockchain where all bitcoin transactions live.</string>
+    <string name="market_data_bitcoin_website_title_short">bitcoin.org</string>
+    <string name="market_data_bitcoin_explorer_title_short">blockchain.com</string>
+    <string name="market_data_item_1_title">Market Cap</string>
+    <string name="market_data_item_2_title">Circulating Supply</string>
+    <string name="market_data_item_3_title">Max Supply</string>
+    <string name="market_data_item_4_title">Network Congestion Rating</string>
+    <string name="market_data_view_market_data_title">View on Coingecko</string>
+    <string name="market_data_extended_data_title">Extended Network Data</string>
+    <string name="market_data_extended_item_1_title">Network</string>
+    <string name="market_data_extended_item_1_description">Main-Chain</string>
+    <string name="market_data_extended_item_1_description2">Testnet</string>
+    <string name="market_data_extended_item_2_title">Block Height</string>
+    <string name="market_data_extended_item_3_title">Network Difficulty</string>
+    <string name="market_data_extended_item_4_title">Blockchain Size</string>
+    <string name="market_data_extended_item_5_title">Avg Tx Size</string>
+    <string name="market_data_extended_item_6_title">Avg Fee Rate</string>
+    <string name="market_data_extended_item_7_title">Avg Fee Rate</string>
+    <string name="market_data_extended_item_8_title">Unconfirmed Txs</string>
+    <string name="market_data_extended_item_9_title">Avg Conf. Time</string>
+    <string name="market_data_what_is_bitcoin_link">https://www.coindesk.com/learn/what-is-bitcoin/</string>
+    <string name="market_data_bitcoin_org_link">https://www.bitcoin.org</string>
+    <string name="market_data_bitcoin_explorer_link">https://www.blockchain.com/explorer?view=btc</string>
+    <string name="market_data_bitcoin_market_external_link">https://www.coingecko.com/coins/bitcoin</string>
+    <string name="market_data_congestion_rating_1">light</string>
+    <string name="market_data_congestion_rating_2">normal</string>
+    <string name="market_data_congestion_rating_3">medium</string>
+    <string name="market_data_congestion_rating_4">busy</string>
+    <string name="market_data_congestion_rating_5">congested</string>
+    <string name="market_data_congestion_rating_6">N/A</string>
+<!--    Market Strings End -->
+
 <!--    Import Recovery Phrase Strings -->
     <string name="import_recovery_phrase_title">Recovery Phrase Import</string>
     <string name="import_recovery_phrase_subtitle">Enter your recovery phrase (12–24 words) in the correct order. If your recovery phrase is invalid, check the order of your words and try again.</string>
@@ -382,6 +418,15 @@
     <string name="delete">Delete</string>
     <string name="update">Update</string>
     <string name="bitcoin">Bitcoin</string>
+    <string name="one_day">1D</string>
+    <string name="one_week">1W</string>
+    <string name="one_month">1M</string>
+    <string name="three_months">3M</string>
+    <string name="six_months">6M</string>
+    <string name="one_year">1Y</string>
+    <string name="all">All</string>
+    <string name="explorer">Explorer</string>
+    <string name="website">Website</string>
     <string name="no_internet_connection">No Internet Connection!</string>
     <string name="reconnecting_to_core">Syncing with the network, please wait…</string>
     <string name="advanced_options">Advanced Options</string>
@@ -399,11 +444,14 @@
     <string name="proceed_anyway">Proceed Anyway</string>
     <string name="done">Done</string>
     <string name="share">share</string>
+    <string name="bytes">bytes</string>
+    <string name="sat_per_byte">Sat/byte</string>
     <string name="import_wallet">Import Wallet</string>
     <string name="main_net">Main Net</string>
     <string name="test_net">Test Net</string>
     <string name="not_applicable">N/A</string>
     <string name="select_all">Select All</string>
+    <string name="upgrade_to_pro">Upgrade To Pro</string>
     <string name="transaction_id">Transaction ID</string>
     <string name="no_connection">Lost Connection to Servers…</string>
     <string name="syncing_percent">Syncing... (%1$s%%)</string>

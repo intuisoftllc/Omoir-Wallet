@@ -1,8 +1,7 @@
 package com.intuisoft.plaid.common.repositories.db
 
 import com.intuisoft.plaid.common.local.db.listeners.DatabaseListener
-import com.intuisoft.plaid.common.model.LocalCurrencyRateModel
-import com.intuisoft.plaid.common.model.NetworkFeeRate
+import com.intuisoft.plaid.common.model.*
 
 
 interface DatabaseRepository {
@@ -11,11 +10,19 @@ interface DatabaseRepository {
 
     suspend fun getSuggestedFeeRate(testNetWallet: Boolean): NetworkFeeRate?
 
-    suspend fun getAllRates(): List<LocalCurrencyRateModel>
+    suspend fun setExtendedNetworkData(extendedData: ExtendedNetworkDataModel, testNetWallet: Boolean)
 
-    suspend fun getRateFor(currencyCode: String): LocalCurrencyRateModel?
+    suspend fun getExtendedNetworkData(testNetWallet: Boolean): ExtendedNetworkDataModel?
 
-    suspend fun setLocalRates(rates: List<LocalCurrencyRateModel>)
+    suspend fun getAllRates(): List<BasicPriceDataModel>
+
+    suspend fun getBasicNetworkData(): BasicNetworkDataModel?
+
+    suspend fun setBasicNetworkData(circulatingSupply: Long, memPoolTx: Int)
+
+    suspend fun getRateFor(currencyCode: String): BasicPriceDataModel?
+
+    suspend fun setRates(rates: List<BasicPriceDataModel>)
 
     suspend fun deleteAllData()
 

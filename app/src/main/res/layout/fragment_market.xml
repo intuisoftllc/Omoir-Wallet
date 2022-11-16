@@ -6,131 +6,755 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
 
-    <androidx.cardview.widget.CardView
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:elevation="@dimen/margin_2"
-        android:layout_marginTop="@dimen/parent_top_margin_med"
-        android:layout_marginHorizontal="@dimen/horizontal_padding_size"
+        android:layout_height="match_parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:cardCornerRadius="@dimen/card_corner_radius"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/parent_top_margin_small"
-                android:layout_gravity="center"
-                style="@style/TextStyle.Medium.14"
-                android:textColor="@color/text_grey"
-                android:text="Bitcoin (BTC)"/>
-
-            <TextView
-                android:id="@+id/price"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_8"
-                android:layout_gravity="center"
-                style="@style/TextStyle.Bold.24"
-                android:textColor="?attr/colorPrimaryVariant"
-                android:text="$24,473.48"/>
-
-            <TextView
-                android:id="@+id/percentage_gain"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_4"
-                android:layout_gravity="center"
-                style="@style/TextStyle.Regular.16"
-                android:textStyle="bold"
-                android:textColor="@color/alt_error_color"
-                android:text="-5.68%"/>
-
-
-            <com.robinhood.spark.SparkView
-                android:id="@+id/sparkview"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/spark_chart_height"
-                android:layout_marginTop="@dimen/parent_top_margin_med"/>
-
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="@dimen/parent_top_margin_small">
-
-                <com.intuisoft.plaid.androidwrappers.ChartTimePeriodIndicatorView
-                    android:layout_width="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_gravity="center"
-                    android:gravity="center"
-                    app:is_selected="true"
-                    app:time_period_text="1D"/>
+                    android:elevation="@dimen/margin_2"
+                    android:id="@+id/chart_container"
+                    android:layout_marginTop="@dimen/parent_top_margin_med"
+                    android:layout_marginHorizontal="@dimen/horizontal_padding_size"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:cardCornerRadius="@dimen/card_corner_radius"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
 
-                <com.intuisoft.plaid.androidwrappers.ChartTimePeriodIndicatorView
-                    android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/parent_top_margin_small"
+                            android:layout_gravity="center"
+                            style="@style/TextStyle.Medium.14"
+                            android:textColor="@color/text_grey"
+                            android:text="@string/market_bitcoin_ticker_title"/>
+
+                        <TextView
+                            android:id="@+id/price"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/margin_8"
+                            android:layout_gravity="center"
+                            style="@style/TextStyle.Bold.24"
+                            android:textColor="?attr/colorPrimaryVariant"
+                            android:text="$24,473.48"/>
+
+                        <TextView
+                            android:id="@+id/percentage_gain"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/margin_4"
+                            android:layout_gravity="center"
+                            style="@style/TextStyle.Regular.16"
+                            android:textStyle="bold"
+                            android:textColor="@color/alt_error_color"
+                            android:text="-5.68%"/>
+
+
+                        <com.robinhood.spark.SparkView
+                            android:id="@+id/sparkview"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/spark_chart_height"
+                            android:layout_marginTop="@dimen/parent_top_margin_med"/>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginTop="@dimen/parent_top_margin_small">
+
+                            <com.intuisoft.plaid.androidwrappers.ChartTimePeriodIndicatorView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:layout_gravity="center"
+                                android:gravity="center"
+                                app:is_selected="true"
+                                app:time_period_text="@string/one_day"/>
+
+                            <com.intuisoft.plaid.androidwrappers.ChartTimePeriodIndicatorView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:layout_gravity="center"
+                                android:gravity="center"
+                                app:time_period_text="@string/one_week"
+                                app:is_selected="false"/>
+
+                            <com.intuisoft.plaid.androidwrappers.ChartTimePeriodIndicatorView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:layout_gravity="center"
+                                android:gravity="center"
+                                app:is_selected="false"
+                                app:time_period_text="@string/one_month"/>
+
+                            <com.intuisoft.plaid.androidwrappers.ChartTimePeriodIndicatorView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:layout_gravity="center"
+                                android:gravity="center"
+                                app:is_selected="false"
+                                app:time_period_text="@string/three_months"/>
+
+                            <com.intuisoft.plaid.androidwrappers.ChartTimePeriodIndicatorView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:layout_gravity="center"
+                                android:gravity="center"
+                                app:is_selected="false"
+                                app:time_period_text="@string/six_months"/>
+
+                            <com.intuisoft.plaid.androidwrappers.ChartTimePeriodIndicatorView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:layout_gravity="center"
+                                android:gravity="center"
+                                app:is_selected="false"
+                                app:time_period_text="@string/one_year"/>
+
+                            <com.intuisoft.plaid.androidwrappers.ChartTimePeriodIndicatorView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:layout_gravity="center"
+                                android:gravity="center"
+                                app:is_selected="false"
+                                app:time_period_text="@string/all"/>
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </androidx.cardview.widget.CardView>
+
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_gravity="center"
-                    android:gravity="center"
-                    app:time_period_text="1W"
-                    app:is_selected="false"/>
+                    android:elevation="@dimen/margin_2"
+                    android:layout_marginTop="@dimen/parent_top_margin_small"
+                    android:layout_marginHorizontal="@dimen/horizontal_padding_size"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:cardCornerRadius="@dimen/card_corner_radius"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/chart_container">
 
-                <com.intuisoft.plaid.androidwrappers.ChartTimePeriodIndicatorView
-                    android:layout_width="wrap_content"
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:padding="@dimen/margin_12"
+                        android:orientation="vertical">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            style="@style/TextStyle.Semibold.16"
+                            android:textStyle="bold"
+                            android:textColor="@color/text_grey"
+                            android:text="@string/market_data_title_1"/>
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_marginVertical="@dimen/margin_12"
+                            android:background="@color/alt_color_disabled"/>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:id="@+id/bitcoin_description"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:layout_marginRight="@dimen/margin_10"
+                                android:text="@string/market_data_bitcoin_description"/>
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical"
+                                android:src="@drawable/ic_chevron_right_disabled"
+                                android:layout_weight=".1"/>
+                        </LinearLayout>
+
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_marginVertical="@dimen/margin_12"
+                            android:background="@color/alt_color_disabled"/>
+
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                style="@style/TextStyle.Medium.14"
+                                android:textColor="@color/text_black"
+                                android:textStyle="bold"
+                                android:layout_gravity="center_vertical"
+                                android:text="@string/website"/>
+
+                            <TextView
+                                android:id="@+id/bitcoin_org"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:layout_gravity="center_vertical"
+                                android:gravity="end|center_vertical"
+                                android:paddingVertical="@dimen/margin_4"
+                                android:layout_marginRight="@dimen/margin_10"
+                                android:text="@string/market_data_bitcoin_website_title_short"/>
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical"
+                                android:src="@drawable/ic_chevron_right_disabled"
+                                android:layout_weight=".1"/>
+                        </LinearLayout>
+
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_marginVertical="@dimen/margin_12"
+                            android:background="@color/alt_color_disabled"/>
+
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                style="@style/TextStyle.Medium.14"
+                                android:textColor="@color/text_black"
+                                android:textStyle="bold"
+                                android:layout_gravity="center_vertical"
+                                android:text="@string/explorer"/>
+
+                            <TextView
+                                android:id="@+id/explorer"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:layout_gravity="center_vertical"
+                                android:gravity="end|center_vertical"
+                                android:paddingVertical="@dimen/margin_4"
+                                android:layout_marginRight="@dimen/margin_10"
+                                android:text="@string/market_data_bitcoin_explorer_title_short"/>
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical"
+                                android:src="@drawable/ic_chevron_right_disabled"
+                                android:layout_weight=".1"/>
+                        </LinearLayout>
+
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_gravity="center"
-                    android:gravity="center"
-                    app:is_selected="false"
-                    app:time_period_text="1M"/>
+                    android:elevation="@dimen/margin_2"
+                    android:layout_marginTop="@dimen/parent_top_margin_small"
+                    android:layout_marginHorizontal="@dimen/horizontal_padding_size"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:cardCornerRadius="@dimen/card_corner_radius"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/chart_container">
 
-                <com.intuisoft.plaid.androidwrappers.ChartTimePeriodIndicatorView
-                    android:layout_width="wrap_content"
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:padding="@dimen/margin_12"
+                        android:orientation="vertical">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            style="@style/TextStyle.Semibold.16"
+                            android:textStyle="bold"
+                            android:textColor="@color/text_grey"
+                            android:text="@string/market_data_title_2"/>
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_marginVertical="@dimen/margin_12"
+                            android:background="@color/alt_color_disabled"/>
+
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                style="@style/TextStyle.Medium.14"
+                                android:textColor="@color/text_black"
+                                android:layout_gravity="center_vertical"
+                                android:text="@string/market_data_item_1_title"/>
+
+                            <TextView
+                                android:id="@+id/market_cap"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1.5"
+                                android:layout_gravity="center_vertical"
+                                android:gravity="end"
+                                android:layout_marginRight="@dimen/margin_10"/>
+                        </LinearLayout>
+
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_marginVertical="@dimen/margin_12"
+                            android:background="@color/alt_color_disabled"/>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                style="@style/TextStyle.Medium.14"
+                                android:textColor="@color/text_black"
+                                android:layout_gravity="center_vertical"
+                                android:text="@string/market_data_item_2_title"/>
+
+                            <TextView
+                                android:id="@+id/circulating_supply"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1.5"
+                                android:layout_gravity="center_vertical"
+                                android:gravity="end"
+                                android:layout_marginRight="@dimen/margin_10"/>
+                        </LinearLayout>
+
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_marginVertical="@dimen/margin_12"
+                            android:background="@color/alt_color_disabled"/>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                style="@style/TextStyle.Medium.14"
+                                android:textColor="@color/text_black"
+                                android:layout_gravity="center_vertical"
+                                android:text="@string/market_data_item_3_title"/>
+
+                            <TextView
+                                android:id="@+id/max_supply"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1.5"
+                                android:layout_gravity="center_vertical"
+                                android:gravity="end"
+                                android:layout_marginRight="@dimen/margin_10"/>
+                        </LinearLayout>
+
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_marginVertical="@dimen/margin_12"
+                            android:background="@color/alt_color_disabled"/>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                style="@style/TextStyle.Medium.14"
+                                android:textColor="@color/text_black"
+                                android:layout_gravity="center_vertical"
+                                android:text="@string/market_data_item_4_title"/>
+
+                            <TextView
+                                android:id="@+id/congestion_rating"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1.5"
+                                android:layout_gravity="center_vertical"
+                                android:gravity="end"
+                                android:layout_marginRight="@dimen/margin_10"/>
+                        </LinearLayout>
+
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_marginVertical="@dimen/margin_12"
+                            android:background="@color/alt_color_disabled"/>
+
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:id="@+id/market_data"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                style="@style/TextStyle.Medium.14"
+                                android:textColor="@color/text_black"
+                                android:textStyle="bold"
+                                android:paddingVertical="@dimen/margin_4"
+                                android:layout_gravity="center_vertical"
+                                android:text="@string/market_data_view_market_data_title"/>
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical"
+                                android:src="@drawable/ic_chevron_right_disabled"
+                                android:layout_weight=".1"/>
+                        </LinearLayout>
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_gravity="center"
-                    android:gravity="center"
-                    app:is_selected="false"
-                    app:time_period_text="3M"/>
+                    android:elevation="@dimen/margin_2"
+                    android:layout_marginTop="@dimen/parent_top_margin_small"
+                    android:layout_marginHorizontal="@dimen/horizontal_padding_size"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:cardCornerRadius="@dimen/card_corner_radius"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginBottom="@dimen/parent_top_margin_small"
+                    app:layout_constraintTop_toBottomOf="@id/chart_container">
 
-                <com.intuisoft.plaid.androidwrappers.ChartTimePeriodIndicatorView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_gravity="center"
-                    android:gravity="center"
-                    app:is_selected="false"
-                    app:time_period_text="6M"/>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:padding="@dimen/margin_12"
+                        android:orientation="vertical">
 
-                <com.intuisoft.plaid.androidwrappers.ChartTimePeriodIndicatorView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_gravity="center"
-                    android:gravity="center"
-                    app:is_selected="false"
-                    app:time_period_text="1Y"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            style="@style/TextStyle.Semibold.16"
+                            android:textStyle="bold"
+                            android:textColor="@color/text_grey"
+                            android:text="@string/market_data_extended_data_title"/>
 
-                <com.intuisoft.plaid.androidwrappers.ChartTimePeriodIndicatorView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_gravity="center"
-                    android:gravity="center"
-                    app:is_selected="false"
-                    app:time_period_text="All"/>
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/parent_top_margin_small"
+                            android:orientation="horizontal">
 
+                                <LinearLayout
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="vertical"
+                                    android:gravity="start"
+                                    android:layout_marginRight="@dimen/margin_4"
+                                    android:layout_weight="1">
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        style="@style/TextStyle.Regular.14"
+                                        android:textColor="@color/text_black"
+                                        android:text="@string/market_data_extended_item_1_title"/>
+
+                                    <TextView
+                                        android:id="@+id/network"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        style="@style/TextStyle.Medium.16"
+                                        android:textColor="@color/text_grey"
+                                        android:layout_marginTop="@dimen/margin_8"
+                                        android:textStyle="bold"
+                                        android:text="@string/market_data_extended_item_1_description"/>
+                                </LinearLayout>
+
+                                <LinearLayout
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="vertical"
+                                    android:gravity="start"
+                                    android:layout_weight="1">
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        style="@style/TextStyle.Regular.14"
+                                        android:textColor="@color/text_black"
+                                        android:text="@string/market_data_extended_item_2_title"/>
+
+                                    <TextView
+                                        android:id="@+id/height"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        style="@style/TextStyle.Medium.16"
+                                        android:textColor="@color/text_grey"
+                                        android:layout_marginTop="@dimen/margin_8"
+                                        android:textStyle="bold"
+                                        android:text="746,574"/>
+                                </LinearLayout>
+
+                        </LinearLayout>
+
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/parent_top_margin_small"
+                            android:orientation="horizontal">
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:gravity="start"
+                                android:layout_marginRight="@dimen/margin_4"
+                                android:layout_weight="1">
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    style="@style/TextStyle.Regular.14"
+                                    android:textColor="@color/text_black"
+                                    android:text="@string/market_data_extended_item_3_title"/>
+
+                                <TextView
+                                    android:id="@+id/difficulty"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    style="@style/TextStyle.Medium.16"
+                                    android:textColor="@color/text_grey"
+                                    android:layout_marginTop="@dimen/margin_8"
+                                    android:textStyle="bold"
+                                    android:text="47,364,473,483"/>
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:gravity="start"
+                                android:layout_weight="1">
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    style="@style/TextStyle.Regular.14"
+                                    android:textColor="@color/text_black"
+                                    android:text="@string/market_data_extended_item_4_title"/>
+
+                                <TextView
+                                    android:id="@+id/blockchainSize"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    style="@style/TextStyle.Medium.16"
+                                    android:textColor="@color/text_grey"
+                                    android:layout_marginTop="@dimen/margin_8"
+                                    android:textStyle="bold"
+                                    android:text="498 GB"/>
+                            </LinearLayout>
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/parent_top_margin_small"
+                            android:orientation="horizontal">
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:gravity="start"
+                                android:layout_marginRight="@dimen/margin_4"
+                                android:layout_weight="1">
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    style="@style/TextStyle.Regular.14"
+                                    android:textColor="@color/text_black"
+                                    android:text="@string/market_data_extended_item_5_title"/>
+
+                                <TextView
+                                    android:id="@+id/avgTxSize"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    style="@style/TextStyle.Medium.16"
+                                    android:textColor="@color/text_grey"
+                                    android:layout_marginTop="@dimen/margin_8"
+                                    android:textStyle="bold"
+                                    android:text="2,573 Bytes"/>
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:gravity="start"
+                                android:layout_weight="1">
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    style="@style/TextStyle.Regular.14"
+                                    android:textColor="@color/text_black"
+                                    android:text="@string/market_data_extended_item_6_title"/>
+
+                                <TextView
+                                    android:id="@+id/avgFeeRate"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    style="@style/TextStyle.Medium.16"
+                                    android:textColor="@color/text_grey"
+                                    android:layout_marginTop="@dimen/margin_8"
+                                    android:textStyle="bold"
+                                    android:text="3 Sat/byte"/>
+                            </LinearLayout>
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/main_chain_extended_data_container"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/parent_top_margin_small"
+                            android:orientation="horizontal">
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:gravity="start"
+                                android:layout_marginRight="@dimen/margin_4"
+                                android:layout_weight="1">
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    style="@style/TextStyle.Regular.14"
+                                    android:textColor="@color/text_black"
+                                    android:text="@string/market_data_extended_item_8_title"/>
+
+                                <TextView
+                                    android:id="@+id/unconfirmed_txs"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    style="@style/TextStyle.Medium.16"
+                                    android:textColor="@color/text_grey"
+                                    android:layout_marginTop="@dimen/margin_8"
+                                    android:textStyle="bold"
+                                    android:text="2,573"/>
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:gravity="start"
+                                android:layout_weight="1">
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    style="@style/TextStyle.Regular.14"
+                                    android:textColor="@color/text_black"
+                                    android:text="@string/market_data_extended_item_9_title"/>
+
+                                <TextView
+                                    android:id="@+id/avgConfTime"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    style="@style/TextStyle.Medium.16"
+                                    android:textColor="@color/text_grey"
+                                    android:layout_marginTop="@dimen/margin_8"
+                                    android:textStyle="bold"
+                                    android:text="8.36 Min"/>
+                            </LinearLayout>
+                        </LinearLayout>
+                    </LinearLayout>
+
+
+                    <LinearLayout
+                        android:id="@+id/upgrade_to_pro_container"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:padding="@dimen/margin_12"
+                        android:visibility="gone"
+                        android:background="@color/color_disabled_overlay"
+                        android:orientation="vertical">
+
+
+                        <com.intuisoft.plaid.androidwrappers.RoundedButtonView
+                            android:id="@+id/upgrade"
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            app:btn_text="@string/upgrade_to_pro"
+                            android:layout_weight="3"
+                            app:button_style="pill"
+                            android:layout_marginHorizontal="@dimen/horizontal_padding_size_large"
+                            app:text_position="center"
+                            android:gravity="center"
+                            android:layout_gravity="center"/>
+
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
             </LinearLayout>
-
-        </LinearLayout>
-
-    </androidx.cardview.widget.CardView>
-
+    </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>

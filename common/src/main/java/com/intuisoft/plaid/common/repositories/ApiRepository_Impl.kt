@@ -1,9 +1,8 @@
 package com.intuisoft.plaid.common.repositories
 
-import com.intuisoft.plaid.common.local.db.LocalCurrencyRate
-import com.intuisoft.plaid.common.model.LocalCurrencyRateModel
-import com.intuisoft.plaid.common.model.NetworkFeeRate
+import com.intuisoft.plaid.common.model.*
 import com.intuisoft.plaid.common.network.nownodes.repository.BlockchainInfoRepository
+import com.intuisoft.plaid.common.network.nownodes.repository.CoingeckoRepository
 import com.intuisoft.plaid.common.network.nownodes.repository.NodeRepository
 import com.intuisoft.plaid.common.util.Constants
 
@@ -12,7 +11,8 @@ class ApiRepository_Impl(
     private val localStoreRepository: LocalStoreRepository,
     private val nodeRepository: NodeRepository,
     private val testNetNodeRepository: NodeRepository,
-    private val blockchainInfoRepository: BlockchainInfoRepository
+    private val blockchainInfoRepository: BlockchainInfoRepository,
+    private val coingeckoRepository: CoingeckoRepository
 ): ApiRepository {
 
     override suspend fun getSuggestedFeeRate(testNetWallet: Boolean): NetworkFeeRate? {
@@ -24,13 +24,44 @@ class ApiRepository_Impl(
         } else return rate
     }
 
-    override suspend fun getRateFor(currencyCode: String): LocalCurrencyRateModel {
+    override suspend fun getRateFor(currencyCode: String): BasicPriceDataModel {
         val rate = localStoreRepository.getRateFor(currencyCode)
 
         if(rate == null) {
-            updatePriceConversions()
-            return localStoreRepository.getRateFor(currencyCode) ?: LocalCurrencyRateModel(0.0, currencyCode)
+            updateBasicPriceData()
+            return localStoreRepository.getRateFor(currencyCode) ?: BasicPriceDataModel(0.0, 0.0, localStoreRepository.getLocalCurrency())
         } else return rate
+    }
+
+    /* On-Demand Call */
+    override suspend fun getBasicTickerData(): BasicTickerDataModel {
+        updateBasicNetworkData()
+        val data = localStoreRepository.getBasicNetworkData()
+        val rate = getRateFor(localStoreRepository.getLocalCurrency())
+
+        if(data != null) {
+            return BasicTickerDataModel(
+                price = rate.currentPrice,
+                marketCap = rate.marketCap,
+                circulatingSupply = data.circulatingSupply,
+                memPoolTxCount = data.memPoolTxCount,
+                maxSupply = data.maxSupply
+            )
+        } else {
+            return BasicTickerDataModel(
+                price = 0.0,
+                marketCap = 0.0,
+                circulatingSupply = 0,
+                memPoolTxCount = 0,
+                maxSupply = 0
+            )
+        }
+    }
+
+    /* On-Demand Call */
+    override suspend fun getExtendedMarketData(testNetWallet: Boolean): ExtendedNetworkDataModel? {
+        updateExtendedMarketData(testNetWallet)
+        return localStoreRepository.getExtendedNetworkData(testNetWallet)
     }
 
     private suspend fun updateSuggestedFeeRates() {
@@ -46,26 +77,58 @@ class ApiRepository_Impl(
         }
     }
 
-    private suspend fun updatePriceConversions() {
+    private suspend fun updateBasicPriceData() {
         if((System.currentTimeMillis() - localStoreRepository.getLastCurrencyRateUpdateTime()) > Constants.Time.GENERAL_CACHE_UPDATE_TIME) {
-            val rates = blockchainInfoRepository.getPriceConversions()
+            val rates = coingeckoRepository.getBasicPriceData()
 
             if(rates.isSuccess) {
-                localStoreRepository.setLocalRates(
-                    listOf(
-                        LocalCurrencyRateModel(rates.getOrThrow().USD.last, rates.getOrThrow().USD.symbol),
-                        LocalCurrencyRateModel(rates.getOrThrow().USD.last, rates.getOrThrow().CAD.symbol),
-                        LocalCurrencyRateModel(rates.getOrThrow().USD.last, rates.getOrThrow().EUR.symbol)
+                localStoreRepository.setRates(rates!!.getOrThrow())
+                localStoreRepository.setLastCurrencyRateUpdate(System.currentTimeMillis())
+            }
+        }
+    }
+
+    private suspend fun updateBasicNetworkData() {
+        if((System.currentTimeMillis() - localStoreRepository.getLastBasicNetworkDataUpdateTime()) > Constants.Time.GENERAL_CACHE_UPDATE_TIME) {
+            val data = blockchainInfoRepository.getBasicNetworkData()
+
+            if(data.isSuccess) {
+                localStoreRepository.setBasicNetworkData(
+                    data.getOrThrow().currentSupply,
+                    data.getOrThrow().memPoolTxCount
+                )
+
+                localStoreRepository.setLastBasicNetworkDataUpdate(System.currentTimeMillis())
+            }
+        }
+    }
+
+    private suspend fun updateExtendedMarketData(testnetWallet: Boolean) {
+        if((System.currentTimeMillis() - localStoreRepository.getLastBasicNetworkDataUpdateTime()) > Constants.Time.GENERAL_CACHE_UPDATE_TIME_SHORT) {
+            val data1 = if(testnetWallet) testNetNodeRepository.getExtendedNetworkData() else nodeRepository.getExtendedNetworkData()
+            val data2 = blockchainInfoRepository.getExtendedMarketData()
+
+            if(data1.isSuccess && data2.isSuccess) {
+                localStoreRepository.setExtendedNetworkData(
+                    testnetWallet,
+                    ExtendedNetworkDataModel(
+                        height = data1.getOrThrow().height,
+                        difficulty = data1.getOrThrow().difficulty,
+                        blockchainSize = data1.getOrThrow().blockchainSize,
+                        avgTxSize = data1.getOrThrow().avgTxSize,
+                        avgFeeRate = data1.getOrThrow().avgFeeRate,
+                        unconfirmedTxs = data2.getOrThrow().unconfirmedTxs,
+                        avgConfTime = data2.getOrThrow().avgConfTime
                     )
                 )
 
-                localStoreRepository.setLastCurrencyRateUpdate(System.currentTimeMillis())
+                localStoreRepository.setLastExtendedMarketDataUpdate(System.currentTimeMillis())
             }
         }
     }
 
     override suspend fun refreshLocalCache() {
         updateSuggestedFeeRates()
-        updatePriceConversions()
+        updateBasicPriceData()
     }
 }

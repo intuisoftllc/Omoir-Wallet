@@ -1,26 +1,48 @@
 package com.intuisoft.plaid.common.network.nownodes.repository
 
-import com.intuisoft.plaid.common.model.NetworkFeeRate
+import com.intuisoft.plaid.common.model.ExtendedNetworkDataModel
 import com.intuisoft.plaid.common.network.nownodes.api.BlockchainInfoApi
-import com.intuisoft.plaid.common.network.nownodes.request.FeeSuggestionRequest
-import com.intuisoft.plaid.common.network.nownodes.response.PriceConversionRatesResponse
-import java.util.*
+import com.intuisoft.plaid.common.network.nownodes.response.BasicNetworkDataResponse
+import com.intuisoft.plaid.common.util.Constants
 
 interface BlockchainInfoRepository {
     val TAG: String
         get() = this.javaClass.simpleName
 
-    fun getPriceConversions(): Result<PriceConversionRatesResponse>
+    fun getBasicNetworkData(): Result<BasicNetworkDataResponse>
+
+    fun getExtendedMarketData(): Result<ExtendedNetworkDataModel>
 
     private class Impl(
         private val api: BlockchainInfoApi,
     ) : BlockchainInfoRepository {
-
-        override fun getPriceConversions(): Result<PriceConversionRatesResponse> {
+        override fun getBasicNetworkData(): Result<BasicNetworkDataResponse> {
             try {
-                val rates = api.getPriceConversionRates().execute().body()
+                val supply = api.getCirculatingSupply().execute().body()
+                val txCount = api.getUnconfirmedTxSize().execute().body()
 
-                return Result.success(rates!!)
+                return Result.success(BasicNetworkDataResponse(supply!! / Constants.Limit.SATS_PER_BTC, txCount!!))
+            } catch (t: Throwable) {
+                return Result.failure(t)
+            }
+        }
+
+        override fun getExtendedMarketData(): Result<ExtendedNetworkDataModel> {
+            try {
+                val stats = api.getBlockchainStats().execute().body()
+                val txCount = api.getUnconfirmedTxSize().execute().body()
+
+                return Result.success(
+                    ExtendedNetworkDataModel(
+                        height = 0,
+                        difficulty = 0,
+                        blockchainSize = 0,
+                        avgFeeRate = 0,
+                        avgTxSize = 0,
+                        avgConfTime = stats!!.minutes_between_blocks,
+                        unconfirmedTxs = txCount!!
+                    )
+                )
             } catch (t: Throwable) {
                 return Result.failure(t)
             }

@@ -13,6 +13,7 @@ import com.intuisoft.plaid.common.CommonService
 import com.intuisoft.plaid.databinding.FragmentTransactionDetailsBinding
 import com.intuisoft.plaid.features.pin.ui.PinProtectedFragment
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
+import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.util.Plural
 import com.intuisoft.plaid.common.util.SimpleCoinNumberFormat
 import com.intuisoft.plaid.util.SimpleTimeFormat.getDateByLocale
@@ -127,9 +128,9 @@ class TransactionDetailsFragment : PinProtectedFragment<FragmentTransactionDetai
 
                     binding.viewOnBlockchain.onClick {
                         if(viewModel.getWalletNetwork() == BitcoinKit.NetworkType.MainNet)
-                            viewOnBlockchainCom(com.intuisoft.plaid.common.util.Constants.Strings.BLOCKCHAIN_COM_TX_URL, transaction.transactionHash)
+                            viewOnBlockchainCom(Constants.Strings.BLOCKCHAIN_COM_TX_URL, transaction.transactionHash)
                         else
-                            viewOnBlockchainCom(com.intuisoft.plaid.common.util.Constants.Strings.BLOCK_CYPHER_TX_URL, transaction.transactionHash)
+                            viewOnBlockchainCom(Constants.Strings.BLOCK_CYPHER_TX_URL, transaction.transactionHash)
                     }
                 }
             }

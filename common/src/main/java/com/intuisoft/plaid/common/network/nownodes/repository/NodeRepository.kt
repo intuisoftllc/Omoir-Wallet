@@ -1,9 +1,11 @@
 package com.intuisoft.plaid.common.network.nownodes.repository
 
+import com.intuisoft.plaid.common.model.ExtendedNetworkDataModel
 import com.intuisoft.plaid.common.model.NetworkFeeRate
 import com.intuisoft.plaid.common.network.nownodes.api.NodeApi
+import com.intuisoft.plaid.common.network.nownodes.request.BlockStatsRequest
+import com.intuisoft.plaid.common.network.nownodes.request.BlockchainInfoRequest
 import com.intuisoft.plaid.common.network.nownodes.request.FeeSuggestionRequest
-import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import java.util.*
 
 interface NodeRepository {
@@ -11,6 +13,8 @@ interface NodeRepository {
         get() = this.javaClass.simpleName
 
     fun getFeeSuggestions(): Result<NetworkFeeRate>
+
+    fun getExtendedNetworkData(): Result<ExtendedNetworkDataModel>
 
     private class Impl(
         private val api: NodeApi,
@@ -31,6 +35,28 @@ interface NodeRepository {
                         lowFee = low,
                         medFee = med,
                         highFee = high,
+                    )
+                )
+            } catch (t: Throwable) {
+                return Result.failure(t)
+            }
+        }
+
+        override fun getExtendedNetworkData(): Result<ExtendedNetworkDataModel> {
+            try {
+                val info = api.getBlockchainInfo(BlockchainInfoRequest.build(UUID.randomUUID().toString())).execute().body()
+                val blockStats = api.getBlockStats(BlockStatsRequest.build(UUID.randomUUID().toString(), info!!.result.blocks)).execute().body()
+
+
+                return Result.success(
+                    ExtendedNetworkDataModel(
+                        height = info.result.blocks,
+                        difficulty = info.result.difficulty.toLong(),
+                        blockchainSize = info.result.size_on_disk,
+                        avgFeeRate = blockStats!!.result.avgfeerate,
+                        avgTxSize = blockStats!!.result.avgtxsize,
+                        avgConfTime = 0.0,
+                        unconfirmedTxs = 0
                     )
                 )
             } catch (t: Throwable) {

@@ -169,6 +169,22 @@ class LocalStoreRepository_Impl(
         return userPreferences.lastCurrencyRateUpdateTime
     }
 
+    override fun setLastBasicNetworkDataUpdate(time: Long) {
+        userPreferences.lastBaseMarketDataUpdateTime = time
+    }
+
+    override fun getLastBasicNetworkDataUpdateTime(): Long {
+        return userPreferences.lastBaseMarketDataUpdateTime
+    }
+
+    override fun setLastExtendedMarketDataUpdate(time: Long) {
+        userPreferences.lastExtendedMarketDataUpdateTime = time
+    }
+
+    override fun getLastExtendedMarketDataUpdateTime(): Long {
+        return userPreferences.lastExtendedMarketDataUpdateTime
+    }
+
     override fun getPinTimeout(): Int {
         return userPreferences.pinTimeout
     }
@@ -223,17 +239,43 @@ class LocalStoreRepository_Impl(
         return userPreferences.fingerprintSecurity
     }
 
-    override fun getRateFor(currencyCode: String): LocalCurrencyRateModel? {
+    override fun getRateFor(currencyCode: String): BasicPriceDataModel? {
         return runBlocking {
             return@runBlocking databaseRepository.getRateFor(currencyCode)
         }
     }
 
-    override suspend fun setLocalRates(rates: List<LocalCurrencyRateModel>) {
-        databaseRepository.setLocalRates(rates)
+    override suspend fun setRates(rates: List<BasicPriceDataModel>) {
+        databaseRepository.setRates(rates)
     }
 
-    override fun getAllRates(): List<LocalCurrencyRateModel> {
+    override fun getBasicNetworkData(): BasicNetworkDataModel? {
+        return runBlocking {
+            return@runBlocking databaseRepository.getBasicNetworkData()
+        }
+    }
+
+    override suspend fun setBasicNetworkData(
+        circulatingSypply: Long,
+        memPoolTxCount: Int
+    ) {
+        databaseRepository.setBasicNetworkData(circulatingSypply, memPoolTxCount)
+    }
+
+    override fun getExtendedNetworkData(testnetWallet: Boolean): ExtendedNetworkDataModel? {
+        return runBlocking {
+            return@runBlocking databaseRepository.getExtendedNetworkData(testnetWallet)
+        }
+    }
+
+    override suspend fun setExtendedNetworkData(
+        testnetWallet: Boolean,
+        extendedData: ExtendedNetworkDataModel
+    ) {
+        databaseRepository.setExtendedNetworkData(extendedData, testnetWallet)
+    }
+
+    override fun getAllRates(): List<BasicPriceDataModel> {
         return runBlocking {
             return@runBlocking databaseRepository.getAllRates()
         }

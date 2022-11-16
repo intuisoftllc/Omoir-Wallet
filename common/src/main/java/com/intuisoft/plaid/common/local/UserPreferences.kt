@@ -33,6 +33,8 @@ class UserPreferences(
         const val PRO_ENABLED = "PRO_ENABLED"
         const val LOCAL_CURRENCY = "LOCAL_CURRENCY"
         const val CURRENCY_RATE_LAST_UPDATE_TIME = "CURRENCY_RATE_LAST_UPDATE_TIME"
+        const val BASE_MARKET_DATA_LAST_UPDATE_TIME = "BASE_MARKET_DATA_LAST_UPDATE_TIME"
+        const val EXTENDED_MARKET_DATA_LAST_UPDATE_TIME = "EXTENDED_MARKET_DATA_LAST_UPDATE_TIME"
     }
 
     var incorrectPinAttempts: Int
@@ -160,6 +162,22 @@ class UserPreferences(
         }
         set(time) {
             putLong(CURRENCY_RATE_LAST_UPDATE_TIME, time)
+        }
+
+    var lastBaseMarketDataUpdateTime: Long
+        get() {
+            return getLong(BASE_MARKET_DATA_LAST_UPDATE_TIME, 0)
+        }
+        set(time) {
+            putLong(BASE_MARKET_DATA_LAST_UPDATE_TIME, time)
+        }
+
+    var lastExtendedMarketDataUpdateTime: Long
+        get() {
+            return getLong(EXTENDED_MARKET_DATA_LAST_UPDATE_TIME, 0)
+        }
+        set(time) {
+            putLong(EXTENDED_MARKET_DATA_LAST_UPDATE_TIME, time)
         }
 
     var versionTappedCount: Int

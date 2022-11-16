@@ -5,11 +5,15 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.intuisoft.plaid.common.local.db.listeners.DatabaseListener
-import com.intuisoft.plaid.common.model.NetworkFeeRate
 import com.intuisoft.plaid.common.util.Constants
 
 @Database(
-    entities = arrayOf(SuggestedFeeRate::class, LocalCurrencyRate::class),
+    entities = arrayOf(
+        SuggestedFeeRate::class,
+        BasicPriceData::class,
+        BasicNetworkData::class,
+        ExtendedNetworkData::class
+    ),
     version = Constants.Database.DB_VERSION
 )
 abstract class PlaidDatabase : RoomDatabase() {
@@ -41,5 +45,9 @@ abstract class PlaidDatabase : RoomDatabase() {
 
     abstract fun suggestedFeeRateDao(): SuggestedFeeRateDao
 
-    abstract fun localCurrencyRateDao(): LocalCurrencyRateDao
+    abstract fun localCurrencyRateDao(): BasicPriceDataDao
+
+    abstract fun baseMarketDataDao(): BaseMarketDataDao
+
+    abstract fun extendedMarketDataDao(): ExtendedNetworkDataDao
 }

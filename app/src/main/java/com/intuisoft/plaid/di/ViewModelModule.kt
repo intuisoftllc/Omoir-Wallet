@@ -62,4 +62,8 @@ val viewModelModule = module {
     viewModel {
         WithdrawConfirmationViewModel(get(), get(), get(), get())
     }
+
+    viewModel {
+        MarketViewModel(get(), get(), get(), get())
+    }
 }
