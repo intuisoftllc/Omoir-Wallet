@@ -13,9 +13,7 @@ import com.intuisoft.plaid.common.model.ChartIntervalType
 import com.intuisoft.plaid.common.repositories.ApiRepository
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.walletmanager.AbstractWalletManager
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 
 
 class SwapViewModel(
@@ -34,8 +32,14 @@ class SwapViewModel(
     protected val _recievePairInfo = SingleLiveData<SwapPairInfo>()
     val recievePairInfo: LiveData<SwapPairInfo> = _recievePairInfo
 
+    protected val _conversionAmount = SingleLiveData<Double>()
+    val conversionAmount: LiveData<Double> = _conversionAmount
+
     protected val _minMax = SingleLiveData<Pair<String, String>?>()
     val minMax: LiveData<Pair<String, String>?> = _minMax
+
+    protected val _sendReceiveSwapEnabled = SingleLiveData<Boolean>()
+    val sendReceiveSwapEnabled: LiveData<Boolean> = _sendReceiveSwapEnabled
 
     private var fixed: Boolean = true
     private var sendTicker = ""
@@ -43,115 +47,130 @@ class SwapViewModel(
     private var min: Double = 0.0
     private var max: Double? = null
     private var sendAmount: Double = 0.0
+    private var receiveAmount: Double = 0.0
+    private var wholeCoinConversion: Double = 0.0
 
     fun setFixed(fixed: Boolean) {
         this.fixed = fixed
-        updateConversionValues()
-    }
-
-    private fun updateConversionValues() {
         setMinMax()
     }
 
-    fun validateSendAmount() {
+    fun validateSendAmount(sending: Double?) : Boolean {
+        sending?.let { it ->
+            max?.let { it2 ->
+                if(it > it2) {
+                    return false
+                }
+            }
+        }
 
+        GlobalScope.launch {
+            updateWholeCoinConversion(sendTicker, receiveTicker)
+            sendAmount = sending ?: 0.0
+            receiveAmount = sendAmount * wholeCoinConversion
+            _conversionAmount.postValue(receiveAmount)
+        }
+        return true
     }
 
     fun setInitialValues() {
         this.fixed = true
-        setSendCurrency("btc")
-        setReceiveCurrency("eth")
-        setMinMax()
+        modifySendReceive("btc", "eth")
+    }
+
+    private fun modifySendReceive(from: String, to: String) {
+        GlobalScope.launch {
+            _sendReceiveSwapEnabled.postValue(false)
+            setSendCurrency(from).join()
+            setReceiveCurrency(to).join()
+            setMinMax().join()
+            updateWholeCoinConversion(from, to)
+            _sendReceiveSwapEnabled.postValue(true)
+        }
+    }
+
+    suspend fun updateWholeCoinConversion(from: String, to: String) {
+        wholeCoinConversion =  apiRepository.getWholeCoinConversion(from, to, fixed)
     }
 
     fun swapSendReceive() {
         val newSend = receiveTicker
         val newRecipient = sendTicker
-        setSendCurrency(newSend)
-        setReceiveCurrency(newRecipient)
-        setMinMax()
+        sendAmount = 0.0
+        receiveAmount = 0.0
+        modifySendReceive(newSend, newRecipient)
     }
 
-    fun setSendCurrency(ticker: String) {
+    fun setSendCurrency(ticker: String): Job {
         sendTicker = ticker
 
-        viewModelScope.launch {
-            withContext(Dispatchers.IO) {
-                val currency = apiRepository.getSupportedCurrencies(fixed)
-                    .filter { it.ticker.lowercase() == ticker.lowercase() }
+        return GlobalScope.launch {
+            val currency = apiRepository.getSupportedCurrencies(fixed)
+                .filter { it.ticker.lowercase() == ticker.lowercase() }
 
-                if(currency.isNotEmpty()) {
-                    val crypto = currency.first()
-                    val isBitcoin = ticker.lowercase() == "btc"
+            if(currency.isNotEmpty()) {
+                val crypto = currency.first()
+                val isBitcoin = ticker.lowercase() == "btc"
 
-                    _sendPairInfo.postValue(
-                        SwapPairInfo(
-                            ticker.uppercase(),
-                            if(isBitcoin) null else crypto.image,
-                            0.0,
-                            getApplication<PlaidApp>().getString(
-                                if(isBitcoin) R.string.swap_send_variant_1 else R.string.swap_send_variant_2,
-                                crypto.name
-                            ),
-                            if(isBitcoin) SwapPairItemView.ENTER_VALUE_VARIANT_1 else SwapPairItemView.ENTER_VALUE_VARIANT_2
-                        )
+                _sendPairInfo.postValue(
+                    SwapPairInfo(
+                        ticker.uppercase(),
+                        if(isBitcoin) null else crypto.image,
+                        sendAmount,
+                        getApplication<PlaidApp>().getString(
+                            if(isBitcoin) R.string.swap_send_variant_1 else R.string.swap_send_variant_2,
+                            crypto.name
+                        ),
+                        if(isBitcoin) SwapPairItemView.ENTER_VALUE_VARIANT_1 else SwapPairItemView.ENTER_VALUE_VARIANT_2
                     )
-                } else {
-                    // error: could not find cryptocurrency: <ticker>
-                }
+                )
+            } else {
+                // error: could not find cryptocurrency: <ticker>
             }
         }
     }
 
-    fun setReceiveCurrency(ticker: String) {
+    fun setReceiveCurrency(ticker: String) : Job {
         receiveTicker = ticker
 
-        viewModelScope.launch {
-            withContext(Dispatchers.IO) {
-                val currency = apiRepository.getSupportedCurrencies(fixed)
-                    .filter { it.ticker.lowercase() == ticker.lowercase() }
+        return GlobalScope.launch {
+            val currency = apiRepository.getSupportedCurrencies(fixed)
+                .filter { it.ticker.lowercase() == ticker.lowercase() }
 
-                if(currency.isNotEmpty()) {
-                    val crypto = currency.first()
-                    val isBitcoin = ticker.lowercase() == "btc"
+            if(currency.isNotEmpty()) {
+                val crypto = currency.first()
+                val isBitcoin = ticker.lowercase() == "btc"
 
-                    _recievePairInfo.postValue(
-                        SwapPairInfo(
-                            ticker.uppercase(),
-                            if(isBitcoin) null else crypto.image,
-                            0.0,
-                            getApplication<PlaidApp>().getString(
-                                if(isBitcoin) R.string.swap_receive_variant_2 else R.string.swap_receive_variant_1,
-                                crypto.name
-                            ),
-                            if(isBitcoin) SwapPairItemView.SHOW_VALUE_VARIANT_2 else SwapPairItemView.SHOW_VALUE_VARIANT_1
-                        )
+                _recievePairInfo.postValue(
+                    SwapPairInfo(
+                        ticker.uppercase(),
+                        if(isBitcoin) null else crypto.image,
+                        receiveAmount,
+                        getApplication<PlaidApp>().getString(
+                            if(isBitcoin) R.string.swap_receive_variant_2 else R.string.swap_receive_variant_1,
+                            crypto.name
+                        ),
+                        if(isBitcoin) SwapPairItemView.SHOW_VALUE_VARIANT_2 else SwapPairItemView.SHOW_VALUE_VARIANT_1
                     )
-                } else {
-                    // error: could not find cryptocurrency: <ticker>
-                }
+                )
+            } else {
+                // error: could not find cryptocurrency: <ticker>
             }
         }
     }
 
-    fun setMinMax() {
-        viewModelScope.launch {
-            withContext(Dispatchers.IO) {
-                if(sendTicker.isEmpty() || receiveTicker.isEmpty()) {
-                    Log.e("LOOK", "empty")
-                }
-                val range = apiRepository.getCurrencyRangeLimit(sendTicker, receiveTicker, fixed)
-
-                if (range != null) {
-                    min = range.min.toDouble()
-                    max = range.max?.toDouble()
-                    _minMax.postValue(range.min to (range.max ?: "∞"))
-                } else {
-                    // show error
-                    min = 0.0
-                    max = 0.0
-                    _minMax.postValue(null)
-                }
+    fun setMinMax() : Job {
+        return GlobalScope.launch {
+            val range = apiRepository.getCurrencyRangeLimit(sendTicker, receiveTicker, fixed)
+            if (range != null) {
+                min = range.min.toDouble()
+                max = range.max?.toDouble()
+                _minMax.postValue(range.min to (range.max ?: "∞"))
+            } else {
+                // show error
+                min = 0.0
+                max = 0.0
+                _minMax.postValue(null)
             }
         }
     }

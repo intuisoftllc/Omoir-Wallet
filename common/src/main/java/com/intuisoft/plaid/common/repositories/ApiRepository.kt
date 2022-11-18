@@ -19,7 +19,7 @@ interface ApiRepository {
 
     suspend fun getTickerPriceChartData(intervalType: ChartIntervalType): List<ChartDataModel>?
 
-    suspend fun getEstimatedReceiveAmount(amount: Double, from: String, to: String, fixed: Boolean): Double
+    suspend fun getWholeCoinConversion(from: String, to: String, fixed: Boolean): Double
 
     suspend fun refreshLocalCache()
 }

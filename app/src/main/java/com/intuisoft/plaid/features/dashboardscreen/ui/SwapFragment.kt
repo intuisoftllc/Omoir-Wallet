@@ -61,7 +61,7 @@ class SwapFragment : PinProtectedFragment<FragmentSwapBinding>() {
 
         viewModel.setInitialValues()
         binding.swapPairSend.setOnTextChangedListener {
-            (it?.length ?: 0) < 5
+            viewModel.validateSendAmount(if(it?.isNotEmpty() == true && it.find { Character.isDigit(it) } != null) it.toDouble() else 0.0)
         }
 
         viewModel.minMax.observe(viewLifecycleOwner, Observer {
@@ -115,6 +115,14 @@ class SwapFragment : PinProtectedFragment<FragmentSwapBinding>() {
             binding.fixed.setButtonStyle(RoundedButtonView.ButtonStyle.OUTLINED_STYLE)
             binding.floating.setButtonStyle(RoundedButtonView.ButtonStyle.ROUNDED_STYLE)
         }
+
+        viewModel.sendReceiveSwapEnabled.observe(viewLifecycleOwner, Observer {
+            binding.swapSendReceive.isClickable = it
+        })
+
+        viewModel.conversionAmount.observe(viewLifecycleOwner, Observer {
+            binding.swapPairReceive.setValue(it)
+        })
 
     }
 

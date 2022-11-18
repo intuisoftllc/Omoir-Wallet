@@ -83,7 +83,7 @@ object SimpleCoinNumberFormat {
     }
 
     fun formatCurrency(value: Double): String? {
-        val df = DecimalFormat("###,###,###,###.##")
+        val df = DecimalFormat("###,###,###,###,###,###,###.##")
         return df.format(value)
     }
 

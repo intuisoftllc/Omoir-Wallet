@@ -17,6 +17,7 @@ import androidx.core.view.isVisible
 import androidx.core.widget.doBeforeTextChanged
 import androidx.core.widget.doOnTextChanged
 import com.intuisoft.plaid.R
+import com.intuisoft.plaid.common.util.SimpleCoinNumberFormat
 import com.intuisoft.plaid.common.util.extensions.deleteAt
 
 class SwapPairItemView(context: Context, attrs: AttributeSet?) : LinearLayout(context, attrs) {
@@ -28,6 +29,7 @@ class SwapPairItemView(context: Context, attrs: AttributeSet?) : LinearLayout(co
     private var ticker_tv: TextView? = null
     private var pair_title_tv: TextView? = null
     private var ticker_symbol_iv: ImageView? = null
+    private var onTextChanged: ((String?) -> Boolean)? = null
 
     private var style = ENTER_VALUE_VARIANT_1
     private var ticker: String = ""
@@ -104,6 +106,7 @@ class SwapPairItemView(context: Context, attrs: AttributeSet?) : LinearLayout(co
         else setTickerSymbol(symbolUrl)
         setValue(value)
         setPairTitle(title)
+        onTextChanged?.let { setOnTextChangedListener(it) }
     }
 
     fun setTicker(name: String) {
@@ -137,10 +140,21 @@ class SwapPairItemView(context: Context, attrs: AttributeSet?) : LinearLayout(co
 
     fun setValue(value: Double) {
         this.value = value
-        show_value_tv?.text = "~$value"
+        var valueStr = SimpleCoinNumberFormat.formatCurrency(value) ?: ""
+
+        if(valueStr.endsWith(".00"))
+            valueStr = valueStr.dropLast(3)
+
+        show_value_tv?.text = "~$valueStr"
+
+        if(value != 0.0)
+            enter_value_tv?.setText(valueStr)
+        else enter_value_tv?.setText("")
     }
 
     fun setOnTextChangedListener(onChanged: (String?) -> Boolean) {
+        onTextChanged = onChanged
+
         enter_value_tv?.doOnTextChanged { text, start, before, count ->
             if(!onChanged(text?.toString())) {
 

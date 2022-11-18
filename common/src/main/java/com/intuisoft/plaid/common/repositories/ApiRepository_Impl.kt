@@ -85,17 +85,14 @@ class ApiRepository_Impl(
 
     /* On-Demand Call */
     override suspend fun getTickerPriceChartData(intervalType: ChartIntervalType): List<ChartDataModel>? {
-        updateTickerPriceChartDataUpdateTime(intervalType)
+        updateTickerPriceChartData(intervalType)
         return localStoreRepository.getTickerPriceChartData(localStoreRepository.getLocalCurrency(), intervalType)
     }
 
     /* On-Demand Call */
-    override suspend fun getEstimatedReceiveAmount(amount: Double, from: String, to: String, fixed: Boolean): Double {
-        val receiveAmount = simpleSwapRepository.getEstimatedReceiveAmount(fixed, from, to, amount)
-
-        if(receiveAmount.isSuccess) {
-            return receiveAmount.getOrThrow()
-        } else return 0.0
+    override suspend fun getWholeCoinConversion(from: String, to: String, fixed: Boolean): Double {
+        updateWholeCoinConversionData(from, to, fixed)
+        return memoryCache.getWholeCoinConversion(from, to, fixed) ?: 0.0
     }
 
     private suspend fun updateSuggestedFeeRates() {
@@ -209,7 +206,7 @@ class ApiRepository_Impl(
         }
     }
 
-    private suspend fun updateTickerPriceChartDataUpdateTime(intervalType: ChartIntervalType) {
+    private suspend fun updateTickerPriceChartData(intervalType: ChartIntervalType) {
         if((System.currentTimeMillis() - localStoreRepository.getLastTickerPriceChartDataUpdateTime()) > Constants.Time.GENERAL_CACHE_UPDATE_TIME_SHORT
             || localStoreRepository.getTickerPriceChartData(localStoreRepository.getLocalCurrency(), intervalType) == null) {
             val data = coingeckoRepository.getChartData(intervalType, localStoreRepository.getLocalCurrency())
@@ -222,6 +219,16 @@ class ApiRepository_Impl(
                 )
 
                 localStoreRepository.setLastTickerPriceChartDataUpdate(System.currentTimeMillis())
+            }
+        }
+    }
+
+    private suspend fun updateWholeCoinConversionData(from: String, to: String, fixed: Boolean) {
+        if((System.currentTimeMillis() - memoryCache.getLastWholeCoinConversionUpdateTime(fixed)) > Constants.Time.GENERAL_CACHE_UPDATE_TIME_SHORT) {
+            val data = simpleSwapRepository.getEstimatedReceiveAmount(fixed, from, to, 1.0)
+
+            if(data.isSuccess) {
+                memoryCache.setWholeCoinConversion(from, to, data.getOrThrow(), fixed, System.currentTimeMillis())
             }
         }
     }
