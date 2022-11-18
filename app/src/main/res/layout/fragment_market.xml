@@ -408,6 +408,37 @@
                                 style="@style/TextStyle.Medium.14"
                                 android:textColor="@color/text_black"
                                 android:layout_gravity="center_vertical"
+                                android:text="@string/market_data_item_4_title"/>
+
+                            <TextView
+                                android:id="@+id/volume"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1.5"
+                                android:layout_gravity="center_vertical"
+                                android:gravity="end"
+                                android:layout_marginRight="@dimen/margin_10"/>
+                        </LinearLayout>
+
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_marginVertical="@dimen/margin_12"
+                            android:background="@color/alt_color_disabled"/>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                style="@style/TextStyle.Medium.14"
+                                android:textColor="@color/text_black"
+                                android:layout_gravity="center_vertical"
                                 android:text="@string/market_data_item_2_title"/>
 
                             <TextView
@@ -443,37 +474,6 @@
 
                             <TextView
                                 android:id="@+id/max_supply"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1.5"
-                                android:layout_gravity="center_vertical"
-                                android:gravity="end"
-                                android:layout_marginRight="@dimen/margin_10"/>
-                        </LinearLayout>
-
-
-                        <View
-                            android:layout_width="match_parent"
-                            android:layout_height="1dp"
-                            android:layout_marginVertical="@dimen/margin_12"
-                            android:background="@color/alt_color_disabled"/>
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                style="@style/TextStyle.Medium.14"
-                                android:textColor="@color/text_black"
-                                android:layout_gravity="center_vertical"
-                                android:text="@string/market_data_item_4_title"/>
-
-                            <TextView
-                                android:id="@+id/congestion_rating"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1.5"
@@ -769,6 +769,40 @@
                                     android:layout_marginTop="@dimen/margin_8"
                                     android:textStyle="bold"
                                     android:text="8.36 Min"/>
+                            </LinearLayout>
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/main_chain_extended_data_container2"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/parent_top_margin_small"
+                            android:weightSum="1"
+                            android:orientation="horizontal">
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:gravity="start"
+                                android:layout_marginRight="@dimen/margin_4"
+                                android:layout_weight=".5">
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    style="@style/TextStyle.Regular.14"
+                                    android:textColor="@color/text_black"
+                                    android:text="@string/market_data_extended_item_10_title"/>
+
+                                <TextView
+                                    android:id="@+id/congestion_rating"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    style="@style/TextStyle.Medium.16"
+                                    android:textColor="@color/text_grey"
+                                    android:layout_marginTop="@dimen/margin_8"
+                                    android:textStyle="bold"
+                                    android:text="normal"/>
                             </LinearLayout>
                         </LinearLayout>
                     </LinearLayout>

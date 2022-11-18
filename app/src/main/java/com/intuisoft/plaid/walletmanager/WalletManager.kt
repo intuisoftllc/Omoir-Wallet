@@ -72,6 +72,14 @@ class WalletManager(
             return baseWallet
     }
 
+    override fun openWallet(wallet: LocalWalletModel) {
+        syncer.openWallet(wallet)
+    }
+
+    override fun closeWallet() {
+        syncer.closeWallet()
+    }
+
     override fun updateWalletName(localWallet: LocalWalletModel, newName: String) {
         findStoredWallet(localWallet.uuid)?.let {
             it.name = newName

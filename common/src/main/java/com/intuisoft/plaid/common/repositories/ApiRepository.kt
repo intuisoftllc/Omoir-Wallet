@@ -1,6 +1,7 @@
 package com.intuisoft.plaid.common.repositories
 
 import com.intuisoft.plaid.common.model.*
+import com.intuisoft.plaid.common.network.nownodes.response.SupportedCurrencyModel
 
 interface ApiRepository {
 
@@ -8,11 +9,17 @@ interface ApiRepository {
 
     suspend fun getRateFor(currencyCode: String): BasicPriceDataModel
 
+    suspend fun getSupportedCurrencies(fixed: Boolean): List<SupportedCurrencyModel>
+
     suspend fun getBasicTickerData(): BasicTickerDataModel
 
-    suspend fun getExtendedMarketData(testnetWallet: Boolean): ExtendedNetworkDataModel?
+    suspend fun getCurrencyRangeLimit(from: String, to: String, fixed: Boolean): CurrencyRangeLimitModel?
+
+    suspend fun getExtendedNetworkData(testnetWallet: Boolean): ExtendedNetworkDataModel?
 
     suspend fun getTickerPriceChartData(intervalType: ChartIntervalType): List<ChartDataModel>?
+
+    suspend fun getEstimatedReceiveAmount(amount: Double, from: String, to: String, fixed: Boolean): Double
 
     suspend fun refreshLocalCache()
 }

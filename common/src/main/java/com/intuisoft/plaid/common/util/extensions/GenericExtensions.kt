@@ -47,6 +47,10 @@ fun String.numberCount(): Int {
     return numCount
 }
 
+fun String.deleteAt(n: Int): String {
+    return StringBuilder(this).deleteAt(n).toString()
+}
+
 fun Editable.toStringOrNull() : String? {
     val str = toString()
 

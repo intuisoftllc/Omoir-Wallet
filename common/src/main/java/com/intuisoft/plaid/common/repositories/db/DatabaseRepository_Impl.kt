@@ -3,6 +3,7 @@ package com.intuisoft.plaid.common.repositories.db
 import com.intuisoft.plaid.common.local.db.*
 import com.intuisoft.plaid.common.local.db.listeners.DatabaseListener
 import com.intuisoft.plaid.common.model.*
+import com.intuisoft.plaid.common.network.nownodes.response.SupportedCurrencyModel
 
 class DatabaseRepository_Impl(
     private val database: PlaidDatabase,
@@ -10,7 +11,8 @@ class DatabaseRepository_Impl(
     private val basicPriceDataDao: BasicPriceDataDao,
     private val baseNetworkDataDao: BaseMarketDataDao,
     private val extendedNetworkDataDao: ExtendedNetworkDataDao,
-    private val tickerCharPriceChartDataDao: TickerPriceChartDataDao
+    private val tickerCharPriceChartDataDao: TickerPriceChartDataDao,
+    private val supportedCurrencyDao: SupportedCurrencyDao
 ) : DatabaseRepository {
 
     override suspend fun getSuggestedFeeRate(testNetWallet: Boolean): NetworkFeeRate? =
@@ -41,6 +43,15 @@ class DatabaseRepository_Impl(
         return basicPriceDataDao.getAllRates().map { it.from() }
     }
 
+    override suspend fun setSupportedCurrenciesData(data: List<SupportedCurrencyModel>, fixed: Boolean) {
+        supportedCurrencyDao.insert(data.map { SupportedCurrency.consume(it.ticker, it.name, it.image, fixed) })
+        database.onUpdate()
+    }
+
+    override suspend fun getSupportedCurrencies(fixed: Boolean): List<SupportedCurrencyModel> {
+        return supportedCurrencyDao.getAllSupportedCurrencies(fixed).map { it.from() }
+    }
+
     override suspend fun getRateFor(currencyCode: String): BasicPriceDataModel? {
         return basicPriceDataDao.getRateFor(currencyCode)?.from()
     }
@@ -58,7 +69,7 @@ class DatabaseRepository_Impl(
     }
 
     override suspend fun setRates(rates: List<BasicPriceDataModel>) {
-        basicPriceDataDao.insert(rates.map { BasicPriceData.consume(it.marketCap, it.currencyCode, it.currentPrice) })
+        basicPriceDataDao.insert(rates.map { BasicPriceData.consume(it.marketCap, it.volume24Hr, it.currencyCode, it.currentPrice) })
         database.onUpdate()
     }
 
@@ -68,6 +79,7 @@ class DatabaseRepository_Impl(
         baseNetworkDataDao.deleteTable()
         extendedNetworkDataDao.deleteTable()
         tickerCharPriceChartDataDao.deleteTable()
+        supportedCurrencyDao.deleteTable()
         database.onUpdate()
     }
 

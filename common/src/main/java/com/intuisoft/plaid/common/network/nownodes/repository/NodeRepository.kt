@@ -44,15 +44,15 @@ interface NodeRepository {
 
         override fun getExtendedNetworkData(): Result<ExtendedNetworkDataModel> {
             try {
-                val info = api.getBlockchainInfo(BlockchainInfoRequest.build(UUID.randomUUID().toString())).execute().body()
-                val blockStats = api.getBlockStats(BlockStatsRequest.build(UUID.randomUUID().toString(), info!!.result.blocks)).execute().body()
+                val info = api.getBlockchainInfo(BlockchainInfoRequest.build(UUID.randomUUID().toString())).execute()
+                val blockStats = api.getBlockStats(BlockStatsRequest.build(UUID.randomUUID().toString(), info.body()!!.result.blocks)).execute().body()
 
 
                 return Result.success(
                     ExtendedNetworkDataModel(
-                        height = info.result.blocks,
-                        difficulty = info.result.difficulty.toLong(),
-                        blockchainSize = info.result.size_on_disk,
+                        height = info.body()!!.result.blocks,
+                        difficulty = info.body()!!.result.difficulty.toLong(),
+                        blockchainSize = info.body()!!.result.size_on_disk,
                         avgFeeRate = blockStats!!.result.avgfeerate,
                         avgTxSize = blockStats!!.result.avgtxsize,
                         avgConfTime = 0.0,

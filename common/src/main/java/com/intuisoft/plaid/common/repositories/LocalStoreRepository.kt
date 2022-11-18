@@ -1,8 +1,10 @@
 package com.intuisoft.plaid.common.repositories
 
 import com.intuisoft.plaid.common.listeners.WipeDataListener
+import com.intuisoft.plaid.common.local.db.SupportedCurrency
 import com.intuisoft.plaid.common.local.db.listeners.DatabaseListener
 import com.intuisoft.plaid.common.model.*
+import com.intuisoft.plaid.common.network.nownodes.response.SupportedCurrencyModel
 
 interface LocalStoreRepository {
 
@@ -74,6 +76,10 @@ interface LocalStoreRepository {
 
     fun getLastCurrencyRateUpdateTime(): Long
 
+    fun setLastSupportedCurrenciesUpdate(time: Long)
+
+    fun getLastSupportedCurrenciesUpdateTime(): Long
+
     fun setLastBasicNetworkDataUpdate(time: Long)
 
     fun getLastBasicNetworkDataUpdateTime(): Long
@@ -117,6 +123,10 @@ interface LocalStoreRepository {
     fun getExtendedNetworkData(testnetWallet: Boolean): ExtendedNetworkDataModel?
 
     suspend fun setExtendedNetworkData(testnetWallet: Boolean, extendedData: ExtendedNetworkDataModel)
+
+    fun getSupportedCurrenciesData(fixed: Boolean): List<SupportedCurrencyModel>
+
+    suspend fun setSupportedCurrenciesData(data: List<SupportedCurrencyModel>, fixed: Boolean)
 
     fun getAllRates(): List<BasicPriceDataModel>
 

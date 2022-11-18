@@ -33,6 +33,9 @@ class MarketViewModel(
     protected val _marketCap = SingleLiveData<String>()
     val marketCap: LiveData<String> = _marketCap
 
+    protected val _volume24Hr = SingleLiveData<String>()
+    val volume24Hr: LiveData<String> = _volume24Hr
+
     protected val _circulatingSupply = SingleLiveData<String>()
     val circulatingSupply: LiveData<String> = _circulatingSupply
 
@@ -81,6 +84,9 @@ class MarketViewModel(
     protected val _percentageGain = SingleLiveData<Double>()
     val percentageGain: LiveData<Double> = _percentageGain
 
+    protected val _upgradeToPro = SingleLiveData<Boolean>()
+    val upgradeToPro: LiveData<Boolean> = _upgradeToPro
+
     private var intervalType = ChartIntervalType.INTERVAL_1DAY
 
     fun updateBasicMarketData() {
@@ -90,43 +96,37 @@ class MarketViewModel(
 
                 var mktCap = SimpleCurrencyFormat.formatValue(
                     localStoreRepository.getLocalCurrency(),
-                    data.marketCap.toDouble()
+                    data.marketCap
+                )
+
+                var vol = SimpleCurrencyFormat.formatValue(
+                    localStoreRepository.getLocalCurrency(),
+                    data.volume24Hr
                 )
 
                 if(mktCap.contains(".00")) {
                     mktCap = mktCap.replace(".00", "")
                 }
 
+                if(vol.contains(".00")) {
+                    vol = vol.replace(".00", "")
+                }
+
                 _marketCap.postValue(mktCap)
+                _volume24Hr.postValue(vol)
                 _circulatingSupply.postValue(SimpleCoinNumberFormat.format(data.circulatingSupply) + " BTC")
                 _maxSupply.postValue(SimpleCoinNumberFormat.format(data.maxSupply.toLong()) + " BTC")
-
-                if(getWalletNetwork() == BitcoinKit.NetworkType.TestNet) {
-                    _congestionRating.postValue(CongestionRating.NA)
-                } else {
-                    when {
-                        Constants.CongestionRating.LIGHT.contains(data.memPoolTxCount) -> {
-                            _congestionRating.postValue(CongestionRating.LIGHT)
-                        }
-                        Constants.CongestionRating.NORMAL.contains(data.memPoolTxCount) -> {
-                            _congestionRating.postValue(CongestionRating.NORMAL)
-                        }
-                        Constants.CongestionRating.MED.contains(data.memPoolTxCount) -> {
-                            _congestionRating.postValue(CongestionRating.MED)
-                        }
-                        Constants.CongestionRating.BUSY.contains(data.memPoolTxCount) -> {
-                            _congestionRating.postValue(CongestionRating.BUSY)
-                        }
-                        else -> {
-                            _congestionRating.postValue(CongestionRating.CONGESTED)
-                        }
-                    }
-                }
             }
         }
     }
 
+    fun checkProStatus() {
+        _upgradeToPro.postValue(!localStoreRepository.isProEnabled())
+    }
+
     fun updateExtendedMarketData() {
+        if(!localStoreRepository.isProEnabled()) return
+
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
                 if(getWalletNetwork() == BitcoinKit.NetworkType.TestNet) {
@@ -136,16 +136,95 @@ class MarketViewModel(
                     _network.postValue(getApplication<PlaidApp>().getString(R.string.market_data_extended_item_1_description))
                 }
 
-                val data = apiRepository.getExtendedMarketData(getWalletNetwork() == BitcoinKit.NetworkType.TestNet)
+                val basicData = apiRepository.getBasicTickerData()
+                val extendedData = apiRepository.getExtendedNetworkData(getWalletNetwork() == BitcoinKit.NetworkType.TestNet)
 
-                if(data != null) {
-                    _blockHeight.postValue(SimpleCoinNumberFormat.format(data.height.toLong()))
-                    _difficulty.postValue(SimpleCoinNumberFormat.format(data.difficulty))
-                    _blockchainSize.postValue(data.blockchainSize.humanReadableByteCountSI())
-                    _avgTxSize.postValue(SimpleCoinNumberFormat.format(data.avgTxSize.toLong()) + " ${getApplication<PlaidApp>().getString(R.string.bytes)}")
-                    _avgFeeRate.postValue(SimpleCoinNumberFormat.format(data.avgFeeRate.toLong()) + " ${getApplication<PlaidApp>().getString(R.string.sat_per_byte)}")
-                    _unconfirmedTxs.postValue(SimpleCoinNumberFormat.format(data.unconfirmedTxs.toLong()))
-                    _avgConfTime.postValue(SimpleCoinNumberFormat.formatCurrency(data.avgConfTime))
+                if(extendedData != null) {
+                    _blockHeight.postValue(SimpleCoinNumberFormat.format(extendedData.height.toLong()))
+                    _difficulty.postValue(SimpleCoinNumberFormat.format(extendedData.difficulty))
+                    _blockchainSize.postValue(extendedData.blockchainSize.humanReadableByteCountSI())
+                    _avgTxSize.postValue(SimpleCoinNumberFormat.format(extendedData.avgTxSize.toLong()) + " ${getApplication<PlaidApp>().getString(R.string.bytes)}")
+                    _avgFeeRate.postValue(SimpleCoinNumberFormat.format(extendedData.avgFeeRate.toLong()) + " ${getApplication<PlaidApp>().getString(R.string.sat_per_byte)}")
+                    _unconfirmedTxs.postValue(SimpleCoinNumberFormat.format(extendedData.unconfirmedTxs.toLong()))
+                    _avgConfTime.postValue(SimpleCoinNumberFormat.formatCurrency(extendedData.avgConfTime))
+
+                    if(getWalletNetwork() == BitcoinKit.NetworkType.TestNet || extendedData == null) {
+                        _congestionRating.postValue(CongestionRating.NA)
+                    } else {
+                        var points: Int
+
+                        when {
+                            Constants.CongestionRating.LIGHT.contains(basicData.memPoolTxCount) -> {
+                                points = -1
+                            }
+                            Constants.CongestionRating.NORMAL.contains(basicData.memPoolTxCount) -> {
+                                points = 0
+                            }
+                            Constants.CongestionRating.MED.contains(basicData.memPoolTxCount) -> {
+                                points = 1
+                            }
+                            Constants.CongestionRating.BUSY.contains(basicData.memPoolTxCount) -> {
+                                points = 2
+                            }
+                            else -> {
+                                points = 3
+                            }
+                        }
+
+                        when {
+                            extendedData.avgFeeRate <= 5 -> {
+                                points--
+                            }
+
+                            extendedData.avgFeeRate in 6..9 -> {
+                                points++
+                            }
+
+                            extendedData.avgFeeRate in 10..16 -> {
+                                points += 2
+                            }
+
+                            extendedData.avgFeeRate > 17 -> {
+                                points += 3
+                            }
+                        }
+
+                        when {
+                            extendedData.avgConfTime in 0.0..9.9 -> {
+                                points--
+                            }
+
+                            extendedData.avgConfTime in 10.0..100.0 -> {
+                                points++
+                            }
+
+                            extendedData.avgConfTime in 101.0..200.0 -> {
+                                points += 2
+                            }
+
+                            extendedData.avgConfTime > 200 -> {
+                                points += 3
+                            }
+                        }
+
+                        when {
+                            points <= 0 -> { // -3 to 0
+                                _congestionRating.postValue(CongestionRating.LIGHT)
+                            }
+                            points in 1..3 -> {
+                                _congestionRating.postValue(CongestionRating.NORMAL)
+                            }
+                            points in 4..6 -> {
+                                _congestionRating.postValue(CongestionRating.MED)
+                            }
+                            points in 7..8 -> {
+                                _congestionRating.postValue(CongestionRating.BUSY)
+                            }
+                            else -> { // 9
+                                _congestionRating.postValue(CongestionRating.CONGESTED)
+                            }
+                        }
+                    }
                 } else {
                     _couldNotLoadData.postValue(Unit)
                 }

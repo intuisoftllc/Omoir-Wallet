@@ -11,18 +11,20 @@ data class BasicPriceData(
     @PrimaryKey(autoGenerate = false)  @ColumnInfo(name = "id") var id: Int = 0,
     @ColumnInfo(name = "rate") var rate: Double,
     @ColumnInfo(name = "market_cap") var marketCap: Double,
+    @ColumnInfo(name = "volume_24hr") var volume24Hr: Double,
     @ColumnInfo(name = "currency_code") var currencyCode: String
 ) {
     fun from() =
         BasicPriceDataModel(
             currentPrice = rate,
             marketCap = marketCap,
+            volume24Hr = volume24Hr,
             currencyCode = currencyCode
         )
 
     companion object {
 
-        fun consume(marketCap: Double, currencyCode: String, rate: Double): BasicPriceData {
+        fun consume(marketCap: Double, volume24Hr: Double, currencyCode: String, rate: Double): BasicPriceData {
             var id = 0
             when(currencyCode) {
                 Constants.LocalCurrency.USD -> {
@@ -40,6 +42,7 @@ data class BasicPriceData(
                 id = id,
                 rate = rate,
                 marketCap = marketCap,
+                volume24Hr = volume24Hr,
                 currencyCode = currencyCode
             )
         }

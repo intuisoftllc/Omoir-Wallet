@@ -134,11 +134,9 @@
             app:layout_constraintTop_toBottomOf="@+id/white_center_variant_primary_text"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="@dimen/margin_8"
             android:gravity="center"
             style="@style/TextStyle.Bold.24"
             app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_marginBottom="@dimen/margin_6"
             android:textColor="?attr/colorPrimary"
             tools:text="174,488,373 Sats"/>
 
@@ -151,9 +149,11 @@
             android:maxLines="1"
             android:ellipsize="end"
             android:gravity="center"
+            android:layout_marginBottom="@dimen/margin_8"
             android:layout_marginHorizontal="@dimen/margin_24"
             app:layout_constraintEnd_toStartOf="@id/white_center_variant_action_right"
             app:layout_constraintStart_toEndOf="@id/white_center_variant_action_left"
+            app:layout_constraintBottom_toTopOf="@+id/white_center_variant_secondary_text"
             app:layout_constraintTop_toTopOf="parent"
             android:layout_marginTop="@dimen/margin_4"
             style="@style/TextStyle.Regular.20"
@@ -169,8 +169,8 @@
             app:tint="?attr/colorPrimary"
             android:background="?android:selectableItemBackground"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/white_center_variant_primary_text"
-            app:layout_constraintBottom_toBottomOf="@id/white_center_variant_primary_text"/>
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
 
         <ImageView
             android:id="@+id/white_center_variant_action_left"
@@ -180,8 +180,8 @@
             android:padding="@dimen/margin_6"
             android:background="?android:selectableItemBackground"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/white_center_variant_primary_text"
-            app:layout_constraintBottom_toBottomOf="@id/white_center_variant_primary_text"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:tint="?attr/colorPrimary" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

@@ -80,6 +80,16 @@
         <attr name="left_action" format="reference"/>
     </declare-styleable>
 
+    <declare-styleable name="SwapPairItemView">
+        <attr name="preview_item" format="boolean"/>
+        <attr name="pair_preview">
+            <flag name="enter_value_variant_1" value="0" />
+            <flag name="enter_value_variant_2" value="1" />
+            <flag name="show_value_variant_1" value="2" />
+            <flag name="show_value_variant_2" value="4" />
+        </attr>
+    </declare-styleable>
+
     <declare-styleable name="BottomBarView">
         <attr name="item_1_text" format="string"/>
         <attr name="item_1_icon_unselected" format="reference"/>

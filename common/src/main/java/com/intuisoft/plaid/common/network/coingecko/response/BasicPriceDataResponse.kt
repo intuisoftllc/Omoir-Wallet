@@ -12,8 +12,11 @@ data class BasicPriceDataResponse(
 data class BitcoinPriceDataResponse(
     val usd: Double,
     val usd_market_cap: Double,
+    val usd_24h_vol: Double,
     val cad: Double,
     val cad_market_cap: Double,
+    val cad_24h_vol: Double,
     val eur: Double,
-    val eur_market_cap: Double
+    val eur_market_cap: Double,
+    val eur_24h_vol: Double,
 ): Parcelable

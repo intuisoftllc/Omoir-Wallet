@@ -11,7 +11,7 @@ interface BlockchainInfoRepository {
 
     fun getBasicNetworkData(): Result<BasicNetworkDataResponse>
 
-    fun getExtendedMarketData(): Result<ExtendedNetworkDataModel>
+    fun getExtendedNetworkData(): Result<ExtendedNetworkDataModel>
 
     private class Impl(
         private val api: BlockchainInfoApi,
@@ -27,7 +27,7 @@ interface BlockchainInfoRepository {
             }
         }
 
-        override fun getExtendedMarketData(): Result<ExtendedNetworkDataModel> {
+        override fun getExtendedNetworkData(): Result<ExtendedNetworkDataModel> {
             try {
                 val stats = api.getBlockchainStats().execute().body()
                 val txCount = api.getUnconfirmedTxSize().execute().body()

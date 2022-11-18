@@ -17,7 +17,7 @@
         <com.intuisoft.plaid.androidwrappers.RoundedButtonView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:btn_text="Deposit"
+            app:btn_text="@string/deposit"
             android:id="@+id/deposit"
             app:text_position="center"
             app:button_style="rounded"
@@ -27,7 +27,7 @@
         <com.intuisoft.plaid.androidwrappers.RoundedButtonView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:btn_text="Withdraw"
+            app:btn_text="@string/withdraw"
             android:id="@+id/withdraw"
             app:text_position="center"
             android:layout_weight="1"

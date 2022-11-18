@@ -27,16 +27,19 @@ interface CoingeckoRepository {
                     listOf(
                         BasicPriceDataModel(
                             marketCap = prices!!.bitcoin.usd_market_cap,
+                            volume24Hr = prices!!.bitcoin.usd_24h_vol,
                             currentPrice = prices!!.bitcoin.usd,
                             currencyCode = Constants.LocalCurrency.USD
                         ),
                         BasicPriceDataModel(
                             marketCap = prices!!.bitcoin.eur_market_cap,
+                            volume24Hr = prices!!.bitcoin.eur_24h_vol,
                             currentPrice = prices!!.bitcoin.eur,
                             currencyCode = Constants.LocalCurrency.EURO
                         ),
                         BasicPriceDataModel(
                             marketCap = prices!!.bitcoin.cad_market_cap,
+                            volume24Hr = prices!!.bitcoin.cad_24h_vol,
                             currentPrice = prices!!.bitcoin.cad,
                             currencyCode = Constants.LocalCurrency.CANADA
                         )

@@ -9,17 +9,15 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.intuisoft.plaid.common.local.UserPreferences
 import com.intuisoft.plaid.common.local.db.*
+import com.intuisoft.plaid.common.local.memorycache.MemoryCache
 import com.intuisoft.plaid.common.network.adapters.LocalDateAdapter
 import com.intuisoft.plaid.common.network.interceptors.ApiKeyInterceptor
 import com.intuisoft.plaid.common.network.interceptors.AppConnectionMonitor
 import com.intuisoft.plaid.common.network.interceptors.ConnectivityInterceptor
 import com.intuisoft.plaid.common.network.nownodes.api.*
-import com.intuisoft.plaid.common.network.nownodes.repository.BlockBookRepository
-import com.intuisoft.plaid.common.network.nownodes.repository.NodeRepository
+import com.intuisoft.plaid.common.network.nownodes.repository.*
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository_Impl
-import com.intuisoft.plaid.common.network.nownodes.repository.BlockchainInfoRepository
-import com.intuisoft.plaid.common.network.nownodes.repository.CoingeckoRepository
 import com.intuisoft.plaid.common.repositories.ApiRepository
 import com.intuisoft.plaid.common.repositories.ApiRepository_Impl
 import com.intuisoft.plaid.common.repositories.db.DatabaseRepository
@@ -43,6 +41,8 @@ object CommonService {
     private var coingeckoRepository: CoingeckoRepository? = null
     private var testNetNodeRepository: NodeRepository? = null
     private var databaseRepository: DatabaseRepository? = null
+    private var simpleSwapRepository: SimpleSwapRepository? = null
+    private var memoryCache: MemoryCache? = null
     private var application: Application? = null
     private var nowNodesClientSecret: String? = ""
     private var nowNodesBlockBookApiUrl: String? = ""
@@ -50,6 +50,8 @@ object CommonService {
     private var nowNodesTestNetNodeApiUrl: String? = ""
     private var blockchainInfoApiUrl: String? = ""
     private var coingeckoApiUrl: String? = ""
+    private var simpleSwapApiUrl: String? = ""
+    private var simpleSwapClientSecret: String? = ""
 
     fun getPrefsInstance(): UserPreferences {
         if(userPreferences == null) {
@@ -77,7 +79,9 @@ object CommonService {
                 getNodeRepositoryInstance(),
                 getTestNetNodeRepositoryInstance(),
                 getBlockchainInfoRepositoryInstance(),
-                getCoingeckoRepositoryInstance()
+                getCoingeckoRepositoryInstance(),
+                getSimpleSwapRepositoryInstance(),
+                getMemoryCacheInstance()
             )
         }
 
@@ -93,7 +97,7 @@ object CommonService {
                             provideBaseHttpClient(
                                 provideConnectivityInterceptor()
                             ),
-                            provideApiKeyInterceptor()
+                            provideApiKeyInterceptor(nowNodesClientSecret!!)
                         ),
                         getGsonInstance()
                     )
@@ -113,7 +117,7 @@ object CommonService {
                             provideBaseHttpClient(
                                 provideConnectivityInterceptor()
                             ),
-                            provideApiKeyInterceptor()
+                            provideApiKeyInterceptor(nowNodesClientSecret!!)
                         ),
                         getGsonInstance()
                     )
@@ -133,7 +137,7 @@ object CommonService {
                             provideBaseHttpClient(
                                 provideConnectivityInterceptor()
                             ),
-                            provideApiKeyInterceptor()
+                            provideApiKeyInterceptor(nowNodesClientSecret!!)
                         ),
                         getGsonInstance()
                     )
@@ -159,6 +163,24 @@ object CommonService {
         }
 
         return blockchainInfoRepository!!
+    }
+
+    fun getSimpleSwapRepositoryInstance(): SimpleSwapRepository {
+        if(simpleSwapRepository == null) {
+            simpleSwapRepository = SimpleSwapRepository.create(
+                provideSimpleSwapApi(
+                    provideSimpleSwapRetrofit(
+                        provideBaseHttpClient(
+                            provideConnectivityInterceptor()
+                        ),
+                        getGsonInstance()
+                    )
+                ),
+                simpleSwapClientSecret!!
+            )
+        }
+
+        return simpleSwapRepository!!
     }
 
     fun getCoingeckoRepositoryInstance(): CoingeckoRepository {
@@ -196,6 +218,9 @@ object CommonService {
                 ),
                 provideTickerPriceDataDao(
                     application!!
+                ),
+                provideSupportedCurrencyDao(
+                    application!!
                 )
             )
         }
@@ -205,24 +230,34 @@ object CommonService {
 
     fun getGsonInstance() = provideGson()
 
-    fun getNowNodesClientSecret() = nowNodesClientSecret!!
+    fun getMemoryCacheInstance(): MemoryCache {
+        if(memoryCache == null) {
+            memoryCache = provideMemoryCache()
+        }
+
+        return memoryCache!!
+    }
 
     fun create(
         application: Application,
         nowNodesSecret: String,
+        simpleSwapSecret: String,
         nowNodesBlockBookURL: String,
         nodeApiUrl: String,
         testNetNodeApiUrl: String,
         blockchainInfoApiUrl: String,
-        coingeckoApiUrl: String
+        coingeckoApiUrl: String,
+        simpleSwapApiUrl: String
     ) {
         provideApplication(application)
         provideNowNodesSecret(nowNodesSecret)
+        provideSimpleSwapSecret(simpleSwapSecret)
         provideNowNodesBlockBookApiUrl(nowNodesBlockBookURL)
         provideNowNodesNodeApiUrl(nodeApiUrl)
         provideNowNodesTestNetNodeApiUrl(testNetNodeApiUrl)
         provideBlockchainInfoApiUrl(blockchainInfoApiUrl)
         provideCoingeckoApiUrl(coingeckoApiUrl)
+        provideSimpleSwapApiUrl(simpleSwapApiUrl)
 
         // create singleton instance of all classes
         getPrefsInstance()
@@ -233,6 +268,7 @@ object CommonService {
         getDatabaseRepositoryInstance()
         getBlockchainInfoRepositoryInstance()
         getCoingeckoRepositoryInstance()
+        getSimpleSwapRepositoryInstance()
     }
 
     // providers
@@ -242,6 +278,10 @@ object CommonService {
 
     private fun provideNowNodesSecret(secret: String) {
         this.nowNodesClientSecret = secret
+    }
+
+    private fun provideSimpleSwapSecret(secret: String) {
+        this.simpleSwapClientSecret = secret
     }
 
     private fun provideNowNodesBlockBookApiUrl(url: String) {
@@ -262,6 +302,10 @@ object CommonService {
 
     private fun provideCoingeckoApiUrl(url: String) {
         this.coingeckoApiUrl = url
+    }
+
+    private fun provideSimpleSwapApiUrl(url: String) {
+        this.simpleSwapApiUrl = url
     }
 
     private fun provideDatabase(
@@ -300,13 +344,20 @@ object CommonService {
         return PlaidDatabase.getInstance(context).tickerPriceChartDataDao()
     }
 
+    private fun provideSupportedCurrencyDao(
+        context: Context
+    ): SupportedCurrencyDao {
+        return PlaidDatabase.getInstance(context).supportedCurrencyDao()
+    }
+
     private fun provideDatabaseRepository(
         database: PlaidDatabase,
         suggestedFeeRateDao: SuggestedFeeRateDao,
         basicPriceDataDao: BasicPriceDataDao,
         baseMarketDataDao: BaseMarketDataDao,
         extendedNetworkDataDao: ExtendedNetworkDataDao,
-        tickerPriceChartDataDao: TickerPriceChartDataDao
+        tickerPriceChartDataDao: TickerPriceChartDataDao,
+        supportedCurrencyDao: SupportedCurrencyDao
     ): DatabaseRepository {
         return DatabaseRepository_Impl(
             database,
@@ -314,12 +365,13 @@ object CommonService {
             basicPriceDataDao,
             baseMarketDataDao,
             extendedNetworkDataDao,
-            tickerPriceChartDataDao
+            tickerPriceChartDataDao,
+            supportedCurrencyDao
         )
     }
 
-    private fun provideApiKeyInterceptor() =
-        ApiKeyInterceptor()
+    private fun provideApiKeyInterceptor(apiKey: String) =
+        ApiKeyInterceptor(apiKey)
 
     private fun provideConnectivityInterceptor() =
         ConnectivityInterceptor(provideConnectionMonitor(application!!), application!!)
@@ -336,14 +388,18 @@ object CommonService {
         nodeRepository: NodeRepository,
         testNetNodeRepository: NodeRepository,
         blockchainInfoRepository: BlockchainInfoRepository,
-        coingeckoRepository: CoingeckoRepository
+        coingeckoRepository: CoingeckoRepository,
+        simpleSwapRepository: SimpleSwapRepository,
+        memoryCache: MemoryCache
     ): ApiRepository {
         return ApiRepository_Impl(
             localStoreRepository,
             nodeRepository,
             testNetNodeRepository,
             blockchainInfoRepository,
-            coingeckoRepository
+            coingeckoRepository,
+            simpleSwapRepository,
+            memoryCache
         )
     }
 
@@ -352,6 +408,10 @@ object CommonService {
             .setLenient()
             .registerTypeAdapter(LocalDate::class.java, LocalDateAdapter())
             .create()
+    }
+
+    private fun provideMemoryCache(): MemoryCache {
+        return MemoryCache()
     }
 
 
@@ -423,6 +483,19 @@ object CommonService {
             .build()
     }
 
+    private fun provideSimpleSwapRetrofit(
+        okHttpClient: OkHttpClient,
+        gson: Gson
+    ): Retrofit {
+        return Retrofit.Builder()
+            .client(okHttpClient)
+            .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
+            .baseUrl(simpleSwapApiUrl!!)
+//        .addConverterFactory(NullOnEmptyBodyConverterFactory())
+            .addConverterFactory(GsonConverterFactory.create(gson))
+            .build()
+    }
+
     private fun provideCoingeckoRetrofit(
         okHttpClient: OkHttpClient,
         gson: Gson
@@ -485,6 +558,9 @@ object CommonService {
 
     private fun provideBlockchainInfoApi(manager: Retrofit): BlockchainInfoApi =
         manager.create(BlockchainInfoApi::class.java)
+
+    private fun provideSimpleSwapApi(manager: Retrofit): SimpleSwapApi =
+        manager.create(SimpleSwapApi::class.java)
 
     private fun provideCoingeckoApi(manager: Retrofit): CoingeckoApi =
         manager.create(CoingeckoApi::class.java)

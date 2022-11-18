@@ -7,7 +7,7 @@ class Constants {
 
     object Database {
         const val DB_NAME = "plaid.db"
-        const val DB_VERSION = 8
+        const val DB_VERSION = 16
     }
 
     object Files {
@@ -92,13 +92,14 @@ class Constants {
         const val TWO_MINUTES = 2 * ONE_MINUTE
         const val FIVE_MINUTES = 5 * ONE_MINUTE
         const val TEN_MINUTES = 10 * ONE_MINUTE
+        const val MIN_SYNC_TIME = ONE_MINUTE * MILLS_PER_SEC
         const val INSTANT = -1
         const val INSTANT_TIME_OFFSET = ((ONE_MINUTE * 60) * 24) * 10000
         const val SYNC_TIMEOUT = MILLS_PER_SEC * 8
         const val AUTO_SYNC_TIME: Long = (MILLS_PER_SEC * TWO_MINUTES).toLong()
         const val GENERAL_CACHE_UPDATE_TIME: Long = (MILLS_PER_SEC * TEN_MINUTES).toLong()
-        const val GENERAL_CACHE_UPDATE_TIME_SHORT: Long = (MILLS_PER_SEC * ONE_MINUTE).toLong()
-        const val GENERAL_CACHE_UPDATE_TIME_MED: Long = (MILLS_PER_SEC * TWO_MINUTES).toLong()
+        const val GENERAL_CACHE_UPDATE_TIME_MED: Long = (MILLS_PER_SEC * FIVE_MINUTES).toLong()
+        const val GENERAL_CACHE_UPDATE_TIME_SHORT: Long = (MILLS_PER_SEC * TWO_MINUTES).toLong()
     }
 
     object ActivityResult {
@@ -128,9 +129,9 @@ class Constants {
     }
 
     object CongestionRating {
-        val LIGHT = (0..2000)
-        val NORMAL = (2001..4500)
-        val MED = (4501..6500)
-        val BUSY = (6501..10000)
+        val LIGHT = (0..3500)
+        val NORMAL = (3501..10000)
+        val MED = (10001..15000)
+        val BUSY = (15001..20000)
     }
 }

@@ -94,9 +94,11 @@ class HomescreenFragment : PinProtectedFragment<FragmentHomescreenBinding>(), St
 
     override fun onResume() {
         super.onResume()
+        walletManager.closeWallet()
     }
 
     fun onWalletSelected(wallet: LocalWalletModel) {
+        walletManager.openWallet(wallet)
         navigate(R.id.walletDashboardFragment, wallet)
     }
 

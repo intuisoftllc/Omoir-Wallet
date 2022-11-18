@@ -5,6 +5,7 @@ import com.intuisoft.plaid.common.local.UserPreferences
 import com.intuisoft.plaid.common.listeners.WipeDataListener
 import com.intuisoft.plaid.common.local.db.listeners.DatabaseListener
 import com.intuisoft.plaid.common.model.*
+import com.intuisoft.plaid.common.network.nownodes.response.SupportedCurrencyModel
 import com.intuisoft.plaid.common.repositories.db.DatabaseRepository
 import kotlinx.coroutines.runBlocking
 
@@ -169,6 +170,14 @@ class LocalStoreRepository_Impl(
         return userPreferences.lastCurrencyRateUpdateTime
     }
 
+    override fun setLastSupportedCurrenciesUpdate(time: Long) {
+        userPreferences.lastSupportedCurrenciesUpdateTime = time
+    }
+
+    override fun getLastSupportedCurrenciesUpdateTime(): Long {
+        return userPreferences.lastSupportedCurrenciesUpdateTime
+    }
+
     override fun setLastBasicNetworkDataUpdate(time: Long) {
         userPreferences.lastBaseMarketDataUpdateTime = time
     }
@@ -281,6 +290,19 @@ class LocalStoreRepository_Impl(
         extendedData: ExtendedNetworkDataModel
     ) {
         databaseRepository.setExtendedNetworkData(extendedData, testnetWallet)
+    }
+
+    override fun getSupportedCurrenciesData(fixed: Boolean): List<SupportedCurrencyModel> {
+        return runBlocking {
+            return@runBlocking databaseRepository.getSupportedCurrencies(fixed)
+        }
+    }
+
+    override suspend fun setSupportedCurrenciesData(
+        data: List<SupportedCurrencyModel>,
+        fixed: Boolean
+    ) {
+        databaseRepository.setSupportedCurrenciesData(data, fixed)
     }
 
     override fun getAllRates(): List<BasicPriceDataModel> {

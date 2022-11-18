@@ -82,25 +82,28 @@ class MainActivity : BindingActivity<ActivityMainBinding>(), ActionBarDelegate {
         val navController = getNavController()
 
         if(localStoreRepository.isProEnabled()) {
-
+            // todo
         } else {
-            binding.bottomBar.setConfiguration(
-                getString(R.string.wallet), R.drawable.ic_bottom_bar_wallet_selected, R.drawable.ic_bottom_bar_wallet_unselected,
-                "", 0, 0,
-                R.drawable.ic_bottom_bar_swap_selected, R.drawable.ic_bottom_bar_swap_unselected,
-                getString(R.string.market), R.drawable.ic_bottom_bar_market_selected, R.drawable.ic_bottom_bar_market_unselected,
-                "", 0, 0,
-                R.color.brand_color_dark_blue, R.color.text_grey
-            )
 
-            binding.bottomBar.setupDestinations(
-                R.id.walletDashboardFragment,
-                0,
-                R.id.swapFragment,
-                R.id.marketFragment,
-                0
-            )
         }
+
+
+        binding.bottomBar.setConfiguration(
+            getString(R.string.wallet), R.drawable.ic_bottom_bar_wallet_selected, R.drawable.ic_bottom_bar_wallet_unselected,
+            "", 0, 0,
+            R.drawable.ic_bottom_bar_swap_selected, R.drawable.ic_bottom_bar_swap_unselected,
+            getString(R.string.market), R.drawable.ic_bottom_bar_market_selected, R.drawable.ic_bottom_bar_market_unselected,
+            "", 0, 0,
+            R.color.brand_color_dark_blue, R.color.text_grey
+        )
+
+        binding.bottomBar.setupDestinations(
+            R.id.walletDashboardFragment,
+            0,
+            R.id.swapFragment,
+            R.id.marketFragment,
+            0
+        )
 
         binding.bottomBar.onItemClicked { destination ->
             val delegate = supportFragmentManager.currentNavigationFragment as? FragmentBottomBarBarDelegate

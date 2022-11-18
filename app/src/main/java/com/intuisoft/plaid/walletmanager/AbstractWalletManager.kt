@@ -39,4 +39,6 @@ abstract class AbstractWalletManager {
     abstract fun setWalletPassphrase(localWallet: LocalWalletModel, passphrase: String)
     abstract fun getWalletPassphrase(localWallet: LocalWalletModel): String
     abstract fun getBaseWallet(mainNet: Boolean = true): BitcoinKit
+    abstract fun openWallet(wallet: LocalWalletModel)
+    abstract fun closeWallet()
 }

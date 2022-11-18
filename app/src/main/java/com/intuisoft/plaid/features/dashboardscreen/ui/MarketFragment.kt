@@ -1,53 +1,29 @@
 package com.intuisoft.plaid.features.dashboardscreen.ui
 
-import android.app.ProgressDialog
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.text.method.PasswordTransformationMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
-import android.widget.ImageView
-import android.widget.TextView
-import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
-import androidx.core.widget.doOnTextChanged
 import androidx.lifecycle.Observer
-import androidx.navigation.fragment.findNavController
-import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.*
 import com.intuisoft.plaid.common.model.ChartDataModel
 import com.intuisoft.plaid.common.model.ChartIntervalType
 import com.intuisoft.plaid.common.model.CongestionRating
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
-import com.intuisoft.plaid.databinding.FragmentWalletSettingsBinding
-import com.intuisoft.plaid.features.dashboardscreen.viewmodel.WalletSettingsViewModel
 import com.intuisoft.plaid.features.pin.ui.PinProtectedFragment
-import com.intuisoft.plaid.features.settings.ui.SettingsFragment
-import com.intuisoft.plaid.features.settings.viewmodel.SettingsViewModel
-import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.common.util.SimpleCoinNumberFormat
 import com.intuisoft.plaid.common.util.SimpleCurrencyFormat
 import com.intuisoft.plaid.databinding.FragmentMarketBinding
-import com.intuisoft.plaid.databinding.FragmentSwapBinding
 import com.intuisoft.plaid.features.dashboardscreen.adapters.BasicLineChartAdapter
 import com.intuisoft.plaid.features.dashboardscreen.viewmodel.MarketViewModel
 import com.intuisoft.plaid.util.SimpleTimeFormat
-import com.intuisoft.plaid.util.fragmentconfig.ConfigQrDisplayData
-import com.intuisoft.plaid.util.fragmentconfig.ConfigSeedData
-import io.horizontalsystems.bitcoinkit.BitcoinKit
-import io.horizontalsystems.hdwalletkit.HDWallet
-import kotlinx.android.synthetic.main.fragment_wallet_settings.*
 import org.koin.android.ext.android.inject
-import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.*
-import kotlin.random.Random
-import kotlin.random.nextLong
 
 
 class MarketFragment : PinProtectedFragment<FragmentMarketBinding>() {
@@ -192,15 +168,25 @@ class MarketFragment : PinProtectedFragment<FragmentMarketBinding>() {
             binding.marketCap.text = it
         })
 
-        if(!localStore.isProEnabled()) {
-            binding.height.text = ""
-            binding.difficulty.text = ""
-            binding.blockchainSize.text = ""
-            binding.avgTxSize.text = ""
-            binding.avgFeeRate.text = ""
-            binding.unconfirmedTxs.text = ""
-            binding.avgConfTime.text = ""
-        }
+        viewModel.volume24Hr.observe(viewLifecycleOwner, Observer {
+            binding.volume.text = it
+        })
+
+        viewModel.checkProStatus()
+        viewModel.upgradeToPro.observe(viewLifecycleOwner, Observer {
+            binding.upgradeToProContainer.isVisible = it
+
+            if(!it) {
+                binding.height.text = ""
+                binding.difficulty.text = ""
+                binding.blockchainSize.text = ""
+                binding.avgTxSize.text = ""
+                binding.avgFeeRate.text = ""
+                binding.unconfirmedTxs.text = ""
+                binding.avgConfTime.text = ""
+                binding.congestionRating.text = ""
+            }
+        })
 
         viewModel.congestionRating.observe(viewLifecycleOwner, Observer {
             when(it) {
@@ -289,6 +275,7 @@ class MarketFragment : PinProtectedFragment<FragmentMarketBinding>() {
 
         viewModel.hideMainChainDataContainer.observe(viewLifecycleOwner, Observer {
             binding.mainChainExtendedDataContainer.isVisible = false
+            binding.mainChainExtendedDataContainer2.isVisible = false
         })
 
         viewModel.chartData.observe(viewLifecycleOwner, Observer {

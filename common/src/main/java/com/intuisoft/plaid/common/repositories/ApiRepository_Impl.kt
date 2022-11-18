@@ -1,9 +1,12 @@
 package com.intuisoft.plaid.common.repositories
 
+import com.intuisoft.plaid.common.local.memorycache.MemoryCache
 import com.intuisoft.plaid.common.model.*
 import com.intuisoft.plaid.common.network.nownodes.repository.BlockchainInfoRepository
 import com.intuisoft.plaid.common.network.nownodes.repository.CoingeckoRepository
 import com.intuisoft.plaid.common.network.nownodes.repository.NodeRepository
+import com.intuisoft.plaid.common.network.nownodes.repository.SimpleSwapRepository
+import com.intuisoft.plaid.common.network.nownodes.response.SupportedCurrencyModel
 import com.intuisoft.plaid.common.util.Constants
 
 
@@ -12,7 +15,9 @@ class ApiRepository_Impl(
     private val nodeRepository: NodeRepository,
     private val testNetNodeRepository: NodeRepository,
     private val blockchainInfoRepository: BlockchainInfoRepository,
-    private val coingeckoRepository: CoingeckoRepository
+    private val coingeckoRepository: CoingeckoRepository,
+    private val simpleSwapRepository: SimpleSwapRepository,
+    private val memoryCache: MemoryCache
 ): ApiRepository {
 
     override suspend fun getSuggestedFeeRate(testNetWallet: Boolean): NetworkFeeRate? {
@@ -29,8 +34,20 @@ class ApiRepository_Impl(
 
         if(rate == null) {
             updateBasicPriceData()
-            return localStoreRepository.getRateFor(currencyCode) ?: BasicPriceDataModel(0.0, 0.0, localStoreRepository.getLocalCurrency())
+            return localStoreRepository.getRateFor(currencyCode) ?: BasicPriceDataModel(0.0, 0.0, 0.0, localStoreRepository.getLocalCurrency())
         } else return rate
+    }
+
+    /* On-Demand Call */
+    override suspend fun getSupportedCurrencies(fixed: Boolean): List<SupportedCurrencyModel> {
+        updateSupportedCurrenciesData()
+        return localStoreRepository.getSupportedCurrenciesData(fixed)
+    }
+
+    /* On-Demand Call */
+    override suspend fun getCurrencyRangeLimit(from: String, to: String, fixed: Boolean): CurrencyRangeLimitModel? {
+        updateCurrencyRangeLimitData(from, to, fixed)
+        return memoryCache.getCurrencySwapRangeLimit(from, to, fixed)
     }
 
     /* On-Demand Call */
@@ -43,6 +60,7 @@ class ApiRepository_Impl(
             return BasicTickerDataModel(
                 price = rate.currentPrice,
                 marketCap = rate.marketCap,
+                volume24Hr = rate.volume24Hr,
                 circulatingSupply = data.circulatingSupply,
                 memPoolTxCount = data.memPoolTxCount,
                 maxSupply = data.maxSupply
@@ -51,6 +69,7 @@ class ApiRepository_Impl(
             return BasicTickerDataModel(
                 price = 0.0,
                 marketCap = 0.0,
+                volume24Hr = 0.0,
                 circulatingSupply = 0,
                 memPoolTxCount = 0,
                 maxSupply = 0
@@ -59,8 +78,8 @@ class ApiRepository_Impl(
     }
 
     /* On-Demand Call */
-    override suspend fun getExtendedMarketData(testNetWallet: Boolean): ExtendedNetworkDataModel? {
-        updateExtendedMarketData(testNetWallet)
+    override suspend fun getExtendedNetworkData(testNetWallet: Boolean): ExtendedNetworkDataModel? {
+        updateExtendedNetworkData()
         return localStoreRepository.getExtendedNetworkData(testNetWallet)
     }
 
@@ -68,6 +87,15 @@ class ApiRepository_Impl(
     override suspend fun getTickerPriceChartData(intervalType: ChartIntervalType): List<ChartDataModel>? {
         updateTickerPriceChartDataUpdateTime(intervalType)
         return localStoreRepository.getTickerPriceChartData(localStoreRepository.getLocalCurrency(), intervalType)
+    }
+
+    /* On-Demand Call */
+    override suspend fun getEstimatedReceiveAmount(amount: Double, from: String, to: String, fixed: Boolean): Double {
+        val receiveAmount = simpleSwapRepository.getEstimatedReceiveAmount(fixed, from, to, amount)
+
+        if(receiveAmount.isSuccess) {
+            return receiveAmount.getOrThrow()
+        } else return 0.0
     }
 
     private suspend fun updateSuggestedFeeRates() {
@@ -94,6 +122,40 @@ class ApiRepository_Impl(
         }
     }
 
+    private suspend fun updateSupportedCurrenciesData() {
+        if((System.currentTimeMillis() - localStoreRepository.getLastSupportedCurrenciesUpdateTime()) > Constants.Time.GENERAL_CACHE_UPDATE_TIME) {
+            val supportedCurrencies = simpleSwapRepository.getAllSupportedCurrencies()
+            val fixedPairs = simpleSwapRepository.getAllPairs(true)
+            val floatingPairs = simpleSwapRepository.getAllPairs(false)
+
+            if(supportedCurrencies.isSuccess && fixedPairs.isSuccess && floatingPairs.isSuccess) {
+                localStoreRepository.setSupportedCurrenciesData(
+                    supportedCurrencies!!.getOrThrow().filter { supportedCurrency ->
+                        fixedPairs.getOrThrow().find { it == supportedCurrency.ticker } != null
+                    },
+                    true
+                )
+                localStoreRepository.setSupportedCurrenciesData(
+                    supportedCurrencies!!.getOrThrow().filter { supportedCurrency ->
+                        floatingPairs.getOrThrow().find { it == supportedCurrency.ticker } != null
+                    },
+                    false
+                )
+                localStoreRepository.setLastSupportedCurrenciesUpdate(System.currentTimeMillis())
+            }
+        }
+    }
+
+    private suspend fun updateCurrencyRangeLimitData(from: String, to: String, fixed: Boolean) {
+        if((System.currentTimeMillis() - (memoryCache.getLastCurrencySwapRangeLimitUpdateTime(from, to, fixed) ?: 0)) > Constants.Time.GENERAL_CACHE_UPDATE_TIME) {
+            val rangeLimit = simpleSwapRepository.getRangeFor(fixed, from, to)
+
+            if(rangeLimit.isSuccess) {
+                memoryCache.setCurrencySwapRangeLimit(from, to, fixed, System.currentTimeMillis(), rangeLimit.getOrThrow())
+            }
+        }
+    }
+
     private suspend fun updateBasicNetworkData() {
         if((System.currentTimeMillis() - localStoreRepository.getLastBasicNetworkDataUpdateTime()) > Constants.Time.GENERAL_CACHE_UPDATE_TIME) {
             val data = blockchainInfoRepository.getBasicNetworkData()
@@ -109,22 +171,36 @@ class ApiRepository_Impl(
         }
     }
 
-    private suspend fun updateExtendedMarketData(testnetWallet: Boolean) {
-        if((System.currentTimeMillis() - localStoreRepository.getLastBasicNetworkDataUpdateTime()) > Constants.Time.GENERAL_CACHE_UPDATE_TIME_SHORT) {
-            val data1 = if(testnetWallet) testNetNodeRepository.getExtendedNetworkData() else nodeRepository.getExtendedNetworkData()
-            val data2 = blockchainInfoRepository.getExtendedMarketData()
+    private suspend fun updateExtendedNetworkData() {
+        if((System.currentTimeMillis() - localStoreRepository.getLastExtendedMarketDataUpdateTime()) > Constants.Time.GENERAL_CACHE_UPDATE_TIME_MED) {
+            val dataTest = testNetNodeRepository.getExtendedNetworkData()
+            val dataMain = nodeRepository.getExtendedNetworkData()
+            val data2 = blockchainInfoRepository.getExtendedNetworkData()
 
-            if(data1.isSuccess && data2.isSuccess) {
+            if(dataTest.isSuccess && dataMain.isSuccess && data2.isSuccess) {
                 localStoreRepository.setExtendedNetworkData(
-                    testnetWallet,
+                    false,
                     ExtendedNetworkDataModel(
-                        height = data1.getOrThrow().height,
-                        difficulty = data1.getOrThrow().difficulty,
-                        blockchainSize = data1.getOrThrow().blockchainSize,
-                        avgTxSize = data1.getOrThrow().avgTxSize,
-                        avgFeeRate = data1.getOrThrow().avgFeeRate,
+                        height = dataMain.getOrThrow().height,
+                        difficulty = dataMain.getOrThrow().difficulty,
+                        blockchainSize = dataMain.getOrThrow().blockchainSize,
+                        avgTxSize = dataMain.getOrThrow().avgTxSize,
+                        avgFeeRate = dataMain.getOrThrow().avgFeeRate,
                         unconfirmedTxs = data2.getOrThrow().unconfirmedTxs,
                         avgConfTime = data2.getOrThrow().avgConfTime
+                    )
+                )
+
+                localStoreRepository.setExtendedNetworkData(
+                    true,
+                    ExtendedNetworkDataModel(
+                        height = dataTest.getOrThrow().height,
+                        difficulty = dataTest.getOrThrow().difficulty,
+                        blockchainSize = dataTest.getOrThrow().blockchainSize,
+                        avgTxSize = dataTest.getOrThrow().avgTxSize,
+                        avgFeeRate = dataTest.getOrThrow().avgFeeRate,
+                        unconfirmedTxs = 0,
+                        avgConfTime = 0.0
                     )
                 )
 
@@ -134,7 +210,7 @@ class ApiRepository_Impl(
     }
 
     private suspend fun updateTickerPriceChartDataUpdateTime(intervalType: ChartIntervalType) {
-        if((System.currentTimeMillis() - localStoreRepository.getLastTickerPriceChartDataUpdateTime()) > Constants.Time.GENERAL_CACHE_UPDATE_TIME_MED
+        if((System.currentTimeMillis() - localStoreRepository.getLastTickerPriceChartDataUpdateTime()) > Constants.Time.GENERAL_CACHE_UPDATE_TIME_SHORT
             || localStoreRepository.getTickerPriceChartData(localStoreRepository.getLocalCurrency(), intervalType) == null) {
             val data = coingeckoRepository.getChartData(intervalType, localStoreRepository.getLocalCurrency())
 
@@ -153,5 +229,6 @@ class ApiRepository_Impl(
     override suspend fun refreshLocalCache() {
         updateSuggestedFeeRates()
         updateBasicPriceData()
+        updateSupportedCurrenciesData()
     }
 }

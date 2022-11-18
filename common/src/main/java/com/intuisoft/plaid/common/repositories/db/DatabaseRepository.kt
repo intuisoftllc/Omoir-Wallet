@@ -1,7 +1,9 @@
 package com.intuisoft.plaid.common.repositories.db
 
+import com.intuisoft.plaid.common.local.db.SupportedCurrency
 import com.intuisoft.plaid.common.local.db.listeners.DatabaseListener
 import com.intuisoft.plaid.common.model.*
+import com.intuisoft.plaid.common.network.nownodes.response.SupportedCurrencyModel
 
 
 interface DatabaseRepository {
@@ -25,6 +27,10 @@ interface DatabaseRepository {
     suspend fun setBasicNetworkData(circulatingSupply: Long, memPoolTx: Int)
 
     suspend fun getRateFor(currencyCode: String): BasicPriceDataModel?
+
+    suspend fun setSupportedCurrenciesData(data: List<SupportedCurrencyModel>, fixed: Boolean)
+
+    suspend fun getSupportedCurrencies(fixed: Boolean): List<SupportedCurrencyModel>
 
     suspend fun setRates(rates: List<BasicPriceDataModel>)
 

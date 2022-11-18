@@ -36,6 +36,7 @@ class UserPreferences(
         const val BASE_MARKET_DATA_LAST_UPDATE_TIME = "BASE_MARKET_DATA_LAST_UPDATE_TIME"
         const val EXTENDED_MARKET_DATA_LAST_UPDATE_TIME = "EXTENDED_MARKET_DATA_LAST_UPDATE_TIME"
         const val TICKER_PRICE_CHART_LAST_UPDATE_TIME = "TICKER_PRICE_CHART_LAST_UPDATE_TIME"
+        const val SUPPORTED_CURRENCIES_LAST_UPDATE_TIME = "SUPPORTED_CURRENCIES_LAST_UPDATE_TIME"
     }
 
     var incorrectPinAttempts: Int
@@ -165,6 +166,14 @@ class UserPreferences(
             putLong(CURRENCY_RATE_LAST_UPDATE_TIME, time)
         }
 
+    var lastSupportedCurrenciesUpdateTime: Long
+        get() {
+            return getLong(SUPPORTED_CURRENCIES_LAST_UPDATE_TIME, 0)
+        }
+        set(time) {
+            putLong(SUPPORTED_CURRENCIES_LAST_UPDATE_TIME, time)
+        }
+
     var lastBaseMarketDataUpdateTime: Long
         get() {
             return getLong(BASE_MARKET_DATA_LAST_UPDATE_TIME, 0)
@@ -258,7 +267,7 @@ class UserPreferences(
 
     var isProEnabled: Boolean
         get() {
-            return getBool(PRO_ENABLED, false)
+            return getBool(PRO_ENABLED, true)
         }
         set(enable) {
             putBool(PRO_ENABLED, enable)

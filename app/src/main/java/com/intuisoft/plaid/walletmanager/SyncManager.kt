@@ -23,6 +23,7 @@ class SyncManager(
     private var masterSyncJob: Job? = null
     private var autoSyncJob: Job? = null
     private var listener: SyncEvent? = null
+    private var openedWallet: LocalWalletModel? = null
 
     private var _running = AtomicBoolean(false)
     protected var running: Boolean
@@ -39,6 +40,8 @@ class SyncManager(
             listener?.onSyncing(value)
         }
 
+    private var lastSynced: Long = 0
+
     private fun runInBackground(run: suspend () -> Unit) =
         @OptIn(DelicateCoroutinesApi::class)
         GlobalScope.launch {
@@ -50,6 +53,23 @@ class SyncManager(
         GlobalScope.launch(start = CoroutineStart.LAZY) {
             run()
         }
+
+    fun openWallet(wallet: LocalWalletModel) {
+        openedWallet?.walletKit?.stop()
+        openedWallet = wallet
+        wallet.walletKit?.start()
+    }
+
+    fun closeWallet() {
+        openedWallet?.walletKit?.stop()
+        openedWallet = null
+    }
+
+    private fun safeStop(wallet: LocalWalletModel) {
+        if(wallet != openedWallet) {
+            wallet.walletKit!!.stop()
+        }
+    }
 
     fun getWallets() =  _wallets
 
@@ -162,6 +182,10 @@ class SyncManager(
     fun syncWallets() {
         if(running && !syncing && syncJobs.isEmpty()) {
             syncing = true
+            if((System.currentTimeMillis() - lastSynced) <= Constants.Time.MIN_SYNC_TIME                                     ) {
+                syncing = false
+                return
+            }
 
             _wallets
                 .splitIntoGroupOf(getSyncGrouping())
@@ -194,7 +218,7 @@ class SyncManager(
                             }
 
                             group.items.forEach {
-                                it.walletKit!!.onEnterBackground()
+                                safeStop(it)
                             }
                         }
                     )
@@ -206,6 +230,7 @@ class SyncManager(
                     it.join()
                 }
 
+                lastSynced = System.currentTimeMillis()
                 syncJobs.clear()
                 syncing = false
             }

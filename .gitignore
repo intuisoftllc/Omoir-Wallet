@@ -2,7 +2,7 @@ app.properties
 keystore/
 .gradle/
 .idea/
-app/google-services.json
+app/src/debug/google-services.json
 app/src/main/res/drwe-old
 app/src/main/res/lyt-old
 app/src/main/res/vlus-old

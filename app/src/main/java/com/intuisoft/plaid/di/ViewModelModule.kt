@@ -66,4 +66,8 @@ val viewModelModule = module {
     viewModel {
         MarketViewModel(get(), get(), get(), get())
     }
+
+    viewModel {
+        SwapViewModel(get(), get(), get(), get())
+    }
 }

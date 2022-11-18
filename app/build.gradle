@@ -59,7 +59,9 @@ android {
             buildConfigField("String", "TEST_NET_NODE_SERVER_URL", "\"https://btc-testnet.nownodes.io/\"")
             buildConfigField("String", "BLOCKCHAIN_INFO_SERVER_URL", "\"https://api.blockchain.info/\"")
             buildConfigField("String", "COIN_GECKO_SERVER_URL", "\"https://api.coingecko.com/api/v3/\"")
+            buildConfigField("String", "SIMPLE_SWAP_SERVER_URL", "\"https://api.simpleswap.io/\"")
             buildConfigField("String", "NOW_NODES_CLIENT_SECRET", "\"${properties['NOW_NODES_TEST_CLIENT_SECRET']}\"")
+            buildConfigField("String", "SIMPLE_SWAP_CLIENT_SECRET", "\"${properties['SIMPLE_SWAP_TEST_CLIENT_SECRET']}\"")
         }
 
         prod {
@@ -70,7 +72,9 @@ android {
             buildConfigField("String", "TEST_NET_NODE_SERVER_URL", "\"https://btc-testnet.nownodes.io/\"")
             buildConfigField("String", "BLOCKCHAIN_INFO_SERVER_URL", "\"https://api.blockchain.info/\"")
             buildConfigField("String", "COIN_GECKO_SERVER_URL", "\"https://pro-api.coingecko.com/api/v3/\"")
+            buildConfigField("String", "SIMPLE_SWAP_SERVER_URL", "\"https://api.simpleswap.io/\"")
             buildConfigField("String", "NOW_NODES_CLIENT_SECRET", "\"${properties['NOW_NODES_CLIENT_SECRET']}\"")
+            buildConfigField("String", "SIMPLE_SWAP_CLIENT_SECRET", "\"${properties['SIMPLE_SWAP_CLIENT_SECRET']}\"")
         }
     }
     compileOptions {
@@ -124,6 +128,9 @@ dependencies {
     implementation 'androidx.core:core-performance:1.0.0-alpha02'
 
     implementation 'com.robinhood.spark:spark:1.2.0'
+
+    implementation 'io.coil-kt:coil:1.2.0'
+    implementation 'io.coil-kt:coil-svg:1.2.0'
 
     implementation project(":bitcoinkit")
     implementation project(":hd-wallet-kit")

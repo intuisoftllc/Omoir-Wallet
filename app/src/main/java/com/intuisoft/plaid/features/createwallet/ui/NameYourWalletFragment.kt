@@ -62,7 +62,7 @@ class NameYourWalletFragment : PinProtectedFragment<FragmentNameWalletBinding>()
 
         binding.name.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable) {
-                binding.confirm.enableButton(s.length > 0 && s.length <= com.intuisoft.plaid.common.util.Constants.Limit.MAX_ALIAS_LENGTH)
+                binding.confirm.enableButton(s.length > 0 && s.length <= Constants.Limit.MAX_ALIAS_LENGTH)
             }
 
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {

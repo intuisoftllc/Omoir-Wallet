@@ -362,7 +362,7 @@
     <string name="market_data_item_1_title">Market Cap</string>
     <string name="market_data_item_2_title">Circulating Supply</string>
     <string name="market_data_item_3_title">Max Supply</string>
-    <string name="market_data_item_4_title">Network Congestion Rating</string>
+    <string name="market_data_item_4_title">Volume (24h)</string>
     <string name="market_data_view_market_data_title">View on Coingecko</string>
     <string name="market_data_extended_data_title">Extended Network Data</string>
     <string name="market_data_extended_item_1_title">Network</string>
@@ -376,6 +376,7 @@
     <string name="market_data_extended_item_7_title">Avg Fee Rate</string>
     <string name="market_data_extended_item_8_title">Unconfirmed Txs</string>
     <string name="market_data_extended_item_9_title">Avg Conf. Time</string>
+    <string name="market_data_extended_item_10_title">Network Congestion Rating</string>
     <string name="market_data_what_is_bitcoin_link">https://www.coindesk.com/learn/what-is-bitcoin/</string>
     <string name="market_data_bitcoin_org_link">https://www.bitcoin.org</string>
     <string name="market_data_bitcoin_explorer_link">https://www.blockchain.com/explorer?view=btc</string>
@@ -397,6 +398,17 @@
     <string name="import_recovery_phrase_error_max_words">You have reached the maximum amount of words you can enter</string>
     <string name="import_recovery_phrase_error_invalid_seed_phrase">The entered seed phrase is invalid, please check the order of the words and try again</string>
 <!--    Import Recovery Phrase Strings End -->
+
+
+<!--    Swap Strings -->
+    <string name="swap_type_fixed">Fixed</string>
+    <string name="swap_type_floating">Floating</string>
+    <string name="swap_enter_btc_hint">1</string>
+    <string name="swap_send_variant_1">You Send %1$s</string>
+    <string name="swap_send_variant_2">You Send %1$s (from external wallet)</string>
+    <string name="swap_receive_variant_1">You Get %1$s (to external wallet)</string>
+    <string name="swap_receive_variant_2">You Get %1$s</string>
+<!--    Swap Strings End -->
 
 <!--    Generic Use Strings -->
     <string name="welcome">Welcome</string>
@@ -451,6 +463,9 @@
     <string name="test_net">Test Net</string>
     <string name="not_applicable">N/A</string>
     <string name="select_all">Select All</string>
+    <string name="exchange">Exchange</string>
+    <string name="deposit">Deposit</string>
+    <string name="withdraw">Withdraw</string>
     <string name="upgrade_to_pro">Upgrade To Pro</string>
     <string name="transaction_id">Transaction ID</string>
     <string name="no_connection">Lost Connection to Servers…</string>
