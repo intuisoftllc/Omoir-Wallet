@@ -1,4 +1,4 @@
-package com.intuisoft.plaid.features.dashboardscreen.ui
+package com.intuisoft.plaid.features.dashboardflow.ui
 
 import android.content.Intent
 import android.net.Uri

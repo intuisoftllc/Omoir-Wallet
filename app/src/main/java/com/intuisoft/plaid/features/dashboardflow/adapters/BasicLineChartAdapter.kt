@@ -1,4 +1,4 @@
-package com.intuisoft.plaid.features.dashboardscreen.adapters
+package com.intuisoft.plaid.features.dashboardflow.adapters
 
 import com.intuisoft.plaid.common.model.ChartDataModel
 import com.robinhood.spark.SparkAdapter

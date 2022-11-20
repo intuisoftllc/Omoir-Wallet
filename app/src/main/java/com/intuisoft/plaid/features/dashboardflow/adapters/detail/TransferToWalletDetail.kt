@@ -1,7 +1,5 @@
-package com.intuisoft.plaid.features.dashboardscreen.adapters.detail
+package com.intuisoft.plaid.features.dashboardflow.adapters.detail
 
-import android.view.View
-import androidx.lifecycle.LifecycleOwner
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.BindingViewHolder
 import com.intuisoft.plaid.androidwrappers.ListItem

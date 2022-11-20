@@ -1,4 +1,4 @@
-package com.intuisoft.plaid.features.dashboardscreen.ui
+package com.intuisoft.plaid.features.dashboardflow.ui
 
 import android.graphics.*
 import android.os.Bundle
@@ -13,7 +13,7 @@ import com.google.zxing.EncodeHintType
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.*
 import com.intuisoft.plaid.databinding.FragmentWalletExportBinding
-import com.intuisoft.plaid.features.dashboardscreen.viewmodel.WalletExportViewModel
+import com.intuisoft.plaid.features.dashboardflow.viewmodel.WalletExportViewModel
 import com.intuisoft.plaid.features.pin.ui.PinProtectedFragment
 import com.intuisoft.plaid.util.fragmentconfig.ConfigQrDisplayData
 import com.journeyapps.barcodescanner.BarcodeEncoder

@@ -1,4 +1,4 @@
-package com.intuisoft.plaid.features.dashboardscreen.ui
+package com.intuisoft.plaid.features.dashboardflow.ui
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -16,7 +16,7 @@ import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.*
 import com.intuisoft.plaid.common.model.BitcoinDisplayUnit
 import com.intuisoft.plaid.databinding.FragmentWithdrawBinding
-import com.intuisoft.plaid.features.dashboardscreen.viewmodel.WithdrawalViewModel
+import com.intuisoft.plaid.features.dashboardflow.viewmodel.WithdrawalViewModel
 import com.intuisoft.plaid.features.homescreen.adapters.CoinControlAdapter
 import com.intuisoft.plaid.features.pin.ui.PinProtectedFragment
 import com.intuisoft.plaid.listeners.StateListener

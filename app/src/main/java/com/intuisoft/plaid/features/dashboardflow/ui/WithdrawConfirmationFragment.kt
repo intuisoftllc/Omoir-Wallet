@@ -1,6 +1,5 @@
-package com.intuisoft.plaid.features.dashboardscreen.ui
+package com.intuisoft.plaid.features.dashboardflow.ui
 
-import android.Manifest
 import android.app.Dialog
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
@@ -17,7 +16,6 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
-import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.lifecycle.viewModelScope
@@ -26,12 +24,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_EXPANDED
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.intuisoft.plaid.R
-import com.intuisoft.plaid.activities.MainActivity
 import com.intuisoft.plaid.androidwrappers.*
 import com.intuisoft.plaid.databinding.FragmentWithdrawConfirmationBinding
-import com.intuisoft.plaid.features.dashboardscreen.adapters.AddressBookAdapter
-import com.intuisoft.plaid.features.dashboardscreen.adapters.TransferToWalletAdapter
-import com.intuisoft.plaid.features.dashboardscreen.viewmodel.WithdrawConfirmationViewModel
+import com.intuisoft.plaid.features.dashboardflow.adapters.AddressBookAdapter
+import com.intuisoft.plaid.features.dashboardflow.adapters.TransferToWalletAdapter
+import com.intuisoft.plaid.features.dashboardflow.viewmodel.WithdrawConfirmationViewModel
 import com.intuisoft.plaid.features.pin.ui.PinProtectedFragment
 import com.intuisoft.plaid.features.settings.ui.AddressBookFragment
 import com.intuisoft.plaid.features.settings.viewmodel.AddressBookViewModel
@@ -44,7 +41,6 @@ import com.intuisoft.plaid.common.util.extensions.toArrayList
 import com.intuisoft.plaid.util.fragmentconfig.SendFundsData
 import io.horizontalsystems.bitcoincore.extensions.toHexString
 import io.horizontalsystems.bitcoincore.serializers.TransactionSerializer
-import kotlinx.android.synthetic.main.fragment_wallet_export.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject

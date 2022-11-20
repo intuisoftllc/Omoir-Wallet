@@ -1,4 +1,4 @@
-package com.intuisoft.plaid.features.dashboardscreen.ui
+package com.intuisoft.plaid.features.dashboardflow.ui
 
 import android.content.Intent
 import android.net.Uri
@@ -18,8 +18,8 @@ import com.intuisoft.plaid.features.pin.ui.PinProtectedFragment
 import com.intuisoft.plaid.common.util.SimpleCoinNumberFormat
 import com.intuisoft.plaid.common.util.SimpleCurrencyFormat
 import com.intuisoft.plaid.databinding.FragmentMarketBinding
-import com.intuisoft.plaid.features.dashboardscreen.adapters.BasicLineChartAdapter
-import com.intuisoft.plaid.features.dashboardscreen.viewmodel.MarketViewModel
+import com.intuisoft.plaid.features.dashboardflow.adapters.BasicLineChartAdapter
+import com.intuisoft.plaid.features.dashboardflow.viewmodel.MarketViewModel
 import com.intuisoft.plaid.util.SimpleTimeFormat
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel

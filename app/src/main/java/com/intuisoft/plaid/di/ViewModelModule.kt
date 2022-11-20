@@ -1,9 +1,8 @@
 package com.intuisoft.plaid.di
 
-import com.intuisoft.plaid.androidwrappers.SettingsItemView
 import com.intuisoft.plaid.androidwrappers.WalletViewModel
 import com.intuisoft.plaid.features.createwallet.viewmodel.CreateWalletViewModel
-import com.intuisoft.plaid.features.dashboardscreen.viewmodel.*
+import com.intuisoft.plaid.features.dashboardflow.viewmodel.*
 import com.intuisoft.plaid.features.homescreen.shared.viewmodel.HomeScreenViewModel
 import com.intuisoft.plaid.features.onboarding.viewmodel.OnboardingViewModel
 import com.intuisoft.plaid.features.pin.viewmodel.PinViewModel

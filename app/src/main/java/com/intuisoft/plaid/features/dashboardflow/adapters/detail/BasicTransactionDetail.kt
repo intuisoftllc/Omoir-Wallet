@@ -1,4 +1,4 @@
-package com.intuisoft.plaid.features.dashboardscreen.adapters.detail
+package com.intuisoft.plaid.features.dashboardflow.adapters.detail
 
 import android.view.View
 import com.intuisoft.plaid.R

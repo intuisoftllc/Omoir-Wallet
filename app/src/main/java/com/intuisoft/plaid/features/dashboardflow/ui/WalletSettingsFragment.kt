@@ -1,4 +1,4 @@
-package com.intuisoft.plaid.features.dashboardscreen.ui
+package com.intuisoft.plaid.features.dashboardflow.ui
 
 import android.app.ProgressDialog
 import android.os.Bundle
@@ -19,7 +19,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.*
 import com.intuisoft.plaid.databinding.FragmentWalletSettingsBinding
-import com.intuisoft.plaid.features.dashboardscreen.viewmodel.WalletSettingsViewModel
+import com.intuisoft.plaid.features.dashboardflow.viewmodel.WalletSettingsViewModel
 import com.intuisoft.plaid.features.pin.ui.PinProtectedFragment
 import com.intuisoft.plaid.features.settings.ui.SettingsFragment
 import com.intuisoft.plaid.features.settings.viewmodel.SettingsViewModel
@@ -28,7 +28,6 @@ import com.intuisoft.plaid.util.fragmentconfig.ConfigQrDisplayData
 import com.intuisoft.plaid.util.fragmentconfig.ConfigSeedData
 import io.horizontalsystems.bitcoinkit.BitcoinKit
 import io.horizontalsystems.hdwalletkit.HDWallet
-import kotlinx.android.synthetic.main.fragment_wallet_settings.*
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 

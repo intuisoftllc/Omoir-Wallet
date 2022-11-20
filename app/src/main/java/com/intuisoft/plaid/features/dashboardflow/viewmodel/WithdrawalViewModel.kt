@@ -1,4 +1,4 @@
-package com.intuisoft.plaid.features.dashboardscreen.viewmodel
+package com.intuisoft.plaid.features.dashboardflow.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.LiveData

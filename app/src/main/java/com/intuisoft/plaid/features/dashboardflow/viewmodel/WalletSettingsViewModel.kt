@@ -1,23 +1,10 @@
-package com.intuisoft.plaid.features.dashboardscreen.viewmodel
+package com.intuisoft.plaid.features.dashboardflow.viewmodel
 
 import android.app.Application
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.viewModelScope
-import com.intuisoft.plaid.androidwrappers.BaseViewModel
-import com.intuisoft.plaid.androidwrappers.SingleLiveData
 import com.intuisoft.plaid.androidwrappers.WalletViewModel
 import com.intuisoft.plaid.common.repositories.ApiRepository
-import com.intuisoft.plaid.model.LocalWalletModel
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.walletmanager.AbstractWalletManager
-import com.intuisoft.plaid.walletmanager.WalletManager
-import io.horizontalsystems.bitcoincore.models.TransactionInfo
-import io.horizontalsystems.bitcoincore.network.Network
-import io.horizontalsystems.bitcoinkit.BitcoinKit
-import io.reactivex.disposables.CompositeDisposable
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 
 class WalletSettingsViewModel(
