@@ -234,7 +234,7 @@ class MarketFragment : PinProtectedFragment<FragmentMarketBinding>() {
         }
 
         viewModel.couldNotLoadData.observe(viewLifecycleOwner, Observer {
-
+            styledSnackBar(requireView(), getString(R.string.market_data_load_error), true)
         })
 
         viewModel.network.observe(viewLifecycleOwner, Observer {
@@ -281,14 +281,20 @@ class MarketFragment : PinProtectedFragment<FragmentMarketBinding>() {
         viewModel.chartData.observe(viewLifecycleOwner, Observer {
             adapter.setItems(it)
         })
+
+        viewModel.showContent.observe(viewLifecycleOwner, Observer {
+            binding.screenContents.isVisible = it
+            binding.noInternet.isVisible = !it
+        })
     }
 
     override fun onResume() {
         super.onResume()
-        viewModel.updateBasicMarketData()
-        viewModel.updateExtendedMarketData()
-        viewModel.updateChartData()
-        viewModel.setTickerPrice()
+        viewModel.updateData()
+    }
+
+    override fun onNetworkStateChanged(hasNetwork: Boolean) {
+        viewModel.onNoInternet(hasNetwork)
     }
 
     fun openLink(url: String) {

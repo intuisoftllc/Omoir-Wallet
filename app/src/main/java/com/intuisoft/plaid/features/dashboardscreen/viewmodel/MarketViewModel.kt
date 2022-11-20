@@ -16,9 +16,11 @@ import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.common.util.SimpleCoinNumberFormat
 import com.intuisoft.plaid.common.util.SimpleCurrencyFormat
 import com.intuisoft.plaid.common.util.extensions.humanReadableByteCountSI
+import com.intuisoft.plaid.util.NetworkUtil
 import com.intuisoft.plaid.walletmanager.AbstractWalletManager
 import io.horizontalsystems.bitcoinkit.BitcoinKit
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -87,7 +89,48 @@ class MarketViewModel(
     protected val _upgradeToPro = SingleLiveData<Boolean>()
     val upgradeToPro: LiveData<Boolean> = _upgradeToPro
 
+    protected val _showContent = SingleLiveData<Boolean>()
+    val showContent: LiveData<Boolean> = _showContent
+
     private var intervalType = ChartIntervalType.INTERVAL_1DAY
+
+    fun updateData() {
+        if(NetworkUtil.hasInternet(getApplication<PlaidApp>())) {
+            _showContent.postValue(true)
+            updateBasicMarketData()
+            updateExtendedMarketData()
+            updateChartData()
+            setTickerPrice()
+        } else {
+            onNoInternet(false)
+        }
+    }
+
+    fun onNoInternet(hasInternet: Boolean) {
+        GlobalScope.launch {
+
+            val basicData = apiRepository.getBasicTickerData()
+            val extendedData = apiRepository.getExtendedNetworkData(getWalletNetwork() == BitcoinKit.NetworkType.TestNet)
+            val chartData = getChartData()
+
+            if(basicData.marketCap != 0.0 && extendedData != null && chartData != null) {
+                _showContent.postValue(true)
+                updateBasicMarketData()
+                updateExtendedMarketData()
+                updateChartData()
+                setTickerPrice()
+            } else {
+                _showContent.postValue(hasInternet)
+
+                if (hasInternet) {
+                    updateBasicMarketData()
+                    updateExtendedMarketData()
+                    updateChartData()
+                    setTickerPrice()
+                }
+            }
+        }
+    }
 
     fun updateBasicMarketData() {
         viewModelScope.launch {
@@ -208,10 +251,10 @@ class MarketViewModel(
                         }
 
                         when {
-                            points <= 0 -> { // -3 to 0
+                            points < 0 -> { // -1 to -3
                                 _congestionRating.postValue(CongestionRating.LIGHT)
                             }
-                            points in 1..3 -> {
+                            points in 0..3 -> {
                                 _congestionRating.postValue(CongestionRating.NORMAL)
                             }
                             points in 4..6 -> {

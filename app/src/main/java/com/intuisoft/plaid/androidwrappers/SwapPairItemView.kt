@@ -37,6 +37,7 @@ class SwapPairItemView(context: Context, attrs: AttributeSet?) : LinearLayout(co
     private var symbol: Int = 0
     private var symbolUrl: String = ""
     private var value: Double = 0.0
+    private var tickerClickable: Boolean = true
 
     companion object {
         // button text positions
@@ -106,6 +107,7 @@ class SwapPairItemView(context: Context, attrs: AttributeSet?) : LinearLayout(co
         else setTickerSymbol(symbolUrl)
         setValue(value)
         setPairTitle(title)
+        setTickerClickable(tickerClickable)
         onTextChanged?.let { setOnTextChangedListener(it) }
     }
 
@@ -150,6 +152,17 @@ class SwapPairItemView(context: Context, attrs: AttributeSet?) : LinearLayout(co
         if(value != 0.0)
             enter_value_tv?.setText(valueStr)
         else enter_value_tv?.setText("")
+    }
+
+    fun setTickerClickable(clickable: Boolean) {
+        tickerClickable = clickable
+        swap_pair_ticker_container?.isClickable = clickable
+    }
+
+    fun onTickerClicked(onClick: () -> Unit) {
+        swap_pair_ticker_container?.setOnClickListener {
+            onClick()
+        }
     }
 
     fun setOnTextChangedListener(onChanged: (String?) -> Boolean) {

@@ -12,23 +12,29 @@ data class SupportedCurrency(
     @ColumnInfo(name = "name") var name: String,
     @ColumnInfo(name = "image") var image: String,
     @ColumnInfo(name = "fixed") var fixed: Boolean,
+    @ColumnInfo(name = "validation_address") var validAddressRegex: String,
+    @ColumnInfo(name = "validation_memo") var validMemoRegex: String?
 ) {
     fun from() =
         SupportedCurrencyModel(
             ticker = ticker,
             name = name,
-            image = image
+            image = image,
+            validAddressRegex = validAddressRegex,
+            validMemoRegex = validMemoRegex
         )
 
     companion object {
 
-        fun consume(ticker: String, name: String, image: String, fixed: Boolean) =
+        fun consume(ticker: String, name: String, image: String, fixed: Boolean, addressRegex: String, memoRegex: String?) =
             SupportedCurrency(
                 id = ticker + if(fixed) 1 else 0,
                 ticker = ticker,
                 name = name,
                 image = image,
-                fixed = fixed
+                fixed = fixed,
+                validAddressRegex = addressRegex,
+                validMemoRegex = memoRegex
             )
     }
 }

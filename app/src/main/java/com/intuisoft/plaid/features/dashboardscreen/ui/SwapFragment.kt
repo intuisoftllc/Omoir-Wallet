@@ -1,39 +1,27 @@
 package com.intuisoft.plaid.features.dashboardscreen.ui
 
-import android.app.ProgressDialog
+import android.content.Context
 import android.os.Bundle
-import android.text.method.PasswordTransformationMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
-import android.widget.ImageView
 import android.widget.TextView
-import androidx.core.os.bundleOf
+import androidx.cardview.widget.CardView
 import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
 import androidx.lifecycle.Observer
-import androidx.navigation.fragment.findNavController
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.*
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
-import com.intuisoft.plaid.databinding.FragmentWalletSettingsBinding
-import com.intuisoft.plaid.features.dashboardscreen.viewmodel.WalletSettingsViewModel
 import com.intuisoft.plaid.features.pin.ui.PinProtectedFragment
-import com.intuisoft.plaid.features.settings.ui.SettingsFragment
-import com.intuisoft.plaid.features.settings.viewmodel.SettingsViewModel
-import com.intuisoft.plaid.common.util.Constants
+import com.intuisoft.plaid.common.util.extensions.containsNumbers
 import com.intuisoft.plaid.databinding.FragmentSwapBinding
 import com.intuisoft.plaid.features.dashboardscreen.viewmodel.SwapViewModel
-import com.intuisoft.plaid.util.fragmentconfig.ConfigQrDisplayData
-import com.intuisoft.plaid.util.fragmentconfig.ConfigSeedData
-import io.horizontalsystems.bitcoinkit.BitcoinKit
-import io.horizontalsystems.hdwalletkit.HDWallet
-import kotlinx.android.synthetic.main.fragment_wallet_settings.*
+import com.intuisoft.plaid.util.NetworkUtil
 import org.koin.android.ext.android.inject
-import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
@@ -61,7 +49,11 @@ class SwapFragment : PinProtectedFragment<FragmentSwapBinding>() {
 
         viewModel.setInitialValues()
         binding.swapPairSend.setOnTextChangedListener {
-            viewModel.validateSendAmount(if(it?.isNotEmpty() == true && it.find { Character.isDigit(it) } != null) it.toDouble() else 0.0)
+            viewModel.validateSendAmount(
+                if(it?.isNotEmpty() == true && it.containsNumbers())
+                    it.toDouble()
+                else 0.0
+            )
         }
 
         viewModel.minMax.observe(viewLifecycleOwner, Observer {
@@ -91,6 +83,19 @@ class SwapFragment : PinProtectedFragment<FragmentSwapBinding>() {
             viewModel.swapSendReceive()
         }
 
+        viewModel.onDisplayExplanation.observe(viewLifecycleOwner, Observer {
+            styledSnackBar(requireView(), it, true)
+        })
+
+        viewModel.confirmButtonEnabled.observe(viewLifecycleOwner, Observer {
+            binding.confirm.enableButton(it)
+        })
+
+        binding.confirm.onClick {
+            binding.confirm.enableButton(false)
+            viewModel.onNext()
+        }
+
         viewModel.recievePairInfo.observe(viewLifecycleOwner, Observer {
             if(it.ticker.lowercase() == "btc") {
                 binding.swapPairReceive.setTickerSymbol(R.drawable.ic_bitcoin)
@@ -116,14 +121,176 @@ class SwapFragment : PinProtectedFragment<FragmentSwapBinding>() {
             binding.floating.setButtonStyle(RoundedButtonView.ButtonStyle.ROUNDED_STYLE)
         }
 
-        viewModel.sendReceiveSwapEnabled.observe(viewLifecycleOwner, Observer {
+        viewModel.screenFunctionsEnabled.observe(viewLifecycleOwner, Observer {
             binding.swapSendReceive.isClickable = it
+            binding.fixed.enableButton(it)
+            binding.floating.enableButton(it)
+            binding.swapPairSend.setTickerClickable(it)
+            binding.swapPairReceive.setTickerClickable(it)
         })
 
         viewModel.conversionAmount.observe(viewLifecycleOwner, Observer {
             binding.swapPairReceive.setValue(it)
         })
 
+        viewModel.getReceiveAddress.observe(viewLifecycleOwner, Observer {
+            onGetReceiveAddress(it.first, it.second)
+        })
+
+        viewModel.getRefundAddress.observe(viewLifecycleOwner, Observer {
+            onGetRefundAddress(it.first, it.second)
+        })
+
+        viewModel.showContent.observe(viewLifecycleOwner, Observer {
+            binding.screenContents.isVisible = it
+            binding.noInternet.isVisible = !it
+        })
+
+        viewModel.exchangeInfoDisplay.observe(viewLifecycleOwner, Observer {
+            confirmExchange(it)
+        })
+    }
+
+    private fun setReceiveAddress(address: String, memo: String) {
+        viewModel.setReceiveAddress(address, memo)
+    }
+
+    private fun setRefundAddress(address: String, memo: String) {
+        viewModel.setRefundAddress(address, memo)
+    }
+
+    private fun onGetReceiveAddress(ticker: String, validationRegex: Pair<String, String?>) {
+        enterAddressDialog(
+            context = requireContext(),
+            title = getString(R.string.swap_deposit_address_title),
+            ticker = ticker,
+            depositAddressTitle = getString(R.string.swap_deposit_address_entry_title, ticker),
+            addressValidationRegex = validationRegex.first,
+            memoValidationRegex = validationRegex.second,
+            setAddress = ::setReceiveAddress
+        )
+    }
+
+    private fun onGetRefundAddress(ticker: String, validationRegex: Pair<String, String?>) {
+        enterAddressDialog(
+            context = requireContext(),
+            title = getString(R.string.swap_refund_address_title),
+            ticker = ticker,
+            depositAddressTitle = getString(R.string.swap_refund_address_entry_title, ticker),
+            addressValidationRegex = validationRegex.first,
+            memoValidationRegex = validationRegex.second,
+            setAddress = ::setRefundAddress
+        )
+    }
+
+    fun enterAddressDialog(
+        context: Context,
+        title: String,
+        ticker: String,
+        depositAddressTitle: String,
+        addressValidationRegex: String,
+        memoValidationRegex: String?,
+        setAddress: (address: String, memo: String) -> Unit
+    ) {
+        val bottomSheetDialog = BottomSheetDialog(context)
+        bottomSheetDialog.setContentView(R.layout.bottom_sheet_swap_deposit_address)
+        val sheetTitle = bottomSheetDialog.findViewById<TextView>(R.id.bottom_sheet_title)!!
+        val depositAddrTitle =
+            bottomSheetDialog.findViewById<TextView>(R.id.deposit_address_title)!!
+        val memoTitle =
+            bottomSheetDialog.findViewById<TextView>(R.id.memo_title)!!
+        val memo = bottomSheetDialog.findViewById<EditText>(R.id.memo)!!
+        val address = bottomSheetDialog.findViewById<EditText>(R.id.address)!!
+        val memoContainer = bottomSheetDialog.findViewById<CardView>(R.id.memo_container)!!
+        val confirm = bottomSheetDialog.findViewById<RoundedButtonView>(R.id.confirm)!!
+        val cancel = bottomSheetDialog.findViewById<RoundedButtonView>(R.id.cancel)!!
+        val validationError = bottomSheetDialog.findViewById<TextView>(R.id.validation_error)!!
+
+        bottomSheetDialog.setCancelable(false)
+        sheetTitle.text = title
+        depositAddrTitle.text = depositAddressTitle
+        memoTitle.isVisible = memoValidationRegex != null
+        memoContainer.isVisible = memoValidationRegex != null
+
+        address.doOnTextChanged { text, start, before, count ->
+            validationError.isVisible = false
+        }
+
+        memo.doOnTextChanged { text, start, before, count ->
+            validationError.isVisible = false
+        }
+
+        confirm.onClick {
+            if(address.text.toString().isEmpty() ||
+                !address.text.toString().matches(Regex(addressValidationRegex))) {
+                validationError.isVisible = true
+                validationError.text = getString(R.string.swap_deposit_address_dialog_invalid_address_error, ticker.lowercase())
+            } else {
+
+                if(!NetworkUtil.hasInternet(requireContext())) {
+                    validationError.isVisible = true
+                    validationError.text = getString(R.string.no_internet_connection)
+                } else if(memoValidationRegex != null && (memo.text.toString().isEmpty() ||
+                            !memo.text.toString().matches(Regex(memoValidationRegex)))) {
+                    validationError.isVisible = true
+                    validationError.text = getString(R.string.swap_deposit_address_dialog_invalid_memo_error, ticker.lowercase())
+                } else {
+                    // good to go check if there is no internet if so just cancel the dialog
+                    setAddress(address.text.toString(), memo.text.toString())
+                    bottomSheetDialog.cancel()
+                    viewModel.confirmExchange()
+                }
+            }
+        }
+
+        bottomSheetDialog.setOnCancelListener {
+            binding.confirm.enableButton(true)
+        }
+
+        cancel.onClick {
+            bottomSheetDialog.cancel()
+        }
+
+        bottomSheetDialog.show()
+    }
+
+    private fun confirmExchange(
+        info: SwapViewModel.ExchangeInfoDisplay
+    ) {
+        val bottomSheetDialog = BottomSheetDialog(requireContext())
+        bottomSheetDialog.setContentView(R.layout.bottom_sheet_confirm_swap)
+        val recipient = bottomSheetDialog.findViewById<SettingsItemView>(R.id.recipient)!!
+        val sender = bottomSheetDialog.findViewById<SettingsItemView>(R.id.sender)!!
+        val refundAddress = bottomSheetDialog.findViewById<SettingsItemView>(R.id.refund_address)!!
+        val memo = bottomSheetDialog.findViewById<SettingsItemView>(R.id.memo)!!
+        val exchangeType = bottomSheetDialog.findViewById<SettingsItemView>(R.id.exchange_type)!!
+        val amountSent = bottomSheetDialog.findViewById<SettingsItemView>(R.id.amount_sent)!!
+        val amountReceived = bottomSheetDialog.findViewById<SettingsItemView>(R.id.amount_received)!!
+        val cancel = bottomSheetDialog.findViewById<RoundedButtonView>(R.id.cancel)!!
+        val exchange = bottomSheetDialog.findViewById<RoundedButtonView>(R.id.exchange)!!
+
+        recipient.setSubTitleText(info.recipient)
+        sender.setSubTitleText(info.sender)
+        memo.setSubTitleText(info.memo)
+        exchangeType.setSubTitleText(info.exchangeType)
+        recipient.setSubTitleText(info.recipient)
+        amountSent.setSubTitleText(info.amountSent)
+        amountReceived.setSubTitleText(info.amountReceived)
+        refundAddress.setSubTitleText(info.refundAddress)
+
+        cancel.onClick {
+            bottomSheetDialog.dismiss()
+        }
+
+        exchange.onClick {
+            // todo impl
+        }
+
+        bottomSheetDialog.show()
+    }
+
+    override fun onNetworkStateChanged(hasNetwork: Boolean) {
+        viewModel.onNoInternet(hasNetwork)
     }
 
 

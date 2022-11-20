@@ -376,7 +376,7 @@
     <string name="market_data_extended_item_7_title">Avg Fee Rate</string>
     <string name="market_data_extended_item_8_title">Unconfirmed Txs</string>
     <string name="market_data_extended_item_9_title">Avg Conf. Time</string>
-    <string name="market_data_extended_item_10_title">Network Congestion Rating</string>
+    <string name="market_data_extended_item_10_title">Network Congestion Rating (beta)</string>
     <string name="market_data_what_is_bitcoin_link">https://www.coindesk.com/learn/what-is-bitcoin/</string>
     <string name="market_data_bitcoin_org_link">https://www.bitcoin.org</string>
     <string name="market_data_bitcoin_explorer_link">https://www.blockchain.com/explorer?view=btc</string>
@@ -387,6 +387,7 @@
     <string name="market_data_congestion_rating_4">busy</string>
     <string name="market_data_congestion_rating_5">congested</string>
     <string name="market_data_congestion_rating_6">N/A</string>
+    <string name="market_data_load_error">Failed to load chart data, if this issue persists try restarting the app.</string>
 <!--    Market Strings End -->
 
 <!--    Import Recovery Phrase Strings -->
@@ -408,6 +409,30 @@
     <string name="swap_send_variant_2">You Send %1$s (from external wallet)</string>
     <string name="swap_receive_variant_1">You Get %1$s (to external wallet)</string>
     <string name="swap_receive_variant_2">You Get %1$s</string>
+    <string name="swap_bitcoin_amount_limit_error">You cannot send/receive more than the bitcoin supply cap.</string>
+    <string name="swap_limit_reached_error">You cannot enter more that the max swappable amount of %1$s (%2$s).</string>
+    <string name="swap_could_not_find_crypto_error">Could not load data for cryptocurrency (%1$s), if this issue persists try restarting the app.</string>
+    <string name="swap_could_not_load_min_max_error">Could not load minimum &amp; maximum limits for cryptocurrency pair (%1$s -> %2$s), please check your internet connection.</string>
+    <string name="swap_confirm_dialog_title">Confirm Exchange</string>
+    <string name="swap_confirm_dialog_item_1">Recipient</string>
+    <string name="swap_confirm_dialog_item_2">Sender</string>
+    <string name="swap_confirm_dialog_item_3">Exchange Type</string>
+    <string name="swap_confirm_dialog_item_4">Amount to Send</string>
+    <string name="swap_confirm_dialog_item_5">Amount to Receive</string>
+    <string name="swap_confirm_dialog_item_6">Memo</string>
+    <string name="swap_confirm_dialog_item_7">Refund Address</string>
+    <string name="swap_deposit_address_title">Deposit Address</string>
+    <string name="swap_refund_address_title">Refund Address</string>
+    <string name="swap_deposit_address_entry_title">Deposit Address For %1$s</string>
+    <string name="swap_refund_address_entry_title">Refund Address For %1$s</string>
+    <string name="swap_deposit_address_entry_hint">0x71C7656EC7ab88…</string>
+    <string name="swap_deposit_address_entry_memo_title">Memo</string>
+    <string name="swap_deposit_address_entry_memo_hint">coffee</string>
+    <string name="swap_deposit_address_dialog_invalid_address_error">Invalid %1$s address</string>
+    <string name="swap_deposit_address_dialog_invalid_memo_error">Invalid memo format for %1$s address</string>
+    <string name="swap_auto_generated_recipient_address">%1$s (auto-generated)</string>
+    <string name="swap_bitcoin_sender">This wallet (you can pay in the next screen)</string>
+    <string name="swap_external_wallet_sender">External %1$s wallet (pay instructions are provided in the next screen)</string>
 <!--    Swap Strings End -->
 
 <!--    Generic Use Strings -->
@@ -469,6 +494,7 @@
     <string name="upgrade_to_pro">Upgrade To Pro</string>
     <string name="transaction_id">Transaction ID</string>
     <string name="no_connection">Lost Connection to Servers…</string>
+    <string name="not_connected_to_internet">You are not connected\nto the Internet</string>
     <string name="syncing_percent">Syncing... (%1$s%%)</string>
 <!--    Generic Use Strings End -->
 

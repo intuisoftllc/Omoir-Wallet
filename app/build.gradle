@@ -6,6 +6,7 @@ plugins {
     id 'androidx.navigation.safeargs'
     id 'com.google.gms.google-services'
     id 'com.google.firebase.crashlytics'
+    id 'com.google.firebase.firebase-perf'
 }
 
 def propertiesFile = rootProject.file("app.properties")
@@ -126,6 +127,7 @@ dependencies {
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.1.5'
 
     implementation 'androidx.core:core-performance:1.0.0-alpha02'
+    implementation 'com.google.firebase:firebase-perf-ktx'
 
     implementation 'com.robinhood.spark:spark:1.2.0'
 

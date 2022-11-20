@@ -44,7 +44,7 @@ class DatabaseRepository_Impl(
     }
 
     override suspend fun setSupportedCurrenciesData(data: List<SupportedCurrencyModel>, fixed: Boolean) {
-        supportedCurrencyDao.insert(data.map { SupportedCurrency.consume(it.ticker, it.name, it.image, fixed) })
+        supportedCurrencyDao.insert(data.map { SupportedCurrency.consume(it.ticker, it.name, it.image, fixed, it.validAddressRegex, it.validMemoRegex) })
         database.onUpdate()
     }
 

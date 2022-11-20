@@ -28,7 +28,7 @@ abstract class BindingFragment<T: ViewBinding> : Fragment(), FragmentActionBarDe
         (requireActivity() as MainActivity).scanBarcode()
     }
 
-    override fun onStateChanged(hasNetwork: Boolean) {
+    override fun onNetworkStateChanged(hasNetwork: Boolean) {
         if(!hasNetwork) {
             Toast.makeText(requireContext(), getString(R.string.no_connection), Toast.LENGTH_LONG).show()
         }

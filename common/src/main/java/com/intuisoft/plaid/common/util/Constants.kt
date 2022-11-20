@@ -7,7 +7,7 @@ class Constants {
 
     object Database {
         const val DB_NAME = "plaid.db"
-        const val DB_VERSION = 16
+        const val DB_VERSION = 17
     }
 
     object Files {
@@ -118,6 +118,7 @@ class Constants {
         const val FREE_MAX_WALLETS = 4
         const val PRO_MAX_WALLETS = 10
         const val SYNC_RESTART_LIMIT = 6
+        const val BITCOIN_SUPPLY_CAP = 21000000
         const val DEFAULT_PIN_TIMEOUT =
             Time.INSTANT_TIME_OFFSET // check for pin only when user leaves the app by default
     }

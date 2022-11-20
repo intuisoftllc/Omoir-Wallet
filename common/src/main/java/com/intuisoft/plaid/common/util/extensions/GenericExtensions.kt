@@ -127,3 +127,7 @@ fun Long.humanReadableByteCountSI(): String? {
     }
     return java.lang.String.format("%.1f %cB", bytes / 1000.0, ci.current())
 }
+
+fun String.containsNumbers(): Boolean {
+    return this.find { Character.isDigit(it) } != null
+}

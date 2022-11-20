@@ -24,7 +24,6 @@ import com.intuisoft.plaid.listeners.NetworkStateChangeListener
 import com.intuisoft.plaid.recievers.NetworkChangeReceiver
 import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.walletmanager.AbstractWalletManager
-import com.intuisoft.plaid.walletmanager.WalletManager
 import org.koin.android.ext.android.inject
 
 
@@ -70,7 +69,7 @@ class MainActivity : BindingActivity<ActivityMainBinding>(), ActionBarDelegate {
             val listener = supportFragmentManager.currentNavigationFragment as? NetworkStateChangeListener
 
             if(supportFragmentManager.currentNavigationFragment !is SplashFragment) {
-                listener?.onStateChanged(it)
+                listener?.onNetworkStateChanged(it)
             }
         }
 

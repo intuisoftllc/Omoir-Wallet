@@ -1,5 +1,6 @@
 package com.intuisoft.plaid.common.network.nownodes.repository
 
+import android.util.Log
 import com.intuisoft.plaid.common.model.BasicPriceDataModel
 import com.intuisoft.plaid.common.model.ChartDataModel
 import com.intuisoft.plaid.common.model.ChartIntervalType
@@ -31,7 +32,10 @@ interface SimpleSwapRepository {
         override fun getAllSupportedCurrencies(): Result<List<SupportedCurrencyModel>> {
             try {
                 val currencies = api.getAllSupportedCurrencies(apiKey).execute().body()
-                return Result.success(currencies!!.map { SupportedCurrencyModel(it.symbol, it.name, it.image) })
+
+                return Result.success(currencies!!.filter { it.validation_address != null }.map {
+                    SupportedCurrencyModel(it.symbol, it.name, it.image, it.validation_address!!, it.validation_extra)
+                })
             } catch (t: Throwable) {
                 return Result.failure(t)
             }
