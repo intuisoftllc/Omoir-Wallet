@@ -55,18 +55,20 @@ class SyncManager(
         }
 
     fun openWallet(wallet: LocalWalletModel) {
-        openedWallet?.walletKit?.stop()
         openedWallet = wallet
+        wallet.walletKit?.onEnterForeground()
         wallet.walletKit?.start()
     }
 
     fun closeWallet() {
+        openedWallet?.walletKit?.onEnterBackground()
         openedWallet?.walletKit?.stop()
         openedWallet = null
     }
 
     private fun safeStop(wallet: LocalWalletModel) {
         if(wallet != openedWallet) {
+            wallet.walletKit!!.onEnterBackground()
             wallet.walletKit!!.stop()
         }
     }
@@ -154,13 +156,20 @@ class SyncManager(
     fun sync(wallet: LocalWalletModel) : Boolean {
         if (!wallet.isSyncing && !wallet.isSynced) {
             runInBackground {
-                wallet.walletKit!!.refresh()
+                syncInternal(wallet)
             }
 
             return true
         }
 
         return false
+    }
+
+    private suspend fun syncInternal(wallet: LocalWalletModel) {
+        if (!wallet.isSyncing && !wallet.isSynced) {
+            wallet.walletKit!!.onEnterForeground()
+            wallet.walletKit!!.refresh()
+        }
     }
 
     fun getSyncGrouping(): Int { // todo: prevent user from syncing more wallets than allowed based on performance specs
@@ -182,7 +191,8 @@ class SyncManager(
     fun syncWallets() {
         if(running && !syncing && syncJobs.isEmpty()) {
             syncing = true
-            if((System.currentTimeMillis() - lastSynced) <= Constants.Time.MIN_SYNC_TIME                                     ) {
+            if((System.currentTimeMillis() - lastSynced) <= Constants.Time.MIN_SYNC_TIME
+                || _wallets.isEmpty()) {
                 syncing = false
                 return
             }
@@ -195,7 +205,7 @@ class SyncManager(
                             var startTime = System.currentTimeMillis()
                             var restarts = 0
                             group.items.forEach {
-                                sync(it)
+                                syncInternal(it)
                             }
 
                             // wait for this group of wallets to sync

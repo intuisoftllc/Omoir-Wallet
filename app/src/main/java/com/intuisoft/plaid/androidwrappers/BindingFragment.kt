@@ -1,5 +1,6 @@
 package com.intuisoft.plaid.androidwrappers
 
+import android.Manifest
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
@@ -25,7 +26,9 @@ abstract class BindingFragment<T: ViewBinding> : Fragment(), FragmentActionBarDe
     }
 
     fun scanBarcode() {
-        (requireActivity() as MainActivity).scanBarcode()
+        requireActivity().checkAppPermission(Manifest.permission.CAMERA, 100) {
+            (requireActivity() as MainActivity).scanBarcode()
+        }
     }
 
     override fun onNetworkStateChanged(hasNetwork: Boolean) {

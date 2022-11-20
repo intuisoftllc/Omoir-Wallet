@@ -40,7 +40,6 @@ class NameYourWalletFragment : PinProtectedFragment<FragmentNameWalletBinding>()
 
     override fun onConfiguration(configuration: FragmentConfiguration?) {
         viewModel.setConfiguration(configuration!!.configData as WalletConfigurationData)
-        ignoreOnBackPressed()
 
         binding.confirm.enableButton(false)
         binding.name.setOnKeyListener(object : View.OnKeyListener {
@@ -86,7 +85,7 @@ class NameYourWalletFragment : PinProtectedFragment<FragmentNameWalletBinding>()
 
         viewModel.walletCreated.observe(viewLifecycleOwner, Observer {
             var bundle = bundleOf(
-                com.intuisoft.plaid.common.util.Constants.Navigation.FRAGMENT_CONFIG to FragmentConfiguration(
+                Constants.Navigation.FRAGMENT_CONFIG to FragmentConfiguration( // todo: check for pro here for home screen destination and on all other places as well
                     actionBarTitle = 0,
                     actionBarSubtitle = 0,
                     actionBarVariant = 0,

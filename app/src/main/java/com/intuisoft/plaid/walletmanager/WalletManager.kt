@@ -67,6 +67,7 @@ class WalletManager(
                 purpose = HDWallet.Purpose.BIP44
             )
 
+            base.onEnterBackground()
             return base
         } else
             return baseWallet
@@ -342,7 +343,7 @@ class WalletManager(
                        )
                }
 
-
+               model.walletKit!!.onEnterBackground()
                model.walletKit!!.listener =
                    object : BitcoinEventListener() {
                        override fun onBalanceUpdate(balance: BalanceInfo) {

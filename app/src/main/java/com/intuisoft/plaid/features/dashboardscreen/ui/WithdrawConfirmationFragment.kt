@@ -78,9 +78,7 @@ class WithdrawConfirmationFragment : PinProtectedFragment<FragmentWithdrawConfir
         viewModel.setNetworkFeeRate()
 
         binding.scan.onClick {
-            requireActivity().checkAppPermission(Manifest.permission.CAMERA, 100) {
-                (requireActivity() as MainActivity).scanBarcode()
-            }
+            scanBarcode()
         }
 
         binding.address.addTextChangedListener(object : TextWatcher {
