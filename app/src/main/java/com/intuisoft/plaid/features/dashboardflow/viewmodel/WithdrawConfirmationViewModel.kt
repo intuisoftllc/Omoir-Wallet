@@ -50,6 +50,7 @@ class WithdrawConfirmationViewModel(
     protected val _onConfirm = SingleLiveData<Unit>()
     val onConfirm: LiveData<Unit> = _onConfirm
 
+    private var invoiceSend: Boolean = false
     private var feeRate: Int = 0
     private var address: String? = null
     private var invalidAddressErrors = 0
@@ -64,6 +65,12 @@ class WithdrawConfirmationViewModel(
     fun getNetworkFeeRate() = networkFeeRate
 
     fun getLocalAddress() = address
+
+    fun isInvoiceSend() = invoiceSend
+
+    fun setInvoiceSend(fromInvoice: Boolean) {
+        invoiceSend = fromInvoice
+    }
 
     fun getWallets() = walletManager.getWallets()
 

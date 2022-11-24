@@ -97,8 +97,8 @@ abstract class AbstractKit {
         return bitcoinCore.redeem(unspentOutputs, value, address, feeRate, sortType, createOnly)
     }
 
-    fun broadcast(fullTransaction: FullTransaction) {
-        bitcoinCore.broadcast(fullTransaction)
+    fun broadcast(fullTransaction: FullTransaction) : FullTransaction {
+       return bitcoinCore.broadcast(fullTransaction)
     }
 
     fun receiveAddress(): String {

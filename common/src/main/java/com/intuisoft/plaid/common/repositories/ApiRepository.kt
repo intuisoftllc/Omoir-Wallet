@@ -15,7 +15,7 @@ interface ApiRepository {
 
     suspend fun getCurrencyRangeLimit(from: String, to: String, fixed: Boolean): CurrencyRangeLimitModel?
 
-    suspend fun getExtendedNetworkData(testnetWallet: Boolean): ExtendedNetworkDataModel?
+    suspend fun getExtendedNetworkData(testNetWallet: Boolean): ExtendedNetworkDataModel?
 
     suspend fun getTickerPriceChartData(intervalType: ChartIntervalType): List<ChartDataModel>?
 

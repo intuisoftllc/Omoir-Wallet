@@ -125,7 +125,7 @@ class MainActivity : BindingActivity<ActivityMainBinding>(), ActionBarDelegate {
 
     override fun onResume() {
         super.onResume()
-        registerReceiver(receiver, intentFilter);
+        registerReceiver(receiver, intentFilter)
     }
 
     override fun onDestroy() {
@@ -134,6 +134,12 @@ class MainActivity : BindingActivity<ActivityMainBinding>(), ActionBarDelegate {
     }
 
     fun scanBarcode() {
+        BarcodeScannerActivity.invoiceMode = false
+        barcodeLauncher.launch(Intent(this, BarcodeScannerActivity::class.java))
+    }
+
+    fun scanInvoice() {
+        BarcodeScannerActivity.invoiceMode = true
         barcodeLauncher.launch(Intent(this, BarcodeScannerActivity::class.java))
     }
 

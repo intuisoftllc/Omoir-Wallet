@@ -26,7 +26,11 @@ interface DatabaseRepository {
 
     suspend fun setBasicNetworkData(circulatingSupply: Long, memPoolTx: Int)
 
+    suspend fun setMemoForTransaction(txId: String, memo: String)
+
     suspend fun getRateFor(currencyCode: String): BasicPriceDataModel?
+
+    suspend fun getMemoForTransaction(txid: String): TransactionMemoModel?
 
     suspend fun setSupportedCurrenciesData(data: List<SupportedCurrencyModel>, fixed: Boolean)
 

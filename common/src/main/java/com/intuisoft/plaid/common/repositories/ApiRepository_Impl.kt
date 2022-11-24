@@ -34,7 +34,8 @@ class ApiRepository_Impl(
 
         if(rate == null) {
             updateBasicPriceData()
-            return localStoreRepository.getRateFor(currencyCode) ?: BasicPriceDataModel(0.0, 0.0, 0.0, localStoreRepository.getLocalCurrency())
+            return localStoreRepository.getRateFor(currencyCode)
+                ?: BasicPriceDataModel(0.0, 0.0, 0.0, localStoreRepository.getLocalCurrency())
         } else return rate
     }
 

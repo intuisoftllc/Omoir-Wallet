@@ -44,6 +44,65 @@
         app:layout_constraintBottom_toTopOf="@id/address_container"
         android:layout_marginBottom="@dimen/horizontal_padding_size"/>
 
+
+    <androidx.cardview.widget.CardView
+        android:visibility="gone"
+        android:id="@+id/memo_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/address_container"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="@dimen/margin_64"
+        app:cardCornerRadius="@dimen/card_corner_radius"
+        android:layout_marginHorizontal="@dimen/margin_20"
+        app:layout_constraintVertical_bias="@dimen/vertical_bias_40">
+
+        <EditText
+            android:id="@+id/memo"
+            style="@style/TextStyle.Medium.14"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:hint="@string/withdraw_confirmation_memo_text_box_hint"
+            android:maxLines="1"
+            android:padding="@dimen/horizontal_padding_size"
+            android:inputType="text"
+            android:imeOptions="actionDone"
+            android:textColorHint="@color/color_disabled"
+            android:textSize="14sp" />
+    </androidx.cardview.widget.CardView>
+
+
+    <TextView
+        android:visibility="gone"
+        android:id="@+id/memo_field_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/withdraw_confirmation_memo_text_box_title"
+        style="@style/TextStyle.Semibold.12"
+        app:layout_constraintStart_toStartOf="@id/memo_container"
+        app:layout_constraintBottom_toTopOf="@id/memo_container"
+        android:layout_marginBottom="@dimen/horizontal_padding_size"/>
+
+
+    <TextView
+        android:id="@+id/add_memo"
+        style="@style/TextStyle.Semibold.16"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/parent_top_margin_small"
+        android:background="?android:selectableItemBackground"
+        android:gravity="center"
+        android:padding="@dimen/margin_10"
+        android:text="@string/withdraw_confirmation_add_memo"
+        android:textColor="?attr/colorPrimary"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/address_container" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

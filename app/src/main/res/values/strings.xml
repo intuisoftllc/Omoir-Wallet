@@ -260,6 +260,7 @@
     <string name="transaction_details_item_3">Transaction Date</string>
     <string name="transaction_details_item_6">Status</string>
     <string name="transaction_details_item_7">Confirmations</string>
+    <string name="transaction_details_item_8">Memo</string>
     <string name="transaction_details_view_external">View on blockchain.com</string>
     <string name="transaction_details_type_incoming">Incoming</string>
     <string name="transaction_details_type_outgoing">Outgoing</string>
@@ -269,6 +270,9 @@
     <string name="transaction_details_status_processed">Processed</string>
     <string name="transaction_details_share_text">Check out this transaction for amount: %1$s, with fee: %2$s.\nYou can view this transaction at: %3$s</string>
     <string name="transaction_details_share_tag">Bitcoin Transaction</string>
+    <string name="transaction_details_memo_dialog_title">Transaction Memo</string>
+    <string name="transaction_details_memo_dialog_field_title">Memo</string>
+    <string name="transaction_details_memo_dialog_field_hint">coffee</string>
     <string name="transaction_details_view_testnet_transaction_online">View on blockcypher.com</string>
 <!--    Transaction Details Strings End -->
 
@@ -308,9 +312,19 @@
     <string name="coin_control_no_utxos">No UTXO\'s Available For Spend</string>
 <!--    Coin Control Bottom Sheet Strings End -->
 
+<!--    Withdrawal Type Strings -->
+    <string name="withdrawal_type_title">Withdrawal Type</string>
+    <string name="withdrawal_type_subtitle">How would you like to\nwithdraw funds?</string>
+    <string name="withdrawal_type_1">Standard Withdrawal</string>
+    <string name="withdrawal_type_2">Invoice</string>
+<!--    Withdrawal Type Strings End -->
+
 <!--    Withdraw Confirmation Strings -->
     <string name="withdraw_confirmation_address_suggestion">bc1qgrkgrv9a43...</string>
     <string name="withdraw_confirmation_address_text_box_title">What address would you like to send funds to?</string>
+    <string name="withdraw_confirmation_memo_text_box_title">What this withdrawal is for?</string>
+    <string name="withdraw_confirmation_memo_text_box_hint">Coffee</string>
+    <string name="withdraw_confirmation_add_memo">Add a memo</string>
     <string name="withdraw_confirmation_speed_slow">Slow\n+6hrs</string>
     <string name="withdraw_confirmation_speed_med">Med\n&#60;1hr</string>
     <string name="withdraw_confirmation_speed_fast">Fast\n~10m</string>
@@ -400,6 +414,23 @@
     <string name="import_recovery_phrase_error_invalid_seed_phrase">The entered seed phrase is invalid, please check the order of the words and try again</string>
 <!--    Import Recovery Phrase Strings End -->
 
+<!--    Deposit Strings -->
+    <string name="deposit_create_invoice_dialog_title">Create Invoice</string>
+    <string name="deposit_create_invoice_dialog_field_amount">Invoice Amount</string>
+    <string name="deposit_create_invoice_dialog_field_amount_hint">0.00523</string>
+    <string name="deposit_create_invoice_dialog_field_description">Description</string>
+    <string name="deposit_create_invoice_dialog_field_description_hint">Dinner</string>
+<!--    Deposit Strings End -->
+
+<!--    Invoice Strings -->
+    <string name="invoice_info_title">Invoice</string>
+    <string name="invoice_info_data_1_title">Amount To Send</string>
+    <string name="invoice_info_data_2_title">Address</string>
+    <string name="invoice_info_data_3_title">Description</string>
+    <string name="invoice_button_scan">Scan Invoice</string>
+    <string name="invoice_error_invalid_address">Invalid bitcoin address found in invoice</string>
+    <string name="invoice_error_over_balance">You do not have enough funds in your available balance to cover the invoice</string>
+<!--    Invoice Strings End -->
 
 <!--    Swap Strings -->
     <string name="swap_type_fixed">Fixed</string>
@@ -447,6 +478,7 @@
     <string name="fiat">Fiat</string>
     <string name="btc">BTC</string>
     <string name="save">Save</string>
+    <string name="create">Create</string>
     <string name="confirm">Confirm</string>
     <string name="scan">Scan</string>
     <string name="import_word">Import</string>
@@ -490,6 +522,7 @@
     <string name="select_all">Select All</string>
     <string name="exchange">Exchange</string>
     <string name="deposit">Deposit</string>
+    <string name="memo">Memo</string>
     <string name="withdraw">Withdraw</string>
     <string name="upgrade_to_pro">Upgrade To Pro</string>
     <string name="transaction_id">Transaction ID</string>
@@ -506,11 +539,13 @@
     <string name="wallet_settings_fragment_label">Wallet Settings</string>
     <string name="swap_fragment_label">Swap</string>
     <string name="market_fragment_label">Market</string>
+    <string name="invoice_fragment_label">Invioce</string>
     <string name="wallet_export_fragment_label">Export Wallet</string>
     <string name="display_unit_fragment_label">Bitcoin Unit</string>
     <string name="appearance_fragment_label">Appearance</string>
     <string name="local_currency_fragment_label">Local Currency</string>
     <string name="address_book_fragment_label">Address Book</string>
+    <string name="withdrawal_type_fragment_label">Withdrawal Type</string>
     <string name="manage_wallets_fragment_label">Manage Wallets</string>
     <string name="withdraw_fragment_label">Send BTC</string>
     <string name="withdraw_confirmation_fragment_label">Withdraw</string>

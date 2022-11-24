@@ -34,8 +34,11 @@ class SwapViewModel(
     protected val _conversionAmount = SingleLiveData<Double>()
     val conversionAmount: LiveData<Double> = _conversionAmount
 
-    protected val _minMax = SingleLiveData<Pair<String, String>?>()
-    val minMax: LiveData<Pair<String, String>?> = _minMax
+    protected val _fixedRange = SingleLiveData<Pair<String, String>?>()
+    val fixedRange: LiveData<Pair<String, String>?> = _fixedRange
+
+    protected val _floatingRange = SingleLiveData<Pair<String, String>?>()
+    val floatingRange: LiveData<Pair<String, String>?> = _floatingRange
 
     protected val _screenFunctionsEnabled = SingleLiveData<Boolean>()
     val screenFunctionsEnabled: LiveData<Boolean> = _screenFunctionsEnabled
@@ -80,7 +83,7 @@ class SwapViewModel(
          */
     fun setFixed(fixed: Boolean) {
         this.fixed = fixed
-        setMinMax()
+        setFixedFloatingRange()
     }
 
     fun validateSendAmount(sending: Double?) : Boolean {
@@ -185,7 +188,7 @@ class SwapViewModel(
             _screenFunctionsEnabled.postValue(false)
             setSendCurrency(from).join()
             setReceiveCurrency(to).join()
-            setMinMax().join()
+            setFixedFloatingRange().join()
             updateWholeCoinConversion(from, to)
             _screenFunctionsEnabled.postValue(true)
         }
@@ -313,17 +316,19 @@ class SwapViewModel(
         }
     }
 
-    private fun setMinMax() : Job {
+    private fun setFixedFloatingRange() : Job {
         return GlobalScope.launch {
             val range = apiRepository.getCurrencyRangeLimit(sendTicker, receiveTicker, fixed)
             if (range != null) {
                 min = range.min.toDouble()
                 max = range.max?.toDouble()
-                _minMax.postValue(range.min to (range.max ?: "∞"))
+                if(fixed) _fixedRange.postValue(range.min to (range.max ?: "∞"))
+                else _floatingRange.postValue(range.min to (range.max ?: "∞"))
             } else {
                 min = 0.0
                 max = 0.0
-                _minMax.postValue(null)
+                if(fixed) _fixedRange.postValue(null)
+                else _floatingRange.postValue(null)
                 _onDisplayExplanation.postValue(getApplication<PlaidApp>().getString(R.string.swap_could_not_load_min_max_error, sendTicker, receiveTicker))
             }
         }

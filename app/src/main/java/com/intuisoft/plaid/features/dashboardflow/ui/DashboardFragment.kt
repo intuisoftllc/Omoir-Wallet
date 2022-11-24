@@ -116,8 +116,9 @@ class DashboardFragment : PinProtectedFragment<FragmentWalletDashboardBinding>()
 
         binding.withdraw.onClick {
             navigate(
-                R.id.withdrawalFragment,
-                viewModel.getWalletId()
+                R.id.withdrawalTypeFragment,
+                viewModel.getWalletId(),
+                Constants.Navigation.ANIMATED_SLIDE_UP_OPTION
             )
         }
     }

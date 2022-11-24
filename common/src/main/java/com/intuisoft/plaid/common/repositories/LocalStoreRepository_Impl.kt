@@ -305,6 +305,16 @@ class LocalStoreRepository_Impl(
         databaseRepository.setSupportedCurrenciesData(data, fixed)
     }
 
+    override suspend fun setTransactionMemo(txId: String, memo: String) {
+        databaseRepository.setMemoForTransaction(txId, memo)
+    }
+
+    override suspend fun getTransactionMemo(txId: String): TransactionMemoModel? {
+        return runBlocking {
+            return@runBlocking databaseRepository.getMemoForTransaction(txId)
+        }
+    }
+
     override fun getAllRates(): List<BasicPriceDataModel> {
         return runBlocking {
             return@runBlocking databaseRepository.getAllRates()

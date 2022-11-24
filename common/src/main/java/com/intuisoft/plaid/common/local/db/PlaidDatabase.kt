@@ -16,7 +16,8 @@ import com.intuisoft.plaid.common.util.Constants
         BasicNetworkData::class,
         ExtendedNetworkData::class,
         TickerPriceChartData::class,
-        SupportedCurrency::class
+        SupportedCurrency::class,
+        TransactionMemo::class
     ),
     version = Constants.Database.DB_VERSION
 )
@@ -58,4 +59,6 @@ abstract class PlaidDatabase : RoomDatabase() {
     abstract fun tickerPriceChartDataDao(): TickerPriceChartDataDao
 
     abstract fun supportedCurrencyDao(): SupportedCurrencyDao
+
+    abstract fun transactionMemoDao(): TransactionMemoDao
 }

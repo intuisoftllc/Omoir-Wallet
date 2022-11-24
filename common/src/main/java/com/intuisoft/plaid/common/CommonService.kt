@@ -221,6 +221,9 @@ object CommonService {
                 ),
                 provideSupportedCurrencyDao(
                     application!!
+                ),
+                provideTransactionMemoDao(
+                    application!!
                 )
             )
         }
@@ -350,6 +353,12 @@ object CommonService {
         return PlaidDatabase.getInstance(context).supportedCurrencyDao()
     }
 
+    private fun provideTransactionMemoDao(
+        context: Context
+    ): TransactionMemoDao {
+        return PlaidDatabase.getInstance(context).transactionMemoDao()
+    }
+
     private fun provideDatabaseRepository(
         database: PlaidDatabase,
         suggestedFeeRateDao: SuggestedFeeRateDao,
@@ -357,7 +366,8 @@ object CommonService {
         baseMarketDataDao: BaseMarketDataDao,
         extendedNetworkDataDao: ExtendedNetworkDataDao,
         tickerPriceChartDataDao: TickerPriceChartDataDao,
-        supportedCurrencyDao: SupportedCurrencyDao
+        supportedCurrencyDao: SupportedCurrencyDao,
+        transactionMemoDao: TransactionMemoDao
     ): DatabaseRepository {
         return DatabaseRepository_Impl(
             database,
@@ -366,7 +376,8 @@ object CommonService {
             baseMarketDataDao,
             extendedNetworkDataDao,
             tickerPriceChartDataDao,
-            supportedCurrencyDao
+            supportedCurrencyDao,
+            transactionMemoDao
         )
     }
 

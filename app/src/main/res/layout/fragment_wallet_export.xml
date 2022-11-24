@@ -10,9 +10,22 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/ic_close"
-        android:visibility="gone"
+        android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        android:layout_margin="15dp"/>
+
+    <ImageView
+        android:id="@+id/invoice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_invoice"
+        android:padding="@dimen/margin_10"
+        app:tint="?attr/colorPrimaryVariant"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@id/close"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/close"
         android:layout_margin="15dp"/>
 
 
@@ -45,8 +58,20 @@
                         tools:text="@string/export_wallet_title"
                         style="@style/TextStyle.Semibold.24"
                         android:textStyle="bold"
+                        android:layout_gravity="center_horizontal"
+                        app:layout_constraintBottom_toTopOf="@+id/qrCode"
+                        android:textColor="?attr/colorPrimaryVariant"/>
+
+                    <TextView
+                        android:id="@+id/invoice_description"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        tools:text="@string/export_wallet_title"
+                        style="@style/TextStyle.Regular.12"
                         android:visibility="gone"
-                        android:layout_marginBottom="@dimen/horizontal_padding_size_large"
+                        android:layout_marginTop="@dimen/margin_6"
                         android:layout_gravity="center_horizontal"
                         app:layout_constraintBottom_toTopOf="@+id/qrCode"
                         android:textColor="?attr/colorPrimaryVariant"/>
@@ -54,6 +79,7 @@
                     <ImageView
                         android:layout_width="@dimen/qr_code_size"
                         android:layout_height="@dimen/qr_code_size"
+                        android:layout_marginTop="@dimen/parent_top_margin_med"
                         android:layout_gravity="center_horizontal"
                         android:id="@+id/qrCode"/>
 
@@ -83,7 +109,7 @@
         app:button_style="rounded"
         android:id="@+id/shareButton"
         android:layout_marginHorizontal="@dimen/horizontal_padding_size_large"
-        android:layout_marginBottom="@dimen/parent_bottom_margin"
+        android:layout_marginBottom="@dimen/parent_top_margin_small"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>

@@ -9,6 +9,7 @@ import com.intuisoft.plaid.listeners.StateListener
 import com.intuisoft.plaid.model.LocalWalletModel
 import io.horizontalsystems.bitcoincore.BitcoinCore
 import io.horizontalsystems.bitcoincore.models.BalanceInfo
+import io.horizontalsystems.bitcoincore.models.BitcoinPaymentData
 import io.horizontalsystems.bitcoincore.models.TransactionInfo
 import io.horizontalsystems.bitcoinkit.BitcoinKit
 import io.horizontalsystems.hdwalletkit.HDExtendedKey
@@ -81,6 +82,10 @@ class WalletManager(
         syncer.closeWallet()
     }
 
+    override fun getOpenedWallet(): LocalWalletModel? {
+        return syncer.getOpenedWallet()
+    }
+
     override fun updateWalletName(localWallet: LocalWalletModel, newName: String) {
         findStoredWallet(localWallet.uuid)?.let {
             it.name = newName
@@ -107,6 +112,10 @@ class WalletManager(
 
     override fun validAddress(address: String) : Boolean {
         return _baseMainNetWallet!!.isAddressValid(address) || _baseTestNetWallet!!.isAddressValid(address)
+    }
+
+    override fun parseInvoice(invoiceData: String) : BitcoinPaymentData {
+        return _baseMainNetWallet!!.parsePaymentAddress(invoiceData)
     }
 
     override fun arePeersReady(localWallet: LocalWalletModel) : Boolean {

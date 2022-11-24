@@ -1,5 +1,6 @@
 package com.intuisoft.plaid.features.dashboardflow.ui
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -27,6 +28,7 @@ import com.intuisoft.plaid.common.util.Constants.Navigation.ANIMATED_ENTER_EXIT_
 import com.intuisoft.plaid.common.util.SimpleCurrencyFormat
 import com.intuisoft.plaid.common.util.extensions.toArrayList
 import com.intuisoft.plaid.util.fragmentconfig.SendFundsData
+import io.horizontalsystems.bitcoincore.storage.UnspentOutput
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -102,7 +104,19 @@ class WithdrawalFragment : PinProtectedFragment<FragmentWithdrawBinding>(), Stat
         })
 
         binding.availableBalance.onClick {
-            showCoinControlBottomSheet()
+            showCoinControlBottomSheet(
+                context = requireContext(),
+                getUnspentOutputs = {
+                    viewModel.getUnspentOutputs()
+                },
+                getSelectedUTXOs = {
+                    viewModel.getSelectedUTXOs()
+                },
+                updateSelectedUTXOs = {
+                    viewModel.updateUTXOs(it.toMutableList())
+                },
+                localStoreRepository
+            )
         }
 
         viewModel.shouldAdvance.observe(viewLifecycleOwner, Observer {
@@ -212,40 +226,48 @@ class WithdrawalFragment : PinProtectedFragment<FragmentWithdrawBinding>(), Stat
         // ignore
     }
 
-    fun showCoinControlBottomSheet() {
-        val bottomSheetDialog = BottomSheetDialog(requireContext())
-        bottomSheetDialog.setContentView(R.layout.bottom_sheet_coin_control)
-        val selectAll = bottomSheetDialog.findViewById<RoundedButtonView>(R.id.select_all)!!
-        val noUTXOs = bottomSheetDialog.findViewById<TextView>(R.id.no_utxos)!!
-        val unspentOutputsList = bottomSheetDialog.findViewById<RecyclerView>(R.id.utxos)!!
-        val utxos = viewModel.getUnspentOutputs().sortedBy { it.output.value }.reversed()
+    companion object {
+        fun showCoinControlBottomSheet(
+            context: Context,
+            getUnspentOutputs: () -> List<UnspentOutput>,
+            getSelectedUTXOs: () -> List<UnspentOutput>,
+            updateSelectedUTXOs: (List<UnspentOutput>) -> Unit,
+            localStoreRepository: LocalStoreRepository
+        ) {
+            val bottomSheetDialog = BottomSheetDialog(context)
+            bottomSheetDialog.setContentView(R.layout.bottom_sheet_coin_control)
+            val selectAll = bottomSheetDialog.findViewById<RoundedButtonView>(R.id.select_all)!!
+            val noUTXOs = bottomSheetDialog.findViewById<TextView>(R.id.no_utxos)!!
+            val unspentOutputsList = bottomSheetDialog.findViewById<RecyclerView>(R.id.utxos)!!
+            val utxos = getUnspentOutputs().sortedBy { it.output.value }.reversed()
 
-        if(utxos.isEmpty()) {
-            selectAll.enableButton(false)
-            noUTXOs.isVisible = true
-            unspentOutputsList.isVisible = false
-        } else {
-            val adapter = CoinControlAdapter(localStoreRepository) {
-                if(it) {
-                    selectAll.setButtonStyle(RoundedButtonView.ButtonStyle.ROUNDED_STYLE)
-                } else {
-                    selectAll.setButtonStyle(RoundedButtonView.ButtonStyle.OUTLINED_STYLE)
+            if (utxos.isEmpty()) {
+                selectAll.enableButton(false)
+                noUTXOs.isVisible = true
+                unspentOutputsList.isVisible = false
+            } else {
+                val adapter = CoinControlAdapter(localStoreRepository) {
+                    if (it) {
+                        selectAll.setButtonStyle(RoundedButtonView.ButtonStyle.ROUNDED_STYLE)
+                    } else {
+                        selectAll.setButtonStyle(RoundedButtonView.ButtonStyle.OUTLINED_STYLE)
+                    }
+                }
+
+                unspentOutputsList.adapter = adapter
+                adapter.addUTXOs(utxos.toArrayList(), getSelectedUTXOs().toArrayList())
+
+                selectAll.onClick {
+                    adapter.selectAll(!adapter.areAllItemsSelected())
+                }
+
+                bottomSheetDialog.setOnCancelListener {
+                    updateSelectedUTXOs(adapter.selectedUTXOs)
                 }
             }
 
-            unspentOutputsList.adapter = adapter
-            adapter.addUTXOs(utxos.toArrayList(), viewModel.getSelectedUTXOs().toArrayList())
-
-            selectAll.onClick {
-                adapter.selectAll(!adapter.areAllItemsSelected())
-            }
-
-            bottomSheetDialog.setOnCancelListener {
-                viewModel.updateUTXOs(adapter.selectedUTXOs)
-            }
+            bottomSheetDialog.show()
         }
-
-        bottomSheetDialog.show()
     }
 
     fun onAmountOverBalanceAnimation() {

@@ -252,6 +252,22 @@
     </fragment>
 
     <fragment
+        android:id="@+id/withdrawalTypeFragment"
+        android:name="com.intuisoft.plaid.features.dashboardflow.ui.WithdrawalTypeFragment"
+        android:label="@string/withdrawal_type_fragment_label"
+        tools:layout="@layout/fragment_withdrawal_type">
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/invoiceFragment"
+        android:name="com.intuisoft.plaid.features.dashboardflow.ui.InvoiceFragment"
+        android:label="@string/invoice_fragment_label"
+        tools:layout="@layout/fragment_invoice">
+
+    </fragment>
+
+    <fragment
         android:id="@+id/memeFragment"
         android:name="com.intuisoft.plaid.features.settings.ui.MemeFragment"
         android:label="@string/meme_fragment_label"

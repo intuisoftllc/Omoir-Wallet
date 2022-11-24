@@ -55,16 +55,6 @@ class SwapFragment : PinProtectedFragment<FragmentSwapBinding>() {
             )
         }
 
-        viewModel.minMax.observe(viewLifecycleOwner, Observer {
-            binding.minMaxContainer.isVisible = it != null
-            binding.minMaxTitle.isVisible = it != null
-
-            it?.let {
-                binding.min.text = it.first
-                binding.max.text = it.second
-            }
-        })
-
         viewModel.sendPairInfo.observe(viewLifecycleOwner, Observer {
             if(it.ticker.lowercase() == "btc") {
                 binding.swapPairSend.setTickerSymbol(R.drawable.ic_bitcoin)
@@ -110,14 +100,22 @@ class SwapFragment : PinProtectedFragment<FragmentSwapBinding>() {
 
         binding.fixed.onClick {
             viewModel.setFixed(true)
+        }
+
+        viewModel.fixedRange.observe(viewLifecycleOwner, Observer {
+            setMinMax(it)
             binding.fixed.setButtonStyle(RoundedButtonView.ButtonStyle.ROUNDED_STYLE)
             binding.floating.setButtonStyle(RoundedButtonView.ButtonStyle.OUTLINED_STYLE)
-        }
+        })
+        
+        viewModel.floatingRange.observe(viewLifecycleOwner, Observer {
+            setMinMax(it)
+            binding.fixed.setButtonStyle(RoundedButtonView.ButtonStyle.OUTLINED_STYLE)
+            binding.floating.setButtonStyle(RoundedButtonView.ButtonStyle.ROUNDED_STYLE)
+        })
 
         binding.floating.onClick {
             viewModel.setFixed(false)
-            binding.fixed.setButtonStyle(RoundedButtonView.ButtonStyle.OUTLINED_STYLE)
-            binding.floating.setButtonStyle(RoundedButtonView.ButtonStyle.ROUNDED_STYLE)
         }
 
         viewModel.screenFunctionsEnabled.observe(viewLifecycleOwner, Observer {
@@ -148,6 +146,16 @@ class SwapFragment : PinProtectedFragment<FragmentSwapBinding>() {
         viewModel.exchangeInfoDisplay.observe(viewLifecycleOwner, Observer {
             confirmExchange(it)
         })
+    }
+
+    private fun setMinMax(minMax: Pair<String, String>?) {
+        binding.minMaxContainer.isVisible = minMax != null
+        binding.minMaxTitle.isVisible = minMax != null
+
+        minMax?.let {
+            binding.min.text = it.first
+            binding.max.text = it.second
+        }
     }
 
     private fun setReceiveAddress(address: String, memo: String) {

@@ -11,11 +11,10 @@ import com.google.android.gms.vision.barcode.Barcode
 import com.google.android.gms.vision.barcode.BarcodeDetector
 import com.intuisoft.plaid.androidwrappers.BindingActivity
 import com.intuisoft.plaid.androidwrappers.checkAppPermission
-import com.intuisoft.plaid.databinding.ActivityScanBarcodeBinding
 import com.intuisoft.plaid.common.util.Constants.ActivityResult.BARCODE_EXTRA
+import com.intuisoft.plaid.databinding.ActivityScanBarcodeBinding
 import com.intuisoft.plaid.walletmanager.AbstractWalletManager
 import io.horizontalsystems.hdwalletkit.HDExtendedKey
-import kotlinx.coroutines.runBlocking
 import org.koin.android.ext.android.inject
 import org.koin.core.component.KoinComponent
 
@@ -26,6 +25,10 @@ class BarcodeScannerActivity : BindingActivity<ActivityScanBarcodeBinding>(), Ko
     private lateinit var barcodeDetector: BarcodeDetector
     private lateinit var cameraSource: CameraSource
     private val walletManager: AbstractWalletManager by inject()
+
+    companion object {
+        var invoiceMode = false
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -75,11 +78,16 @@ class BarcodeScannerActivity : BindingActivity<ActivityScanBarcodeBinding>(), Ko
                 try {
                     val address = barcodes.valueAt(0)?.rawValue
 
-                    if (barcodes.size() != 0 && walletManager.validAddress(address ?: "")) {
+                    if(invoiceMode) {
+                        walletManager.parseInvoice(address ?: "")
                         closeActivity(address!!)
                     } else {
-                        HDExtendedKey.validate(address ?: "", true)
-                        closeActivity(address!!)
+                        if (barcodes.size() != 0 && walletManager.validAddress(address ?: "")) {
+                            closeActivity(address!!)
+                        } else {
+                            HDExtendedKey.validate(address ?: "", true)
+                            closeActivity(address!!)
+                        }
                     }
                 } catch (e: Throwable) {}
             }

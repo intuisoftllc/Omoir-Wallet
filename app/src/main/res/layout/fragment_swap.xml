@@ -49,8 +49,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:paddingHorizontal="@dimen/margin_10"
-                android:layout_marginTop="@dimen/margin_26">
+                android:paddingHorizontal="@dimen/margin_10">
 
                 <com.intuisoft.plaid.androidwrappers.RoundedButtonView
                     android:layout_width="match_parent"

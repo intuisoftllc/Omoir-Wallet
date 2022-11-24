@@ -2,27 +2,44 @@ package com.intuisoft.plaid.features.dashboardflow.ui
 
 import android.graphics.*
 import android.os.Bundle
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
+import android.widget.TextView
 import androidx.core.view.isVisible
+import androidx.core.widget.doOnTextChanged
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.EncodeHintType
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.*
+import com.intuisoft.plaid.common.model.BitcoinDisplayUnit
+import com.intuisoft.plaid.common.repositories.LocalStoreRepository
+import com.intuisoft.plaid.common.util.Constants
+import com.intuisoft.plaid.common.util.RateConverter
+import com.intuisoft.plaid.common.util.SimpleCurrencyFormat
+import com.intuisoft.plaid.common.util.extensions.containsNumbers
+import com.intuisoft.plaid.common.util.extensions.deleteAt
 import com.intuisoft.plaid.databinding.FragmentWalletExportBinding
 import com.intuisoft.plaid.features.dashboardflow.viewmodel.WalletExportViewModel
 import com.intuisoft.plaid.features.pin.ui.PinProtectedFragment
+import com.intuisoft.plaid.util.entensions.charsAfter
 import com.intuisoft.plaid.util.fragmentconfig.ConfigQrDisplayData
 import com.journeyapps.barcodescanner.BarcodeEncoder
+import io.horizontalsystems.bitcoincore.models.BitcoinPaymentData
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.*
 
 
 class WalletExportFragment : PinProtectedFragment<FragmentWalletExportBinding>() {
     private val viewModel: WalletExportViewModel by viewModel()
+    private val localStoreRepository: LocalStoreRepository by inject()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -43,7 +60,8 @@ class WalletExportFragment : PinProtectedFragment<FragmentWalletExportBinding>()
         configuration?.let {
             val configData = it.configData as ConfigQrDisplayData
 
-            binding.close.isVisible = configData.showClose
+            binding.close.visibility = if(configData.showClose) View.VISIBLE else View.INVISIBLE
+            binding.invoice.visibility = if(configData.showClose) View.VISIBLE else View.INVISIBLE
             binding.pubKeyTitle.isVisible = configData.qrTitle != null
             binding.pubKeyTitle.text = configData.qrTitle
             binding.pubAddress.text = configData.payload
@@ -68,6 +86,21 @@ class WalletExportFragment : PinProtectedFragment<FragmentWalletExportBinding>()
                 binding.pubAddress.text = it
             })
 
+            binding.invoice.setOnClickListener {
+                createInvoice()
+            }
+
+            viewModel.showInvoice.observe(viewLifecycleOwner, Observer {
+                val rateConverter = RateConverter(localStoreRepository.getRateFor(localStoreRepository.getLocalCurrency())?.currentPrice ?: 0.0 )
+
+                rateConverter.setLocalRate(RateConverter.RateType.BTC_RATE, it.amount!!)
+                binding.pubKeyTitle.text = rateConverter.from(localStoreRepository.getBitcoinDisplayUnit().toRateType(), localStoreRepository.getLocalCurrency(), false).second
+                binding.invoiceDescription.isVisible = true
+                binding.invoiceDescription.text = it.label!!
+                binding.pubAddress.text = BitcoinPaymentData.toBitcoinPaymentUri(it)
+                showQrCode(BitcoinPaymentData.toBitcoinPaymentUri(it))
+            })
+
             viewModel.copyXpub.observe(viewLifecycleOwner, Observer {
                 if(it) {
                     binding.pubAddress.setTextColor(requireContext().getColor(R.color.success_color))
@@ -78,11 +111,11 @@ class WalletExportFragment : PinProtectedFragment<FragmentWalletExportBinding>()
             })
 
             binding.pubAddress.setOnClickListener {
-                viewModel.copyXpubToClipboard((configuration!!.configData as ConfigQrDisplayData).payload)
+                viewModel.copyXpubToClipboard(binding.pubAddress.text.toString())
             }
 
             binding.shareButton.onClick {
-                requireActivity().shareText(null, configData.payload)
+                requireActivity().shareText(null, binding.pubAddress.text.toString())
             }
 
             binding.close.setOnClickListener {
@@ -127,6 +160,160 @@ class WalletExportFragment : PinProtectedFragment<FragmentWalletExportBinding>()
             binding.qrCode.setImageBitmap(merge)
         } catch (e: Exception) {
         }
+    }
+
+    private fun showInvoiceDisplayType(invoiceAmount: TextView) {
+        when(localStoreRepository.getBitcoinDisplayUnit()) {
+            BitcoinDisplayUnit.BTC -> {
+                invoiceAmount.text = getString(R.string.btc)
+            }
+
+            BitcoinDisplayUnit.FIAT -> {
+                invoiceAmount.text = SimpleCurrencyFormat.getSymbol(localStoreRepository.getLocalCurrency())
+            }
+
+            BitcoinDisplayUnit.SATS -> {
+                invoiceAmount.text = getString(R.string.sats)
+            }
+        }
+    }
+
+    fun createInvoice() {
+        val bottomSheetDialog = BottomSheetDialog(requireActivity())
+        bottomSheetDialog.setContentView(R.layout.bottom_sheet_create_invoice)
+        val invoiceAmount = bottomSheetDialog.findViewById<EditText>(R.id.invoice_amount)!!
+        val conversionType = bottomSheetDialog.findViewById<TextView>(R.id.conversion_type)!!
+        val description = bottomSheetDialog.findViewById<EditText>(R.id.description)!!
+        val save = bottomSheetDialog.findViewById<RoundedButtonView>(R.id.save)!!
+        val cancel = bottomSheetDialog.findViewById<RoundedButtonView>(R.id.cancel)!!
+        val rateConverter = RateConverter(localStoreRepository.getRateFor(localStoreRepository.getLocalCurrency())?.currentPrice ?: 0.0 )
+        var watcher: TextWatcher? = null
+
+        save.enableButton(false)
+        showInvoiceDisplayType(conversionType)
+        watcher = invoiceAmount.doOnTextChanged { text, start, before, count ->
+            if(text != null) {
+                if(text.isNotEmpty() && text.contains(".")
+                    && (
+                            localStoreRepository.getBitcoinDisplayUnit() == BitcoinDisplayUnit.SATS
+                              || (localStoreRepository.getBitcoinDisplayUnit() == BitcoinDisplayUnit.FIAT && text.toString().charsAfter('.') > 2)
+                              || (localStoreRepository.getBitcoinDisplayUnit() == BitcoinDisplayUnit.BTC && text.toString().charsAfter('.') > 8)
+                        )
+                ) {
+                    invoiceAmount.setText(text.toString().deleteAt(start))
+                    invoiceAmount.setSelection(invoiceAmount.length())
+                } else if (text.isNotEmpty() && text.toString().containsNumbers()) {
+                    invoiceAmount.removeTextChangedListener(watcher)
+                    when (localStoreRepository.getBitcoinDisplayUnit()) {
+                        BitcoinDisplayUnit.BTC -> {
+                            rateConverter.setLocalRate(
+                                RateConverter.RateType.BTC_RATE,
+                                text.toString().replace(",", "").toDouble()
+                            )
+                        }
+
+                        BitcoinDisplayUnit.FIAT -> {
+                            val currentValue = rateConverter.from(
+                                RateConverter.RateType.FIAT_RATE,
+                                localStoreRepository.getLocalCurrency(),
+                                false
+                            ).first
+
+                            if(currentValue != text.toString()) {
+                                rateConverter.setLocalRate(
+                                    RateConverter.RateType.FIAT_RATE,
+                                    text.toString().replace(",", "").toDouble()
+                                )
+                            }
+                        }
+
+                        BitcoinDisplayUnit.SATS -> {
+                            rateConverter.setLocalRate(
+                                RateConverter.RateType.SATOSHI_RATE,
+                                text.toString().replace(",", "").toDouble()
+                            )
+
+                        }
+                    }
+
+                    invoiceAmount.addTextChangedListener(watcher)
+                    if(rateConverter.getRawBtcRate() > Constants.Limit.BITCOIN_SUPPLY_CAP) {
+                        invoiceAmount.setText(text.toString().deleteAt(start))
+                    }
+
+                    invoiceAmount.setSelection(invoiceAmount.length())
+                } else {
+                    rateConverter.setLocalRate(
+                        RateConverter.RateType.SATOSHI_RATE,
+                        0.0
+                    )
+                }
+            } else {
+                rateConverter.setLocalRate(
+                    RateConverter.RateType.SATOSHI_RATE,
+                    0.0
+                )
+            }
+
+            save.enableButton(rateConverter.getRawRate() > 0)
+        }
+
+        conversionType.setOnClickListener {
+            when(localStoreRepository.getBitcoinDisplayUnit()) {
+                BitcoinDisplayUnit.BTC -> {
+                    localStoreRepository.updateBitcoinDisplayUnit(BitcoinDisplayUnit.SATS)
+                    invoiceAmount.setText(
+                        rateConverter.from(
+                                RateConverter.RateType.SATOSHI_RATE,
+                                localStoreRepository.getLocalCurrency(),
+                                false
+                        ).first
+                    )
+                }
+
+                BitcoinDisplayUnit.SATS -> {
+                    localStoreRepository.updateBitcoinDisplayUnit(BitcoinDisplayUnit.FIAT)
+                    invoiceAmount.setText(
+                        rateConverter.from(
+                            RateConverter.RateType.FIAT_RATE,
+                            localStoreRepository.getLocalCurrency(),
+                            false
+                        ).first
+                    )
+                }
+
+                BitcoinDisplayUnit.FIAT -> {
+                    localStoreRepository.updateBitcoinDisplayUnit(BitcoinDisplayUnit.BTC)
+                    invoiceAmount.setText(
+                        rateConverter.from(
+                            RateConverter.RateType.BTC_RATE,
+                            localStoreRepository.getLocalCurrency(),
+                            false
+                        ).first
+                    )
+                }
+            }
+
+            showInvoiceDisplayType(conversionType)
+            invoiceAmount.setSelection(invoiceAmount.length())
+        }
+
+
+        save.onClick {
+            viewModel.setInvoice(
+                rateConverter.getRawBtcRate(),
+                description.text.toString()
+            )
+
+            bottomSheetDialog.cancel()
+        }
+
+        cancel.onClick {
+            bottomSheetDialog.cancel()
+        }
+
+        bottomSheetDialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
+        bottomSheetDialog.show()
     }
 
     override fun onDestroyView() {

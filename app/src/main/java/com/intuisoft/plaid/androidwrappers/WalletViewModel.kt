@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
 import com.intuisoft.plaid.common.model.BitcoinDisplayUnit
+import com.intuisoft.plaid.common.model.TransactionMemoModel
 import com.intuisoft.plaid.common.repositories.ApiRepository
 import com.intuisoft.plaid.listeners.StateListener
 import com.intuisoft.plaid.model.LocalWalletModel
@@ -68,7 +69,15 @@ open class WalletViewModel(
     protected val _walletBip = SingleLiveData<HDWallet.Purpose>()
     val walletBip: LiveData<HDWallet.Purpose> = _walletBip
 
-    protected var localWallet: LocalWalletModel? = null
+    protected val _txMemo = SingleLiveData<String>()
+    val txMemo: LiveData<String> = _txMemo
+
+    protected val _onEditMemo = SingleLiveData<TransactionMemoModel>()
+    val onUpdateMemo: LiveData<TransactionMemoModel> = _onEditMemo
+
+    protected val localWallet: LocalWalletModel?
+        get() = walletManager.getOpenedWallet()
+
     private val disposables = CompositeDisposable()
 
     fun showWalletBalance(context: Context) {
@@ -159,6 +168,25 @@ open class WalletViewModel(
         }
     }
 
+    fun getMemoForTx(txId: String) {
+        viewModelScope.launch {
+            _txMemo.postValue(localStoreRepository.getTransactionMemo(txId)?.memo ?: "")
+        }
+    }
+
+    fun setMemoForTx(txId: String, memo: String) {
+        viewModelScope.launch {
+            localStoreRepository.setTransactionMemo(txId, memo) // todo: add wallet uuid to delete entries once wallet is deleted
+            _txMemo.postValue(memo)
+        }
+    }
+
+    fun onMemoEdit(txId: String) {
+        viewModelScope.launch {
+            _onEditMemo.postValue(localStoreRepository.getTransactionMemo(txId) ?: TransactionMemoModel(txId, ""))
+        }
+    }
+
     fun showWalletName() {
         _walletName.postValue(getWalletName())
     }
@@ -204,12 +232,9 @@ open class WalletViewModel(
         }
     }
 
-    fun setWallet(uuid: String, fragment: Fragment) {
-        localWallet = walletManager.findLocalWallet(uuid)
+    fun checkOpenedWallet(fragment: Fragment) {
 
-        if(localWallet!= null) {
-            localWallet!!.walletKit!!.onEnterForeground()
-        } else {
+        if(localWallet == null) {
             softRestart(fragment)
         }
     }

@@ -7,5 +7,8 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 data class SendFundsData(
     val amountToSend: Long,
-    val spendFrom: List<String>
+    val spendFrom: List<String>,
+    val address: String? = null,
+    val memo: String? = null,
+    val invoiceSend: Boolean = false,
 ): Parcelable

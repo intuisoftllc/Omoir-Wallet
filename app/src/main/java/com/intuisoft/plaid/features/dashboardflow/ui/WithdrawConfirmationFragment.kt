@@ -40,6 +40,7 @@ import com.intuisoft.plaid.common.util.SimpleCoinNumberFormat
 import com.intuisoft.plaid.common.util.extensions.toArrayList
 import com.intuisoft.plaid.util.fragmentconfig.SendFundsData
 import io.horizontalsystems.bitcoincore.extensions.toHexString
+import io.horizontalsystems.bitcoincore.extensions.toReversedHex
 import io.horizontalsystems.bitcoincore.serializers.TransactionSerializer
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -72,6 +73,19 @@ class WithdrawConfirmationFragment : PinProtectedFragment<FragmentWithdrawConfir
         viewModel.updateUTXOs(data.spendFrom.toMutableList())
         viewModel.updateSendAmount(data.amountToSend)
         viewModel.setNetworkFeeRate()
+        viewModel.setInvoiceSend(data.invoiceSend)
+
+        if(data.invoiceSend) {
+            binding.address.setText(data.address)
+            binding.memo.setText(data.memo)
+            viewModel.setLocalAddress(data.address!!)
+            binding.scan.enableButton(false)
+            binding.addMemo.isVisible = false
+            binding.memoContainer.isVisible = true
+            binding.memoFieldTitle.isVisible = true
+            binding.address.isEnabled = false
+            binding.memo.isEnabled = false
+        }
 
         binding.scan.onClick {
             scanBarcode()
@@ -90,6 +104,12 @@ class WithdrawConfirmationFragment : PinProtectedFragment<FragmentWithdrawConfir
                 viewModel.setLocalAddress(s.toString())
             }
         })
+
+        binding.addMemo.setOnClickListener {
+            binding.addMemo.isVisible = false
+            binding.memoContainer.isVisible = true
+            binding.memoFieldTitle.isVisible = true
+        }
 
         binding.advancedOptions.setOnClickListener {
             showAdvancedOptionsDialog()
@@ -113,11 +133,11 @@ class WithdrawConfirmationFragment : PinProtectedFragment<FragmentWithdrawConfir
         }
 
         viewModel.onSpendFullBalance.observe(viewLifecycleOwner, Observer {
-            showConfirmTransactionDialog(true)
+            showConfirmTransactionDialog(true, binding.memo.text.toString())
         })
 
         viewModel.onConfirm.observe(viewLifecycleOwner, Observer {
-            showConfirmTransactionDialog(false)
+            showConfirmTransactionDialog(false, binding.memo.text.toString())
         })
     }
 
@@ -125,7 +145,7 @@ class WithdrawConfirmationFragment : PinProtectedFragment<FragmentWithdrawConfir
         binding.address.setText(address)
     }
 
-    private fun showConfirmTransactionDialog(fullSpend: Boolean) {
+    private fun showConfirmTransactionDialog(fullSpend: Boolean, memo: String) {
 
         viewModel.createTransaction(fullSpend)?.let { (spend, transaction) ->
 
@@ -134,6 +154,7 @@ class WithdrawConfirmationFragment : PinProtectedFragment<FragmentWithdrawConfir
             val rawTransaction = bottomSheetDialog.findViewById<SettingsItemView>(R.id.raw_transaction)!!
             val txId = bottomSheetDialog.findViewById<SettingsItemView>(R.id.transaction_id)!!
             val to = bottomSheetDialog.findViewById<SettingsItemView>(R.id.sending_to)!!
+            val txMemo = bottomSheetDialog.findViewById<SettingsItemView>(R.id.memo)!!
             val amount = bottomSheetDialog.findViewById<SettingsItemView>(R.id.tx_amount)!!
             val feeAmount = bottomSheetDialog.findViewById<SettingsItemView>(R.id.fee_amount)!!
             val satPerByte = bottomSheetDialog.findViewById<SettingsItemView>(R.id.fee_rate)!!
@@ -145,7 +166,12 @@ class WithdrawConfirmationFragment : PinProtectedFragment<FragmentWithdrawConfir
             val rawTx = TransactionSerializer.serialize(transaction).toHexString()
             val feePaid = viewModel.getTotalFee()
             rawTransaction.setSubTitleText(rawTx)
-            txId.setSubTitleText(transaction.header.hash.toHexString())
+            txMemo.setSubTitleText(
+                if(memo.isNotEmpty() && memo.isNotBlank())
+                    memo
+                else getString(R.string.not_applicable)
+            )
+            txId.setSubTitleText(transaction.header.hash.toReversedHex())
             to.setSubTitleText(viewModel.getLocalAddress() ?: "")
 
             var amountValue = spend.from(viewModel.getDisplayUnit().toRateType(),
@@ -171,7 +197,7 @@ class WithdrawConfirmationFragment : PinProtectedFragment<FragmentWithdrawConfir
             }
 
             txId.onClick {
-                requireContext().copyToClipboard(transaction.header.hash.toHexString(), getString(R.string.transaction_id))
+                requireContext().copyToClipboard(transaction.header.hash.toReversedHex(), getString(R.string.transaction_id))
                 txId.showCopy(false)
                 txId.showCheck(true)
 
@@ -194,14 +220,18 @@ class WithdrawConfirmationFragment : PinProtectedFragment<FragmentWithdrawConfir
                         onSuccess = {
                             if(viewModel.broadcast(transaction)) {
                                 bottomSheetDialog.dismiss()
-                                showAlertDialogButtonClicked(feePaid)
+                                if(memo.isNotEmpty() && memo.isNotBlank())
+                                    viewModel.setMemoForTx(transaction.header.hash.toReversedHex(), memo)
+                                showFundsSentDialog(feePaid)
                             }
                         }
                     )
                 } else {
                     if(viewModel.broadcast(transaction)) {
                         bottomSheetDialog.dismiss()
-                        showAlertDialogButtonClicked(feePaid)
+                        if(memo.isNotEmpty() && memo.isNotBlank())
+                            viewModel.setMemoForTx(transaction.header.hash.toReversedHex(), memo)
+                        showFundsSentDialog(feePaid)
                     }
                 }
             }
@@ -211,7 +241,7 @@ class WithdrawConfirmationFragment : PinProtectedFragment<FragmentWithdrawConfir
         }
     }
 
-    fun showAlertDialogButtonClicked(feePaid: Long) {
+    fun showFundsSentDialog(feePaid: Long) {
         val dialog = Dialog(requireActivity())
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setCancelable(false)
@@ -323,14 +353,19 @@ class WithdrawConfirmationFragment : PinProtectedFragment<FragmentWithdrawConfir
         val sendToOtherWallets = bottomSheetDialog.findViewById<SettingsItemView>(R.id.transfer_to_wallet)!!
         val feeRate = viewModel.getNetworkFeeRate()
 
-        addressBook.onClick {
-            bottomSheetDialog.cancel()
-            showAddressBookBottomSheet()
-        }
+        if(viewModel.isInvoiceSend()) {
+            addressBook.disableView(true)
+            sendToOtherWallets.disableView(true)
+        } else {
+            addressBook.onClick {
+                bottomSheetDialog.cancel()
+                showAddressBookBottomSheet()
+            }
 
-        sendToOtherWallets.onClick {
-            bottomSheetDialog.cancel()
-            showSendToWalletBottomSheet()
+            sendToOtherWallets.onClick {
+                bottomSheetDialog.cancel()
+                showSendToWalletBottomSheet()
+            }
         }
 
         low.onClick {

@@ -78,17 +78,17 @@ object SimpleCoinNumberFormat {
     }
 
     fun format(value: Double): String? {
-        val df = DecimalFormat("###,###,###,###,###.########")
+        val df = DecimalFormat("###,###,###,###,###,###.########")
         return df.format(value)
     }
 
     fun formatCurrency(value: Double): String? {
-        val df = DecimalFormat("###,###,###,###,###,###,###.##")
+        val df = DecimalFormat("###,###,###,###,###,###.##")
         return df.format(value)
     }
 
     fun format(value: Long): String? {
-        val df = DecimalFormat("###,###,###,###,###")
+        val df = DecimalFormat("###,###,###,###,###,###")
         return df.format(value)
     }
 }

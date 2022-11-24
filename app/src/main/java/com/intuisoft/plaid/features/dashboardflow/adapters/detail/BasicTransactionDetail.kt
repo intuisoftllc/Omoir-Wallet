@@ -11,6 +11,8 @@ import io.horizontalsystems.bitcoincore.models.TransactionInfo
 import io.horizontalsystems.bitcoincore.models.TransactionStatus
 import io.horizontalsystems.bitcoincore.models.TransactionType
 import kotlinx.android.synthetic.main.list_item_basic_transaction_detail.view.*
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 
 class BasicTransactionDetail(
@@ -54,7 +56,17 @@ class BasicTransactionDetail(
                 }
             }
 
-            time_passed.text = SimpleTimeFormat.timeToString(transaction.timestamp)
+            GlobalScope.launch {
+                val memo = localStoreRepository.getTransactionMemo(transaction.transactionHash)
+
+                view?.apply {
+                    if(memo != null) {
+                        time_passed.text = memo.memo
+                    } else {
+                        time_passed.text = SimpleTimeFormat.timeToString(transaction.timestamp)
+                    }
+                }
+            }
             onConversionUpdated()
         }
     }

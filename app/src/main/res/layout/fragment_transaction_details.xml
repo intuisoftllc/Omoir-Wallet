@@ -73,6 +73,19 @@
             <com.intuisoft.plaid.androidwrappers.SettingsItemView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                app:item_title="@string/transaction_details_item_8"
+                app:show_chevron="true"
+                android:clickable="true"
+                android:paddingVertical="@dimen/margin_8"
+                android:id="@+id/memo"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0"
+                android:focusable="true" />
+
+
+            <com.intuisoft.plaid.androidwrappers.SettingsItemView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 app:item_title="@string/transaction_details_item_3"
                 app:show_switch="false"
                 android:clickable="true"

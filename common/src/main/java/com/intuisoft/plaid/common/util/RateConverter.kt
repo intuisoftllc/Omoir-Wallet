@@ -59,9 +59,9 @@ class RateConverter(
                     postfixed =
                         prefixPostfixValue(SimpleCoinNumberFormat.formatSatsShort(localBTC), type)
                 } else {
-                    basic = SimpleCoinNumberFormat.format(localBTC.toDouble())!!
+                    basic = SimpleCoinNumberFormat.format(localBTC)!!
                     postfixed =
-                        prefixPostfixValue(SimpleCoinNumberFormat.format(localBTC.toDouble())!!, type)
+                        prefixPostfixValue(SimpleCoinNumberFormat.format(localBTC)!!, type)
                 }
 
                 return Pair(basic, postfixed)

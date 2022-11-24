@@ -512,6 +512,7 @@ class SettingsFragment : PinProtectedFragment<FragmentSettingsBinding>() {
             fieldHint: String,
             initialText: String,
             onSave: ((String) -> Unit)?,
+            initiallyEnabled: Boolean = true
         ) {
             val bottomSheetDialog = BottomSheetDialog(activity)
             bottomSheetDialog.setContentView(R.layout.bottom_sheet_change_name)
@@ -526,9 +527,10 @@ class SettingsFragment : PinProtectedFragment<FragmentSettingsBinding>() {
             name.setText(initialText)
             name.hint = fieldHint
             textFieldType.text = fieldType
+            save.enableButton(initiallyEnabled)
             name.doOnTextChanged { text, start, before, count ->
                 textLeft.text = "${text?.length ?: 0}/25"
-                save.enableButton(text?.isNotEmpty() ?: false)
+                save.enableButton(text?.isNotEmpty() == true && text.isNotBlank())
             }
 
             name.setOnKeyListener(object : View.OnKeyListener {
@@ -567,7 +569,8 @@ class SettingsFragment : PinProtectedFragment<FragmentSettingsBinding>() {
             negative: String?,
             positiveTint: Int,
             onPositive: (() -> Unit)?,
-            onNegative: (() -> Unit)?
+            onNegative: (() -> Unit)?,
+            isCancellable: Boolean = false
         ) {
             val bottomSheetDialog = BottomSheetDialog(context)
             bottomSheetDialog.setContentView(R.layout.bottom_sheet_warning)
@@ -577,7 +580,7 @@ class SettingsFragment : PinProtectedFragment<FragmentSettingsBinding>() {
             val save = bottomSheetDialog.findViewById<RoundedButtonView>(R.id.save)!!
             val cancel = bottomSheetDialog.findViewById<RoundedButtonView>(R.id.cancel)!!
 
-            bottomSheetDialog.setCancelable(false)
+            bottomSheetDialog.setCancelable(isCancellable)
             sheetTitle.text = title
             sheetSubtitle.text = subtitle
             save.setButtonText(positive)

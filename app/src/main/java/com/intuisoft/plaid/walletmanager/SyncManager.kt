@@ -66,6 +66,8 @@ class SyncManager(
         openedWallet = null
     }
 
+    fun getOpenedWallet() = openedWallet
+
     private fun safeStop(wallet: LocalWalletModel) {
         if(wallet != openedWallet) {
             wallet.walletKit!!.onEnterBackground()
@@ -86,6 +88,7 @@ class SyncManager(
     fun clearWallets() {
         Log.e("LOOK", "wallets cleared")
         _wallets.clear()
+        lastSynced = 0
     }
 
     fun addListener(eventsListener: SyncEvent) {

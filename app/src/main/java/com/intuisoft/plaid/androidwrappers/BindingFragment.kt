@@ -9,6 +9,7 @@ import androidx.viewbinding.ViewBinding
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.activities.MainActivity
 import com.intuisoft.plaid.listeners.NetworkStateChangeListener
+import kotlinx.android.synthetic.main.fragment_invoice.*
 
 abstract class BindingFragment<T: ViewBinding> : Fragment(), FragmentActionBarDelegate, NetworkStateChangeListener, FragmentBottomBarBarDelegate {
 
@@ -28,6 +29,12 @@ abstract class BindingFragment<T: ViewBinding> : Fragment(), FragmentActionBarDe
     fun scanBarcode() {
         requireActivity().checkAppPermission(Manifest.permission.CAMERA, 100) {
             (requireActivity() as MainActivity).scanBarcode()
+        }
+    }
+
+    fun scanInvoice() {
+        requireActivity().checkAppPermission(Manifest.permission.CAMERA, 100) {
+            (requireActivity() as MainActivity).scanInvoice()
         }
     }
 

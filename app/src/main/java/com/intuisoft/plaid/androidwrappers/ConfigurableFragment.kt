@@ -51,7 +51,7 @@ abstract class ConfigurableFragment<T: ViewBinding> : BindingFragment<T>() {
         }
 
         if(arguments != null && requireArguments().getString(Constants.Navigation.WALLET_UUID_BUNDLE_ID) != null) {
-            walletVM.setWallet(requireArguments().getString(Constants.Navigation.WALLET_UUID_BUNDLE_ID)!!, this)
+            walletVM.checkOpenedWallet(this)
         }
     }
 

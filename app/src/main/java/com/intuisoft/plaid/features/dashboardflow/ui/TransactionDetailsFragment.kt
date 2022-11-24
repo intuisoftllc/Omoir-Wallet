@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.*
@@ -16,8 +17,10 @@ import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.util.Plural
 import com.intuisoft.plaid.common.util.SimpleCoinNumberFormat
+import com.intuisoft.plaid.features.settings.ui.SettingsFragment
 import com.intuisoft.plaid.util.SimpleTimeFormat.getDateByLocale
 import com.intuisoft.plaid.util.fragmentconfig.ConfigTransactionData
+import io.horizontalsystems.bitcoincore.extensions.toHexString
 import io.horizontalsystems.bitcoincore.models.TransactionInfo
 import io.horizontalsystems.bitcoincore.models.TransactionStatus
 import io.horizontalsystems.bitcoincore.models.TransactionType
@@ -51,6 +54,7 @@ class TransactionDetailsFragment : PinProtectedFragment<FragmentTransactionDetai
                     val transaction = CommonService.getGsonInstance()
                         .fromJson((it.configData as ConfigTransactionData).payload, TransactionInfo::class.java)
 
+                    viewModel.getMemoForTx(transaction.transactionHash)
                     when(transaction.type) {
                         TransactionType.Incoming -> {
                             binding.transactionType.setSubTitleText(getString(R.string.transaction_details_type_incoming))
@@ -74,6 +78,27 @@ class TransactionDetailsFragment : PinProtectedFragment<FragmentTransactionDetai
 
                     binding.amount.setSubTitleText(SimpleCoinNumberFormat.format(localStoreRepository, transaction.amount, false))
                     binding.transactionDate.setSubTitleText(getDateByLocale(transaction.timestamp * 1000, Locale.US.language)!!)
+                    viewModel.txMemo.observe(viewLifecycleOwner, Observer {
+                        binding.memo.setSubTitleText(it)
+                    })
+
+                    viewModel.onUpdateMemo.observe(viewLifecycleOwner, Observer { transactionMemo ->
+                        SettingsFragment.simpleTextFieldDialog(
+                            activity = requireActivity(),
+                            title = getString(R.string.transaction_details_memo_dialog_title),
+                            fieldType = getString(R.string.transaction_details_memo_dialog_field_title),
+                            fieldHint = getString(R.string.transaction_details_memo_dialog_field_hint),
+                            initialText = transactionMemo.memo,
+                            onSave = {
+                                viewModel.setMemoForTx(transactionMemo.transactionId, it)
+                            },
+                            initiallyEnabled = false
+                        )
+                    })
+
+                    binding.memo.onClick {
+                        viewModel.onMemoEdit(transaction.transactionHash)
+                    }
 
                     when(transaction.fee) {
                         null -> {

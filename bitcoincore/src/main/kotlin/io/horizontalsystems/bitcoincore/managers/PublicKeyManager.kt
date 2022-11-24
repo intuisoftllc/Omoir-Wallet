@@ -50,7 +50,7 @@ class PublicKeyManager(
     }
 
     override fun fillGap() {
-        val lastUsedAccount = storage.getPublicKeysUsed().map { it.account }.max()
+        val lastUsedAccount = storage.getPublicKeysUsed().map { it.account }.maxOrNull()
 
         val requiredAccountsCount = if (lastUsedAccount != null) {
             lastUsedAccount + 1 + 1 //  One because account starts from 0, One because we must have n+1 accounts
@@ -74,7 +74,7 @@ class PublicKeyManager(
 
     override fun gapShifts(): Boolean {
         val publicKeys = storage.getPublicKeysWithUsedState()
-        val lastAccount = publicKeys.map { it.publicKey.account }.max() ?: return false
+        val lastAccount = publicKeys.map { it.publicKey.account }.maxOrNull() ?: return false
 
         for (i in 0..lastAccount) {
             if (gapKeysCount(publicKeys.filter { it.publicKey.account == i && it.publicKey.external }) < wallet.gapLimit) {
@@ -95,7 +95,7 @@ class PublicKeyManager(
         val keys = mutableListOf<PublicKey>()
 
         if (keysCount < wallet.gapLimit) {
-            val lastIndex = publicKeys.maxBy { it.publicKey.index }?.publicKey?.index ?: -1
+            val lastIndex = publicKeys.maxByOrNull { it.publicKey.index }?.publicKey?.index ?: -1
 
             val newKeysStartIndex = lastIndex + 1
             val indices = newKeysStartIndex until (newKeysStartIndex + wallet.gapLimit - keysCount)
@@ -108,7 +108,7 @@ class PublicKeyManager(
     }
 
     private fun gapKeysCount(publicKeys: List<PublicKeyWithUsedState>): Int {
-        val lastUsedKey = publicKeys.filter { it.used }.maxBy { it.publicKey.index }
+        val lastUsedKey = publicKeys.filter { it.used }.maxByOrNull { it.publicKey.index }
 
         return when (lastUsedKey) {
             null -> publicKeys.size

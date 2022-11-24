@@ -128,6 +128,10 @@ interface LocalStoreRepository {
 
     suspend fun setSupportedCurrenciesData(data: List<SupportedCurrencyModel>, fixed: Boolean)
 
+    suspend fun setTransactionMemo(txId: String, memo: String)
+
+    suspend fun getTransactionMemo(txId: String): TransactionMemoModel?
+
     fun getAllRates(): List<BasicPriceDataModel>
 
     suspend fun setTickerPriceChartData(data: List<ChartDataModel>, currencyCode: String, intervalType: ChartIntervalType)

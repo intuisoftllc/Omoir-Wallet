@@ -80,6 +80,18 @@
             <com.intuisoft.plaid.androidwrappers.SettingsItemView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                app:item_title="@string/memo"
+                android:id="@+id/memo"
+                android:layout_marginVertical="5dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/feeContainer"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:show_switch="false"/>
+
+            <com.intuisoft.plaid.androidwrappers.SettingsItemView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 app:item_title="@string/withdraw_confirmation_dialog_info_send_to"
                 android:id="@+id/sending_to"
                 android:layout_marginVertical="5dp"

@@ -8,6 +8,7 @@ import com.intuisoft.plaid.androidwrappers.WalletViewModel
 import com.intuisoft.plaid.common.repositories.ApiRepository
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.walletmanager.AbstractWalletManager
+import io.horizontalsystems.bitcoincore.models.BitcoinPaymentData
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -29,6 +30,9 @@ class WalletExportViewModel(
     protected val _copyXpub = SingleLiveData<Boolean>()
     val copyXpub: LiveData<Boolean> = _copyXpub
 
+    protected val _showInvoice = SingleLiveData<BitcoinPaymentData>()
+    val showInvoice: LiveData<BitcoinPaymentData> = _showInvoice
+
     fun copyXpubToClipboard(xpub: String) {
         viewModelScope.launch {
             _xpubClickable.postValue(false)
@@ -40,5 +44,15 @@ class WalletExportViewModel(
             _xpubData.postValue(xpub)
             _xpubClickable.postValue(true)
         }
+    }
+
+    fun setInvoice(amount: Double, description: String) {
+        _showInvoice.postValue(
+            BitcoinPaymentData(
+                address = getRecieveAddress(),
+                amount = amount,
+                label = description
+            )
+        )
     }
 }

@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.intuisoft.plaid.androidwrappers.SingleLiveData
 import com.intuisoft.plaid.listeners.StateListener
 import com.intuisoft.plaid.model.LocalWalletModel
+import io.horizontalsystems.bitcoincore.models.BitcoinPaymentData
 import io.horizontalsystems.bitcoinkit.BitcoinKit
 import io.horizontalsystems.hdwalletkit.HDWallet
 import java.util.concurrent.atomic.AtomicBoolean
@@ -24,6 +25,7 @@ abstract class AbstractWalletManager {
     abstract fun stop()
     abstract fun updateWalletName(localWallet: LocalWalletModel, newName: String)
     abstract fun validAddress(address: String) : Boolean
+    abstract fun parseInvoice(invoiceData: String) : BitcoinPaymentData
     abstract fun arePeersReady(localWallet: LocalWalletModel) : Boolean
     abstract suspend fun deleteWallet(localWallet: LocalWalletModel, onDeleteFinished: suspend () -> Unit)
     abstract fun synchronize(wallet: LocalWalletModel)
@@ -41,4 +43,5 @@ abstract class AbstractWalletManager {
     abstract fun getBaseWallet(mainNet: Boolean = true): BitcoinKit
     abstract fun openWallet(wallet: LocalWalletModel)
     abstract fun closeWallet()
+    abstract fun getOpenedWallet(): LocalWalletModel?
 }
