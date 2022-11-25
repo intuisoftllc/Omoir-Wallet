@@ -19,6 +19,12 @@ interface ApiRepository {
 
     suspend fun getTickerPriceChartData(intervalType: ChartIntervalType): List<ChartDataModel>?
 
+    suspend fun createExchange(
+        fixed: Boolean, from: String, to: String, receiveAddress: String,
+        receiveAddressMemo: String, refundAddress: String, refundAddressMemo: String,
+        amount: Double, walletId: String
+    ): ExchangeInfoDataModel?
+
     suspend fun getWholeCoinConversion(from: String, to: String, fixed: Boolean): Double
 
     suspend fun refreshLocalCache()

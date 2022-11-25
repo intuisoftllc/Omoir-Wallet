@@ -146,6 +146,10 @@ class SwapFragment : PinProtectedFragment<FragmentSwapBinding>() {
         viewModel.exchangeInfoDisplay.observe(viewLifecycleOwner, Observer {
             confirmExchange(it)
         })
+
+        viewModel.onNext.observe(viewLifecycleOwner, Observer {
+
+        })
     }
 
     private fun setMinMax(minMax: Pair<String, String>?) {
@@ -290,7 +294,7 @@ class SwapFragment : PinProtectedFragment<FragmentSwapBinding>() {
         }
 
         exchange.onClick {
-            // todo impl
+            viewModel.createExchange()
         }
 
         bottomSheetDialog.show()

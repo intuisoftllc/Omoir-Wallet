@@ -142,6 +142,12 @@ interface LocalStoreRepository {
 
     suspend fun setSuggestedFeeRate(networkFeeRate: NetworkFeeRate, testNetWallet: Boolean)
 
+    suspend fun saveExchangeData(data: ExchangeInfoDataModel, walletId: String)
+
+    fun getAllExchanges(walletId: String): List<ExchangeInfoDataModel>
+
+    fun getExchangeById(exchangeId: String): ExchangeInfoDataModel?
+
     suspend fun getSuggestedFeeRate(testNetWallet: Boolean): NetworkFeeRate?
 
     fun setDatabaseListener(databaseListener: DatabaseListener)

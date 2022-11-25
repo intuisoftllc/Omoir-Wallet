@@ -351,6 +351,7 @@
     <string name="withdraw_confirmation_dialog_success_fee">Fee: %1$s</string>
     <string name="withdraw_confirmation_transfer_notice">Recipient address set to wallet \"%1$s\"</string>
     <string name="withdraw_confirmation_transfer_list_item_message">Send To</string>
+    <string name="withdraw_confirmation_fee_warning_message">(Fee higher than total spend)</string>
 <!--    Withdraw Confirmation Strings End -->
 
 <!--    Import Wallet Strings -->
@@ -464,6 +465,7 @@
     <string name="swap_auto_generated_recipient_address">%1$s (auto-generated)</string>
     <string name="swap_bitcoin_sender">This wallet (you can pay in the next screen)</string>
     <string name="swap_external_wallet_sender">External %1$s wallet (pay instructions are provided in the next screen)</string>
+    <string name="swap_failed_error">Failed to create exchange</string>
 <!--    Swap Strings End -->
 
 <!--    Generic Use Strings -->

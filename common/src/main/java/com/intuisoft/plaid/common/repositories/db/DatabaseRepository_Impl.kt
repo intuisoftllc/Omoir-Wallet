@@ -13,7 +13,8 @@ class DatabaseRepository_Impl(
     private val extendedNetworkDataDao: ExtendedNetworkDataDao,
     private val tickerCharPriceChartDataDao: TickerPriceChartDataDao,
     private val supportedCurrencyDao: SupportedCurrencyDao,
-    private val transactionMemoDao: TransactionMemoDao
+    private val transactionMemoDao: TransactionMemoDao,
+    private val exchangeInfoDao: ExchangeInfoDao
 ) : DatabaseRepository {
 
     override suspend fun getSuggestedFeeRate(testNetWallet: Boolean): NetworkFeeRate? =
@@ -51,6 +52,19 @@ class DatabaseRepository_Impl(
     override suspend fun setMemoForTransaction(txId: String, memo: String) {
         transactionMemoDao.insert(TransactionMemo.consume(txId, memo))
         database.onUpdate()
+    }
+
+    override suspend fun saveExchangeData(data: ExchangeInfoDataModel, walletId: String) {
+        exchangeInfoDao.insert(ExchangeInfoData.consume(data, walletId))
+        database.onUpdate()
+    }
+
+    override suspend fun getAllExchanges(walletId: String): List<ExchangeInfoDataModel> {
+        return exchangeInfoDao.getAllExchanges(walletId).map { it.from() }
+    }
+
+    override suspend fun getExchangeById(exchangeId: String): ExchangeInfoDataModel? {
+        return exchangeInfoDao.getExchangeById(exchangeId)?.from()
     }
 
     override suspend fun setSupportedCurrenciesData(data: List<SupportedCurrencyModel>, fixed: Boolean) {

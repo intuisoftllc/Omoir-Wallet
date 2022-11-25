@@ -20,8 +20,10 @@ import com.intuisoft.plaid.databinding.FragmentInvoiceBinding
 import com.intuisoft.plaid.databinding.FragmentWithdrawalTypeBinding
 import com.intuisoft.plaid.features.dashboardflow.viewmodel.InvoiceViewModel
 import com.intuisoft.plaid.listeners.BarcodeResultListener
+import com.intuisoft.plaid.util.fragmentconfig.InvoiceData
 import com.intuisoft.plaid.util.fragmentconfig.SendFundsData
 import com.intuisoft.plaid.walletmanager.AbstractWalletManager
+import io.horizontalsystems.bitcoincore.models.BitcoinPaymentData
 import io.horizontalsystems.bitcoincore.models.TransactionInfo
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -36,12 +38,30 @@ class InvoiceFragment : PinProtectedFragment<FragmentInvoiceBinding>(), BarcodeR
     ): View? {
 
         _binding = FragmentInvoiceBinding.inflate(inflater, container, false)
-        setupConfiguration(viewModel)
+        setupConfiguration(viewModel,
+            listOf(
+                FragmentConfigurationType.CONFIGURATION_INVOICE
+            )
+        )
         return binding.root
     }
 
     override fun onConfiguration(configuration: FragmentConfiguration?) {
+        val data = configuration?.configData as? InvoiceData
+
         binding.next.enableButton(false)
+
+        if(data != null) {
+            viewModel.loadInvoice(
+                BitcoinPaymentData(
+                    address = data.address,
+                    amount = data.amountToSend,
+                    label = data.memo
+                ).uriPaymentAddress
+            )
+
+            binding.scanInvoice.enableButton(false)
+        }
 
         binding.scanInvoice.onClick {
             scanInvoice()

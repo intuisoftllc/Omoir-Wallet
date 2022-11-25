@@ -2,11 +2,14 @@ package com.intuisoft.plaid.features.dashboardflow.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.viewModelScope
 import com.intuisoft.plaid.PlaidApp
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.SingleLiveData
 import com.intuisoft.plaid.androidwrappers.SwapPairItemView
 import com.intuisoft.plaid.androidwrappers.WalletViewModel
+import com.intuisoft.plaid.common.local.db.ExchangeInfoData
+import com.intuisoft.plaid.common.model.ExchangeInfoDataModel
 import com.intuisoft.plaid.common.repositories.ApiRepository
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.common.util.Constants
@@ -21,9 +24,6 @@ class SwapViewModel(
     private val localStoreRepository: LocalStoreRepository,
     private val walletManager: AbstractWalletManager
 ): WalletViewModel(application, localStoreRepository, apiRepository, walletManager) {
-
-    protected val _upgradeToPro = SingleLiveData<Boolean>()
-    val upgradeToPro: LiveData<Boolean> = _upgradeToPro
 
     protected val _sendPairInfo = SingleLiveData<SwapPairInfo>()
     val sendPairInfo: LiveData<SwapPairInfo> = _sendPairInfo
@@ -61,6 +61,9 @@ class SwapViewModel(
     protected val _exchangeInfoDisplay = SingleLiveData<ExchangeInfoDisplay>()
     val exchangeInfoDisplay: LiveData<ExchangeInfoDisplay> = _exchangeInfoDisplay
 
+    protected val _onNext = SingleLiveData<ExchangeInfoDataModel>()
+    val onNext: LiveData<ExchangeInfoDataModel> = _onNext
+
     private var fixed: Boolean = true
     private var sendTicker = ""
     private var receiveTicker = ""
@@ -87,7 +90,7 @@ class SwapViewModel(
     }
 
     fun validateSendAmount(sending: Double?) : Boolean {
-        GlobalScope.launch {
+        viewModelScope.launch {
             updateWholeCoinConversion(sendTicker, receiveTicker) // refresh the value when needed
         }
 
@@ -114,7 +117,7 @@ class SwapViewModel(
     }
 
     fun onNoInternet(hasInternet: Boolean) {
-        GlobalScope.launch {
+        viewModelScope.launch {
             if(!hasInternet) {
                 _showContent.postValue(false)
             } else {
@@ -171,6 +174,28 @@ class SwapViewModel(
         )
     }
 
+    fun createExchange() {
+        viewModelScope.launch {
+            val exchangeData = apiRepository.createExchange(
+                fixed = fixed,
+                from = sendTicker,
+                to = receiveTicker,
+                receiveAddress = receiveAddress,
+                receiveAddressMemo = receiveAddressMemo,
+                refundAddress = refundAddress,
+                refundAddressMemo = refundAddressMemo,
+                amount = sendAmount,
+                walletId = getWalletId()
+            )
+
+            if(exchangeData != null) {
+                _onNext.postValue(exchangeData!!)
+            } else {
+                _onDisplayExplanation.postValue(getApplication<PlaidApp>().getString(R.string.swap_failed_error))
+            }
+        }
+    }
+
     fun setInitialValues() {
         if(NetworkUtil.hasInternet(getApplication<PlaidApp>())) {
             this.fixed = true
@@ -184,7 +209,7 @@ class SwapViewModel(
     }
 
     private fun modifySendReceive(from: String, to: String) {
-        GlobalScope.launch {
+        viewModelScope.launch {
             _screenFunctionsEnabled.postValue(false)
             setSendCurrency(from).join()
             setReceiveCurrency(to).join()
@@ -231,7 +256,7 @@ class SwapViewModel(
     }
 
     fun onNext() {
-        GlobalScope.launch {
+        viewModelScope.launch {
             if(max == null || sendAmount <= (max ?: 0.0)) {
                 val isBitcoin = sendTicker.lowercase() == "btc"
                 clearAddresses()
@@ -261,7 +286,7 @@ class SwapViewModel(
     private fun setSendCurrency(ticker: String): Job {
         sendTicker = ticker
 
-        return GlobalScope.launch {
+        return viewModelScope.launch {
             val currency = apiRepository.getSupportedCurrencies(fixed)
                 .filter { it.ticker.lowercase() == ticker.lowercase() }
 
@@ -290,7 +315,7 @@ class SwapViewModel(
     private fun setReceiveCurrency(ticker: String) : Job {
         receiveTicker = ticker
 
-        return GlobalScope.launch {
+        return viewModelScope.launch {
             val currency = apiRepository.getSupportedCurrencies(fixed)
                 .filter { it.ticker.lowercase() == ticker.lowercase() }
 
@@ -317,7 +342,7 @@ class SwapViewModel(
     }
 
     private fun setFixedFloatingRange() : Job {
-        return GlobalScope.launch {
+        return viewModelScope.launch {
             val range = apiRepository.getCurrencyRangeLimit(sendTicker, receiveTicker, fixed)
             if (range != null) {
                 min = range.min.toDouble()

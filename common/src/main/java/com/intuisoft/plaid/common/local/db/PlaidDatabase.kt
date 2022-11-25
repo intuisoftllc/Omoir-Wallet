@@ -8,7 +8,13 @@ import androidx.room.TypeConverters
 import com.intuisoft.plaid.common.local.db.listeners.DatabaseListener
 import com.intuisoft.plaid.common.util.Constants
 
-@TypeConverters(value = [LongListItemConverter::class, FloatListItemConverter::class])
+@TypeConverters(
+    value = [
+        LongListItemConverter::class,
+        FloatListItemConverter::class,
+        InstantConverter::class
+    ]
+)
 @Database(
     entities = arrayOf(
         SuggestedFeeRate::class,
@@ -17,7 +23,8 @@ import com.intuisoft.plaid.common.util.Constants
         ExtendedNetworkData::class,
         TickerPriceChartData::class,
         SupportedCurrency::class,
-        TransactionMemo::class
+        TransactionMemo::class,
+        ExchangeInfoData::class
     ),
     version = Constants.Database.DB_VERSION
 )
@@ -61,4 +68,6 @@ abstract class PlaidDatabase : RoomDatabase() {
     abstract fun supportedCurrencyDao(): SupportedCurrencyDao
 
     abstract fun transactionMemoDao(): TransactionMemoDao
+
+    abstract fun exchangeInfoDao(): ExchangeInfoDao
 }

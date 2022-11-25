@@ -57,7 +57,9 @@ class InvoiceViewModel(
             InvoiceDetails(
                 amountToSpend.from(localStoreRepository.getBitcoinDisplayUnit().toRateType(), localStoreRepository.getLocalCurrency(), false).second,
                 address,
-                description
+                if(description.isNotEmpty() && description.isNotBlank())
+                    description
+                else getApplication<PlaidApp>().getString(R.string.not_applicable)
             )
         )
         _enableNext.postValue(Unit)

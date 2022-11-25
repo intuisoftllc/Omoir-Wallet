@@ -81,8 +81,8 @@ class WithdrawConfirmationFragment : PinProtectedFragment<FragmentWithdrawConfir
             viewModel.setLocalAddress(data.address!!)
             binding.scan.enableButton(false)
             binding.addMemo.isVisible = false
-            binding.memoContainer.isVisible = true
-            binding.memoFieldTitle.isVisible = true
+            binding.memoContainer.isVisible = data.memo?.isNotBlank() == true && data.memo.isNotEmpty()
+            binding.memoFieldTitle.isVisible = data.memo?.isNotBlank() == true && data.memo.isNotEmpty()
             binding.address.isEnabled = false
             binding.memo.isEnabled = false
         }
@@ -164,7 +164,6 @@ class WithdrawConfirmationFragment : PinProtectedFragment<FragmentWithdrawConfir
             fullBalaceNotice.isVisible = fullSpend
 
             val rawTx = TransactionSerializer.serialize(transaction).toHexString()
-            val feePaid = viewModel.getTotalFee()
             rawTransaction.setSubTitleText(rawTx)
             txMemo.setSubTitleText(
                 if(memo.isNotEmpty() && memo.isNotBlank())
@@ -176,12 +175,22 @@ class WithdrawConfirmationFragment : PinProtectedFragment<FragmentWithdrawConfir
 
             var amountValue = spend.from(viewModel.getDisplayUnit().toRateType(),
                 localStoreRepository.getLocalCurrency(), false).second
+            val feePaid = viewModel.getTotalFee()
+            val feeHigherThanAmount = feePaid > spend.getRawRate()
             if(fullSpend) {
                 amountValue += " ${getString(R.string.withdraw_confirmation_dialog_adjusted_balance)}"
             }
 
             amount.setSubTitleText(amountValue)
-            feeAmount.setSubTitleText(SimpleCoinNumberFormat.format(localStoreRepository, feePaid, false))
+            feeAmount.setSubTitleText(
+                SimpleCoinNumberFormat.format(localStoreRepository, feePaid, false) +
+                  if(feeHigherThanAmount) " ${getString(R.string.withdraw_confirmation_fee_warning_message)}" else ""
+            )
+
+            if(feeHigherThanAmount) {
+                feeAmount.setSubTitleColor(resources.getColor(R.color.alt_error_color))
+            }
+
             satPerByte.setSubTitleText("${Plural.of("sat", viewModel.getFeeRate().toLong())}/vbyte")
 
             rawTransaction.onClick {

@@ -3,6 +3,8 @@ package com.intuisoft.plaid.common.network.nownodes.api
 import com.intuisoft.plaid.common.network.nownodes.response.BasicPriceDataResponse
 import com.intuisoft.plaid.common.network.nownodes.response.CurrencyRangeLimitResponse
 import com.intuisoft.plaid.common.network.nownodes.response.SupportedCurrencyResponse
+import com.intuisoft.plaid.common.network.simpleswap.request.ExchangeInfoRequest
+import com.intuisoft.plaid.common.network.simpleswap.response.ExchangeInfoResponse
 import retrofit2.Call
 import retrofit2.http.*
 
@@ -36,4 +38,10 @@ interface SimpleSwapApi {
         @Query("currency_to") to: String,
         @Query("amount") amount: Double,
     ): Call<String>
+
+    @GET("create_exchange")
+    fun createExchange(
+        @Query("api_key") apiKey: String,
+        @Body exchangeInfo: ExchangeInfoRequest
+    ): Call<ExchangeInfoResponse>
 }

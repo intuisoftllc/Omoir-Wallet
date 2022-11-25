@@ -1,5 +1,6 @@
 package com.intuisoft.plaid.common.repositories.db
 
+import com.intuisoft.plaid.common.local.db.ExchangeInfoData
 import com.intuisoft.plaid.common.local.db.SupportedCurrency
 import com.intuisoft.plaid.common.local.db.listeners.DatabaseListener
 import com.intuisoft.plaid.common.model.*
@@ -33,6 +34,12 @@ interface DatabaseRepository {
     suspend fun getMemoForTransaction(txid: String): TransactionMemoModel?
 
     suspend fun setSupportedCurrenciesData(data: List<SupportedCurrencyModel>, fixed: Boolean)
+
+    suspend fun saveExchangeData(data: ExchangeInfoDataModel, walletId: String)
+
+    suspend fun getAllExchanges(walletId: String): List<ExchangeInfoDataModel>
+
+    suspend fun getExchangeById(exchangeId: String): ExchangeInfoDataModel?
 
     suspend fun getSupportedCurrencies(fixed: Boolean): List<SupportedCurrencyModel>
 

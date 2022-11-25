@@ -10,16 +10,17 @@ import com.google.gson.GsonBuilder
 import com.intuisoft.plaid.common.local.UserPreferences
 import com.intuisoft.plaid.common.local.db.*
 import com.intuisoft.plaid.common.local.memorycache.MemoryCache
+import com.intuisoft.plaid.common.network.adapters.InstantAdapter
 import com.intuisoft.plaid.common.network.adapters.LocalDateAdapter
 import com.intuisoft.plaid.common.network.interceptors.ApiKeyInterceptor
 import com.intuisoft.plaid.common.network.interceptors.AppConnectionMonitor
 import com.intuisoft.plaid.common.network.interceptors.ConnectivityInterceptor
 import com.intuisoft.plaid.common.network.nownodes.api.*
 import com.intuisoft.plaid.common.network.nownodes.repository.*
-import com.intuisoft.plaid.common.repositories.LocalStoreRepository
-import com.intuisoft.plaid.common.repositories.LocalStoreRepository_Impl
 import com.intuisoft.plaid.common.repositories.ApiRepository
 import com.intuisoft.plaid.common.repositories.ApiRepository_Impl
+import com.intuisoft.plaid.common.repositories.LocalStoreRepository
+import com.intuisoft.plaid.common.repositories.LocalStoreRepository_Impl
 import com.intuisoft.plaid.common.repositories.db.DatabaseRepository
 import com.intuisoft.plaid.common.repositories.db.DatabaseRepository_Impl
 import okhttp3.OkHttpClient
@@ -27,6 +28,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
+import java.time.Instant
 import java.time.LocalDate
 import java.util.concurrent.TimeUnit
 
@@ -224,6 +226,9 @@ object CommonService {
                 ),
                 provideTransactionMemoDao(
                     application!!
+                ),
+                provideExchangeInfoDao(
+                    application!!
                 )
             )
         }
@@ -359,6 +364,12 @@ object CommonService {
         return PlaidDatabase.getInstance(context).transactionMemoDao()
     }
 
+    private fun provideExchangeInfoDao(
+        context: Context
+    ): ExchangeInfoDao {
+        return PlaidDatabase.getInstance(context).exchangeInfoDao()
+    }
+
     private fun provideDatabaseRepository(
         database: PlaidDatabase,
         suggestedFeeRateDao: SuggestedFeeRateDao,
@@ -367,7 +378,8 @@ object CommonService {
         extendedNetworkDataDao: ExtendedNetworkDataDao,
         tickerPriceChartDataDao: TickerPriceChartDataDao,
         supportedCurrencyDao: SupportedCurrencyDao,
-        transactionMemoDao: TransactionMemoDao
+        transactionMemoDao: TransactionMemoDao,
+        exchangeInfoDao: ExchangeInfoDao
     ): DatabaseRepository {
         return DatabaseRepository_Impl(
             database,
@@ -377,7 +389,8 @@ object CommonService {
             extendedNetworkDataDao,
             tickerPriceChartDataDao,
             supportedCurrencyDao,
-            transactionMemoDao
+            transactionMemoDao,
+            exchangeInfoDao
         )
     }
 
@@ -418,6 +431,7 @@ object CommonService {
         return GsonBuilder()
             .setLenient()
             .registerTypeAdapter(LocalDate::class.java, LocalDateAdapter())
+            .registerTypeAdapter(Instant::class.java, InstantAdapter())
             .create()
     }
 
@@ -498,8 +512,12 @@ object CommonService {
         okHttpClient: OkHttpClient,
         gson: Gson
     ): Retrofit {
+        val gson = GsonBuilder()
+            .setDateFormat("yyyy-MM-dd'T'HH:mm:ss")
+            .create()
         return Retrofit.Builder()
             .client(okHttpClient)
+            .addConverterFactory(GsonConverterFactory.create(gson))
             .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
             .baseUrl(simpleSwapApiUrl!!)
 //        .addConverterFactory(NullOnEmptyBodyConverterFactory())

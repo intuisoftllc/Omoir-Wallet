@@ -349,6 +349,22 @@ class LocalStoreRepository_Impl(
         databaseRepository.setSuggestedFeeRate(networkFeeRate, testNetWallet)
     }
 
+    override suspend fun saveExchangeData(data: ExchangeInfoDataModel, walletId: String) {
+        databaseRepository.saveExchangeData(data, walletId)
+    }
+
+    override fun getAllExchanges(walletId: String): List<ExchangeInfoDataModel> {
+        return runBlocking {
+            return@runBlocking databaseRepository.getAllExchanges(walletId)
+        }
+    }
+
+    override fun getExchangeById(exchangeId: String): ExchangeInfoDataModel? {
+        return runBlocking {
+            return@runBlocking databaseRepository.getExchangeById(exchangeId)
+        }
+    }
+
     override suspend fun getSuggestedFeeRate(testNetWallet: Boolean): NetworkFeeRate? {
         return databaseRepository.getSuggestedFeeRate(testNetWallet)
     }

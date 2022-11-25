@@ -91,6 +91,26 @@ class ApiRepository_Impl(
     }
 
     /* On-Demand Call */
+    override suspend fun createExchange(
+        fixed: Boolean,
+        from: String,
+        to: String,
+        receiveAddress: String,
+        receiveAddressMemo: String,
+        refundAddress: String,
+        refundAddressMemo: String,
+        amount: Double,
+        walletId: String
+    ): ExchangeInfoDataModel? {
+        val result = simpleSwapRepository.createExchange(fixed, from, to, receiveAddress, receiveAddressMemo, refundAddress, refundAddressMemo, amount)
+
+        if(result.isSuccess) {
+            localStoreRepository.saveExchangeData(result.getOrThrow(), walletId)
+            return result.getOrThrow()
+        } else return null
+    }
+
+    /* On-Demand Call */
     override suspend fun getWholeCoinConversion(from: String, to: String, fixed: Boolean): Double {
         updateWholeCoinConversionData(from, to, fixed)
         return memoryCache.getWholeCoinConversion(from, to, fixed) ?: 0.0

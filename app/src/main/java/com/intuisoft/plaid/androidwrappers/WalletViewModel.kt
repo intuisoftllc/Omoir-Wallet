@@ -233,7 +233,6 @@ open class WalletViewModel(
     }
 
     fun checkOpenedWallet(fragment: Fragment) {
-
         if(localWallet == null) {
             softRestart(fragment)
         }
