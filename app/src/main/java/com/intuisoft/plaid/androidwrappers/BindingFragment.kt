@@ -24,6 +24,9 @@ abstract class BindingFragment<T: ViewBinding> : Fragment(), FragmentActionBarDe
         (requireActivity() as MainActivity).setActionBarSubTitle(if(actionBarSubtitle() == 0) "" else resources.getString(actionBarSubtitle()))
         (requireActivity() as MainActivity).setActionBarActionLeft(actionBarActionLeft())
         (requireActivity() as MainActivity).setActionBarActionRight(actionBarActionRight())
+        activateAnimatedLoading(false, "")
+        activateContentUnavailable(false, "")
+        activateNoInternet(false)
     }
 
     fun scanBarcode() {
@@ -36,6 +39,18 @@ abstract class BindingFragment<T: ViewBinding> : Fragment(), FragmentActionBarDe
         requireActivity().checkAppPermission(Manifest.permission.CAMERA, 100) {
             (requireActivity() as MainActivity).scanInvoice()
         }
+    }
+
+    fun activateAnimatedLoading(activate: Boolean, message: String) {
+        (requireActivity() as MainActivity).activateAnimatedLoading(activate, message)
+    }
+
+    fun activateNoInternet(activate: Boolean) {
+        (requireActivity() as MainActivity).activateNoInternet(activate)
+    }
+
+    fun activateContentUnavailable(activate: Boolean, message: String) {
+        (requireActivity() as MainActivity).activateContentUnavailable(activate, message)
     }
 
     override fun onNetworkStateChanged(hasNetwork: Boolean) {

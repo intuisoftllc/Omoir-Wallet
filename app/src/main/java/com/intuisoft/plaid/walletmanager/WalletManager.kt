@@ -274,6 +274,7 @@ class WalletManager(
                false
            )
        )
+
        return uuid
    }
 

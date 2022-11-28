@@ -39,10 +39,13 @@ class ApiRepository_Impl(
         } else return rate
     }
 
-    /* On-Demand Call */
     override suspend fun getSupportedCurrencies(fixed: Boolean): List<SupportedCurrencyModel> {
-        updateSupportedCurrenciesData()
-        return localStoreRepository.getSupportedCurrenciesData(fixed)
+        val supportedCurrencies = localStoreRepository.getSupportedCurrenciesData(fixed)
+
+        if(supportedCurrencies.isEmpty()) {
+            updateSupportedCurrenciesData()
+            return localStoreRepository.getSupportedCurrenciesData(fixed)
+        } else return supportedCurrencies
     }
 
     /* On-Demand Call */
@@ -102,12 +105,25 @@ class ApiRepository_Impl(
         amount: Double,
         walletId: String
     ): ExchangeInfoDataModel? {
+        updateSupportedCurrenciesData()
         val result = simpleSwapRepository.createExchange(fixed, from, to, receiveAddress, receiveAddressMemo, refundAddress, refundAddressMemo, amount)
+        val supportedCurrencies = localStoreRepository.getSupportedCurrenciesData(false) +
+                localStoreRepository.getSupportedCurrenciesData(true)
 
-        if(result.isSuccess) {
-            localStoreRepository.saveExchangeData(result.getOrThrow(), walletId)
-            return result.getOrThrow()
-        } else return null
+        if(result.isSuccess && supportedCurrencies.isNotEmpty()) {
+            val data = result.getOrThrow()
+            val toCurrency = supportedCurrencies.find { it.ticker == data.toShort }
+            val fromCurrency = supportedCurrencies.find { it.ticker == data.fromShort }
+
+            if(toCurrency != null && fromCurrency != null) {
+                data.to = toCurrency.name + " (${data.toShort})"
+                data.from = fromCurrency.name + " (${data.fromShort})"
+                localStoreRepository.saveExchangeData(data, walletId)
+                return data
+            }
+        }
+
+        return null
     }
 
     /* On-Demand Call */
@@ -257,6 +273,7 @@ class ApiRepository_Impl(
     override suspend fun refreshLocalCache() {
         updateSuggestedFeeRates()
         updateBasicPriceData()
+        updateSupportedCurrenciesData()
         updateSupportedCurrenciesData()
     }
 }

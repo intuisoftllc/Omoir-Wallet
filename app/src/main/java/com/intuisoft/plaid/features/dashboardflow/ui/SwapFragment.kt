@@ -8,18 +8,25 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.TextView
 import androidx.cardview.widget.CardView
+import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
 import androidx.lifecycle.Observer
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.gson.Gson
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.*
+import com.intuisoft.plaid.common.model.ExchangeInfoDataModel
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
+import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.features.pin.ui.PinProtectedFragment
 import com.intuisoft.plaid.common.util.extensions.containsNumbers
 import com.intuisoft.plaid.databinding.FragmentSwapBinding
 import com.intuisoft.plaid.features.dashboardflow.viewmodel.SwapViewModel
 import com.intuisoft.plaid.util.NetworkUtil
+import com.intuisoft.plaid.util.fragmentconfig.ConfigSwapData
+import com.intuisoft.plaid.util.fragmentconfig.SendFundsData
+import io.horizontalsystems.bitcoinkit.BitcoinKit
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -98,6 +105,10 @@ class SwapFragment : PinProtectedFragment<FragmentSwapBinding>() {
             binding.swapPairReceive.setValue(it.receiveValue)
         })
 
+        viewModel.creatingExchange.observe(viewLifecycleOwner, Observer {
+            activateAnimatedLoading(it, getString(R.string.swap_create_message))
+        })
+
         binding.fixed.onClick {
             viewModel.setFixed(true)
         }
@@ -139,8 +150,11 @@ class SwapFragment : PinProtectedFragment<FragmentSwapBinding>() {
         })
 
         viewModel.showContent.observe(viewLifecycleOwner, Observer {
-            binding.screenContents.isVisible = it
-            binding.noInternet.isVisible = !it
+            if(it && viewModel.getWalletNetwork() == BitcoinKit.NetworkType.TestNet) {
+                activateContentUnavailable(true, getString(R.string.content_not_available))
+            } else {
+                activateNoInternet(!it)
+            }
         })
 
         viewModel.exchangeInfoDisplay.observe(viewLifecycleOwner, Observer {
@@ -148,7 +162,26 @@ class SwapFragment : PinProtectedFragment<FragmentSwapBinding>() {
         })
 
         viewModel.onNext.observe(viewLifecycleOwner, Observer {
+            var bundle = bundleOf(
+                Constants.Navigation.FRAGMENT_CONFIG to FragmentConfiguration(
+                    actionBarTitle = 0,
+                    actionBarSubtitle = 0,
+                    actionBarVariant = 0,
+                    actionLeft = 0,
+                    actionRight = 0,
+                    configurationType = FragmentConfigurationType.CONFIGURATION_SWAP_DATA,
+                    configData = ConfigSwapData(
+                        payload = Gson().toJson(it, ExchangeInfoDataModel::class.java)
+                    )
+                ),
+                Constants.Navigation.WALLET_UUID_BUNDLE_ID to viewModel.getWalletId()
+            )
 
+            navigate(
+                R.id.exchangeDetailsFragment,
+                bundle,
+                Constants.Navigation.ANIMATED_ENTER_EXIT_RIGHT_NAV_OPTION
+            )
         })
     }
 
@@ -294,6 +327,7 @@ class SwapFragment : PinProtectedFragment<FragmentSwapBinding>() {
         }
 
         exchange.onClick {
+            bottomSheetDialog.dismiss()
             viewModel.createExchange()
         }
 
@@ -319,11 +353,15 @@ class SwapFragment : PinProtectedFragment<FragmentSwapBinding>() {
     }
 
     override fun actionBarActionRight(): Int {
-        return R.drawable.ic_clock
+        if(viewModel.getWalletNetwork() == BitcoinKit.NetworkType.TestNet) {
+            return 0
+        } else return R.drawable.ic_clock
     }
 
     override fun onActionRight() {
-
+        if(viewModel.getWalletNetwork() != BitcoinKit.NetworkType.TestNet) {
+            // todo: impl
+        }
     }
 
     override fun actionBarSubtitle(): Int {

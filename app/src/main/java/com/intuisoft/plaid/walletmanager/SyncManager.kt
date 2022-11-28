@@ -108,10 +108,12 @@ class SyncManager(
     fun hasWallets() = _wallets.isNotEmpty()
 
     fun startAutoSync() {
-        autoSyncJob = runInBackground {
-            while(true) {
-                delay(Constants.Time.AUTO_SYNC_TIME)
-                syncWallets()
+        if(autoSyncJob == null) {
+            autoSyncJob = runInBackground {
+                while (true) {
+                    delay(Constants.Time.AUTO_SYNC_TIME)
+                    syncWallets()
+                }
             }
         }
     }
@@ -140,6 +142,7 @@ class SyncManager(
     fun stopAutoSyncer() {
         if(running) {
             autoSyncJob?.cancel()
+            autoSyncJob = null
         }
     }
 

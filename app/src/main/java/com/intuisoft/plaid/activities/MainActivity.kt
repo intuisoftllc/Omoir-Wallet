@@ -77,6 +77,20 @@ class MainActivity : BindingActivity<ActivityMainBinding>(), ActionBarDelegate {
         setupBottomNavigationBar()
     }
 
+    fun activateAnimatedLoading(activate: Boolean, message: String) {
+        binding.animatedLoadingContainer.isVisible = activate
+        binding.loadingMessage.text = message
+    }
+
+    fun activateNoInternet(activate: Boolean) {
+        binding.noInternet.isVisible = activate
+    }
+
+    fun activateContentUnavailable(activate: Boolean, message: String) {
+        binding.contentUnavailable.isVisible = activate
+        binding.contentUnavailableMessage.text = message
+    }
+
     private fun setupBottomNavigationBar() {
         val navController = getNavController()
 

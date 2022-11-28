@@ -16,6 +16,7 @@ import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.util.NetworkUtil
 import com.intuisoft.plaid.walletmanager.AbstractWalletManager
 import kotlinx.coroutines.*
+import java.time.Instant
 
 
 class SwapViewModel(
@@ -52,6 +53,9 @@ class SwapViewModel(
     protected val _showContent = SingleLiveData<Boolean>()
     val showContent: LiveData<Boolean> = _showContent
 
+    protected val _creatingExchange = SingleLiveData<Boolean>()
+    val creatingExchange: LiveData<Boolean> = _creatingExchange
+
     protected val _getReceiveAddress = SingleLiveData<Pair<String, Pair<String, String?>>>()
     val getReceiveAddress: LiveData<Pair<String, Pair<String, String?>>> = _getReceiveAddress
 
@@ -78,6 +82,7 @@ class SwapViewModel(
     private var wholeCoinConversion: Double = 0.0
     private var bitcoinAmountLimitErrors = 0
     private var maxSwapErrors = 0
+    private var ignoreNoNetwork = false
 
         /*
         * Todo
@@ -90,8 +95,13 @@ class SwapViewModel(
     }
 
     fun validateSendAmount(sending: Double?) : Boolean {
-        viewModelScope.launch {
-            updateWholeCoinConversion(sendTicker, receiveTicker) // refresh the value when needed
+        viewModelScope.launch{
+            withContext(Dispatchers.IO) {
+                updateWholeCoinConversion(
+                    sendTicker,
+                    receiveTicker
+                ) // refresh the value when needed
+            }
         }
 
         sending?.let { it ->
@@ -117,14 +127,18 @@ class SwapViewModel(
     }
 
     fun onNoInternet(hasInternet: Boolean) {
-        viewModelScope.launch {
-            if(!hasInternet) {
-                _showContent.postValue(false)
-            } else {
-                _showContent.postValue(true)
-                if(sendTicker.isNotEmpty() && receiveTicker.isNotEmpty())
-                    modifySendReceive(sendTicker, receiveTicker)
-                else setInitialValues()
+        viewModelScope.launch{
+            withContext(Dispatchers.IO) {
+                if(!ignoreNoNetwork) {
+                    if (!hasInternet) {
+                        _showContent.postValue(false)
+                    } else {
+                        _showContent.postValue(true)
+                        if (sendTicker.isNotEmpty() && receiveTicker.isNotEmpty())
+                            modifySendReceive(sendTicker, receiveTicker)
+                        else setInitialValues()
+                    }
+                }
             }
         }
     }
@@ -176,22 +190,31 @@ class SwapViewModel(
 
     fun createExchange() {
         viewModelScope.launch {
-            val exchangeData = apiRepository.createExchange(
-                fixed = fixed,
-                from = sendTicker,
-                to = receiveTicker,
-                receiveAddress = receiveAddress,
-                receiveAddressMemo = receiveAddressMemo,
-                refundAddress = refundAddress,
-                refundAddressMemo = refundAddressMemo,
-                amount = sendAmount,
-                walletId = getWalletId()
-            )
+            withContext(Dispatchers.IO) {
+                ignoreNoNetwork = true
+                _creatingExchange.postValue(true)
+                delay(500)
+                val exchangeData = null
+//                    apiRepository.createExchange(
+//                    fixed = fixed,
+//                    from = sendTicker,
+//                    to = receiveTicker,
+//                    receiveAddress = receiveAddress,
+//                    receiveAddressMemo = receiveAddressMemo,
+//                    refundAddress = refundAddress,
+//                    refundAddressMemo = refundAddressMemo,
+//                    amount = sendAmount,
+//                    walletId = getWalletId()
+//                )
 
-            if(exchangeData != null) {
-                _onNext.postValue(exchangeData!!)
-            } else {
-                _onDisplayExplanation.postValue(getApplication<PlaidApp>().getString(R.string.swap_failed_error))
+                if (exchangeData != null) {
+                    _onNext.postValue(exchangeData!!)
+                } else {
+                    _onDisplayExplanation.postValue(getApplication<PlaidApp>().getString(R.string.swap_failed_error))
+                }
+
+                _creatingExchange.postValue(false)
+                ignoreNoNetwork = false
             }
         }
     }
@@ -210,12 +233,14 @@ class SwapViewModel(
 
     private fun modifySendReceive(from: String, to: String) {
         viewModelScope.launch {
-            _screenFunctionsEnabled.postValue(false)
-            setSendCurrency(from).join()
-            setReceiveCurrency(to).join()
-            setFixedFloatingRange().join()
-            updateWholeCoinConversion(from, to)
-            _screenFunctionsEnabled.postValue(true)
+            withContext(Dispatchers.IO) {
+                _screenFunctionsEnabled.postValue(false)
+                setSendCurrency(from).join()
+                setReceiveCurrency(to).join()
+                setFixedFloatingRange().join()
+                updateWholeCoinConversion(from, to)
+                _screenFunctionsEnabled.postValue(true)
+            }
         }
     }
 
@@ -257,28 +282,36 @@ class SwapViewModel(
 
     fun onNext() {
         viewModelScope.launch {
-            if(max == null || sendAmount <= (max ?: 0.0)) {
-                val isBitcoin = sendTicker.lowercase() == "btc"
-                clearAddresses()
+            withContext(Dispatchers.IO) {
+                if (max == null || sendAmount <= (max ?: 0.0)) {
+                    val isBitcoin = sendTicker.lowercase() == "btc"
+                    clearAddresses()
 
-                if (isBitcoin) {
-                    refundAddress = getRecieveAddress()
-                    val currency = apiRepository.getSupportedCurrencies(fixed)
-                        .filter { it.ticker.lowercase() == receiveTicker.lowercase() }
-                    val recipient = currency.first()
+                    if (isBitcoin) {
+                        refundAddress = getRecieveAddress()
+                        val currency = apiRepository.getSupportedCurrencies(fixed)
+                            .filter { it.ticker.lowercase() == receiveTicker.lowercase() }
+                        val recipient = currency.first()
 
-                    _getReceiveAddress.postValue(recipient.ticker to (recipient.validAddressRegex to recipient.validMemoRegex))
+                        _getReceiveAddress.postValue(recipient.ticker to (recipient.validAddressRegex to recipient.validMemoRegex))
+                    } else {
+                        receiveAddress = getRecieveAddress()
+                        val currency = apiRepository.getSupportedCurrencies(fixed)
+                            .filter { it.ticker.lowercase() == sendTicker.lowercase() }
+                        val sender = currency.first()
+
+                        _getRefundAddress.postValue(sender.ticker to (sender.validAddressRegex to sender.validMemoRegex))
+                    }
                 } else {
-                    receiveAddress = getRecieveAddress()
-                    val currency = apiRepository.getSupportedCurrencies(fixed)
-                        .filter { it.ticker.lowercase() == sendTicker.lowercase() }
-                    val sender = currency.first()
-
-                    _getRefundAddress.postValue(sender.ticker to (sender.validAddressRegex to sender.validMemoRegex))
+                    _onDisplayExplanation.postValue(
+                        getApplication<PlaidApp>().getString(
+                            R.string.swap_limit_reached_error,
+                            sendTicker.uppercase(),
+                            max?.toString() ?: "0"
+                        )
+                    )
+                    _confirmButtonEnabled.postValue(false)
                 }
-            } else {
-                _onDisplayExplanation.postValue(getApplication<PlaidApp>().getString(R.string.swap_limit_reached_error, sendTicker.uppercase(), max?.toString() ?: "0"))
-                _confirmButtonEnabled.postValue(false)
             }
         }
     }
@@ -287,27 +320,34 @@ class SwapViewModel(
         sendTicker = ticker
 
         return viewModelScope.launch {
-            val currency = apiRepository.getSupportedCurrencies(fixed)
-                .filter { it.ticker.lowercase() == ticker.lowercase() }
+            withContext(Dispatchers.IO) {
+                val currency = apiRepository.getSupportedCurrencies(fixed)
+                    .filter { it.ticker.lowercase() == ticker.lowercase() }
 
-            if(currency.isNotEmpty()) {
-                val crypto = currency.first()
-                val isBitcoin = ticker.lowercase() == "btc"
+                if (currency.isNotEmpty()) {
+                    val crypto = currency.first()
+                    val isBitcoin = ticker.lowercase() == "btc"
 
-                _sendPairInfo.postValue(
-                    SwapPairInfo(
-                        ticker.uppercase(),
-                        if(isBitcoin) null else crypto.image,
-                        sendAmount,
-                        getApplication<PlaidApp>().getString(
-                            if(isBitcoin) R.string.swap_send_variant_1 else R.string.swap_send_variant_2,
-                            crypto.name
-                        ),
-                        if(isBitcoin) SwapPairItemView.ENTER_VALUE_VARIANT_1 else SwapPairItemView.ENTER_VALUE_VARIANT_2
+                    _sendPairInfo.postValue(
+                        SwapPairInfo(
+                            ticker.uppercase(),
+                            if (isBitcoin) null else crypto.image,
+                            sendAmount,
+                            getApplication<PlaidApp>().getString(
+                                if (isBitcoin) R.string.swap_send_variant_1 else R.string.swap_send_variant_2,
+                                crypto.name
+                            ),
+                            if (isBitcoin) SwapPairItemView.ENTER_VALUE_VARIANT_1 else SwapPairItemView.ENTER_VALUE_VARIANT_2
+                        )
                     )
-                )
-            } else {
-                _onDisplayExplanation.postValue(getApplication<PlaidApp>().getString(R.string.swap_could_not_find_crypto_error, ticker))
+                } else {
+                    _onDisplayExplanation.postValue(
+                        getApplication<PlaidApp>().getString(
+                            R.string.swap_could_not_find_crypto_error,
+                            ticker
+                        )
+                    )
+                }
             }
         }
     }
@@ -316,45 +356,60 @@ class SwapViewModel(
         receiveTicker = ticker
 
         return viewModelScope.launch {
-            val currency = apiRepository.getSupportedCurrencies(fixed)
-                .filter { it.ticker.lowercase() == ticker.lowercase() }
+            withContext(Dispatchers.IO) {
+                val currency = apiRepository.getSupportedCurrencies(fixed)
+                    .filter { it.ticker.lowercase() == ticker.lowercase() }
 
-            if(currency.isNotEmpty()) {
-                val crypto = currency.first()
-                val isBitcoin = ticker.lowercase() == "btc"
+                if (currency.isNotEmpty()) {
+                    val crypto = currency.first()
+                    val isBitcoin = ticker.lowercase() == "btc"
 
-                _recievePairInfo.postValue(
-                    SwapPairInfo(
-                        ticker.uppercase(),
-                        if(isBitcoin) null else crypto.image,
-                        receiveAmount,
-                        getApplication<PlaidApp>().getString(
-                            if(isBitcoin) R.string.swap_receive_variant_2 else R.string.swap_receive_variant_1,
-                            crypto.name
-                        ),
-                        if(isBitcoin) SwapPairItemView.SHOW_VALUE_VARIANT_2 else SwapPairItemView.SHOW_VALUE_VARIANT_1
+                    _recievePairInfo.postValue(
+                        SwapPairInfo(
+                            ticker.uppercase(),
+                            if (isBitcoin) null else crypto.image,
+                            receiveAmount,
+                            getApplication<PlaidApp>().getString(
+                                if (isBitcoin) R.string.swap_receive_variant_2 else R.string.swap_receive_variant_1,
+                                crypto.name
+                            ),
+                            if (isBitcoin) SwapPairItemView.SHOW_VALUE_VARIANT_2 else SwapPairItemView.SHOW_VALUE_VARIANT_1
+                        )
                     )
-                )
-            } else {
-                _onDisplayExplanation.postValue(getApplication<PlaidApp>().getString(R.string.swap_could_not_find_crypto_error, ticker))
+                } else {
+                    _onDisplayExplanation.postValue(
+                        getApplication<PlaidApp>().getString(
+                            R.string.swap_could_not_find_crypto_error,
+                            ticker
+                        )
+                    )
+                }
             }
         }
     }
 
     private fun setFixedFloatingRange() : Job {
         return viewModelScope.launch {
-            val range = apiRepository.getCurrencyRangeLimit(sendTicker, receiveTicker, fixed)
-            if (range != null) {
-                min = range.min.toDouble()
-                max = range.max?.toDouble()
-                if(fixed) _fixedRange.postValue(range.min to (range.max ?: "∞"))
-                else _floatingRange.postValue(range.min to (range.max ?: "∞"))
-            } else {
-                min = 0.0
-                max = 0.0
-                if(fixed) _fixedRange.postValue(null)
-                else _floatingRange.postValue(null)
-                _onDisplayExplanation.postValue(getApplication<PlaidApp>().getString(R.string.swap_could_not_load_min_max_error, sendTicker, receiveTicker))
+            withContext(Dispatchers.IO) {
+                val range = apiRepository.getCurrencyRangeLimit(sendTicker, receiveTicker, fixed)
+                if (range != null) {
+                    min = range.min.toDouble()
+                    max = range.max?.toDouble()
+                    if (fixed) _fixedRange.postValue(range.min to (range.max ?: "∞"))
+                    else _floatingRange.postValue(range.min to (range.max ?: "∞"))
+                } else {
+                    min = 0.0
+                    max = 0.0
+                    if (fixed) _fixedRange.postValue(null)
+                    else _floatingRange.postValue(null)
+                    _onDisplayExplanation.postValue(
+                        getApplication<PlaidApp>().getString(
+                            R.string.swap_could_not_load_min_max_error,
+                            sendTicker,
+                            receiveTicker
+                        )
+                    )
+                }
             }
         }
     }

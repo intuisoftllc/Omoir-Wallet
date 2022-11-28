@@ -73,4 +73,8 @@ val viewModelModule = module {
     viewModel {
         InvoiceViewModel(get(), get(), get(), get())
     }
+
+    viewModel {
+        SwapDetailsViewModel(get(), get(), get(), get())
+    }
 }

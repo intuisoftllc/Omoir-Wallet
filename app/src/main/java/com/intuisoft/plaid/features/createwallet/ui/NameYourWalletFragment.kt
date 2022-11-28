@@ -18,11 +18,15 @@ import com.intuisoft.plaid.features.pin.ui.PinProtectedFragment
 import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.util.fragmentconfig.AllSetData
 import com.intuisoft.plaid.util.fragmentconfig.WalletConfigurationData
+import com.intuisoft.plaid.walletmanager.AbstractWalletManager
+import com.intuisoft.plaid.walletmanager.WalletManager
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
 class NameYourWalletFragment : PinProtectedFragment<FragmentNameWalletBinding>() {
     protected val viewModel: CreateWalletViewModel by viewModel()
+    protected val walletManager: AbstractWalletManager by inject()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -84,6 +88,8 @@ class NameYourWalletFragment : PinProtectedFragment<FragmentNameWalletBinding>()
         })
 
         viewModel.walletCreated.observe(viewLifecycleOwner, Observer {
+            walletManager.openWallet(walletManager.findLocalWallet(it)!!)
+
             var bundle = bundleOf(
                 Constants.Navigation.FRAGMENT_CONFIG to FragmentConfiguration( // todo: check for pro here for home screen destination and on all other places as well
                     actionBarTitle = 0,

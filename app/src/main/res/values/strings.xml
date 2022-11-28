@@ -258,7 +258,6 @@
     <string name="transaction_details_title">Transaction Details</string>
     <string name="transaction_details_item_1">Transaction Type</string>
     <string name="transaction_details_item_3">Transaction Date</string>
-    <string name="transaction_details_item_6">Status</string>
     <string name="transaction_details_item_7">Confirmations</string>
     <string name="transaction_details_item_8">Memo</string>
     <string name="transaction_details_view_external">View on blockchain.com</string>
@@ -466,7 +465,16 @@
     <string name="swap_bitcoin_sender">This wallet (you can pay in the next screen)</string>
     <string name="swap_external_wallet_sender">External %1$s wallet (pay instructions are provided in the next screen)</string>
     <string name="swap_failed_error">Failed to create exchange</string>
+    <string name="swap_create_message">Creating exchange</string>
 <!--    Swap Strings End -->
+
+<!--    Swap Details Strings -->
+    <string name="swap_details_smart_pay">Smart Pay</string>
+    <string name="swap_details_instructions_part_1">Complete the exchange by sending</string>
+    <string name="swap_details_instructions_part_2">To this address below</string>
+    <string name="swap_details_instructions_part_3">Click to see the process on Change Now</string>
+    <string name="swap_details_with_memo">With Memo:</string>
+<!--    Swap Details Strings End -->
 
 <!--    Generic Use Strings -->
     <string name="welcome">Welcome</string>
@@ -489,6 +497,7 @@
     <string name="delete">Delete</string>
     <string name="update">Update</string>
     <string name="bitcoin">Bitcoin</string>
+    <string name="status">Status</string>
     <string name="one_day">1D</string>
     <string name="one_week">1W</string>
     <string name="one_month">1M</string>
@@ -496,6 +505,7 @@
     <string name="six_months">6M</string>
     <string name="one_year">1Y</string>
     <string name="all">All</string>
+    <string name="address">Address</string>
     <string name="explorer">Explorer</string>
     <string name="website">Website</string>
     <string name="no_internet_connection">No Internet Connection!</string>
@@ -511,6 +521,10 @@
     <string name="wallet">Wallet</string>
     <string name="market">Market</string>
     <string name="atp">ATP</string>
+    <string name="from">From</string>
+    <string name="you_send">You Send</string>
+    <string name="you_receive">You Receive</string>
+    <string name="to">To</string>
     <string name="reports">Reports</string>
     <string name="proceed_anyway">Proceed Anyway</string>
     <string name="done">Done</string>
@@ -530,6 +544,7 @@
     <string name="transaction_id">Transaction ID</string>
     <string name="no_connection">Lost Connection to Servers…</string>
     <string name="not_connected_to_internet">You are not connected\nto the Internet</string>
+    <string name="content_not_available">The following content is not available for testnet wallets</string>
     <string name="syncing_percent">Syncing... (%1$s%%)</string>
 <!--    Generic Use Strings End -->
 
@@ -549,6 +564,7 @@
     <string name="address_book_fragment_label">Address Book</string>
     <string name="withdrawal_type_fragment_label">Withdrawal Type</string>
     <string name="manage_wallets_fragment_label">Manage Wallets</string>
+    <string name="swap_details_fragment_label">Exchange Details</string>
     <string name="withdraw_fragment_label">Send BTC</string>
     <string name="withdraw_confirmation_fragment_label">Withdraw</string>
     <string name="transaction_details_fragment_label">Transaction Details</string>

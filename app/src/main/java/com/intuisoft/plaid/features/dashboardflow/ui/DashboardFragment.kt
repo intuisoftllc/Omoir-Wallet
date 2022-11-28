@@ -146,7 +146,8 @@ class DashboardFragment : PinProtectedFragment<FragmentWalletDashboardBinding>()
     }
 
     override fun onWalletStateUpdated(wallet: LocalWalletModel) {
-        if(wallet.uuid == viewModel.getWalletId() && activity != null && _binding != null) {
+        if(viewModel.getWallet() != null && wallet.uuid == viewModel.getWalletId()
+            && activity != null && _binding != null) {
             (requireActivity() as MainActivity).setActionBarSubTitle(
                 wallet.onWalletStateChanged(
                     requireContext(),

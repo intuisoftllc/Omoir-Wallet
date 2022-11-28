@@ -244,6 +244,14 @@
     </fragment>
 
     <fragment
+        android:id="@+id/exchangeDetailsFragment"
+        android:name="com.intuisoft.plaid.features.dashboardflow.ui.SwapDetailsFragment"
+        android:label="@string/swap_details_fragment_label"
+        tools:layout="@layout/fragment_exchange_details">
+
+    </fragment>
+
+    <fragment
         android:id="@+id/addressBookFragment"
         android:name="com.intuisoft.plaid.features.settings.ui.AddressBookFragment"
         android:label="@string/address_book_fragment_label"

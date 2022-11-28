@@ -7,7 +7,7 @@ class Constants {
 
     object Database {
         const val DB_NAME = "plaid.db"
-        const val DB_VERSION = 19
+        const val DB_VERSION = 20
     }
 
     object Files {
@@ -78,6 +78,7 @@ class Constants {
         const val TEST_WALLET_1 = "yard impulse luxury drive today throw farm pepper survey wreck glass federal"
         const val TEST_WALLET_2 = "wrong cousin spell stadium snake enact author piano venue outer question chair"
         const val BASE_WALLET = "BASE_WALLET_ID"
+        const val BTC_TICKER = "btc"
     }
 
     object ServerStrings {

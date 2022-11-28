@@ -26,6 +26,109 @@
         app:layout_constraintTop_toBottomOf="@id/toolbar"
         app:navGraph="@navigation/nav_graph" />
 
+    <LinearLayout
+        android:id="@+id/animated_loading_container"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:visibility="gone"
+        android:background="@color/background_color"
+        app:layout_constraintBottom_toTopOf="@+id/bottomBar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar"
+        android:paddingHorizontal="@dimen/margin_10">
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/animationView"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            app:lottie_rawRes="@raw/animated_loading"
+            app:lottie_autoPlay="true"
+            app:lottie_loop="true"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/loading_message"
+            android:gravity="center"
+            android:textColor="@color/text_grey"
+            style="@style/TextStyle.Semibold.16"
+            android:layout_gravity="center"
+            android:layout_marginHorizontal="@dimen/horizontal_padding_size_large"
+            android:layout_marginTop="@dimen/horizontal_padding_size"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/no_internet"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:visibility="gone"
+        android:background="@color/background_color"
+        app:layout_constraintBottom_toTopOf="@+id/bottomBar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar"
+        android:paddingHorizontal="@dimen/margin_10">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:src="@drawable/ic_no_internet"
+            app:tint="?attr/colorPrimary" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/not_connected_to_internet"
+            android:gravity="center"
+            android:textColor="@color/text_grey"
+            style="@style/TextStyle.Semibold.16"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/horizontal_padding_size"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/content_unavailable"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:background="@color/background_color"
+        app:layout_constraintBottom_toTopOf="@+id/bottomBar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar"
+        android:paddingHorizontal="@dimen/margin_10">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:src="@drawable/ic_content_not_available"/>
+
+        <TextView
+            android:id="@+id/content_unavailable_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textColor="@color/text_grey"
+            style="@style/TextStyle.Semibold.16"
+            android:layout_gravity="center"
+            android:layout_marginHorizontal="@dimen/horizontal_padding_size_large"
+            android:layout_marginTop="@dimen/horizontal_padding_size"/>
+
+    </LinearLayout>
+
 
     <com.intuisoft.plaid.androidwrappers.BottomBarView
         android:id="@+id/bottomBar"

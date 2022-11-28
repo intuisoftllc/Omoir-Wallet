@@ -5,7 +5,7 @@ import androidx.navigation.NavDestination
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-data class InvoiceData(
+data class ConfigInvoiceData(
     val amountToSend: Double,
     val address: String,
     val memo: String? = null
