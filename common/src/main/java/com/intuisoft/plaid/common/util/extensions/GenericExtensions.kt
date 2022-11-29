@@ -1,6 +1,8 @@
 package com.intuisoft.plaid.common.util.extensions
 
+import android.content.Context
 import android.text.Editable
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import kotlinx.coroutines.Dispatchers
@@ -9,6 +11,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
+import java.io.*
 import java.text.CharacterIterator
 import java.text.StringCharacterIterator
 
@@ -130,4 +133,40 @@ fun Long.humanReadableByteCountSI(): String? {
 
 fun String.containsNumbers(): Boolean {
     return this.find { Character.isDigit(it) } != null
+}
+
+fun File.writeToFile(data: String, context: Context): Boolean {
+    return try {
+        val outputStreamWriter =
+            OutputStreamWriter(context.openFileOutput(name, Context.MODE_PRIVATE))
+        outputStreamWriter.write(data)
+        outputStreamWriter.close()
+        true
+    } catch (e: IOException) {
+        Log.e("FileWriter", "File write failed: " + e.toString())
+        false
+    }
+}
+
+fun File.readFromFile(context: Context): String? {
+    var ret = ""
+    try {
+        val inputStream: InputStream? = context.openFileInput(name)
+        if (inputStream != null) {
+            val inputStreamReader = InputStreamReader(inputStream)
+            val bufferedReader = BufferedReader(inputStreamReader)
+            var receiveString: String? = ""
+            val stringBuilder = java.lang.StringBuilder()
+            while (bufferedReader.readLine().also { receiveString = it } != null) {
+                stringBuilder.append("\n").append(receiveString)
+            }
+            inputStream.close()
+            ret = stringBuilder.toString()
+        }
+    } catch (e: FileNotFoundException) {
+        Log.e("FileWriter", "File not found: " + e.toString())
+    } catch (e: IOException) {
+        Log.e("FileWriter", "Can not read file: $e")
+    }
+    return ret
 }

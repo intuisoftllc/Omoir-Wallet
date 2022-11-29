@@ -50,8 +50,8 @@ class HomescreenFragment : PinProtectedFragment<FragmentHomescreenBinding>(), St
             requireActivity().finish()
         }
 
+        (requireActivity() as MainActivity).performSetup()
         viewModel.updateGreeting()
-        walletManager.synchronizeAll()
         walletVM.addWalletStateListener(this)
         walletVM.refreshLocalCache()
 
@@ -78,6 +78,7 @@ class HomescreenFragment : PinProtectedFragment<FragmentHomescreenBinding>(), St
             binding.walletsView.noWalletsContainer.isVisible = it.isEmpty()
         })
 
+        walletManager.synchronizeAll()
         binding.createWallet.setOnClickListener {
             // todo: limit to 5 for free version
             navigate(R.id.createWalletFragment)

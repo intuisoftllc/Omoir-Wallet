@@ -38,13 +38,21 @@ class WalletManager(
     override fun start() {
         @OptIn(DelicateCoroutinesApi::class)
         GlobalScope.launch {
-            _baseMainNetWallet = createBaseWallet(_baseMainNetWallet, BitcoinKit.NetworkType.MainNet)
-            _baseTestNetWallet = createBaseWallet(_baseTestNetWallet, BitcoinKit.NetworkType.TestNet)
-            localStoreRepository.setOnWipeDataListener(this@WalletManager)
-            syncer.start()
-            syncer.addListener(this@WalletManager)
-            updateWallets()
+            if(!syncer.isRunning()) {
+                _baseMainNetWallet =
+                    createBaseWallet(_baseMainNetWallet, BitcoinKit.NetworkType.MainNet)
+                _baseTestNetWallet =
+                    createBaseWallet(_baseTestNetWallet, BitcoinKit.NetworkType.TestNet)
+                localStoreRepository.setOnWipeDataListener(this@WalletManager)
+                syncer.start()
+                syncer.addListener(this@WalletManager)
+                updateWallets()
+            }
         }
+    }
+
+    override fun stop() {
+        syncer.stop()
     }
 
     private fun createBaseWallet(baseWallet: BitcoinKit?, network: BitcoinKit.NetworkType): BitcoinKit {
@@ -152,13 +160,14 @@ class WalletManager(
         localWallet: LocalWalletModel,
         onDeleteFinished: suspend () -> Unit
     ) {
-        localWallet.walletKit!!.stop()
+        stop()
         deleteWalletFromDatabase(localWallet)
         localStoreRepository.getStoredWalletInfo().walletIdentifiers.remove { it.walletUUID == localWallet.uuid }
         localStoreRepository.setStoredWalletInfo(localStoreRepository.getStoredWalletInfo())
 
         localPassphrases.remove(localWallet.uuid)
         syncer.removeWallet(localWallet.uuid)
+        start()
         onDeleteFinished()
     }
 
@@ -185,10 +194,6 @@ class WalletManager(
 
     override fun synchronizeAll() {
         syncer.syncWallets()
-    }
-
-    override fun stop() {
-        syncer.stop()
     }
 
     private suspend fun onWalletStateUpdated(wallet: LocalWalletModel) {
@@ -270,6 +275,7 @@ class WalletManager(
                "",
                mutableListOf(),
                bip.ordinal,
+               0,
                testnetWallet,
                false
            )
@@ -299,6 +305,7 @@ class WalletManager(
                pubKey,
                mutableListOf(),
                HDExtendedKey(pubKey).info.purpose.ordinal,
+               0,
                network == BitcoinKit.NetworkType.TestNet,
                true
            )
@@ -371,6 +378,11 @@ class WalletManager(
                                is BitcoinCore.KitState.NotSynced,
                                is BitcoinCore.KitState.Synced -> {
                                    CoroutineScope(Dispatchers.Main).launch {
+                                       if(state == BitcoinCore.KitState.Synced) {
+                                           identifier.lastSynced = System.currentTimeMillis()
+                                           localStoreRepository.setStoredWalletInfo(localStoreRepository.getStoredWalletInfo())
+                                       }
+
                                        onWalletStateUpdated(model)
                                        _balanceUpdated.postValue(getTotalBalance())
                                    }
@@ -417,5 +429,9 @@ class WalletManager(
 
     override fun onWalletsUpdated(wallets: List<LocalWalletModel>) {
         _wallets.postValue(wallets)
+    }
+
+    override fun getLastSyncedTime(wallet: LocalWalletModel): Long {
+        return findStoredWallet(wallet.uuid)?.lastSynced ?: 0
     }
 }

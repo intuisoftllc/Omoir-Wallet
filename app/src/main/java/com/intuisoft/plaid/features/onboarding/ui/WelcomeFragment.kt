@@ -130,6 +130,6 @@ class WelcomeFragment : BindingFragment<FragmentOnboardingWelcomeBinding>() {
         viewModel.updateAlias(binding.name.text.toString())
 
         findNavController().navigate(WelcomeFragmentDirections.actionWelcomeFragmentToOnboardingPinSetupFragment(),
-            com.intuisoft.plaid.common.util.Constants.Navigation.ANIMATED_ENTER_EXIT_RIGHT_NAV_OPTION)
+            Constants.Navigation.ANIMATED_ENTER_EXIT_RIGHT_NAV_OPTION)
     }
 }

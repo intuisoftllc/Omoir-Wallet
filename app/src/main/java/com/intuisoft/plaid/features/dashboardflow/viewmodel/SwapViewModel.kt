@@ -193,19 +193,17 @@ class SwapViewModel(
             withContext(Dispatchers.IO) {
                 ignoreNoNetwork = true
                 _creatingExchange.postValue(true)
-                delay(500)
-                val exchangeData = null
-//                    apiRepository.createExchange(
-//                    fixed = fixed,
-//                    from = sendTicker,
-//                    to = receiveTicker,
-//                    receiveAddress = receiveAddress,
-//                    receiveAddressMemo = receiveAddressMemo,
-//                    refundAddress = refundAddress,
-//                    refundAddressMemo = refundAddressMemo,
-//                    amount = sendAmount,
-//                    walletId = getWalletId()
-//                )
+                val exchangeData = apiRepository.createExchange(
+                    fixed = fixed,
+                    from = sendTicker,
+                    to = receiveTicker,
+                    receiveAddress = receiveAddress,
+                    receiveAddressMemo = receiveAddressMemo,
+                    refundAddress = refundAddress,
+                    refundAddressMemo = refundAddressMemo,
+                    amount = sendAmount,
+                    walletId = getWalletId()
+                )
 
                 if (exchangeData != null) {
                     _onNext.postValue(exchangeData!!)

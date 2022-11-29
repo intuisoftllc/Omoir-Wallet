@@ -16,7 +16,7 @@
         android:layout_marginTop="20dp"
         android:layout_marginBottom="20dp"
         app:trackIncorrectAttempts="true"
-        app:firstInputTip="@string/create_pin_tip_message"
+        app:firstInputTip="@string/enter_pin_to_unlock_message"
         app:wrongLengthTip="@string/incorrect_pin_length_tip_message"
         app:secondInputTip="@string/re_enter_pin_tip_message"
         app:wrongInputTip="@string/wrong_input_tip_message"

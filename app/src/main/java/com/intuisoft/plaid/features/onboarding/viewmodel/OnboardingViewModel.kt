@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
 import com.intuisoft.plaid.androidwrappers.BaseViewModel
 import com.intuisoft.plaid.androidwrappers.SingleLiveData
+import com.intuisoft.plaid.common.CommonService
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.walletmanager.AbstractWalletManager
 import com.intuisoft.plaid.walletmanager.WalletManager
@@ -25,25 +26,25 @@ class OnboardingViewModel(
     private val _onBiometricRegisterSuccess = SingleLiveData<Unit>()
     val onBiometricRegisterSuccess: LiveData<Unit> = _onBiometricRegisterSuccess
 
-    val fingerprintEnrolled : Boolean get() = localStoreRepository.isFingerprintEnabled()
+    private var alias = ""
 
     fun updateAlias(alias: String) {
-        localStoreRepository.updateUserAlias(alias)
+        this.alias = alias
     }
 
     fun enableNextButton(enable: Boolean) {
         _advanceAllowed.postValue(enable)
     }
 
-    fun savePin(pin: String) {
-        localStoreRepository.updateUserPin(pin)
+    fun saveUserAlias() {
+        localStoreRepository.updateUserAlias(alias)
     }
 
     fun biometricAuthenticationSuccessful() {
         localStoreRepository.setFingerprintEnabled(true)
 
         viewModelScope.launch {
-            delay(500)
+            delay(400)
             _onBiometricRegisterSuccess.postValue(Unit)
         }
     }

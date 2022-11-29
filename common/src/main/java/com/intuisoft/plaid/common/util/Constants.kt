@@ -18,6 +18,8 @@ class Constants {
         const val WALLET_UUID_BUNDLE_ID = "wallet_id"
         const val FRAGMENT_CONFIG = "fragment_config"
         const val FROM_SETTINGS = "from_settings"
+        const val HOME_PASS_THROUGH = "hom_pass_through"
+        const val PIN_SETUP = "pin_setup"
 
         val ANIMATED_SLIDE_UP_OPTION =
             navOptions {
@@ -96,7 +98,7 @@ class Constants {
         const val MIN_SYNC_TIME = ONE_MINUTE * MILLS_PER_SEC
         const val INSTANT = -1
         const val INSTANT_TIME_OFFSET = ((ONE_MINUTE * 60) * 24) * 10000
-        const val SYNC_TIMEOUT = MILLS_PER_SEC * 8
+        const val SYNC_TIMEOUT = MILLS_PER_SEC * 10
         const val AUTO_SYNC_TIME: Long = (MILLS_PER_SEC * TWO_MINUTES).toLong()
         const val GENERAL_CACHE_UPDATE_TIME: Long = (MILLS_PER_SEC * TEN_MINUTES).toLong()
         const val GENERAL_CACHE_UPDATE_TIME_MED: Long = (MILLS_PER_SEC * FIVE_MINUTES).toLong()

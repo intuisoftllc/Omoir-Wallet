@@ -57,6 +57,7 @@ class ProHomescreenFragment : PinProtectedFragment<FragmentProHomescreenBinding>
             requireActivity().finish()
         }
 
+        (requireActivity() as MainActivity).performSetup()
         viewModel.updateGreeting()
         walletVM.refreshLocalCache()
 
@@ -148,7 +149,7 @@ class ProHomescreenFragment : PinProtectedFragment<FragmentProHomescreenBinding>
     }
 
     override fun navigationId(): Int {
-        return R.id.homescreenFragment
+        return R.id.proHomescreenFragment
     }
 
     override fun actionBarActionRight(): Int {

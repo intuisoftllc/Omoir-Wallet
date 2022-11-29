@@ -1,18 +1,15 @@
 package com.intuisoft.plaid.features.splash.viewmodel
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavDirections
-import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.BaseViewModel
-import com.intuisoft.plaid.features.splash.ui.SplashFragment
+import com.intuisoft.plaid.common.CommonService
 import com.intuisoft.plaid.features.splash.ui.SplashFragmentDirections
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.walletmanager.AbstractWalletManager
-import com.intuisoft.plaid.walletmanager.WalletManager
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -25,28 +22,19 @@ class SplashViewModel(
     private val _nextDestination = MutableLiveData<NavDirections>()
     val nextDestination: LiveData<NavDirections> = _nextDestination
 
+    private val _goHome = MutableLiveData<Unit>()
+    val goHome: LiveData<Unit> = _goHome
+
     fun nextScreen() {
         viewModelScope.launch {
             delay(SPLASH_DURATION.toLong())
 
-            if(localStoreRepository.getUserPin() != null && localStoreRepository.getUserAlias() != null) {
-                if(localStoreRepository.isProEnabled()) {
-                    _nextDestination.postValue(SplashFragmentDirections.actionSplashFragmentToProHomescreenFragment())
-                } else {
-                    _nextDestination.postValue(SplashFragmentDirections.actionSplashFragmentToHomescreenFragment())
-                }
+            if(localStoreRepository.hasCompletedOnboarding()) {
+                _goHome.postValue(Unit)
             } else {
                 _nextDestination.postValue(SplashFragmentDirections.actionSplashFragmentToOnboardingFragment())
             }
         }
-    }
-
-    fun startWalletManager() {
-        walletManager.start()
-    }
-
-    fun resetPinCheckedTime() {
-        localStoreRepository.resetPinCheckedTime()
     }
 
     companion object {

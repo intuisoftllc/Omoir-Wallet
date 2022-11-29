@@ -5,15 +5,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.intuisoft.plaid.R
-import com.intuisoft.plaid.androidwrappers.BindingFragment
-import com.intuisoft.plaid.androidwrappers.TopBarView
-import com.intuisoft.plaid.androidwrappers.ignoreOnBackPressed
+import com.intuisoft.plaid.androidwrappers.*
 import com.intuisoft.plaid.databinding.FragmentSplashBinding
 import com.intuisoft.plaid.features.splash.viewmodel.SplashViewModel
 import com.intuisoft.plaid.common.util.Constants
+import com.intuisoft.plaid.util.fragmentconfig.ConfigQrDisplayData
 import org.koin.android.ext.android.inject
 
 class SplashFragment : BindingFragment<FragmentSplashBinding>() {
@@ -31,15 +31,20 @@ class SplashFragment : BindingFragment<FragmentSplashBinding>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.startWalletManager()
 
         animateLogo()
         ignoreOnBackPressed()
         viewModel.nextScreen()
 
-        viewModel.resetPinCheckedTime()
         viewModel.nextDestination.observe(viewLifecycleOwner, Observer {
             findNavController().navigate(it, Constants.Navigation.ANIMATED_FADE_IN_EXIT_NAV_OPTION)
+        })
+
+        viewModel.goHome.observe(viewLifecycleOwner, Observer {
+            navigate(
+                R.id.pinFragment,
+                bundleOf(Constants.Navigation.HOME_PASS_THROUGH to true)
+            )
         })
     }
 

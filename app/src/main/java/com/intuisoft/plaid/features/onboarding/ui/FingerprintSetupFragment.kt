@@ -10,13 +10,16 @@ import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import androidx.lifecycle.Observer
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.*
+import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.databinding.FragmentOnboardingFingerprintRegistrationBinding
 import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.util.fragmentconfig.AllSetData
+import org.koin.android.ext.android.inject
 
 
 class FingerprintSetupFragment : BindingFragment<FragmentOnboardingFingerprintRegistrationBinding>() {
     private val viewModel: OnboardingViewModel by sharedViewModel()
+    private val localStoreRepository: LocalStoreRepository by inject()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -103,6 +106,8 @@ class FingerprintSetupFragment : BindingFragment<FragmentOnboardingFingerprintRe
     }
 
     fun onNextStep() {
+        localStoreRepository.setOnboardingComplete(true)
+
         var bundle = bundleOf(
             com.intuisoft.plaid.common.util.Constants.Navigation.FRAGMENT_CONFIG to FragmentConfiguration(
                 actionBarTitle = 0,

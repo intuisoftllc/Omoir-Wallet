@@ -12,13 +12,10 @@ class PinViewModel(
     private val walletManager: AbstractWalletManager
 ): BaseViewModel(application, localStoreRepository, walletManager) {
 
-    val pin: String
-        get() = localStoreRepository.getUserPin() ?: ""
-
     fun checkPinStatus(onShowPinScreen: () -> Unit) {
         if(localStoreRepository.hasPinTimedOut()) {
             // TODO: I hate entering passwords, uncomment this for production
-//            onShowPinScreen()
+            onShowPinScreen()
         }
     }
 
@@ -30,8 +27,7 @@ class PinViewModel(
         eraseAllData(onDataWiped)
     }
 
-    fun updatePin(pin: String) {
-        localStoreRepository.updateUserPin(pin)
+    fun startWalletManager() {
+        walletManager.start()
     }
-
 }

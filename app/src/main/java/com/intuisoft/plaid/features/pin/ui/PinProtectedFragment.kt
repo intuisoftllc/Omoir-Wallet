@@ -1,5 +1,6 @@
 package com.intuisoft.plaid.features.pin.ui
 
+import android.os.Bundle
 import androidx.navigation.fragment.findNavController
 import androidx.viewbinding.ViewBinding
 import com.intuisoft.plaid.R
@@ -20,7 +21,7 @@ abstract class PinProtectedFragment<T : ViewBinding> : ConfigurableFragment<T>()
             pinViewModel.checkPinStatus {
                 navigate(
                     R.id.pinFragment,
-                    com.intuisoft.plaid.common.util.Constants.Navigation.ANIMATED_FADE_IN_EXIT_NAV_OPTION
+                    Constants.Navigation.ANIMATED_FADE_IN_EXIT_NAV_OPTION
                 )
             }
         }

@@ -16,7 +16,9 @@ interface LocalStoreRepository {
 
     fun getMinimumConfirmations(): Int
 
-    fun getDevicePerformanceLevel(): DevicePerformanceLevel
+    fun getDevicePerformanceLevel(): DevicePerformanceLevel?
+
+    fun setDevicePerformanceLevel(performanceLevel: DevicePerformanceLevel)
 
     fun setMinConfirmations(minConfirmations: Int)
 
@@ -100,9 +102,9 @@ interface LocalStoreRepository {
 
     fun getUserAlias(): String?
 
-    fun updateUserPin(pin: String)
+    fun hasCompletedOnboarding(): Boolean
 
-    fun getUserPin(): String?
+    fun setOnboardingComplete(onboardingComplete: Boolean)
 
     fun setFingerprintEnabled(enabled: Boolean)
 

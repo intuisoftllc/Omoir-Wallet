@@ -9,6 +9,9 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.navOptions
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.*
+import com.intuisoft.plaid.androidwrappers.PasscodeView.PasscodeViewType.Companion.TYPE_CHECK_PASSCODE
+import com.intuisoft.plaid.androidwrappers.PasscodeView.PasscodeViewType.Companion.TYPE_SET_PASSCODE
+import com.intuisoft.plaid.common.CommonService
 import com.intuisoft.plaid.databinding.FragmentPinBinding
 import com.intuisoft.plaid.features.pin.viewmodel.PinViewModel
 import com.intuisoft.plaid.common.util.Constants
@@ -18,6 +21,7 @@ class PinFragment: BindingFragment<FragmentPinBinding>() {
     private val pinViewModel: PinViewModel by inject()
 
     var setupPin = false
+    var homePassthrough = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -25,21 +29,24 @@ class PinFragment: BindingFragment<FragmentPinBinding>() {
     ): View? {
 
         _binding = FragmentPinBinding.inflate(inflater, container, false)
-        setupPin = arguments?.get("setupPin") as? Boolean ?: false
+        setupPin = arguments?.get(Constants.Navigation.PIN_SETUP) as? Boolean ?: false
+        homePassthrough = arguments?.get(Constants.Navigation.HOME_PASS_THROUGH) as? Boolean ?: false
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        binding.passcodeView.setPasscodeType(TYPE_CHECK_PASSCODE)
+
         if(setupPin) {
             binding.passcodeView.setFirstInputTip(getString(R.string.enter_pin_to_reset_message))
             binding.passcodeView.resetView()
             binding.passcodeView.disableFingerprint()
         } else {
+            binding.passcodeView.setFirstInputTip(getString(R.string.create_pin_tip_message))
             ignoreOnBackPressed()
         }
 
-        binding.passcodeView.setLocalPasscode(pinViewModel.pin)
         binding.passcodeView.setListener(object: PasscodeView.PasscodeViewListener {
             override fun onFail(wrongNumber: String?) {
                 // do nothing
@@ -50,17 +57,23 @@ class PinFragment: BindingFragment<FragmentPinBinding>() {
 
                 if(setupPin) {
                     setupPin = false
-                    binding.passcodeView.setPasscodeType(PasscodeView.PasscodeViewType.TYPE_SET_PASSCODE)
+                    binding.passcodeView.setPasscodeType(TYPE_SET_PASSCODE)
                     binding.passcodeView.setFirstInputTip(getString(R.string.create_pin_tip_message))
                     binding.passcodeView.setSecondInputTip(getString(R.string.re_enter_pin_tip_message))
-                    binding.passcodeView.disablePinAttemptTracking()
                     binding.passcodeView.resetView()
+                    binding.passcodeView.disablePinAttemptTracking()
                 } else {
-                    if(binding.passcodeView.passcodeType == PasscodeView.PasscodeViewType.TYPE_SET_PASSCODE) {
-                        pinViewModel.updatePin(number!!)
-                    }
+                    pinViewModel.startWalletManager()
 
-                    findNavController().popBackStack()
+                    if(homePassthrough) {
+                        if(false/*CommonService.getUserData()!!.isProEnabled*/) {
+                            navigate(R.id.proHomescreenFragment, Constants.Navigation.ANIMATED_FADE_IN_EXIT_NAV_OPTION)
+                        } else {
+                            navigate(R.id.homescreenFragment, Constants.Navigation.ANIMATED_FADE_IN_EXIT_NAV_OPTION)
+                        }
+                    } else {
+                        findNavController().popBackStack()
+                    }
                 }
             }
 

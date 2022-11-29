@@ -20,10 +20,11 @@ import androidx.core.view.isVisible
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.PasscodeView.PasscodeViewType.Companion.TYPE_CHECK_PASSCODE
 import com.intuisoft.plaid.androidwrappers.PasscodeView.PasscodeViewType.Companion.TYPE_SET_PASSCODE
-import com.intuisoft.plaid.common.local.UserPreferences
+import com.intuisoft.plaid.common.CommonService
+import com.intuisoft.plaid.common.local.AppPrefs
+import com.intuisoft.plaid.common.local.UserData
 import com.intuisoft.plaid.util.entensions.getColorFromAttr
 import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 import java.lang.annotation.Retention
 import java.lang.annotation.RetentionPolicy
 
@@ -36,7 +37,8 @@ class PasscodeView @JvmOverloads constructor(
     @NonNull context: Context,
     @Nullable attrs: AttributeSet? = null
 ) : FrameLayout(context, attrs), View.OnClickListener, FingerprintScanResponse, KoinComponent {
-    private val prefs: UserPreferences by inject()
+    private val prefs: AppPrefs
+        get() = CommonService.getAppPrefs()
     private var secondInput = false
     private var pinValidationSuccess = false
     private var pinAttemptTracking = false
@@ -98,10 +100,6 @@ class PasscodeView @JvmOverloads constructor(
             throw RuntimeException("must set a passcode of at least $minPasscodeLength numbers")
         }
 
-        if (passcodeType == TYPE_SET_PASSCODE && TextUtils.isEmpty(localPasscode)) {
-            prefs.incorrectPinAttempts = 0
-        }
-
         maxAttempts = prefs.maxPinAttempts
         layout_psd = findViewById<View>(R.id.layout_psd) as ViewGroup
         tv_input_tip = findViewById<View>(R.id.tv_input_tip) as TextView
@@ -138,7 +136,7 @@ class PasscodeView @JvmOverloads constructor(
             true
         }
         numberOK!!.setOnClickListener { next() }
-        iv_fingerprint!!.isVisible = prefs.fingerprintSecurity && passcodeType == TYPE_CHECK_PASSCODE
+        iv_fingerprint!!.isVisible = prefs.fingerprintSecurity == true && passcodeType == TYPE_CHECK_PASSCODE
         iv_fingerprint!!.setOnClickListener { scanFingerprint() }
         tintImageView(numberB, numberTextColor)
         tintImageView(numberOK, numberTextColor)
@@ -184,6 +182,10 @@ class PasscodeView @JvmOverloads constructor(
     override fun onClick(view: View) {
         val number = view.tag as Int
         addChar(number)
+    }
+
+    fun setMaxAttempts(max: Int) {
+        maxAttempts = max
     }
 
     /**
@@ -321,8 +323,12 @@ class PasscodeView @JvmOverloads constructor(
     }
 
     private operator fun next() {
-        if (passcodeType == TYPE_CHECK_PASSCODE && TextUtils.isEmpty(localPasscode)) {
-            throw RuntimeException("must set localPasscode when type is TYPE_CHECK_PASSCODE")
+        if (CommonService.getUserData() != null && passcodeType == TYPE_CHECK_PASSCODE && TextUtils.isEmpty(localPasscode)) {
+            if(CommonService.getUserPin().isNotEmpty()) {
+                localPasscode = CommonService.getUserPin()
+            } else {
+                throw RuntimeException("must set localPasscode when type is TYPE_CHECK_PASSCODE")
+            }
         }
         val psd = passcodeFromView
         if (psd.length < minPasscodeLength || psd.length > passcodeLength) {
@@ -338,8 +344,12 @@ class PasscodeView @JvmOverloads constructor(
             secondInput = true
             return
         }
-        if (equals(psd)) {
+
+        CommonService.provideLocalPin(psd)
+        if ((passcodeType == TYPE_SET_PASSCODE && equals(psd))
+                || (passcodeType == TYPE_CHECK_PASSCODE && UserData.checkPin())) {
             // match
+            CommonService.loadOrSaveUserData()
             pinValidationSuccess = true
             runOkAnimation()
         } else {

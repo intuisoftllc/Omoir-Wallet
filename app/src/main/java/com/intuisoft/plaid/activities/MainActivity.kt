@@ -3,6 +3,7 @@ package com.intuisoft.plaid.activities
 import android.app.Activity
 import android.content.Intent
 import android.content.IntentFilter
+import android.os.Build
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -14,8 +15,10 @@ import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.*
+import com.intuisoft.plaid.PlaidApp
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.*
+import com.intuisoft.plaid.common.model.DevicePerformanceLevel
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.databinding.ActivityMainBinding
 import com.intuisoft.plaid.features.splash.ui.SplashFragment
@@ -32,6 +35,7 @@ class MainActivity : BindingActivity<ActivityMainBinding>(), ActionBarDelegate {
     lateinit var intentFilter: IntentFilter
     protected val localStoreRepository: LocalStoreRepository by inject()
     protected val walletManager: AbstractWalletManager by inject()
+    var configurationSetup = false
 
     companion object {
         private val TOP_LEVEL_DESTINATIONS = setOf(
@@ -74,27 +78,61 @@ class MainActivity : BindingActivity<ActivityMainBinding>(), ActionBarDelegate {
         }
 
         intentFilter = IntentFilter("android.net.conn.CONNECTIVITY_CHANGE")
-        setupBottomNavigationBar()
     }
 
     fun activateAnimatedLoading(activate: Boolean, message: String) {
         binding.animatedLoadingContainer.isVisible = activate
         binding.loadingMessage.text = message
+        binding.noInternet.isVisible = false
+        binding.contentUnavailable.isVisible = false
     }
 
     fun activateNoInternet(activate: Boolean) {
         binding.noInternet.isVisible = activate
+        binding.animatedLoadingContainer.isVisible = false
+        binding.contentUnavailable.isVisible = false
     }
 
     fun activateContentUnavailable(activate: Boolean, message: String) {
         binding.contentUnavailable.isVisible = activate
         binding.contentUnavailableMessage.text = message
+        binding.noInternet.isVisible = false
+        binding.animatedLoadingContainer.isVisible = false
+    }
+
+    fun performSetup() {
+        if(!configurationSetup) {
+            configurationSetup = true
+            setupPerformanceLevel()
+            setupBottomNavigationBar()
+        }
+    }
+
+    private fun setupPerformanceLevel() {
+        if(localStoreRepository.getDevicePerformanceLevel() == null) {
+            when {
+                (application as PlaidApp).devicePerformance.mediaPerformanceClass >= Build.VERSION_CODES.S -> {
+                    localStoreRepository.setDevicePerformanceLevel(DevicePerformanceLevel.HIGH)
+                    // Performance class level 12 and above
+                    // Provide the most premium experience for highest performing devices
+                }
+                (application as PlaidApp).devicePerformance.mediaPerformanceClass == Build.VERSION_CODES.R -> {
+                    localStoreRepository.setDevicePerformanceLevel(DevicePerformanceLevel.MED)
+                    // Performance class level 11
+                    // Provide a high quality experience
+                }
+                else -> {
+                    localStoreRepository.setDevicePerformanceLevel(DevicePerformanceLevel.DEFAULT)
+                    // Performance class level undefined
+                }
+            }
+        }
     }
 
     private fun setupBottomNavigationBar() {
         val navController = getNavController()
 
-        if(localStoreRepository.isProEnabled()) {
+        if (localStoreRepository.isProEnabled()) {
             // todo
         } else {
 
@@ -102,12 +140,22 @@ class MainActivity : BindingActivity<ActivityMainBinding>(), ActionBarDelegate {
 
 
         binding.bottomBar.setConfiguration(
-            getString(R.string.wallet), R.drawable.ic_bottom_bar_wallet_selected, R.drawable.ic_bottom_bar_wallet_unselected,
-            "", 0, 0,
-            R.drawable.ic_bottom_bar_swap_selected, R.drawable.ic_bottom_bar_swap_unselected,
-            getString(R.string.market), R.drawable.ic_bottom_bar_market_selected, R.drawable.ic_bottom_bar_market_unselected,
-            "", 0, 0,
-            R.color.brand_color_dark_blue, R.color.text_grey
+            getString(R.string.wallet),
+            R.drawable.ic_bottom_bar_wallet_selected,
+            R.drawable.ic_bottom_bar_wallet_unselected,
+            "",
+            0,
+            0,
+            R.drawable.ic_bottom_bar_swap_selected,
+            R.drawable.ic_bottom_bar_swap_unselected,
+            getString(R.string.market),
+            R.drawable.ic_bottom_bar_market_selected,
+            R.drawable.ic_bottom_bar_market_unselected,
+            "",
+            0,
+            0,
+            R.color.brand_color_dark_blue,
+            R.color.text_grey
         )
 
         binding.bottomBar.setupDestinations(

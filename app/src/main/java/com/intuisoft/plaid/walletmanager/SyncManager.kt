@@ -54,6 +54,8 @@ class SyncManager(
             run()
         }
 
+    fun isRunning() = running
+
     fun openWallet(wallet: LocalWalletModel) {
         openedWallet = wallet
         wallet.walletKit?.onEnterForeground()
@@ -191,6 +193,10 @@ class SyncManager(
             DevicePerformanceLevel.HIGH -> {
                 3
             }
+
+            else -> {
+                1
+            }
         }
     }
 
@@ -220,7 +226,7 @@ class SyncManager(
 
                                 if((System.currentTimeMillis() - startTime) >= Constants.Time.SYNC_TIMEOUT) {
                                     group.items.forEach {
-                                        if (it.isRestored && !it.isSynced && it.syncPercentage == 0) { // restart stuck wallets
+                                        if (listener?.getLastSyncedTime(it) == 0L && !it.isSynced && it.syncPercentage == 0) { // restart stuck wallets
                                             it.walletKit!!.restart()
                                             startTime = System.currentTimeMillis()
                                             ++restarts
@@ -256,5 +262,6 @@ class SyncManager(
     interface SyncEvent {
         fun onSyncing(isSyncing: Boolean)
         fun onWalletsUpdated(wallets: List<LocalWalletModel>)
+        fun getLastSyncedTime(wallet: LocalWalletModel): Long
     }
 }

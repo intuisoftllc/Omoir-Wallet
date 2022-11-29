@@ -128,7 +128,7 @@ class SettingsFragment : PinProtectedFragment<FragmentSettingsBinding>() {
         binding.updatePin.onClick {
             navigate(
                 R.id.pinFragment,
-                bundleOf("setupPin" to true)
+                bundleOf(Constants.Navigation.PIN_SETUP to true)
             )
         }
 

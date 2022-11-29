@@ -283,8 +283,7 @@ class MarketFragment : PinProtectedFragment<FragmentMarketBinding>() {
         })
 
         viewModel.showContent.observe(viewLifecycleOwner, Observer {
-            binding.screenContents.isVisible = it
-            binding.noInternet.isVisible = !it
+            activateNoInternet(!it)
         })
     }
 

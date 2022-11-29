@@ -42,8 +42,9 @@ class OnboardingPinFragment : BindingFragment<FragmentOnboardingPinBinding>() {
             }
 
             override fun onSuccess(number: String?) {
-                viewModel.savePin(number!!)
+                viewModel.saveUserAlias()
                 pinViewModel.updatePinCheckedTime()
+                pinViewModel.startWalletManager()
                 onNextStep()
             }
 

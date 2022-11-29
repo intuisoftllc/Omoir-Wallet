@@ -1,8 +1,10 @@
 package com.intuisoft.plaid.common.repositories
 
+import com.intuisoft.plaid.common.CommonService
 import com.intuisoft.plaid.common.util.extensions.remove
-import com.intuisoft.plaid.common.local.UserPreferences
 import com.intuisoft.plaid.common.listeners.WipeDataListener
+import com.intuisoft.plaid.common.local.AppPrefs
+import com.intuisoft.plaid.common.local.UserData
 import com.intuisoft.plaid.common.local.db.listeners.DatabaseListener
 import com.intuisoft.plaid.common.model.*
 import com.intuisoft.plaid.common.network.nownodes.response.SupportedCurrencyModel
@@ -10,68 +12,71 @@ import com.intuisoft.plaid.common.repositories.db.DatabaseRepository
 import kotlinx.coroutines.runBlocking
 
 class LocalStoreRepository_Impl(
-    private val userPreferences: UserPreferences,
+    private val appPrefs: AppPrefs,
     private val databaseRepository: DatabaseRepository
 ): LocalStoreRepository {
 
     private var wipeDataListener: WipeDataListener? = null
     private var cachedStoredWalletInfo: StoredWalletInfo? = null
-    private var cachedLocalCurrency: StoredWalletInfo? = null
 
     override fun increaseIncorrectPinAttempts() {
-        userPreferences.incorrectPinAttempts = userPreferences.incorrectPinAttempts + 1
+        appPrefs.incorrectPinAttempts = appPrefs.incorrectPinAttempts + 1
     }
 
     override fun maxPinEntryLimitReached(): Boolean {
-        return userPreferences.incorrectPinAttempts >= userPreferences.maxPinAttempts
+        return appPrefs.incorrectPinAttempts >= appPrefs.maxPinAttempts
     }
 
     override fun getPinEntryLimit(): Int {
-        return userPreferences.maxPinAttempts
+        return appPrefs.maxPinAttempts
     }
 
     override fun getMinimumConfirmations(): Int {
-        return userPreferences.minConfirmations
+        return CommonService.getUserData()!!.minConfirmations
     }
 
-    override fun getDevicePerformanceLevel(): DevicePerformanceLevel {
-        return userPreferences.devicePerformanceLevel ?: DevicePerformanceLevel.DEFAULT
+    override fun getDevicePerformanceLevel(): DevicePerformanceLevel? {
+        return CommonService.getUserData()!!.devicePerformanceLevel
+    }
+
+    override fun setDevicePerformanceLevel(performanceLevel: DevicePerformanceLevel) {
+        CommonService.getUserData()!!.devicePerformanceLevel = performanceLevel
     }
 
     override fun setMinConfirmations(minConfirmations: Int) {
-        userPreferences.minConfirmations = minConfirmations
+        CommonService.getUserData()!!.minConfirmations = minConfirmations
     }
 
     override fun getLocalCurrency(): String {
-        return userPreferences.localCurrency
+        return CommonService.getUserData()!!.localCurrency
     }
 
     override fun setLocalCurrency(localCurrency: String) {
-        userPreferences.localCurrency = localCurrency
+        CommonService.getUserData()!!.localCurrency = localCurrency
     }
 
     override fun isProEnabled(): Boolean {
-        return userPreferences.isProEnabled
+        return false//CommonService.getUserData()!!.isProEnabled
     }
 
     override fun setProEnabled(enable: Boolean) {
-        userPreferences.isProEnabled = enable
+        CommonService.getUserData()!!.isProEnabled = enable
     }
 
     override fun setMaxPinEntryLimit(limit: Int) {
-        userPreferences.maxPinAttempts = limit
+        appPrefs.maxPinAttempts = limit
     }
 
     override fun resetPinEntries() {
-        userPreferences.incorrectPinAttempts = 0
+        appPrefs.incorrectPinAttempts = 0
     }
 
     override fun getDefaultFeeType(): FeeType {
-        return userPreferences.defaultFeeType
+        return CommonService.getUserData()!!.defaultFeeType
     }
 
     override fun setDefaultFeeType(type: FeeType) {
-        userPreferences.defaultFeeType = type
+        CommonService.getUserData()!!.defaultFeeType = type
     }
 
     override fun setOnWipeDataListener(listener: WipeDataListener) {
@@ -79,181 +84,179 @@ class LocalStoreRepository_Impl(
     }
 
     override fun updateBitcoinDisplayUnit(displayUnit: BitcoinDisplayUnit) {
-        userPreferences.bitcoinDisplayUnit = displayUnit
+        CommonService.getUserData()!!.bitcoinDisplayUnit = displayUnit
     }
 
     override fun getSavedAddresses(): List<SavedAddressModel> {
-        return userPreferences.savedAddressInfo.savedAddresses
+        return CommonService.getUserData()!!.savedAddressInfo.savedAddresses
     }
 
     override fun deleteSavedAddress(name: String) {
-        val addressess = userPreferences.savedAddressInfo.savedAddresses
+        val addressess = CommonService.getUserData()!!.savedAddressInfo.savedAddresses
         addressess.remove { it.addressName == name }
 
-        userPreferences.savedAddressInfo = SavedAddressInfo(addressess)
+        CommonService.getUserData()!!.savedAddressInfo = SavedAddressInfo(addressess)
     }
 
     override fun updateSavedAddress(oldName: String, name: String, address: String) {
-        val addressess = userPreferences.savedAddressInfo.savedAddresses
+        val addressess = CommonService.getUserData()!!.savedAddressInfo.savedAddresses
         addressess.find { it.addressName == oldName }?.let {
             it.addressName = name
             it.address = address
         }
 
-        userPreferences.savedAddressInfo = SavedAddressInfo(addressess)
+        CommonService.getUserData()!!.savedAddressInfo = SavedAddressInfo(addressess)
     }
 
     override fun saveBaseWalletSeed(words: List<String>) {
-        userPreferences.baseWalletSeed = words.joinToString(" ")
+        CommonService.getUserData()!!.baseWalletSeed = words.joinToString(" ")
     }
 
     override fun getBaseWalletSeed(): List<String> {
-        return userPreferences.baseWalletSeed?.split(" ") ?: listOf()
+        return CommonService.getUserData()!!.baseWalletSeed?.split(" ") ?: listOf()
     }
 
     override fun saveAddress(name: String, address: String) {
-        val addressess = userPreferences.savedAddressInfo.savedAddresses
+        val addressess = CommonService.getUserData()!!.savedAddressInfo.savedAddresses
         addressess.add(SavedAddressModel(name, address))
 
-        userPreferences.savedAddressInfo = SavedAddressInfo(addressess)
+        CommonService.getUserData()!!.savedAddressInfo = SavedAddressInfo(addressess)
     }
 
     override fun getBitcoinDisplayUnit(): BitcoinDisplayUnit {
-        return userPreferences.bitcoinDisplayUnit
+        return CommonService.getUserData()!!.bitcoinDisplayUnit
     }
 
     override fun updateAppTheme(theme: AppTheme) {
-        userPreferences.appTheme = theme
+        CommonService.getUserData()!!.appTheme = theme
     }
 
     override fun getAppTheme(): AppTheme {
-        return userPreferences.appTheme
+        return CommonService.getUserData()!!.appTheme
     }
 
     override fun updatePinCheckedTime() {
-        userPreferences.lastCheckPin =
+        CommonService.getUserData()!!.lastCheckPin =
             (System.currentTimeMillis() / 1000).toInt()
     }
 
     override fun resetPinCheckedTime() {
-        userPreferences.lastCheckPin = 0
+        CommonService.getUserData()!!.lastCheckPin = 0
     }
 
     override fun hasPinTimedOut(): Boolean {
         val time = System.currentTimeMillis() / 1000
 
-        return userPreferences.lastCheckPin == 0 ||
-                (time - userPreferences.lastCheckPin) > userPreferences.pinTimeout
+        return CommonService.getUserData()!!.lastCheckPin == 0 ||
+                (time - CommonService.getUserData()!!.lastCheckPin) > CommonService.getUserData()!!.pinTimeout
     }
 
     override fun updatePinTimeout(timeout: Int) {
         if(timeout == com.intuisoft.plaid.common.util.Constants.Time.INSTANT) {
-            userPreferences.pinTimeout = com.intuisoft.plaid.common.util.Constants.Time.INSTANT_TIME_OFFSET
+            CommonService.getUserData()!!.pinTimeout = com.intuisoft.plaid.common.util.Constants.Time.INSTANT_TIME_OFFSET
         } else {
-            userPreferences.pinTimeout = timeout
+            CommonService.getUserData()!!.pinTimeout = timeout
         }
     }
 
     override fun setLastFeeRateUpdate(time: Long) {
-        userPreferences.lastFeeRateUpdateTime = time
+        CommonService.getUserData()!!.lastFeeRateUpdateTime = time
     }
 
     override fun getLastFeeRateUpdateTime(): Long {
-        return userPreferences.lastFeeRateUpdateTime
+        return CommonService.getUserData()!!.lastFeeRateUpdateTime
     }
 
     override fun setLastCurrencyRateUpdate(time: Long) {
-        userPreferences.lastCurrencyRateUpdateTime = time
+        CommonService.getUserData()!!.lastCurrencyRateUpdateTime = time
     }
 
     override fun getLastCurrencyRateUpdateTime(): Long {
-        return userPreferences.lastCurrencyRateUpdateTime
+        return CommonService.getUserData()!!.lastCurrencyRateUpdateTime
     }
 
     override fun setLastSupportedCurrenciesUpdate(time: Long) {
-        userPreferences.lastSupportedCurrenciesUpdateTime = time
+        CommonService.getUserData()!!.lastSupportedCurrenciesUpdateTime = time
     }
 
     override fun getLastSupportedCurrenciesUpdateTime(): Long {
-        return userPreferences.lastSupportedCurrenciesUpdateTime
+        return CommonService.getUserData()!!.lastSupportedCurrenciesUpdateTime
     }
 
     override fun setLastBasicNetworkDataUpdate(time: Long) {
-        userPreferences.lastBaseMarketDataUpdateTime = time
+        CommonService.getUserData()!!.lastBaseMarketDataUpdateTime = time
     }
 
     override fun getLastBasicNetworkDataUpdateTime(): Long {
-        return userPreferences.lastBaseMarketDataUpdateTime
+        return CommonService.getUserData()!!.lastBaseMarketDataUpdateTime
     }
 
     override fun setLastExtendedMarketDataUpdate(time: Long) {
-        userPreferences.lastExtendedMarketDataUpdateTime = time
+        CommonService.getUserData()!!.lastExtendedMarketDataUpdateTime = time
     }
 
     override fun getLastExtendedMarketDataUpdateTime(): Long {
-        return userPreferences.lastExtendedMarketDataUpdateTime
+        return CommonService.getUserData()!!.lastExtendedMarketDataUpdateTime
     }
 
     override fun setLastTickerPriceChartDataUpdate(time: Long) {
-        userPreferences.lastTickerPriceChartDataUpdateTime = time
+        CommonService.getUserData()!!.lastTickerPriceChartDataUpdateTime = time
     }
 
     override fun getLastTickerPriceChartDataUpdateTime(): Long {
-        return userPreferences.lastTickerPriceChartDataUpdateTime
+        return CommonService.getUserData()!!.lastTickerPriceChartDataUpdateTime
     }
 
     override fun getPinTimeout(): Int {
-        return userPreferences.pinTimeout
+        return CommonService.getUserData()!!.pinTimeout
     }
 
     override fun updateVersionTappedCount() {
-        if(userPreferences.versionTappedCount < com.intuisoft.plaid.common.util.Constants.Limit.VERSION_CODE_TAPPED_LIMIT) {
-            userPreferences.versionTappedCount = userPreferences.versionTappedCount + 1
+        if(CommonService.getUserData()!!.versionTappedCount < com.intuisoft.plaid.common.util.Constants.Limit.VERSION_CODE_TAPPED_LIMIT) {
+            CommonService.getUserData()!!.versionTappedCount = CommonService.getUserData()!!.versionTappedCount + 1
         }
     }
 
     override fun versionTapLimitReached(): Boolean {
-        return userPreferences.versionTappedCount == com.intuisoft.plaid.common.util.Constants.Limit.VERSION_CODE_TAPPED_LIMIT
+        return CommonService.getUserData()!!.versionTappedCount == com.intuisoft.plaid.common.util.Constants.Limit.VERSION_CODE_TAPPED_LIMIT
     }
 
     override fun updateUserAlias(alias: String) {
-        userPreferences.alias = alias
+        appPrefs.alias = alias
     }
 
     override fun getUserAlias(): String? {
-        return userPreferences.alias
+        return appPrefs.alias
     }
 
-    override fun updateUserPin(pin: String) {
-        userPreferences.pin = pin
+    override fun hasCompletedOnboarding(): Boolean {
+        return appPrefs.onboardingFinished
     }
 
-    override fun getUserPin(): String? {
-        return userPreferences.pin
+    override fun setOnboardingComplete(onboardingComplete: Boolean) {
+        appPrefs.onboardingFinished = onboardingComplete
     }
 
     override fun getStoredWalletInfo(): StoredWalletInfo {
         if(cachedStoredWalletInfo != null)
             return cachedStoredWalletInfo!!
 
-        cachedStoredWalletInfo = userPreferences.storedWalletInfo
+        cachedStoredWalletInfo = CommonService.getUserData()!!.storedWalletInfo
         return cachedStoredWalletInfo!!
     }
 
     override fun setStoredWalletInfo(storedWalletInfo: StoredWalletInfo?) {
         cachedStoredWalletInfo = storedWalletInfo
-        userPreferences.storedWalletInfo =
-            if(storedWalletInfo == null)
-                StoredWalletInfo(mutableListOf())
-            else storedWalletInfo
+        CommonService.getUserData()!!.storedWalletInfo =
+            storedWalletInfo ?: StoredWalletInfo(mutableListOf())
     }
 
     override fun setFingerprintEnabled(enabled: Boolean) {
-        userPreferences.fingerprintSecurity = enabled
+        appPrefs.fingerprintSecurity = enabled
     }
 
     override fun isFingerprintEnabled(): Boolean {
-        return userPreferences.fingerprintSecurity
+        return appPrefs.fingerprintSecurity
     }
 
     override fun getRateFor(currencyCode: String): BasicPriceDataModel? {
@@ -339,7 +342,8 @@ class LocalStoreRepository_Impl(
     }
 
     override suspend fun wipeAllData(onWipeFinished: suspend () -> Unit) {
-        userPreferences.wipeData()
+        UserData.wipeData()
+        CommonService.getAppPrefs().wipeData()
         wipeDataListener?.onWipeData()
         databaseRepository.deleteAllData()
         onWipeFinished()

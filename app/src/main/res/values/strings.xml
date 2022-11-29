@@ -27,6 +27,7 @@
     <string name="re_enter_pin_tip_message">Re-enter new pin</string>
     <string name="wrong_input_tip_message">Pin code does not match</string>
     <string name="pin_check_success_tip_message">Pin is correct</string>
+    <string name="enter_pin_to_unlock_message">Enter pin to unlock</string>
 <!--  Pin Screen Strings End -->
 
 <!--    Settings Strings -->

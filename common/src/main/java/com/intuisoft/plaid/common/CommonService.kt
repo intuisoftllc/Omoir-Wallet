@@ -3,11 +3,10 @@ package com.intuisoft.plaid.common
 import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
-import androidx.security.crypto.EncryptedSharedPreferences
-import androidx.security.crypto.MasterKeys
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import com.intuisoft.plaid.common.local.UserPreferences
+import com.intuisoft.plaid.common.local.AppPrefs
+import com.intuisoft.plaid.common.local.UserData
 import com.intuisoft.plaid.common.local.db.*
 import com.intuisoft.plaid.common.local.memorycache.MemoryCache
 import com.intuisoft.plaid.common.network.adapters.InstantAdapter
@@ -34,7 +33,8 @@ import java.util.concurrent.TimeUnit
 
 object CommonService {
 
-    private var userPreferences: UserPreferences? = null
+    private var userData: UserData? = null
+    private var appPrefs: AppPrefs? = null
     private var localStoreRepository: LocalStoreRepository? = null
     private var apiRepository: ApiRepository? = null
     private var blockBookRepository: BlockBookRepository? = null
@@ -54,19 +54,28 @@ object CommonService {
     private var coingeckoApiUrl: String? = ""
     private var simpleSwapApiUrl: String? = ""
     private var simpleSwapClientSecret: String? = ""
+    private var localPin: String = ""
 
-    fun getPrefsInstance(): UserPreferences {
-        if(userPreferences == null) {
-            userPreferences = UserPreferences(provideUserPreferences(application!!), provideGson())
+    fun getUserData(): UserData? {
+        return userData
+    }
+
+    fun getAppPrefs(): AppPrefs {
+        if(appPrefs == null) {
+            appPrefs = provideAppPrefs(
+                provideSharedPrefs(
+                    getApplication()
+                )
+            )
         }
 
-        return userPreferences!!
+        return appPrefs!!
     }
 
     fun getLocalStoreInstance(): LocalStoreRepository {
         if(localStoreRepository == null) {
             localStoreRepository = provideLocalRepository(
-                getPrefsInstance(),
+                getAppPrefs(),
                 getDatabaseRepositoryInstance()
             )
         }
@@ -238,6 +247,10 @@ object CommonService {
 
     fun getGsonInstance() = provideGson()
 
+    fun getApplication() = application!!
+
+    fun getUserPin() = localPin
+
     fun getMemoryCacheInstance(): MemoryCache {
         if(memoryCache == null) {
             memoryCache = provideMemoryCache()
@@ -268,7 +281,7 @@ object CommonService {
         provideSimpleSwapApiUrl(simpleSwapApiUrl)
 
         // create singleton instance of all classes
-        getPrefsInstance()
+        getAppPrefs()
         getLocalStoreInstance()
         getBlockBookRepositoryInstance()
         getNodeRepositoryInstance()
@@ -279,7 +292,19 @@ object CommonService {
         getSimpleSwapRepositoryInstance()
     }
 
+    // loaders
+    fun loadOrSaveUserData(): Boolean {
+        if(userData == null)
+            userData = UserData.load()
+        else userData?.save()
+        return userData != null
+    }
+
     // providers
+    fun provideLocalPin(pin: String) {
+        this.localPin = pin
+    }
+
     private fun provideApplication(app: Application) {
         this.application = app
     }
@@ -320,6 +345,12 @@ object CommonService {
         context: Context
     ): PlaidDatabase {
         return PlaidDatabase.getInstance(context)
+    }
+
+    private fun provideSharedPrefs(
+        context: Context
+    ): SharedPreferences {
+        return  context.getSharedPreferences(AppPrefs.SHARED_PREFS_NAME, Context.MODE_PRIVATE)
     }
 
     private fun provideSuggestedFeeRateDao(
@@ -401,10 +432,16 @@ object CommonService {
         ConnectivityInterceptor(provideConnectionMonitor(application!!), application!!)
 
     private fun provideLocalRepository(
-        userPreferences: UserPreferences,
+        appPrefs: AppPrefs,
         databaseRepository: DatabaseRepository
     ): LocalStoreRepository {
-        return LocalStoreRepository_Impl(userPreferences, databaseRepository)
+        return LocalStoreRepository_Impl(appPrefs, databaseRepository)
+    }
+
+    private fun provideAppPrefs(
+        sharedPreferences: SharedPreferences
+    ): AppPrefs {
+        return AppPrefs(sharedPreferences)
     }
 
     private fun provideApiRepository(
@@ -437,23 +474,6 @@ object CommonService {
 
     private fun provideMemoryCache(): MemoryCache {
         return MemoryCache()
-    }
-
-
-    private fun provideUserPreferences(context: Context): SharedPreferences {
-        return provideEncryptedPreference(context, UserPreferences.SHARED_PREFS_NAME)
-    }
-
-    private fun provideEncryptedPreference(context: Context, name: String): SharedPreferences {
-        val keyGenParameterSpec = MasterKeys.AES256_GCM_SPEC
-        val masterKeyAlias = MasterKeys.getOrCreate(keyGenParameterSpec)
-        return EncryptedSharedPreferences.create(
-            "plaid_shared_prefs",
-            masterKeyAlias,
-            context,
-            EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
-            EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
-        )
     }
 
     private fun provideNowNodesBlockBookRetrofit(
