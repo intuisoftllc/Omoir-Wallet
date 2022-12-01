@@ -654,7 +654,7 @@
                                     android:textColor="@color/text_grey"
                                     android:layout_marginTop="@dimen/margin_8"
                                     android:textStyle="bold"
-                                    android:text="498 GB"/>
+                                    android:text="498 Gb"/>
                             </LinearLayout>
                         </LinearLayout>
 
@@ -679,14 +679,14 @@
                                     android:text="@string/market_data_extended_item_5_title"/>
 
                                 <TextView
-                                    android:id="@+id/avgTxSize"
+                                    android:id="@+id/nodes"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     style="@style/TextStyle.Medium.16"
                                     android:textColor="@color/text_grey"
                                     android:layout_marginTop="@dimen/margin_8"
                                     android:textStyle="bold"
-                                    android:text="2,573 Bytes"/>
+                                    android:text="7044 nodes"/>
                             </LinearLayout>
 
                             <LinearLayout
@@ -703,19 +703,74 @@
                                     android:text="@string/market_data_extended_item_6_title"/>
 
                                 <TextView
-                                    android:id="@+id/avgFeeRate"
+                                    android:id="@+id/mem_pool_size"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     style="@style/TextStyle.Medium.16"
                                     android:textColor="@color/text_grey"
                                     android:layout_marginTop="@dimen/margin_8"
                                     android:textStyle="bold"
-                                    android:text="3 Sat/byte"/>
+                                    android:text="20 Mb"/>
                             </LinearLayout>
                         </LinearLayout>
 
                         <LinearLayout
-                            android:id="@+id/main_chain_extended_data_container"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/parent_top_margin_small"
+                            android:orientation="horizontal">
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:gravity="start"
+                                android:layout_marginRight="@dimen/margin_4"
+                                android:layout_weight="1">
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    style="@style/TextStyle.Regular.14"
+                                    android:textColor="@color/text_black"
+                                    android:text="@string/market_data_extended_item_11_title"/>
+
+                                <TextView
+                                    android:id="@+id/txs_per_second"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    style="@style/TextStyle.Medium.16"
+                                    android:textColor="@color/text_grey"
+                                    android:layout_marginTop="@dimen/margin_8"
+                                    android:textStyle="bold"
+                                    android:text="4 txs"/>
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:gravity="start"
+                                android:layout_weight="1">
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    style="@style/TextStyle.Regular.14"
+                                    android:textColor="@color/text_black"
+                                    android:text="@string/market_data_extended_item_12_title"/>
+
+                                <TextView
+                                    android:id="@+id/addresses_with_balances"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    style="@style/TextStyle.Medium.16"
+                                    android:textColor="@color/text_grey"
+                                    android:layout_marginTop="@dimen/margin_8"
+                                    android:textStyle="bold"
+                                    android:text="38,392,492 addresses"/>
+                            </LinearLayout>
+                        </LinearLayout>
+
+                        <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="@dimen/parent_top_margin_small"
@@ -772,7 +827,6 @@
                         </LinearLayout>
 
                         <LinearLayout
-                            android:id="@+id/main_chain_extended_data_container2"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="@dimen/parent_top_margin_small"

@@ -5,8 +5,8 @@ import java.time.Instant
 data class ExchangeInfoResponse(
     val id: String,
     val type: String,
-    val timestamp: Instant,
-    val updated_at: Instant,
+    val timestamp: String,
+    val updated_at: String,
     val currency_from: String,
     val currency_to: String,
     val amount_from: Double,
@@ -17,7 +17,7 @@ data class ExchangeInfoResponse(
     val extra_id_to: String?,
     val user_refund_address: String,
     val user_refund_extra_id: String,
-    val tx_from: String,
-    val tx_to: String,
+    val tx_from: String?,
+    val tx_to: String?,
     val status: String
 )

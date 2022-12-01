@@ -1,8 +1,7 @@
-package com.intuisoft.plaid.common.network.nownodes.api
+package com.intuisoft.plaid.common.network.blockchair.api
 
-import com.intuisoft.plaid.common.network.nownodes.response.BasicPriceDataResponse
-import com.intuisoft.plaid.common.network.nownodes.response.CurrencyRangeLimitResponse
-import com.intuisoft.plaid.common.network.nownodes.response.SupportedCurrencyResponse
+import com.intuisoft.plaid.common.network.blockchair.response.CurrencyRangeLimitResponse
+import com.intuisoft.plaid.common.network.blockchair.response.SupportedCurrencyResponse
 import com.intuisoft.plaid.common.network.simpleswap.request.ExchangeInfoRequest
 import com.intuisoft.plaid.common.network.simpleswap.response.ExchangeInfoResponse
 import retrofit2.Call
@@ -39,9 +38,15 @@ interface SimpleSwapApi {
         @Query("amount") amount: Double,
     ): Call<String>
 
-    @GET("create_exchange")
+    @POST("create_exchange")
     fun createExchange(
         @Query("api_key") apiKey: String,
         @Body exchangeInfo: ExchangeInfoRequest
+    ): Call<ExchangeInfoResponse>
+
+    @GET("get_exchange")
+    fun getExchange(
+        @Query("api_key") apiKey: String,
+        @Query("id") id: String
     ): Call<ExchangeInfoResponse>
 }

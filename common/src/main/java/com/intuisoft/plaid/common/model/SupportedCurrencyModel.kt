@@ -1,4 +1,4 @@
-package com.intuisoft.plaid.common.network.nownodes.response
+package com.intuisoft.plaid.common.network.blockchair.response
 
 data class SupportedCurrencyModel(
     val ticker: String,

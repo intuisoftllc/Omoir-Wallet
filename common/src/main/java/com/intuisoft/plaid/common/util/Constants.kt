@@ -7,7 +7,7 @@ class Constants {
 
     object Database {
         const val DB_NAME = "plaid.db"
-        const val DB_VERSION = 20
+        const val DB_VERSION = 22
     }
 
     object Files {
@@ -79,6 +79,7 @@ class Constants {
         const val BLOCK_CYPHER_TX_URL = "https://live.blockcypher.com/btc-testnet/tx/"
         const val TEST_WALLET_1 = "yard impulse luxury drive today throw farm pepper survey wreck glass federal"
         const val TEST_WALLET_2 = "wrong cousin spell stadium snake enact author piano venue outer question chair"
+        const val TEST_WALLET_3 = "patient sort can island cute saddle shield crunch knock tourist butter budget"
         const val BASE_WALLET = "BASE_WALLET_ID"
         const val BTC_TICKER = "btc"
     }
@@ -92,6 +93,7 @@ class Constants {
     object Time {
         const val MILLS_PER_SEC = 1000
         const val ONE_MINUTE = 60
+        const val SECONDS_PER_DAY = 86400
         const val TWO_MINUTES = 2 * ONE_MINUTE
         const val FIVE_MINUTES = 5 * ONE_MINUTE
         const val TEN_MINUTES = 10 * ONE_MINUTE
@@ -103,6 +105,7 @@ class Constants {
         const val GENERAL_CACHE_UPDATE_TIME: Long = (MILLS_PER_SEC * TEN_MINUTES).toLong()
         const val GENERAL_CACHE_UPDATE_TIME_MED: Long = (MILLS_PER_SEC * FIVE_MINUTES).toLong()
         const val GENERAL_CACHE_UPDATE_TIME_SHORT: Long = (MILLS_PER_SEC * TWO_MINUTES).toLong()
+        const val GENERAL_CACHE_UPDATE_TIME_XTRA_SHORT: Long = (MILLS_PER_SEC * ONE_MINUTE).toLong()
     }
 
     object ActivityResult {

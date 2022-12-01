@@ -14,7 +14,7 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.context.startKoin
 import org.koin.core.logger.Level
 
-class PlaidApp : Application(), Application.ActivityLifecycleCallbacks, KoinComponent {
+class PlaidApp : Application(), KoinComponent {
     private val preferences: UserData?
         get() = CommonService.getUserData()
     lateinit var devicePerformance: DevicePerformance
@@ -23,11 +23,12 @@ class PlaidApp : Application(), Application.ActivityLifecycleCallbacks, KoinComp
         super.onCreate()
         CommonService.create(
             this,
-            BuildConfig.NOW_NODES_CLIENT_SECRET,
+            BuildConfig.BLOCKCHAIR_CLIENT_SECRET,
             BuildConfig.SIMPLE_SWAP_CLIENT_SECRET,
-            BuildConfig.BLOCK_BOOK_SERVER_URL,
-            BuildConfig.NODE_SERVER_URL,
-            BuildConfig.TEST_NET_NODE_SERVER_URL,
+            BuildConfig.BLOCKSTREAM_INFO_SERVER_URL,
+            BuildConfig.BLOCKSTREAM_INFO_TEST_NET_SERVER_URL,
+            BuildConfig.BLOCKCHAIR_SERVER_URL,
+            BuildConfig.BLOCKCHAIR_TESTNET_SERVER_URL,
             BuildConfig.BLOCKCHAIN_INFO_SERVER_URL,
             BuildConfig.COIN_GECKO_SERVER_URL,
             BuildConfig.SIMPLE_SWAP_SERVER_URL
@@ -44,36 +45,9 @@ class PlaidApp : Application(), Application.ActivityLifecycleCallbacks, KoinComp
                     preferencesModule,
                     localRepositoriesModule,
                     apiRepositoriesModule,
-                    walletManagerModule,
-                    blockBooksModule
+                    walletManagerModule
                 )
             )
         }
-
-        registerActivityLifecycleCallbacks(this)
-    }
-
-    override fun onActivityCreated(p0: Activity, p1: Bundle?) {
-    }
-
-    override fun onActivityStarted(p0: Activity) {
-    }
-
-    override fun onActivityResumed(p0: Activity) {
-    }
-
-    override fun onActivityPaused(p0: Activity) {
-    }
-
-    override fun onActivityStopped(p0: Activity) {
-        if(preferences?.pinTimeout == Constants.Time.INSTANT_TIME_OFFSET) {
-            preferences?.lastCheckPin = 0
-        }
-    }
-
-    override fun onActivitySaveInstanceState(p0: Activity, p1: Bundle) {
-    }
-
-    override fun onActivityDestroyed(p0: Activity) {
     }
 }

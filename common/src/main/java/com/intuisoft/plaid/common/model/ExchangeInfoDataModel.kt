@@ -18,7 +18,7 @@ data class ExchangeInfoDataModel(
     val receiveAddressMemo: String?,
     val refundAddress: String,
     val refundAddressMemo: String,
-    val paymentTxId: String,
-    val receiveTxId: String,
+    val paymentTxId: String?,
+    val receiveTxId: String?,
     val status: String
 )

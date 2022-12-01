@@ -37,7 +37,7 @@ class WalletManager(
 
     override fun start() {
         @OptIn(DelicateCoroutinesApi::class)
-        GlobalScope.launch {
+        CoroutineScope(Dispatchers.IO).launch {
             if(!syncer.isRunning()) {
                 _baseMainNetWallet =
                     createBaseWallet(_baseMainNetWallet, BitcoinKit.NetworkType.MainNet)

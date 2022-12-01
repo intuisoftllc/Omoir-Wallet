@@ -21,6 +21,7 @@ import androidx.navigation.navOptions
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.*
+import com.intuisoft.plaid.common.model.AppMode
 import com.intuisoft.plaid.common.model.AppTheme
 import com.intuisoft.plaid.databinding.FragmentSettingsBinding
 import com.intuisoft.plaid.features.pin.ui.PinProtectedFragment

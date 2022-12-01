@@ -9,13 +9,14 @@ import com.intuisoft.plaid.common.local.AppPrefs
 import com.intuisoft.plaid.common.local.UserData
 import com.intuisoft.plaid.common.local.db.*
 import com.intuisoft.plaid.common.local.memorycache.MemoryCache
-import com.intuisoft.plaid.common.network.adapters.InstantAdapter
 import com.intuisoft.plaid.common.network.adapters.LocalDateAdapter
+import com.intuisoft.plaid.common.network.blockstreaminfo.api.BlockStreamInfoApi
+import com.intuisoft.plaid.common.network.blockstreaminfo.repository.BlockstreamInfoRepository
 import com.intuisoft.plaid.common.network.interceptors.ApiKeyInterceptor
 import com.intuisoft.plaid.common.network.interceptors.AppConnectionMonitor
 import com.intuisoft.plaid.common.network.interceptors.ConnectivityInterceptor
-import com.intuisoft.plaid.common.network.nownodes.api.*
-import com.intuisoft.plaid.common.network.nownodes.repository.*
+import com.intuisoft.plaid.common.network.blockchair.api.*
+import com.intuisoft.plaid.common.network.blockchair.repository.*
 import com.intuisoft.plaid.common.repositories.ApiRepository
 import com.intuisoft.plaid.common.repositories.ApiRepository_Impl
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
@@ -37,20 +38,22 @@ object CommonService {
     private var appPrefs: AppPrefs? = null
     private var localStoreRepository: LocalStoreRepository? = null
     private var apiRepository: ApiRepository? = null
-    private var blockBookRepository: BlockBookRepository? = null
-    private var nodeRepository: NodeRepository? = null
+    private var blockchairRepository: BlockchairRepository? = null
+    private var blockstreamInfoRepository: BlockstreamInfoRepository? = null
+    private var blockstreamInfoTestNetRepository: BlockstreamInfoRepository? = null
     private var blockchainInfoRepository: BlockchainInfoRepository? = null
     private var coingeckoRepository: CoingeckoRepository? = null
-    private var testNetNodeRepository: NodeRepository? = null
+    private var testNetBlockchairRepository: BlockchairRepository? = null
     private var databaseRepository: DatabaseRepository? = null
     private var simpleSwapRepository: SimpleSwapRepository? = null
     private var memoryCache: MemoryCache? = null
     private var application: Application? = null
-    private var nowNodesClientSecret: String? = ""
-    private var nowNodesBlockBookApiUrl: String? = ""
-    private var nowNodesNodeApiUrl: String? = ""
-    private var nowNodesTestNetNodeApiUrl: String? = ""
+    private var blockchairClientSecret: String? = ""
+    private var blockchairApiUrl: String? = ""
+    private var blockchairTestNetNodeApiUrl: String? = ""
     private var blockchainInfoApiUrl: String? = ""
+    private var blockstreamInfoApiUrl: String? = ""
+    private var blockstreamInfoTestNetApiUrl: String? = ""
     private var coingeckoApiUrl: String? = ""
     private var simpleSwapApiUrl: String? = ""
     private var simpleSwapClientSecret: String? = ""
@@ -87,9 +90,11 @@ object CommonService {
         if(apiRepository == null) {
             apiRepository = provideApiRepository(
                 getLocalStoreInstance(),
-                getNodeRepositoryInstance(),
-                getTestNetNodeRepositoryInstance(),
+                getBlockchairRepositoryInstance(),
+                getTestBlockchairRepositoryInstance(),
                 getBlockchainInfoRepositoryInstance(),
+                getBlockstreamInfoRepositoryInstance(),
+                getBlockstreamInfoTestNetRepositoryInstance(),
                 getCoingeckoRepositoryInstance(),
                 getSimpleSwapRepositoryInstance(),
                 getMemoryCacheInstance()
@@ -99,64 +104,40 @@ object CommonService {
         return apiRepository!!
     }
 
-    fun getBlockBookRepositoryInstance(): BlockBookRepository {
-        if(blockBookRepository == null) {
-            blockBookRepository = BlockBookRepository.create(
-                provideBlockBooksApi(
-                    provideNowNodesBlockBookRetrofit(
-                        provideAuthenticatedHttpClient(
-                            provideBaseHttpClient(
-                                provideConnectivityInterceptor()
-                            ),
-                            provideApiKeyInterceptor(nowNodesClientSecret!!)
-                        ),
-                        getGsonInstance()
-                    )
-                )
-            )
-        }
-
-        return blockBookRepository!!
-    }
-
-    fun getNodeRepositoryInstance(): NodeRepository {
-        if(nodeRepository == null) {
-            nodeRepository = NodeRepository.create(
-                provideNodeApi(
+    fun getBlockchairRepositoryInstance(): BlockchairRepository {
+        if(blockchairRepository == null) {
+            blockchairRepository = BlockchairRepository.create(
+                provideBlockchairApi(
                     provideNowNodesNodeRetrofit(
-                        provideAuthenticatedHttpClient(
-                            provideBaseHttpClient(
-                                provideConnectivityInterceptor()
-                            ),
-                            provideApiKeyInterceptor(nowNodesClientSecret!!)
+                        provideBaseHttpClient(
+                            provideConnectivityInterceptor()
                         ),
                         getGsonInstance()
                     )
-                )
+                ),
+                blockchairClientSecret
             )
         }
 
-        return nodeRepository!!
+        return blockchairRepository!!
     }
 
-    fun getTestNetNodeRepositoryInstance(): NodeRepository {
-        if(testNetNodeRepository == null) {
-            testNetNodeRepository = NodeRepository.create(
-                provideNodeApi(
+    fun getTestBlockchairRepositoryInstance(): BlockchairRepository {
+        if(testNetBlockchairRepository == null) {
+            testNetBlockchairRepository = BlockchairRepository.create(
+                provideBlockchairApi(
                     provideNowNodesTestNetNodeRetrofit(
-                        provideAuthenticatedHttpClient(
-                            provideBaseHttpClient(
-                                provideConnectivityInterceptor()
-                            ),
-                            provideApiKeyInterceptor(nowNodesClientSecret!!)
+                        provideBaseHttpClient(
+                            provideConnectivityInterceptor()
                         ),
                         getGsonInstance()
                     )
-                )
+                ),
+                null
             )
         }
 
-        return testNetNodeRepository!!
+        return testNetBlockchairRepository!!
     }
 
     fun getBlockchainInfoRepositoryInstance(): BlockchainInfoRepository {
@@ -174,6 +155,40 @@ object CommonService {
         }
 
         return blockchainInfoRepository!!
+    }
+
+    fun getBlockstreamInfoRepositoryInstance(): BlockstreamInfoRepository {
+        if(blockstreamInfoRepository == null) {
+            blockstreamInfoRepository = BlockstreamInfoRepository.create(
+                provideBlockstreamInfoApi(
+                    provideBlockstreamInfoRetrofit(
+                        provideBaseHttpClient(
+                            provideConnectivityInterceptor()
+                        ),
+                        getGsonInstance()
+                    )
+                )
+            )
+        }
+
+        return blockstreamInfoRepository!!
+    }
+
+    fun getBlockstreamInfoTestNetRepositoryInstance(): BlockstreamInfoRepository {
+        if(blockstreamInfoTestNetRepository == null) {
+            blockstreamInfoTestNetRepository = BlockstreamInfoRepository.create(
+                provideBlockstreamInfoApi(
+                    provideBlockstreamInfoTestNetRetrofit(
+                        provideBaseHttpClient(
+                            provideConnectivityInterceptor()
+                        ),
+                        getGsonInstance()
+                    )
+                )
+            )
+        }
+
+        return blockstreamInfoTestNetRepository!!
     }
 
     fun getSimpleSwapRepositoryInstance(): SimpleSwapRepository {
@@ -261,21 +276,23 @@ object CommonService {
 
     fun create(
         application: Application,
-        nowNodesSecret: String,
+        blockchairSecret: String?,
         simpleSwapSecret: String,
-        nowNodesBlockBookURL: String,
-        nodeApiUrl: String,
-        testNetNodeApiUrl: String,
+        blockstreamInfoURL: String,
+        blockstreamInfoTestNetURL: String,
+        blockchairApiUrl: String,
+        testNetBlockchairApiUrl: String,
         blockchainInfoApiUrl: String,
         coingeckoApiUrl: String,
         simpleSwapApiUrl: String
     ) {
         provideApplication(application)
-        provideNowNodesSecret(nowNodesSecret)
+        provideBlockchairSecret(blockchairSecret)
         provideSimpleSwapSecret(simpleSwapSecret)
-        provideNowNodesBlockBookApiUrl(nowNodesBlockBookURL)
-        provideNowNodesNodeApiUrl(nodeApiUrl)
-        provideNowNodesTestNetNodeApiUrl(testNetNodeApiUrl)
+        provideBlockstreamInfoApiApiUrl(blockstreamInfoURL)
+        provideBlockstreamInfoTestNetApiUrl(blockstreamInfoTestNetURL)
+        provideNowNodesNodeApiUrl(blockchairApiUrl)
+        provideNowNodesTestNetNodeApiUrl(testNetBlockchairApiUrl)
         provideBlockchainInfoApiUrl(blockchainInfoApiUrl)
         provideCoingeckoApiUrl(coingeckoApiUrl)
         provideSimpleSwapApiUrl(simpleSwapApiUrl)
@@ -283,9 +300,10 @@ object CommonService {
         // create singleton instance of all classes
         getAppPrefs()
         getLocalStoreInstance()
-        getBlockBookRepositoryInstance()
-        getNodeRepositoryInstance()
-        getTestNetNodeRepositoryInstance()
+        getBlockchairRepositoryInstance()
+        getBlockstreamInfoRepositoryInstance()
+        getBlockstreamInfoTestNetRepositoryInstance()
+        getTestBlockchairRepositoryInstance()
         getDatabaseRepositoryInstance()
         getBlockchainInfoRepositoryInstance()
         getCoingeckoRepositoryInstance()
@@ -309,24 +327,28 @@ object CommonService {
         this.application = app
     }
 
-    private fun provideNowNodesSecret(secret: String) {
-        this.nowNodesClientSecret = secret
+    private fun provideBlockchairSecret(secret: String?) {
+        this.blockchairClientSecret = secret
     }
 
     private fun provideSimpleSwapSecret(secret: String) {
         this.simpleSwapClientSecret = secret
     }
 
-    private fun provideNowNodesBlockBookApiUrl(url: String) {
-        this.nowNodesBlockBookApiUrl = url
+    private fun provideBlockstreamInfoApiApiUrl(url: String) {
+        this.blockstreamInfoApiUrl = url
+    }
+
+    private fun provideBlockstreamInfoTestNetApiUrl(url: String) {
+        this.blockstreamInfoTestNetApiUrl = url
     }
 
     private fun provideNowNodesNodeApiUrl(url: String) {
-        this.nowNodesNodeApiUrl = url
+        this.blockchairApiUrl = url
     }
 
     private fun provideNowNodesTestNetNodeApiUrl(url: String) {
-        this.nowNodesTestNetNodeApiUrl = url
+        this.blockchairTestNetNodeApiUrl = url
     }
 
     private fun provideBlockchainInfoApiUrl(url: String) {
@@ -446,20 +468,24 @@ object CommonService {
 
     private fun provideApiRepository(
         localStoreRepository: LocalStoreRepository,
-        nodeRepository: NodeRepository,
-        testNetNodeRepository: NodeRepository,
+        blockchairRepository: BlockchairRepository,
+        testNetBlockchairRepository: BlockchairRepository,
         blockchainInfoRepository: BlockchainInfoRepository,
+        blockstreamInfoRepository: BlockstreamInfoRepository,
+        blockstreamInfoTestNetRepository: BlockstreamInfoRepository,
         coingeckoRepository: CoingeckoRepository,
         simpleSwapRepository: SimpleSwapRepository,
         memoryCache: MemoryCache
     ): ApiRepository {
         return ApiRepository_Impl(
             localStoreRepository,
-            nodeRepository,
-            testNetNodeRepository,
+            blockchairRepository,
+            testNetBlockchairRepository,
             blockchainInfoRepository,
             coingeckoRepository,
             simpleSwapRepository,
+            blockstreamInfoRepository,
+            blockstreamInfoTestNetRepository,
             memoryCache
         )
     }
@@ -468,25 +494,11 @@ object CommonService {
         return GsonBuilder()
             .setLenient()
             .registerTypeAdapter(LocalDate::class.java, LocalDateAdapter())
-            .registerTypeAdapter(Instant::class.java, InstantAdapter())
             .create()
     }
 
     private fun provideMemoryCache(): MemoryCache {
         return MemoryCache()
-    }
-
-    private fun provideNowNodesBlockBookRetrofit(
-        okHttpClient: OkHttpClient,
-        gson: Gson
-    ): Retrofit {
-        return Retrofit.Builder()
-            .client(okHttpClient)
-            .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
-            .baseUrl(nowNodesBlockBookApiUrl!!)
-//        .addConverterFactory(NullOnEmptyBodyConverterFactory())
-            .addConverterFactory(GsonConverterFactory.create(gson))
-            .build()
     }
 
     private fun provideNowNodesNodeRetrofit(
@@ -496,7 +508,7 @@ object CommonService {
         return Retrofit.Builder()
             .client(okHttpClient)
             .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
-            .baseUrl(nowNodesNodeApiUrl!!)
+            .baseUrl(blockchairApiUrl!!)
 //        .addConverterFactory(NullOnEmptyBodyConverterFactory())
             .addConverterFactory(GsonConverterFactory.create(gson))
             .build()
@@ -509,7 +521,7 @@ object CommonService {
         return Retrofit.Builder()
             .client(okHttpClient)
             .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
-            .baseUrl(nowNodesTestNetNodeApiUrl!!)
+            .baseUrl(blockchairTestNetNodeApiUrl!!)
 //        .addConverterFactory(NullOnEmptyBodyConverterFactory())
             .addConverterFactory(GsonConverterFactory.create(gson))
             .build()
@@ -523,6 +535,32 @@ object CommonService {
             .client(okHttpClient)
             .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
             .baseUrl(blockchainInfoApiUrl!!)
+//        .addConverterFactory(NullOnEmptyBodyConverterFactory())
+            .addConverterFactory(GsonConverterFactory.create(gson))
+            .build()
+    }
+
+    private fun provideBlockstreamInfoRetrofit(
+        okHttpClient: OkHttpClient,
+        gson: Gson
+    ): Retrofit {
+        return Retrofit.Builder()
+            .client(okHttpClient)
+            .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
+            .baseUrl(blockstreamInfoApiUrl!!)
+//        .addConverterFactory(NullOnEmptyBodyConverterFactory())
+            .addConverterFactory(GsonConverterFactory.create(gson))
+            .build()
+    }
+
+    private fun provideBlockstreamInfoTestNetRetrofit(
+        okHttpClient: OkHttpClient,
+        gson: Gson
+    ): Retrofit {
+        return Retrofit.Builder()
+            .client(okHttpClient)
+            .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
+            .baseUrl(blockstreamInfoTestNetApiUrl!!)
 //        .addConverterFactory(NullOnEmptyBodyConverterFactory())
             .addConverterFactory(GsonConverterFactory.create(gson))
             .build()
@@ -554,14 +592,6 @@ object CommonService {
             .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
             .baseUrl(coingeckoApiUrl!!)
 //        .addConverterFactory(NullOnEmptyBodyConverterFactory())
-            .addConverterFactory(GsonConverterFactory.create(gson))
-            .build()
-    }
-
-    private fun provideBaseRetrofit(baseHttpClient: OkHttpClient, gson: Gson): Retrofit {
-        return Retrofit.Builder()
-            .client(baseHttpClient)
-            .baseUrl(nowNodesBlockBookApiUrl!!)
             .addConverterFactory(GsonConverterFactory.create(gson))
             .build()
     }
@@ -599,14 +629,14 @@ object CommonService {
     private fun provideConnectionMonitor(context: Context): ConnectivityInterceptor.ConnectionMonitor =
         AppConnectionMonitor(context)
 
-    private fun provideBlockBooksApi(manager: Retrofit): BlockBookApi =
-        manager.create(BlockBookApi::class.java)
-
-    private fun provideNodeApi(manager: Retrofit): NodeApi =
-        manager.create(NodeApi::class.java)
+    private fun provideBlockchairApi(manager: Retrofit): BlockchairApi =
+        manager.create(BlockchairApi::class.java)
 
     private fun provideBlockchainInfoApi(manager: Retrofit): BlockchainInfoApi =
         manager.create(BlockchainInfoApi::class.java)
+
+    private fun provideBlockstreamInfoApi(manager: Retrofit): BlockStreamInfoApi =
+        manager.create(BlockStreamInfoApi::class.java)
 
     private fun provideSimpleSwapApi(manager: Retrofit): SimpleSwapApi =
         manager.create(SimpleSwapApi::class.java)

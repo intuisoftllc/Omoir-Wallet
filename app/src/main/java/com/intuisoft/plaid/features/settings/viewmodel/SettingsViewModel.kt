@@ -9,9 +9,11 @@ import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.BaseViewModel
 import com.intuisoft.plaid.androidwrappers.SingleLiveData
 import com.intuisoft.plaid.androidwrappers.navigate
+import com.intuisoft.plaid.common.model.AppMode
 import com.intuisoft.plaid.common.model.AppTheme
 import com.intuisoft.plaid.common.model.BitcoinDisplayUnit
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
+import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.walletmanager.AbstractWalletManager
 
 class SettingsViewModel(
@@ -74,16 +76,16 @@ class SettingsViewModel(
 
     fun pinTimeoutToString(context: Context, timeout: Int) : String =
         when(timeout) {
-            com.intuisoft.plaid.common.util.Constants.Time.ONE_MINUTE -> {
+            Constants.Time.ONE_MINUTE -> {
                 context.getString(R.string.settings_option_max_pin_timeout_variant_2)
             }
-            com.intuisoft.plaid.common.util.Constants.Time.TWO_MINUTES -> {
+            Constants.Time.TWO_MINUTES -> {
                 context.getString(R.string.settings_option_max_pin_timeout_variant_3)
             }
-            com.intuisoft.plaid.common.util.Constants.Time.FIVE_MINUTES -> {
+            Constants.Time.FIVE_MINUTES -> {
                 context.getString(R.string.settings_option_max_pin_timeout_variant_4)
             }
-            com.intuisoft.plaid.common.util.Constants.Time.TEN_MINUTES -> {
+            Constants.Time.TEN_MINUTES -> {
                 context.getString(R.string.settings_option_max_pin_timeout_variant_5)
             }
             else -> {

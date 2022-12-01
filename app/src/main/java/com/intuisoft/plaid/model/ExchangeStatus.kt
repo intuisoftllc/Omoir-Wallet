@@ -3,7 +3,7 @@ package com.intuisoft.plaid.model
 import com.intuisoft.plaid.R
 
 
-enum class SwapStatus(val type: String, val color: Int) {
+enum class ExchangeStatus(val type: String, val color: Int) {
     CLOSED("closed", R.color.alt_error_color),
     CONFIRMING("confirming", R.color.text_grey),
     EXCHANGING("exchanging", R.color.text_grey),

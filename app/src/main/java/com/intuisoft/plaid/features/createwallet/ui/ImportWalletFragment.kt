@@ -38,13 +38,13 @@ class ImportWalletFragment : PinProtectedFragment<FragmentImportWalletBinding>()
         binding.publicKeyImport.onClick {
             navigate(
                 R.id.publicKeyImportFragment,
-                com.intuisoft.plaid.common.util.Constants.Navigation.ANIMATED_SLIDE_UP_OPTION
+                Constants.Navigation.ANIMATED_SLIDE_UP_OPTION
             )
         }
 
         binding.recoveryPhraseImport.onClick {
             var bundle = bundleOf(
-                com.intuisoft.plaid.common.util.Constants.Navigation.FRAGMENT_CONFIG to FragmentConfiguration(
+                Constants.Navigation.FRAGMENT_CONFIG to FragmentConfiguration(
                     configurationType = FragmentConfigurationType.CONFIGURATION_WALLET_DATA,
                     configData = viewModel.getConfiguration()
                 )
@@ -53,7 +53,7 @@ class ImportWalletFragment : PinProtectedFragment<FragmentImportWalletBinding>()
             navigate(
                 R.id.recoveryPhraseImportFragment,
                 bundle,
-                com.intuisoft.plaid.common.util.Constants.Navigation.ANIMATED_SLIDE_UP_OPTION
+                Constants.Navigation.ANIMATED_SLIDE_UP_OPTION
             )
         }
     }

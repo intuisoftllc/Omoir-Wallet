@@ -10,10 +10,7 @@ import com.intuisoft.plaid.common.util.Constants.Limit.DEFAULT_MAX_PIN_ATTEMPTS
 import com.intuisoft.plaid.common.util.Constants.Limit.MIN_CONFIRMATIONS
 import com.intuisoft.plaid.common.util.extensions.readFromFile
 import com.intuisoft.plaid.common.util.extensions.writeToFile
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import java.io.File
 
 class UserData {
@@ -101,12 +98,6 @@ class UserData {
             save()
         }
 
-    var lastTickerPriceChartDataUpdateTime: Long = 0
-        set(value) {
-            field = value
-            save()
-        }
-
     var versionTappedCount: Int = 0
         set(value) {
             field = value
@@ -132,7 +123,7 @@ class UserData {
         }
 
     fun save() {
-        GlobalScope.launch {
+        CoroutineScope(Dispatchers.IO).launch {
             synchronized(this@UserData::class.java) {
                 val json = Gson().toJson(this@UserData, UserData::class.java)
                 AESUtils.setPassword(CommonService.getUserPin())

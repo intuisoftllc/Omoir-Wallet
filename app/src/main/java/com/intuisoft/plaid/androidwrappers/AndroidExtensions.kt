@@ -72,6 +72,11 @@ fun Activity.hideSoftKeyboard(){
     }
 }
 
+fun Fragment.openLink(url: String) {
+    val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse("$url"))
+    startActivity(browserIntent)
+}
+
 fun Fragment.ignoreOnBackPressed() {
     requireActivity().onBackPressedDispatcher.addCallback(
         viewLifecycleOwner,
@@ -94,9 +99,9 @@ fun Fragment.onBackPressedCallback(onBackPressed: () -> Unit) {
 
 
 fun Fragment.validateFingerprint(
-    title: String = com.intuisoft.plaid.common.util.Constants.Strings.USE_BIOMETRIC_AUTH,
-    subTitle: String = com.intuisoft.plaid.common.util.Constants.Strings.USE_BIOMETRIC_REASON_1,
-    negativeText: String = com.intuisoft.plaid.common.util.Constants.Strings.SKIP_FOR_NOW,
+    title: String = Constants.Strings.USE_BIOMETRIC_AUTH,
+    subTitle: String = Constants.Strings.USE_BIOMETRIC_REASON_1,
+    negativeText: String = Constants.Strings.SKIP_FOR_NOW,
     onFail: (() -> Unit)? = null,
     onError: (() -> Unit)? = null,
     onSuccess: () -> Unit

@@ -13,6 +13,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         tools:itemCount="5"
+        android:visibility="gone"
         app:layout_constraintVertical_bias="0"
         app:layout_goneMarginBottom="@dimen/horizontal_padding_size"
         android:layout_marginBottom="10dp"
@@ -29,15 +30,14 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintVertical_bias="@dimen/vertical_bias_40"
-        android:visibility="gone"
+        app:layout_constraintVertical_bias="@dimen/vertical_bias_25"
         android:gravity="center"
         android:orientation="vertical">
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_no_wallets"/>
+            android:src="@drawable/ic_no_addresses_saved"/>
 
         <TextView
             android:layout_width="wrap_content"

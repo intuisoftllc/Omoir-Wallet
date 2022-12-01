@@ -5,6 +5,5 @@ data class BasicTickerDataModel(
     var marketCap: Double,
     var volume24Hr: Double,
     var circulatingSupply: Long,
-    var memPoolTxCount: Int,
     val maxSupply: Int = 21000000
 )

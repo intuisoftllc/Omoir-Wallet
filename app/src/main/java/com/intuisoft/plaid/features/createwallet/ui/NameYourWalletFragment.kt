@@ -12,6 +12,7 @@ import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.*
+import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.databinding.FragmentNameWalletBinding
 import com.intuisoft.plaid.features.createwallet.viewmodel.CreateWalletViewModel
 import com.intuisoft.plaid.features.pin.ui.PinProtectedFragment
@@ -27,6 +28,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class NameYourWalletFragment : PinProtectedFragment<FragmentNameWalletBinding>() {
     protected val viewModel: CreateWalletViewModel by viewModel()
     protected val walletManager: AbstractWalletManager by inject()
+    protected val localStoreRepository: LocalStoreRepository by inject()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -104,7 +106,7 @@ class NameYourWalletFragment : PinProtectedFragment<FragmentNameWalletBinding>()
                         positiveText = getString(R.string.create_wallet_success_positive_button),
                         negativeText = getString(R.string.create_wallet_success_negative_button),
                         positiveDestination = R.id.walletDashboardFragment,
-                        negativeDestination = R.id.homescreenFragment,
+                        negativeDestination = if(localStoreRepository.isProEnabled()) R.id.proHomescreenFragment else R.id.homescreenFragment,
                         walletUUID = it
                     ),
                 )

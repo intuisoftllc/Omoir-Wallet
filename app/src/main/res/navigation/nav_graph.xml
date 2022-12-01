@@ -245,7 +245,7 @@
 
     <fragment
         android:id="@+id/exchangeDetailsFragment"
-        android:name="com.intuisoft.plaid.features.dashboardflow.ui.SwapDetailsFragment"
+        android:name="com.intuisoft.plaid.features.dashboardflow.ui.ExchangeDetailsFragment"
         android:label="@string/swap_details_fragment_label"
         tools:layout="@layout/fragment_exchange_details">
 
@@ -264,6 +264,14 @@
         android:name="com.intuisoft.plaid.features.dashboardflow.ui.WithdrawalTypeFragment"
         android:label="@string/withdrawal_type_fragment_label"
         tools:layout="@layout/fragment_withdrawal_type">
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/exchangeHistoryFragment"
+        android:name="com.intuisoft.plaid.features.dashboardflow.ui.ExchangeHistoryFragment"
+        android:label="@string/swap_history_fragment_label"
+        tools:layout="@layout/fragment_exchange_history">
 
     </fragment>
 
@@ -348,8 +356,8 @@
     </fragment>
 
     <fragment
-        android:id="@+id/swapFragment"
-        android:name="com.intuisoft.plaid.features.dashboardflow.ui.SwapFragment"
+        android:id="@+id/exchangeFragment"
+        android:name="com.intuisoft.plaid.features.dashboardflow.ui.ExchangeFragment"
         android:label="@string/swap_fragment_label"
         tools:layout="@layout/fragment_swap">
     </fragment>

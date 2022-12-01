@@ -27,8 +27,8 @@ data class ExchangeInfoData(
     @ColumnInfo(name = "receive_address_memo") val receiveAddressMemo: String?,
     @ColumnInfo(name = "refund_address") val refundAddress: String,
     @ColumnInfo(name = "refund_address_memo") val refundAddressMemo: String,
-    @ColumnInfo(name = "payment_tx_id") val paymentTxId: String,
-    @ColumnInfo(name = "receive_tx_id") val receiveTxId: String,
+    @ColumnInfo(name = "payment_tx_id") val paymentTxId: String?,
+    @ColumnInfo(name = "receive_tx_id") val receiveTxId: String?,
     @ColumnInfo(name = "status") val status: String
 ) {
     fun from() =

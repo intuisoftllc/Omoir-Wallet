@@ -2,21 +2,25 @@ package com.intuisoft.plaid.common.repositories
 
 import com.intuisoft.plaid.common.local.memorycache.MemoryCache
 import com.intuisoft.plaid.common.model.*
-import com.intuisoft.plaid.common.network.nownodes.repository.BlockchainInfoRepository
-import com.intuisoft.plaid.common.network.nownodes.repository.CoingeckoRepository
-import com.intuisoft.plaid.common.network.nownodes.repository.NodeRepository
-import com.intuisoft.plaid.common.network.nownodes.repository.SimpleSwapRepository
-import com.intuisoft.plaid.common.network.nownodes.response.SupportedCurrencyModel
+import com.intuisoft.plaid.common.network.blockstreaminfo.repository.BlockstreamInfoRepository
+import com.intuisoft.plaid.common.network.blockchair.repository.BlockchainInfoRepository
+import com.intuisoft.plaid.common.network.blockchair.repository.CoingeckoRepository
+import com.intuisoft.plaid.common.network.blockchair.repository.BlockchairRepository
+import com.intuisoft.plaid.common.network.blockchair.repository.SimpleSwapRepository
+import com.intuisoft.plaid.common.network.blockchair.response.SupportedCurrencyModel
 import com.intuisoft.plaid.common.util.Constants
+import com.intuisoft.plaid.common.util.Constants.Strings.BTC_TICKER
 
 
 class ApiRepository_Impl(
     private val localStoreRepository: LocalStoreRepository,
-    private val nodeRepository: NodeRepository,
-    private val testNetNodeRepository: NodeRepository,
+    private val blockchairRepository: BlockchairRepository,
+    private val testNetBlockchairRepository: BlockchairRepository,
     private val blockchainInfoRepository: BlockchainInfoRepository,
     private val coingeckoRepository: CoingeckoRepository,
     private val simpleSwapRepository: SimpleSwapRepository,
+    private val blockstreamInfoRepository: BlockstreamInfoRepository,
+    private val blockstreamInfoTestNetRepository: BlockstreamInfoRepository,
     private val memoryCache: MemoryCache
 ): ApiRepository {
 
@@ -66,7 +70,6 @@ class ApiRepository_Impl(
                 marketCap = rate.marketCap,
                 volume24Hr = rate.volume24Hr,
                 circulatingSupply = data.circulatingSupply,
-                memPoolTxCount = data.memPoolTxCount,
                 maxSupply = data.maxSupply
             )
         } else {
@@ -75,7 +78,6 @@ class ApiRepository_Impl(
                 marketCap = 0.0,
                 volume24Hr = 0.0,
                 circulatingSupply = 0,
-                memPoolTxCount = 0,
                 maxSupply = 0
             )
         }
@@ -106,20 +108,23 @@ class ApiRepository_Impl(
         walletId: String
     ): ExchangeInfoDataModel? {
         updateSupportedCurrenciesData()
-        val result = simpleSwapRepository.createExchange(fixed, from, to, receiveAddress, receiveAddressMemo, refundAddress, refundAddressMemo, amount)
         val supportedCurrencies = localStoreRepository.getSupportedCurrenciesData(false) +
                 localStoreRepository.getSupportedCurrenciesData(true)
 
-        if(result.isSuccess && supportedCurrencies.isNotEmpty()) {
-            val data = result.getOrThrow()
-            val toCurrency = supportedCurrencies.find { it.ticker == data.toShort }
-            val fromCurrency = supportedCurrencies.find { it.ticker == data.fromShort }
+        if(supportedCurrencies.isNotEmpty()) {
+            val result = simpleSwapRepository.createExchange(fixed, from, to, receiveAddress, receiveAddressMemo, refundAddress, refundAddressMemo, amount)
 
-            if(toCurrency != null && fromCurrency != null) {
-                data.to = toCurrency.name + " (${data.toShort})"
-                data.from = fromCurrency.name + " (${data.fromShort})"
-                localStoreRepository.saveExchangeData(data, walletId)
-                return data
+            if(result.isSuccess) {
+                val data = result.getOrThrow()
+                val toCurrency = supportedCurrencies.find { it.ticker == data.toShort.lowercase() }
+                val fromCurrency = supportedCurrencies.find { it.ticker == data.fromShort.lowercase() }
+
+                if (toCurrency != null && fromCurrency != null) {
+                    data.to = toCurrency.name + " (${data.toShort})"
+                    data.from = fromCurrency.name + " (${data.fromShort})"
+                    localStoreRepository.saveExchangeData(data, walletId)
+                    return data
+                }
             }
         }
 
@@ -127,15 +132,44 @@ class ApiRepository_Impl(
     }
 
     /* On-Demand Call */
-    override suspend fun getWholeCoinConversion(from: String, to: String, fixed: Boolean): Double {
-        updateWholeCoinConversionData(from, to, fixed)
-        return memoryCache.getWholeCoinConversion(from, to, fixed) ?: 0.0
+    override suspend fun updateExchange(
+        id: String,
+        walletId: String
+    ): ExchangeInfoDataModel? {
+        updateSupportedCurrenciesData()
+        val supportedCurrencies = localStoreRepository.getSupportedCurrenciesData(false) +
+                localStoreRepository.getSupportedCurrenciesData(true)
+
+        if(supportedCurrencies.isNotEmpty()) {
+            updateExchangeData(id, walletId)
+            val data = localStoreRepository.getExchangeById(id)
+
+            if(data != null) {
+                val toCurrency = supportedCurrencies.find { it.ticker == data.toShort.lowercase() }
+                val fromCurrency = supportedCurrencies.find { it.ticker == data.fromShort.lowercase() }
+
+                if (toCurrency != null && fromCurrency != null) {
+                    data.to = toCurrency.name + " (${data.toShort})"
+                    data.from = fromCurrency.name + " (${data.fromShort})"
+                    localStoreRepository.saveExchangeData(data, walletId)
+                    return data
+                }
+            }
+        }
+
+        return null
+    }
+
+    /* On-Demand Call */
+    override suspend fun getConversion(from: String, to: String, fixed: Boolean): Double {
+        updateWholeCoinConversionData(if(from == BTC_TICKER) to else from, fixed)
+        return memoryCache.getWholeCoinConversion(if(from == BTC_TICKER) to else from, from == BTC_TICKER, fixed) ?: 0.0
     }
 
     private suspend fun updateSuggestedFeeRates() {
         if((System.currentTimeMillis() - localStoreRepository.getLastFeeRateUpdateTime()) > Constants.Time.GENERAL_CACHE_UPDATE_TIME) {
-            val mainNetResult = nodeRepository.getFeeSuggestions()
-            val testNetResult = testNetNodeRepository.getFeeSuggestions()
+            val mainNetResult = blockstreamInfoRepository.getFeeEstimates()
+            val testNetResult = blockstreamInfoTestNetRepository.getFeeEstimates()
 
             if (mainNetResult.isSuccess && testNetResult.isSuccess) {
                 localStoreRepository.setSuggestedFeeRate(mainNetResult.getOrThrow(), false)
@@ -180,6 +214,17 @@ class ApiRepository_Impl(
         }
     }
 
+    private suspend fun updateExchangeData(id: String, walletId: String) {
+        if((System.currentTimeMillis() - memoryCache.getLastExchangeUpdateTime(id)) > Constants.Time.GENERAL_CACHE_UPDATE_TIME_XTRA_SHORT) {
+            val exchange = simpleSwapRepository.getExchange(id)
+
+            if(exchange.isSuccess) {
+                localStoreRepository.saveExchangeData(exchange.getOrThrow(), walletId)
+                memoryCache.setLastExchangeUpdateTime(id, System.currentTimeMillis())
+            }
+        }
+    }
+
     private suspend fun updateCurrencyRangeLimitData(from: String, to: String, fixed: Boolean) {
         if((System.currentTimeMillis() - (memoryCache.getLastCurrencySwapRangeLimitUpdateTime(from, to, fixed) ?: 0)) > Constants.Time.GENERAL_CACHE_UPDATE_TIME) {
             val rangeLimit = simpleSwapRepository.getRangeFor(fixed, from, to)
@@ -196,8 +241,7 @@ class ApiRepository_Impl(
 
             if(data.isSuccess) {
                 localStoreRepository.setBasicNetworkData(
-                    data.getOrThrow().currentSupply,
-                    data.getOrThrow().memPoolTxCount
+                    data.getOrThrow().currentSupply
                 )
 
                 localStoreRepository.setLastBasicNetworkDataUpdate(System.currentTimeMillis())
@@ -207,8 +251,8 @@ class ApiRepository_Impl(
 
     private suspend fun updateExtendedNetworkData() {
         if((System.currentTimeMillis() - localStoreRepository.getLastExtendedMarketDataUpdateTime()) > Constants.Time.GENERAL_CACHE_UPDATE_TIME_MED) {
-            val dataTest = testNetNodeRepository.getExtendedNetworkData()
-            val dataMain = nodeRepository.getExtendedNetworkData()
+            val dataTest = testNetBlockchairRepository.getExtendedNetworkData()
+            val dataMain = blockchairRepository.getExtendedNetworkData()
             val data2 = blockchainInfoRepository.getExtendedNetworkData()
 
             if(dataTest.isSuccess && dataMain.isSuccess && data2.isSuccess) {
@@ -218,9 +262,11 @@ class ApiRepository_Impl(
                         height = dataMain.getOrThrow().height,
                         difficulty = dataMain.getOrThrow().difficulty,
                         blockchainSize = dataMain.getOrThrow().blockchainSize,
-                        avgTxSize = dataMain.getOrThrow().avgTxSize,
-                        avgFeeRate = dataMain.getOrThrow().avgFeeRate,
-                        unconfirmedTxs = data2.getOrThrow().unconfirmedTxs,
+                        addressesWithBalance = dataMain.getOrThrow().addressesWithBalance,
+                        memPoolSize = dataMain.getOrThrow().memPoolSize,
+                        nodesOnNetwork = dataMain.getOrThrow().nodesOnNetwork,
+                        txPerSecond = dataMain.getOrThrow().txPerSecond,
+                        unconfirmedTxs = dataMain.getOrThrow().unconfirmedTxs,
                         avgConfTime = data2.getOrThrow().avgConfTime
                     )
                 )
@@ -231,9 +277,11 @@ class ApiRepository_Impl(
                         height = dataTest.getOrThrow().height,
                         difficulty = dataTest.getOrThrow().difficulty,
                         blockchainSize = dataTest.getOrThrow().blockchainSize,
-                        avgTxSize = dataTest.getOrThrow().avgTxSize,
-                        avgFeeRate = dataTest.getOrThrow().avgFeeRate,
-                        unconfirmedTxs = 0,
+                        addressesWithBalance = dataTest.getOrThrow().addressesWithBalance,
+                        memPoolSize = dataTest.getOrThrow().memPoolSize,
+                        nodesOnNetwork = dataTest.getOrThrow().nodesOnNetwork,
+                        txPerSecond = dataTest.getOrThrow().txPerSecond,
+                        unconfirmedTxs = dataTest.getOrThrow().unconfirmedTxs,
                         avgConfTime = 0.0
                     )
                 )
@@ -244,7 +292,7 @@ class ApiRepository_Impl(
     }
 
     private suspend fun updateTickerPriceChartData(intervalType: ChartIntervalType) {
-        if((System.currentTimeMillis() - localStoreRepository.getLastTickerPriceChartDataUpdateTime()) > Constants.Time.GENERAL_CACHE_UPDATE_TIME_SHORT
+        if((System.currentTimeMillis() - memoryCache.getChartPriceUpdateTimes(intervalType)) > Constants.Time.GENERAL_CACHE_UPDATE_TIME_MED
             || localStoreRepository.getTickerPriceChartData(localStoreRepository.getLocalCurrency(), intervalType) == null) {
             val data = coingeckoRepository.getChartData(intervalType, localStoreRepository.getLocalCurrency())
 
@@ -255,17 +303,32 @@ class ApiRepository_Impl(
                     intervalType
                 )
 
-                localStoreRepository.setLastTickerPriceChartDataUpdate(System.currentTimeMillis())
+                memoryCache.setChartPriceUpdateTime(intervalType, System.currentTimeMillis())
             }
         }
     }
 
-    private suspend fun updateWholeCoinConversionData(from: String, to: String, fixed: Boolean) {
-        if((System.currentTimeMillis() - memoryCache.getLastWholeCoinConversionUpdateTime(fixed)) > Constants.Time.GENERAL_CACHE_UPDATE_TIME_SHORT) {
-            val data = simpleSwapRepository.getEstimatedReceiveAmount(fixed, from, to, 1.0)
+    private suspend fun updateWholeCoinConversionData(altCoin: String, fixed: Boolean) {
+        if(((System.currentTimeMillis() - memoryCache.getLastWholeCoinConversionUpdateTime(altCoin, fixed)) > Constants.Time.GENERAL_CACHE_UPDATE_TIME_MED)
+            || !memoryCache.hasWholeCoinConversion(altCoin, fixed)) {
+            val range = getCurrencyRangeLimit(BTC_TICKER, altCoin, fixed)
 
-            if(data.isSuccess) {
-                memoryCache.setWholeCoinConversion(from, to, data.getOrThrow(), fixed, System.currentTimeMillis())
+            if(range != null) {
+                val max = range.max?.toDouble()
+
+                if(max == null || max >= 1.0) {
+                    val amount = simpleSwapRepository.getEstimatedReceiveAmount(fixed, BTC_TICKER, altCoin, 1.0)
+
+                    if(amount.isSuccess) {
+                        memoryCache.setWholeCoinConversion(altCoin, amount.getOrThrow(), fixed, System.currentTimeMillis())
+                    }
+                } else {
+                    val amount = simpleSwapRepository.getEstimatedReceiveAmount(fixed, BTC_TICKER, altCoin, max)
+
+                    if(amount.isSuccess) {
+                        memoryCache.setWholeCoinConversion(altCoin, amount.getOrThrow() * (100 / (max * 100)), fixed, System.currentTimeMillis())
+                    }
+                }
             }
         }
     }

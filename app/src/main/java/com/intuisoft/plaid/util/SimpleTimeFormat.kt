@@ -1,6 +1,10 @@
 package com.intuisoft.plaid.util
 
+import com.intuisoft.plaid.common.util.Constants
 import java.text.SimpleDateFormat
+import java.time.Instant
+import java.time.ZoneId
+import java.time.ZonedDateTime
 import java.util.*
 import java.util.concurrent.TimeUnit
 
@@ -37,7 +41,37 @@ object SimpleTimeFormat {
         return convTime
     }
 
+    fun isToday(mills: Long) : Boolean {
+        val dateDays = (mills / Constants.Time.MILLS_PER_SEC) / Constants.Time.SECONDS_PER_DAY
+        val currentDay = (System.currentTimeMillis() / Constants.Time.MILLS_PER_SEC) / Constants.Time.SECONDS_PER_DAY
+
+        return dateDays == currentDay
+    }
+
+    fun isYesterday(mills: Long) : Boolean {
+        val dateDays = (mills / Constants.Time.MILLS_PER_SEC) / Constants.Time.SECONDS_PER_DAY
+        val currentDay = (System.currentTimeMillis() / Constants.Time.MILLS_PER_SEC) / Constants.Time.SECONDS_PER_DAY
+
+        return (dateDays - 1) == (currentDay - 1)
+    }
+
+    fun isSameYear(mills: Long): Boolean {
+        val z: ZoneId = ZoneId.of(ZoneId.systemDefault().id)
+        val referenceTime: ZonedDateTime = ZonedDateTime.ofInstant(Instant.ofEpochMilli(mills), z)
+        val nowTime: ZonedDateTime = ZonedDateTime.now()
+
+        return referenceTime.year == nowTime.year
+    }
+
     fun getDateByLocale(timeInMills: Long, locale: String?): String? {
         return SimpleDateFormat("MMM dd, yyyy hh:mm aa", Locale(locale)).format(Date(timeInMills))
+    }
+
+    fun getShortHistoryDateByLocale(timeInMills: Long, locale: String?): String? {
+        return SimpleDateFormat("MMM dd", Locale(locale)).format(Date(timeInMills))
+    }
+
+    fun getLongHistoryDateByLocale(timeInMills: Long, locale: String?): String? {
+        return SimpleDateFormat("MMM dd, yyyy", Locale(locale)).format(Date(timeInMills))
     }
 }

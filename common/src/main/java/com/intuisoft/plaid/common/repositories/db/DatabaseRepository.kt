@@ -1,10 +1,8 @@
 package com.intuisoft.plaid.common.repositories.db
 
-import com.intuisoft.plaid.common.local.db.ExchangeInfoData
-import com.intuisoft.plaid.common.local.db.SupportedCurrency
 import com.intuisoft.plaid.common.local.db.listeners.DatabaseListener
 import com.intuisoft.plaid.common.model.*
-import com.intuisoft.plaid.common.network.nownodes.response.SupportedCurrencyModel
+import com.intuisoft.plaid.common.network.blockchair.response.SupportedCurrencyModel
 
 
 interface DatabaseRepository {
@@ -25,7 +23,7 @@ interface DatabaseRepository {
 
     suspend fun setTickerPriceChartData(data: List<ChartDataModel>, currencyCode: String, intervalType: ChartIntervalType)
 
-    suspend fun setBasicNetworkData(circulatingSupply: Long, memPoolTx: Int)
+    suspend fun setBasicNetworkData(circulatingSupply: Long)
 
     suspend fun setMemoForTransaction(txId: String, memo: String)
 

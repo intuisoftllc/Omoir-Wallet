@@ -172,6 +172,22 @@ class MarketFragment : PinProtectedFragment<FragmentMarketBinding>() {
             binding.volume.text = it
         })
 
+        viewModel.nodesOnNetwork.observe(viewLifecycleOwner, Observer {
+            binding.nodes.text = it
+        })
+
+        viewModel.memoryPoolSize.observe(viewLifecycleOwner, Observer {
+            binding.memPoolSize.text = it
+        })
+
+        viewModel.txPerSecond.observe(viewLifecycleOwner, Observer {
+            binding.txsPerSecond.text = it
+        })
+
+        viewModel.addressesWithBalance.observe(viewLifecycleOwner, Observer {
+            binding.addressesWithBalances.text = it
+        })
+
         viewModel.checkProStatus()
         viewModel.upgradeToPro.observe(viewLifecycleOwner, Observer {
             binding.upgradeToProContainer.isVisible = it
@@ -180,11 +196,13 @@ class MarketFragment : PinProtectedFragment<FragmentMarketBinding>() {
                 binding.height.text = ""
                 binding.difficulty.text = ""
                 binding.blockchainSize.text = ""
-                binding.avgTxSize.text = ""
-                binding.avgFeeRate.text = ""
                 binding.unconfirmedTxs.text = ""
                 binding.avgConfTime.text = ""
                 binding.congestionRating.text = ""
+                binding.nodes.text = ""
+                binding.memPoolSize.text = ""
+                binding.txsPerSecond.text = ""
+                binding.addressesWithBalances.text = ""
             }
         })
 
@@ -253,14 +271,6 @@ class MarketFragment : PinProtectedFragment<FragmentMarketBinding>() {
             binding.blockchainSize.text = it
         })
 
-        viewModel.avgTxSize.observe(viewLifecycleOwner, Observer {
-            binding.avgTxSize.text = it
-        })
-
-        viewModel.avgFeeRate.observe(viewLifecycleOwner, Observer {
-            binding.avgFeeRate.text = it
-        })
-
         viewModel.unconfirmedTxs.observe(viewLifecycleOwner, Observer {
             binding.unconfirmedTxs.text = it
         })
@@ -271,11 +281,6 @@ class MarketFragment : PinProtectedFragment<FragmentMarketBinding>() {
 
         viewModel.tickerPrice.observe(viewLifecycleOwner, Observer {
             binding.price.text = it
-        })
-
-        viewModel.hideMainChainDataContainer.observe(viewLifecycleOwner, Observer {
-            binding.mainChainExtendedDataContainer.isVisible = false
-            binding.mainChainExtendedDataContainer2.isVisible = false
         })
 
         viewModel.chartData.observe(viewLifecycleOwner, Observer {
@@ -294,11 +299,6 @@ class MarketFragment : PinProtectedFragment<FragmentMarketBinding>() {
 
     override fun onNetworkStateChanged(hasNetwork: Boolean) {
         viewModel.onNoInternet(hasNetwork)
-    }
-
-    fun openLink(url: String) {
-        val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse("$url"))
-        startActivity(browserIntent)
     }
 
     override fun onNavigateTo(destination: Int) {

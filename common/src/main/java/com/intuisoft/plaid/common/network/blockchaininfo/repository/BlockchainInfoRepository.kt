@@ -1,8 +1,8 @@
-package com.intuisoft.plaid.common.network.nownodes.repository
+package com.intuisoft.plaid.common.network.blockchair.repository
 
 import com.intuisoft.plaid.common.model.ExtendedNetworkDataModel
-import com.intuisoft.plaid.common.network.nownodes.api.BlockchainInfoApi
-import com.intuisoft.plaid.common.network.nownodes.response.BasicNetworkDataResponse
+import com.intuisoft.plaid.common.network.blockchair.api.BlockchainInfoApi
+import com.intuisoft.plaid.common.network.blockchair.response.BasicNetworkDataResponse
 import com.intuisoft.plaid.common.util.Constants
 
 interface BlockchainInfoRepository {
@@ -19,9 +19,8 @@ interface BlockchainInfoRepository {
         override fun getBasicNetworkData(): Result<BasicNetworkDataResponse> {
             try {
                 val supply = api.getCirculatingSupply().execute().body()
-                val txCount = api.getUnconfirmedTxSize().execute().body()
 
-                return Result.success(BasicNetworkDataResponse(supply!! / Constants.Limit.SATS_PER_BTC, txCount!!))
+                return Result.success(BasicNetworkDataResponse(supply!! / Constants.Limit.SATS_PER_BTC))
             } catch (t: Throwable) {
                 return Result.failure(t)
             }
@@ -30,17 +29,18 @@ interface BlockchainInfoRepository {
         override fun getExtendedNetworkData(): Result<ExtendedNetworkDataModel> {
             try {
                 val stats = api.getBlockchainStats().execute().body()
-                val txCount = api.getUnconfirmedTxSize().execute().body()
 
                 return Result.success(
                     ExtendedNetworkDataModel(
                         height = 0,
                         difficulty = 0,
                         blockchainSize = 0,
-                        avgFeeRate = 0,
-                        avgTxSize = 0,
-                        avgConfTime = stats!!.minutes_between_blocks,
-                        unconfirmedTxs = txCount!!
+                        nodesOnNetwork = 0,
+                        memPoolSize = 0,
+                        txPerSecond = 0,
+                        addressesWithBalance = 0,
+                        unconfirmedTxs = 0,
+                        avgConfTime = stats!!.minutes_between_blocks
                     )
                 )
             } catch (t: Throwable) {

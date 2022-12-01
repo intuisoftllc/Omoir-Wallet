@@ -8,21 +8,18 @@ import com.intuisoft.plaid.common.model.BasicNetworkDataModel
 @Entity(tableName = "base_market_data")
 data class BasicNetworkData(
     @PrimaryKey(autoGenerate = false)  @ColumnInfo(name = "id") var id: Int = 0,
-    @ColumnInfo(name = "circulating_supply") var circulatingSupply: Long,
-    @ColumnInfo(name = "mem_pool_tx_count") var memPoolTxCount: Int
+    @ColumnInfo(name = "circulating_supply") var circulatingSupply: Long
 ) {
     fun from() =
         BasicNetworkDataModel(
-            circulatingSupply = circulatingSupply,
-            memPoolTxCount = memPoolTxCount
+            circulatingSupply = circulatingSupply
         )
 
     companion object {
 
-        fun consume(circulatingSupply: Long, memPoolTx: Int) =
+        fun consume(circulatingSupply: Long) =
             BasicNetworkData(
-                circulatingSupply = circulatingSupply,
-                memPoolTxCount = memPoolTx
+                circulatingSupply = circulatingSupply
             )
     }
 }

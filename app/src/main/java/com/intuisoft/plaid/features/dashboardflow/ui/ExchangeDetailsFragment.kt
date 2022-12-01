@@ -19,13 +19,13 @@ import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.common.util.SimpleCoinNumberFormat
 import com.intuisoft.plaid.databinding.FragmentExchangeDetailsBinding
 import com.intuisoft.plaid.features.dashboardflow.viewmodel.SwapDetailsViewModel
-import com.intuisoft.plaid.model.SwapStatus
+import com.intuisoft.plaid.model.ExchangeStatus
 import com.intuisoft.plaid.util.fragmentconfig.ConfigInvoiceData
 import com.intuisoft.plaid.util.fragmentconfig.ConfigSwapData
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class SwapDetailsFragment : PinProtectedFragment<FragmentExchangeDetailsBinding>() {
+class ExchangeDetailsFragment : PinProtectedFragment<FragmentExchangeDetailsBinding>() {
     protected val viewModel: SwapDetailsViewModel by viewModel()
     protected val localStoreRepository: LocalStoreRepository by inject()
 
@@ -51,7 +51,7 @@ class SwapDetailsFragment : PinProtectedFragment<FragmentExchangeDetailsBinding>
         binding.status.text = data.status
         binding.status.setTextColor(
             resources.getColor(
-            SwapStatus.values().find { it.type == data.status }?.color ?: R.color.text_grey
+            ExchangeStatus.values().find { it.type == data.status }?.color ?: R.color.text_grey
             )
         )
         binding.from.text = data.from
@@ -66,10 +66,13 @@ class SwapDetailsFragment : PinProtectedFragment<FragmentExchangeDetailsBinding>
                 binding.copyPaymentAddress, data.paymentAddress
             )
         }
+        binding.viewFullDetails.setOnClickListener {
+            openLink(getString(R.string.swap_view_full_details_link, data.id))
+        }
         binding.transactionIdContainer.setOnClickListener {
-            if(data.paymentTxId.isNotEmpty()) {
+            if(data.paymentTxId?.isNotEmpty() == true) {
                 viewModel.copyDataItemClicked(
-                    binding.copyTransactionId, data.paymentTxId
+                    binding.copyTransactionId, data.paymentTxId!!
                 )
             }
         }
@@ -93,7 +96,7 @@ class SwapDetailsFragment : PinProtectedFragment<FragmentExchangeDetailsBinding>
             binding.fiatConversion.text = it
         })
 
-        if(data.paymentTxId.isNotEmpty()) {
+        if(data.paymentTxId?.isNotEmpty() == true) {
             binding.transactionId.text = data.paymentTxId
         } else {
             binding.transactionId.text = getString(R.string.not_applicable)
@@ -103,7 +106,7 @@ class SwapDetailsFragment : PinProtectedFragment<FragmentExchangeDetailsBinding>
         binding.memo.text = data.paymentAddressMemo
         binding.smartPay.enableButton(
             data.fromShort.lowercase() == Constants.Strings.BTC_TICKER
-                    && data.paymentTxId.isEmpty()
+                    && data.paymentTxId == null
         )
 
         binding.smartPay.onClick {

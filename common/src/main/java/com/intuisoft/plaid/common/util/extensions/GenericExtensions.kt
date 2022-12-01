@@ -128,7 +128,7 @@ fun Long.humanReadableByteCountSI(): String? {
         bytes /= 1000
         ci.next()
     }
-    return java.lang.String.format("%.1f %cB", bytes / 1000.0, ci.current())
+    return java.lang.String.format("%.1f %cb", bytes / 1000.0, ci.current())
 }
 
 fun String.containsNumbers(): Boolean {

@@ -71,10 +71,15 @@
     <string name="settings_option_enable_fingerprint_description">Require fingerprint for signing transactions</string>
     <string name="settings_option_max_pin_attempts_description">Set the max amount of times to enter a pin</string>
     <string name="settings_option_appearance">Appearance</string>
+    <string name="settings_option_app_mode">App Mode</string>
     <string name="settings_option_local_currency">Set Local Currency</string>
     <string name="settings_option_local_currency_hint">USD ($)</string>
     <string name="settings_option_appearance_light">Light mode</string>
     <string name="settings_option_appearance_dark">Dark mode</string>
+    <string name="settings_option_app_mode_1_short">Simple</string>
+    <string name="settings_option_app_mode_2_short">Advanced</string>
+    <string name="settings_option_app_mode_1">Simple (Just the basics)</string>
+    <string name="settings_option_app_mode_2">Advanced (All features)</string>
     <string name="settings_option_appearance_auto">Determined by the system</string>
     <string name="settings_option_app_restart_title">Restart App</string>
     <string name="settings_option_app_restart_subtitle">The changes recently made within the app requires a soft restart for them to fully take affect.</string>
@@ -203,6 +208,12 @@
     <string name="address_book_no_addresses">You have not saved any\naddresses yet</string>
 <!--    Address Book Strings End -->
 
+<!--    Search Currency Strings -->
+    <string name="search_currencies_hint">Type a currency</string>
+    <string name="search_currencies_info_title_1">Frequently Used</string>
+    <string name="search_currencies_info_title_2">Results</string>
+<!--    Search Currency Strings End -->
+
 <!--    Save Address Strings -->
     <string name="save_address_title">Save Address</string>
     <string name="save_address_info_1">Address Name</string>
@@ -325,7 +336,7 @@
     <string name="withdraw_confirmation_memo_text_box_title">What this withdrawal is for?</string>
     <string name="withdraw_confirmation_memo_text_box_hint">Coffee</string>
     <string name="withdraw_confirmation_add_memo">Add a memo</string>
-    <string name="withdraw_confirmation_speed_slow">Slow\n+6hrs</string>
+    <string name="withdraw_confirmation_speed_slow">Slow\n~1d</string>
     <string name="withdraw_confirmation_speed_med">Med\n&#60;1hr</string>
     <string name="withdraw_confirmation_speed_fast">Fast\n~10m</string>
     <string name="withdraw_confirmation_fee_suggestion">1</string>
@@ -353,6 +364,13 @@
     <string name="withdraw_confirmation_transfer_list_item_message">Send To</string>
     <string name="withdraw_confirmation_fee_warning_message">(Fee higher than total spend)</string>
 <!--    Withdraw Confirmation Strings End -->
+
+<!--    Exchange History Strings -->
+    <string name="exchange_history_filter_1">All</string>
+    <string name="exchange_history_filter_2">Finished</string>
+    <string name="exchange_history_filter_3">Failed</string>
+    <string name="exchange_history_id">Exchange ID: %1$s</string>
+<!--    Exchange History Strings End -->
 
 <!--    Import Wallet Strings -->
     <string name="import_wallet_description">How would you like to\nimport your wallet?</string>
@@ -386,12 +404,14 @@
     <string name="market_data_extended_item_2_title">Block Height</string>
     <string name="market_data_extended_item_3_title">Network Difficulty</string>
     <string name="market_data_extended_item_4_title">Blockchain Size</string>
-    <string name="market_data_extended_item_5_title">Avg Tx Size</string>
-    <string name="market_data_extended_item_6_title">Avg Fee Rate</string>
+    <string name="market_data_extended_item_5_title">Nodes Online</string>
+    <string name="market_data_extended_item_6_title">Mem Pool Size</string>
     <string name="market_data_extended_item_7_title">Avg Fee Rate</string>
     <string name="market_data_extended_item_8_title">Unconfirmed Txs</string>
     <string name="market_data_extended_item_9_title">Avg Conf. Time</string>
     <string name="market_data_extended_item_10_title">Network Congestion Rating (beta)</string>
+    <string name="market_data_extended_item_11_title">Transactions Per\nSecond</string>
+    <string name="market_data_extended_item_12_title">Addresses With\nBalances</string>
     <string name="market_data_what_is_bitcoin_link">https://www.coindesk.com/learn/what-is-bitcoin/</string>
     <string name="market_data_bitcoin_org_link">https://www.bitcoin.org</string>
     <string name="market_data_bitcoin_explorer_link">https://www.blockchain.com/explorer?view=btc</string>
@@ -473,8 +493,9 @@
     <string name="swap_details_smart_pay">Smart Pay</string>
     <string name="swap_details_instructions_part_1">Complete the exchange by sending</string>
     <string name="swap_details_instructions_part_2">To this address below</string>
-    <string name="swap_details_instructions_part_3">Click to see the process on Change Now</string>
+    <string name="swap_details_instructions_part_3">Click to see full details on Simple Swap</string>
     <string name="swap_details_with_memo">With Memo:</string>
+    <string name="swap_view_full_details_link">https://simpleswap.io/exchange?id=%1$s</string>
 <!--    Swap Details Strings End -->
 
 <!--    Generic Use Strings -->
@@ -531,15 +552,21 @@
     <string name="done">Done</string>
     <string name="share">share</string>
     <string name="bytes">bytes</string>
+    <string name="nodes">nodes</string>
+    <string name="addresses">addresses</string>
     <string name="sat_per_byte">Sat/byte</string>
+    <string name="tx_per_sec">tx/s</string>
     <string name="import_wallet">Import Wallet</string>
     <string name="main_net">Main Net</string>
     <string name="test_net">Test Net</string>
     <string name="not_applicable">N/A</string>
     <string name="select_all">Select All</string>
     <string name="exchange">Exchange</string>
+    <string name="currencies">Currencies</string>
     <string name="deposit">Deposit</string>
     <string name="memo">Memo</string>
+    <string name="today">Today</string>
+    <string name="yesterday">Yesterday</string>
     <string name="withdraw">Withdraw</string>
     <string name="upgrade_to_pro">Upgrade To Pro</string>
     <string name="transaction_id">Transaction ID</string>
@@ -556,6 +583,7 @@
     <string name="settings_fragment_label">Settings</string>
     <string name="wallet_settings_fragment_label">Wallet Settings</string>
     <string name="swap_fragment_label">Swap</string>
+    <string name="supported_currencies_fragment_label">Supported Currencies</string>
     <string name="market_fragment_label">Market</string>
     <string name="invoice_fragment_label">Invioce</string>
     <string name="wallet_export_fragment_label">Export Wallet</string>
@@ -564,6 +592,7 @@
     <string name="local_currency_fragment_label">Local Currency</string>
     <string name="address_book_fragment_label">Address Book</string>
     <string name="withdrawal_type_fragment_label">Withdrawal Type</string>
+    <string name="swap_history_fragment_label">History</string>
     <string name="manage_wallets_fragment_label">Manage Wallets</string>
     <string name="swap_details_fragment_label">Exchange Details</string>
     <string name="withdraw_fragment_label">Send BTC</string>
@@ -579,6 +608,7 @@
     <string name="import_wallet_fragment_label">Import Wallet</string>
     <string name="public_key_import_fragment_label">Public Key Import</string>
     <string name="recovery_phrase_import_fragment_label">Recovery Phrase Import</string>
+    <string name="app_mode_fragment_label">App Mode</string>
     <string name="wallet_created_fragment_label">Wallet Created</string>
     <string name="about_us_fragment_label">About Us</string>
     <string name="pin_fragment_label">Pin</string>

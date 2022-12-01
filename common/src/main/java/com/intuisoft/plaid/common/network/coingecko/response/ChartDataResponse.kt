@@ -1,4 +1,4 @@
-package com.intuisoft.plaid.common.network.nownodes.response
+package com.intuisoft.plaid.common.network.blockchair.response
 
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize

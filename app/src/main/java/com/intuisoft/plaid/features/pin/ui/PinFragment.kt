@@ -12,6 +12,7 @@ import com.intuisoft.plaid.androidwrappers.*
 import com.intuisoft.plaid.androidwrappers.PasscodeView.PasscodeViewType.Companion.TYPE_CHECK_PASSCODE
 import com.intuisoft.plaid.androidwrappers.PasscodeView.PasscodeViewType.Companion.TYPE_SET_PASSCODE
 import com.intuisoft.plaid.common.CommonService
+import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.databinding.FragmentPinBinding
 import com.intuisoft.plaid.features.pin.viewmodel.PinViewModel
 import com.intuisoft.plaid.common.util.Constants
@@ -19,6 +20,7 @@ import org.koin.android.ext.android.inject
 
 class PinFragment: BindingFragment<FragmentPinBinding>() {
     private val pinViewModel: PinViewModel by inject()
+    private val localStoreRepository: LocalStoreRepository by inject()
 
     var setupPin = false
     var homePassthrough = false
@@ -66,7 +68,7 @@ class PinFragment: BindingFragment<FragmentPinBinding>() {
                     pinViewModel.startWalletManager()
 
                     if(homePassthrough) {
-                        if(false/*CommonService.getUserData()!!.isProEnabled*/) {
+                        if(localStoreRepository.isProEnabled()) {
                             navigate(R.id.proHomescreenFragment, Constants.Navigation.ANIMATED_FADE_IN_EXIT_NAV_OPTION)
                         } else {
                             navigate(R.id.homescreenFragment, Constants.Navigation.ANIMATED_FADE_IN_EXIT_NAV_OPTION)
@@ -105,8 +107,8 @@ class PinFragment: BindingFragment<FragmentPinBinding>() {
                         listener.onScanFail()
                     },
 
-                    subTitle = com.intuisoft.plaid.common.util.Constants.Strings.USE_BIOMETRIC_REASON_2,
-                    negativeText = com.intuisoft.plaid.common.util.Constants.Strings.USE_PIN
+                    subTitle = Constants.Strings.USE_BIOMETRIC_REASON_2,
+                    negativeText = Constants.Strings.USE_PIN
                 )
             }
 

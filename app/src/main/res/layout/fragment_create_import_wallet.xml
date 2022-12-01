@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:paddingHorizontal="20sp"
     android:paddingTop="20dp"
-    android:paddingBottom="0dp"
+    android:paddingBottom="@dimen/margin_35"
     android:orientation="vertical">
 
     <androidx.viewpager2.widget.ViewPager2
@@ -71,7 +71,6 @@
         app:button_style="outlined"
         android:id="@+id/import_wallet"
         android:layout_marginTop="@dimen/horizontal_padding_size"
-        android:layout_marginBottom="@dimen/margin_35"
         app:btn_text="@string/create_import_import_existing_wallet"
         app:text_position="center"/>
 

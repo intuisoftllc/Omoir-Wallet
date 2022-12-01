@@ -67,7 +67,7 @@ val viewModelModule = module {
     }
 
     viewModel {
-        SwapViewModel(get(), get(), get(), get())
+        ExchangeViewModel(get(), get(), get(), get())
     }
 
     viewModel {
@@ -76,5 +76,9 @@ val viewModelModule = module {
 
     viewModel {
         SwapDetailsViewModel(get(), get(), get(), get())
+    }
+
+    viewModel {
+        ExchangeHistoryViewModel(get(), get(), get(), get())
     }
 }

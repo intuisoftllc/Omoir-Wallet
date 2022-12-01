@@ -7,8 +7,9 @@ import com.intuisoft.plaid.common.local.AppPrefs
 import com.intuisoft.plaid.common.local.UserData
 import com.intuisoft.plaid.common.local.db.listeners.DatabaseListener
 import com.intuisoft.plaid.common.model.*
-import com.intuisoft.plaid.common.network.nownodes.response.SupportedCurrencyModel
+import com.intuisoft.plaid.common.network.blockchair.response.SupportedCurrencyModel
 import com.intuisoft.plaid.common.repositories.db.DatabaseRepository
+import com.intuisoft.plaid.common.util.Constants
 import kotlinx.coroutines.runBlocking
 
 class LocalStoreRepository_Impl(
@@ -56,7 +57,7 @@ class LocalStoreRepository_Impl(
     }
 
     override fun isProEnabled(): Boolean {
-        return false//CommonService.getUserData()!!.isProEnabled
+        return true//CommonService.getUserData()!!.isProEnabled
     }
 
     override fun setProEnabled(enable: Boolean) {
@@ -152,8 +153,8 @@ class LocalStoreRepository_Impl(
     }
 
     override fun updatePinTimeout(timeout: Int) {
-        if(timeout == com.intuisoft.plaid.common.util.Constants.Time.INSTANT) {
-            CommonService.getUserData()!!.pinTimeout = com.intuisoft.plaid.common.util.Constants.Time.INSTANT_TIME_OFFSET
+        if(timeout == Constants.Time.INSTANT) {
+            CommonService.getUserData()!!.pinTimeout = Constants.Time.INSTANT_TIME_OFFSET
         } else {
             CommonService.getUserData()!!.pinTimeout = timeout
         }
@@ -199,26 +200,18 @@ class LocalStoreRepository_Impl(
         return CommonService.getUserData()!!.lastExtendedMarketDataUpdateTime
     }
 
-    override fun setLastTickerPriceChartDataUpdate(time: Long) {
-        CommonService.getUserData()!!.lastTickerPriceChartDataUpdateTime = time
-    }
-
-    override fun getLastTickerPriceChartDataUpdateTime(): Long {
-        return CommonService.getUserData()!!.lastTickerPriceChartDataUpdateTime
-    }
-
     override fun getPinTimeout(): Int {
         return CommonService.getUserData()!!.pinTimeout
     }
 
     override fun updateVersionTappedCount() {
-        if(CommonService.getUserData()!!.versionTappedCount < com.intuisoft.plaid.common.util.Constants.Limit.VERSION_CODE_TAPPED_LIMIT) {
+        if(CommonService.getUserData()!!.versionTappedCount < Constants.Limit.VERSION_CODE_TAPPED_LIMIT) {
             CommonService.getUserData()!!.versionTappedCount = CommonService.getUserData()!!.versionTappedCount + 1
         }
     }
 
     override fun versionTapLimitReached(): Boolean {
-        return CommonService.getUserData()!!.versionTappedCount == com.intuisoft.plaid.common.util.Constants.Limit.VERSION_CODE_TAPPED_LIMIT
+        return CommonService.getUserData()!!.versionTappedCount == Constants.Limit.VERSION_CODE_TAPPED_LIMIT
     }
 
     override fun updateUserAlias(alias: String) {
@@ -276,10 +269,9 @@ class LocalStoreRepository_Impl(
     }
 
     override suspend fun setBasicNetworkData(
-        circulatingSypply: Long,
-        memPoolTxCount: Int
+        circulatingSypply: Long
     ) {
-        databaseRepository.setBasicNetworkData(circulatingSypply, memPoolTxCount)
+        databaseRepository.setBasicNetworkData(circulatingSypply)
     }
 
     override fun getExtendedNetworkData(testnetWallet: Boolean): ExtendedNetworkDataModel? {

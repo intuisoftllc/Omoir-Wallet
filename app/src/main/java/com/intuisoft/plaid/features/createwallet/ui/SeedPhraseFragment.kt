@@ -67,7 +67,7 @@ class SeedPhraseFragment : PinProtectedFragment<FragmentSeedPhraseBinding>() {
 
         binding.continueButton.onClick {
             var bundle = bundleOf(
-                com.intuisoft.plaid.common.util.Constants.Navigation.FRAGMENT_CONFIG to FragmentConfiguration(
+                Constants.Navigation.FRAGMENT_CONFIG to FragmentConfiguration(
                     configurationType = FragmentConfigurationType.CONFIGURATION_WALLET_DATA,
                     configData = viewModel.getConfiguration()
                 )
@@ -76,7 +76,7 @@ class SeedPhraseFragment : PinProtectedFragment<FragmentSeedPhraseBinding>() {
             navigate(
                 R.id.nameWalletFragment,
                 bundle,
-                com.intuisoft.plaid.common.util.Constants.Navigation.ANIMATED_ENTER_EXIT_RIGHT_NAV_OPTION
+                Constants.Navigation.ANIMATED_ENTER_EXIT_RIGHT_NAV_OPTION
             )
         }
     }

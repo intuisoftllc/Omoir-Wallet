@@ -11,6 +11,7 @@ import com.intuisoft.plaid.R
 import com.intuisoft.plaid.activities.MainActivity
 import com.intuisoft.plaid.androidwrappers.*
 import com.intuisoft.plaid.common.CommonService
+import com.intuisoft.plaid.common.model.AppMode
 import com.intuisoft.plaid.common.model.BitcoinDisplayUnit
 import com.intuisoft.plaid.databinding.FragmentWalletDashboardBinding
 import com.intuisoft.plaid.features.homescreen.adapters.BasicTransactionAdapter

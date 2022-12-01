@@ -1,10 +1,10 @@
-package com.intuisoft.plaid.common.network.nownodes.repository
+package com.intuisoft.plaid.common.network.blockchair.repository
 
 import com.intuisoft.plaid.common.model.BasicPriceDataModel
 import com.intuisoft.plaid.common.model.ChartDataModel
 import com.intuisoft.plaid.common.model.ChartIntervalType
-import com.intuisoft.plaid.common.network.nownodes.api.CoingeckoApi
-import com.intuisoft.plaid.common.network.nownodes.response.ChartDataResponse
+import com.intuisoft.plaid.common.network.blockchair.api.CoingeckoApi
+import com.intuisoft.plaid.common.network.blockchair.response.ChartDataResponse
 import com.intuisoft.plaid.common.util.Constants
 
 interface CoingeckoRepository {

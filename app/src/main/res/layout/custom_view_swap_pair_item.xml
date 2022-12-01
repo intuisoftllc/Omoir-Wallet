@@ -116,7 +116,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical"
-                    android:paddingVertical="@dimen/margin_4"
+                    android:background="?android:selectableItemBackground"
+                    android:paddingVertical="@dimen/margin_8"
                     android:orientation="horizontal">
                     <ImageView
                         android:id="@+id/ticker_symbol_2"
@@ -213,7 +214,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
-            android:paddingVertical="@dimen/margin_4"
+            android:paddingVertical="@dimen/margin_8"
+            android:background="?android:selectableItemBackground"
             android:orientation="horizontal">
             <ImageView
                 android:id="@+id/ticker_symbol_3"

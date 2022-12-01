@@ -5,6 +5,7 @@ import android.content.Context
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
+import com.intuisoft.plaid.common.model.AppMode
 import com.intuisoft.plaid.common.model.BitcoinDisplayUnit
 import com.intuisoft.plaid.common.model.TransactionMemoModel
 import com.intuisoft.plaid.common.repositories.ApiRepository
@@ -20,10 +21,7 @@ import io.horizontalsystems.hdwalletkit.HDExtendedKey
 import io.horizontalsystems.hdwalletkit.HDWallet
 import io.horizontalsystems.hdwalletkit.Mnemonic
 import io.reactivex.disposables.CompositeDisposable
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 
 
 open class WalletViewModel(
@@ -196,7 +194,7 @@ open class WalletViewModel(
     }
 
     fun refreshLocalCache() {
-        GlobalScope.launch {
+        CoroutineScope(Dispatchers.IO).launch {
             // go to network and get fee rates if we have passed the cache time
             apiRepository.refreshLocalCache()
         }
@@ -321,7 +319,7 @@ open class WalletViewModel(
         bip: HDWallet.Purpose,
         testNetWallet: Boolean
     ) {
-        GlobalScope.launch {
+        CoroutineScope(Dispatchers.IO).launch {
             if (doesWalletExist(walletName)) {
                 _walletCreationError.postValue(Unit)
             } else {
@@ -357,7 +355,7 @@ open class WalletViewModel(
         walletName: String,
         pubKey: String
     ) {
-        GlobalScope.launch {
+        CoroutineScope(Dispatchers.IO).launch {
             if (doesWalletExist(walletName)) {
                 _walletCreationError.postValue(Unit)
             } else {
@@ -373,15 +371,12 @@ open class WalletViewModel(
 
 
     fun deleteWallet(onDeleteFinished: () -> Unit) {
-        viewModelScope.launch {
-            withContext(Dispatchers.IO) {
-                walletManager.deleteWallet(localWallet!!) {
-
-                    withContext(Dispatchers.Main) {
-                        onDeleteFinished()
-                    }
-                }
-            }
+        CoroutineScope(Dispatchers.IO).launch {
+          walletManager.deleteWallet(localWallet!!) {
+              withContext(Dispatchers.Main) {
+                  onDeleteFinished()
+              }
+          }
         }
     }
 

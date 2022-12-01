@@ -114,7 +114,7 @@ class TransactionDetailsFragment : PinProtectedFragment<FragmentTransactionDetai
 
                     binding.transactionId.onClick {
                         requireContext().copyToClipboard(transaction.transactionHash, "transactionId")
-                        styledSnackBar(requireView(), com.intuisoft.plaid.common.util.Constants.Strings.COPIED_TO_CLIPBOARD, true)
+                        styledSnackBar(requireView(), Constants.Strings.COPIED_TO_CLIPBOARD, true)
                     }
 
                     when(transaction.blockHeight) {
@@ -144,8 +144,8 @@ class TransactionDetailsFragment : PinProtectedFragment<FragmentTransactionDetai
                             R.string.transaction_details_share_text,
                             SimpleCoinNumberFormat.format(localStoreRepository, transaction.amount),
                             if(transaction.fee != null) SimpleCoinNumberFormat.format(localStoreRepository, transaction.fee!!) else "N/A",
-                            if(viewModel.getWalletNetwork() == BitcoinKit.NetworkType.TestNet) com.intuisoft.plaid.common.util.Constants.Strings.BLOCK_CYPHER_TX_URL + transaction.transactionHash
-                            else com.intuisoft.plaid.common.util.Constants.Strings.BLOCK_CYPHER_TX_URL + transaction.transactionHash
+                            if(viewModel.getWalletNetwork() == BitcoinKit.NetworkType.TestNet) Constants.Strings.BLOCK_CYPHER_TX_URL + transaction.transactionHash
+                            else Constants.Strings.BLOCK_CYPHER_TX_URL + transaction.transactionHash
                         )
                         val subject = getString(R.string.transaction_details_share_tag)
                         requireActivity().shareText(subject, text)

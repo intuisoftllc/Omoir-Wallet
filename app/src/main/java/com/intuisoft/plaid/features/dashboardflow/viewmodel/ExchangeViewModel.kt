@@ -8,18 +8,20 @@ import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.SingleLiveData
 import com.intuisoft.plaid.androidwrappers.SwapPairItemView
 import com.intuisoft.plaid.androidwrappers.WalletViewModel
-import com.intuisoft.plaid.common.local.db.ExchangeInfoData
 import com.intuisoft.plaid.common.model.ExchangeInfoDataModel
+import com.intuisoft.plaid.common.network.blockchair.response.SupportedCurrencyModel
 import com.intuisoft.plaid.common.repositories.ApiRepository
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.common.util.Constants
+import com.intuisoft.plaid.common.util.Constants.Strings.BTC_TICKER
+import com.intuisoft.plaid.common.util.SimpleCoinNumberFormat
 import com.intuisoft.plaid.util.NetworkUtil
 import com.intuisoft.plaid.walletmanager.AbstractWalletManager
 import kotlinx.coroutines.*
-import java.time.Instant
+import java.util.*
 
 
-class SwapViewModel(
+class ExchangeViewModel(
     application: Application,
     private val apiRepository: ApiRepository,
     private val localStoreRepository: LocalStoreRepository,
@@ -83,19 +85,60 @@ class SwapViewModel(
     private var bitcoinAmountLimitErrors = 0
     private var maxSwapErrors = 0
     private var ignoreNoNetwork = false
+    private var searchValue = ""
 
-        /*
-        * Todo
-        * finish swap screen
-        * add "loading..." functionality to screen show in place of min,max
-         */
     fun setFixed(fixed: Boolean) {
         this.fixed = fixed
         setFixedFloatingRange()
     }
 
+    fun updateSearchValue(search: String, onResult: (Pair<List<SupportedCurrencyModel>, List<SupportedCurrencyModel>>) -> Unit) {
+        searchValue = search.trim()
+        performSearch(onResult)
+    }
+
+    private fun performSearch(onResult: (Pair<List<SupportedCurrencyModel>, List<SupportedCurrencyModel>>) -> Unit) {
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                val exchangedCurrencies = localStoreRepository.getAllExchanges(getWalletId())
+                    .takeLast(20).map {
+                        if (it.fromShort.lowercase() == BTC_TICKER)
+                            it.toShort
+                        else it.fromShort
+                    }
+                val timesUsed = mutableListOf<Pair<String, Int>>()
+
+                for (item in exchangedCurrencies.distinct()) {
+                    timesUsed.add(item to Collections.frequency(exchangedCurrencies, item))
+                }
+
+                val supportedCurrencies = apiRepository.getSupportedCurrencies(fixed)
+                val sorted = timesUsed.sortedByDescending { it.second }.take(3)
+                    .filter { frequent ->
+                        supportedCurrencies.find { it.ticker == frequent.first.lowercase() } != null
+                    }.map { frequent ->
+                        supportedCurrencies.find { frequent.first.lowercase() == it.ticker }!!
+                    }
+
+                if (searchValue.isBlank()) {
+                    withContext(Dispatchers.Main) {
+                        onResult(sorted to supportedCurrencies)
+                    }
+                } else {
+                    val filtered = supportedCurrencies.filter {
+                        it.ticker.contains(searchValue) || it.name.contains(searchValue)
+                    }
+
+                    withContext(Dispatchers.Main) {
+                        onResult(sorted to filtered)
+                    }
+                }
+            }
+        }
+    }
+
     fun validateSendAmount(sending: Double?) : Boolean {
-        viewModelScope.launch{
+        viewModelScope.launch {
             withContext(Dispatchers.IO) {
                 updateWholeCoinConversion(
                     sendTicker,
@@ -182,8 +225,8 @@ class SwapViewModel(
                     else getApplication<PlaidApp>().getString(R.string.swap_auto_generated_recipient_address, refundAddress),
                 memo = getMemo(),
                 exchangeType = if(fixed) getApplication<PlaidApp>().getString(R.string.swap_type_fixed) else getApplication<PlaidApp>().getString(R.string.swap_type_floating),
-                amountSent = "$sendAmount $sendTicker",
-                amountReceived = "~$receiveAmount $receiveTicker"
+                amountSent = "${SimpleCoinNumberFormat.format(sendAmount)} $sendTicker",
+                amountReceived = "~${if(receiveAmount == 0.0) " ?" else SimpleCoinNumberFormat.format(receiveAmount)} $receiveTicker"
             )
         )
     }
@@ -220,6 +263,11 @@ class SwapViewModel(
     fun setInitialValues() {
         if(NetworkUtil.hasInternet(getApplication<PlaidApp>())) {
             this.fixed = true
+            sendAmount = 0.0
+            receiveAmount = 0.0
+            min = 0.0
+            max = null
+            wholeCoinConversion = 0.0
             clearAddresses()
             _showContent.postValue(true)
             _confirmButtonEnabled.postValue(false)
@@ -229,13 +277,22 @@ class SwapViewModel(
         }
     }
 
+    fun setSendCurrency(sender: String) {
+        modifySendReceive(sender, receiveTicker)
+    }
+
+    fun setReceiveCurrency(recipient: String) {
+        modifySendReceive(sendTicker, recipient)
+    }
+
     private fun modifySendReceive(from: String, to: String) {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
                 _screenFunctionsEnabled.postValue(false)
-                setSendCurrency(from).join()
-                setReceiveCurrency(to).join()
+                setSendCurrencyInternal(from).join()
+                setReceiveCurrencyInternal(to).join()
                 setFixedFloatingRange().join()
+                wholeCoinConversion = 0.0
                 updateWholeCoinConversion(from, to)
                 _screenFunctionsEnabled.postValue(true)
             }
@@ -243,7 +300,8 @@ class SwapViewModel(
     }
 
     private suspend fun updateWholeCoinConversion(from: String, to: String) {
-        wholeCoinConversion =  apiRepository.getWholeCoinConversion(from, to, fixed)
+        if(wholeCoinConversion == 0.0)
+            wholeCoinConversion =  apiRepository.getConversion(from, to, fixed)
     }
 
     private fun onBitcoinAmountLimitError() {
@@ -314,7 +372,7 @@ class SwapViewModel(
         }
     }
 
-    private fun setSendCurrency(ticker: String): Job {
+    private fun setSendCurrencyInternal(ticker: String): Job {
         sendTicker = ticker
 
         return viewModelScope.launch {
@@ -350,7 +408,7 @@ class SwapViewModel(
         }
     }
 
-    private fun setReceiveCurrency(ticker: String) : Job {
+    private fun setReceiveCurrencyInternal(ticker: String) : Job {
         receiveTicker = ticker
 
         return viewModelScope.launch {

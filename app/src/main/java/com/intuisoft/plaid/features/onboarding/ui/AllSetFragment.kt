@@ -9,16 +9,19 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.navOptions
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.*
+import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.databinding.FragmentOnboardingAllSetBinding
 import com.intuisoft.plaid.features.onboarding.viewmodel.OnboardingViewModel
 import com.intuisoft.plaid.features.pin.ui.PinProtectedFragment
 import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.util.fragmentconfig.AllSetData
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 
 class AllSetFragment : PinProtectedFragment<FragmentOnboardingAllSetBinding>() {
     private val viewModel: OnboardingViewModel by sharedViewModel()
+    private val localStoreRepository: LocalStoreRepository by inject()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -50,9 +53,9 @@ class AllSetFragment : PinProtectedFragment<FragmentOnboardingAllSetBinding>() {
                 binding.negativeButton.setButtonText(data.negativeText)
 
                 binding.positiveButton.onClick {
-                    val bundle = bundleOf(com.intuisoft.plaid.common.util.Constants.Navigation.WALLET_UUID_BUNDLE_ID to data.walletUUID)
+                    val bundle = bundleOf(Constants.Navigation.WALLET_UUID_BUNDLE_ID to data.walletUUID)
 
-                    findNavController().popBackStack(R.id.homescreenFragment, false)
+                    findNavController().popBackStack(if(localStoreRepository.isProEnabled()) R.id.proHomescreenFragment else R.id.homescreenFragment, false)
                     navigate(
                         data.positiveDestination,
                         bundle,
@@ -66,9 +69,9 @@ class AllSetFragment : PinProtectedFragment<FragmentOnboardingAllSetBinding>() {
                 }
 
                 binding.negativeButton.onClick {
-                    val bundle = bundleOf(com.intuisoft.plaid.common.util.Constants.Navigation.WALLET_UUID_BUNDLE_ID to data.walletUUID)
+                    val bundle = bundleOf(Constants.Navigation.WALLET_UUID_BUNDLE_ID to data.walletUUID)
 
-                    findNavController().popBackStack(R.id.homescreenFragment, false)
+                    findNavController().popBackStack(if(localStoreRepository.isProEnabled()) R.id.proHomescreenFragment else R.id.homescreenFragment, false)
                     navigate(
                         data.negativeDestination,
                         bundle,

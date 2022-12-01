@@ -44,7 +44,7 @@ class WalletSettingsFragment : PinProtectedFragment<FragmentWalletSettingsBindin
         _binding = FragmentWalletSettingsBinding.inflate(inflater, container, false)
         setupConfiguration(viewModel, listOf())
 
-        viewModel.fromSettings = requireArguments().getBoolean(com.intuisoft.plaid.common.util.Constants.Navigation.FROM_SETTINGS)
+        viewModel.fromSettings = requireArguments().getBoolean(Constants.Navigation.FROM_SETTINGS)
         return binding.root
     }
 
@@ -94,7 +94,7 @@ class WalletSettingsFragment : PinProtectedFragment<FragmentWalletSettingsBindin
 
         binding.seedPhrase.onClick {
             var bundle = bundleOf(
-                com.intuisoft.plaid.common.util.Constants.Navigation.FRAGMENT_CONFIG to FragmentConfiguration(
+                Constants.Navigation.FRAGMENT_CONFIG to FragmentConfiguration(
                     actionBarTitle = R.string.seed_phrase_basic_fragment_label,
                     actionBarSubtitle = 0,
                     actionBarVariant = TopBarView.CENTER_ALIGN,
@@ -120,7 +120,7 @@ class WalletSettingsFragment : PinProtectedFragment<FragmentWalletSettingsBindin
 
         binding.exportWallet.onClick {
             var bundle = bundleOf(
-                com.intuisoft.plaid.common.util.Constants.Navigation.FRAGMENT_CONFIG to FragmentConfiguration(
+                Constants.Navigation.FRAGMENT_CONFIG to FragmentConfiguration(
                     actionBarTitle = R.string.wallet_export_fragment_label,
                     actionBarSubtitle = 0,
                     actionBarVariant = TopBarView.CENTER_ALIGN,
@@ -167,8 +167,8 @@ class WalletSettingsFragment : PinProtectedFragment<FragmentWalletSettingsBindin
                 onPositive = {
                     if(viewModel.isFingerprintEnabled()) {
                         validateFingerprint(
-                            title = com.intuisoft.plaid.common.util.Constants.Strings.SCAN_TO_ERASE_DATA,
-                            subTitle = com.intuisoft.plaid.common.util.Constants.Strings.USE_BIOMETRIC_REASON_5,
+                            title = Constants.Strings.SCAN_TO_ERASE_DATA,
+                            subTitle = Constants.Strings.USE_BIOMETRIC_REASON_5,
                             onSuccess = {
                                 wipeData()
                             }

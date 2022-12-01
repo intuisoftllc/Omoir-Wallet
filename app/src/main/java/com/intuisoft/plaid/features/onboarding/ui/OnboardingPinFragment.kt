@@ -63,12 +63,12 @@ class OnboardingPinFragment : BindingFragment<FragmentOnboardingPinBinding>() {
             if(it) {
                 findNavController().navigate(
                     OnboardingPinFragmentDirections.actionOnboardingPinSetupFragmentToFingerprintSetupFragment(),
-                    com.intuisoft.plaid.common.util.Constants.Navigation.ANIMATED_ENTER_EXIT_RIGHT_NAV_OPTION
+                    Constants.Navigation.ANIMATED_ENTER_EXIT_RIGHT_NAV_OPTION
                 )
             } else {
                 findNavController().navigate(
                     OnboardingPinFragmentDirections.actionOnboardingPinSetupFragmentToAllSetFragment(),
-                    com.intuisoft.plaid.common.util.Constants.Navigation.ANIMATED_ENTER_EXIT_RIGHT_NAV_OPTION
+                    Constants.Navigation.ANIMATED_ENTER_EXIT_RIGHT_NAV_OPTION
                 )
             }
         })
@@ -120,7 +120,7 @@ class OnboardingPinFragment : BindingFragment<FragmentOnboardingPinBinding>() {
             onEnroll = {
                 findNavController().navigate(
                     OnboardingPinFragmentDirections.actionOnboardingPinSetupFragmentToFingerprintSetupFragment(),
-                    com.intuisoft.plaid.common.util.Constants.Navigation.ANIMATED_ENTER_EXIT_RIGHT_NAV_OPTION
+                    Constants.Navigation.ANIMATED_ENTER_EXIT_RIGHT_NAV_OPTION
                 )
             }
         )

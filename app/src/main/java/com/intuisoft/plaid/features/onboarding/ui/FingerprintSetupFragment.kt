@@ -109,7 +109,7 @@ class FingerprintSetupFragment : BindingFragment<FragmentOnboardingFingerprintRe
         localStoreRepository.setOnboardingComplete(true)
 
         var bundle = bundleOf(
-            com.intuisoft.plaid.common.util.Constants.Navigation.FRAGMENT_CONFIG to FragmentConfiguration(
+            Constants.Navigation.FRAGMENT_CONFIG to FragmentConfiguration(
                 actionBarTitle = 0,
                 actionBarSubtitle = 0,
                 actionBarVariant = 0,
@@ -122,7 +122,7 @@ class FingerprintSetupFragment : BindingFragment<FragmentOnboardingFingerprintRe
                     positiveText = getString(R.string.create_new_wallet),
                     negativeText = getString(R.string.goto_homescreen),
                     positiveDestination = R.id.createWalletFragment,
-                    negativeDestination = R.id.homescreenFragment,
+                    negativeDestination = if(localStoreRepository.isProEnabled()) R.id.proHomescreenFragment else R.id.homescreenFragment,
                     walletUUID = ""
                 )
             )

@@ -43,7 +43,7 @@ class PublicKeyImportFragment : PinProtectedFragment<FragmentPublicKeyImportBind
 
         viewModel.onConfirm.observe(viewLifecycleOwner, Observer {
             var bundle = bundleOf(
-                com.intuisoft.plaid.common.util.Constants.Navigation.FRAGMENT_CONFIG to FragmentConfiguration(
+                Constants.Navigation.FRAGMENT_CONFIG to FragmentConfiguration(
                     configurationType = FragmentConfigurationType.CONFIGURATION_WALLET_DATA,
                     configData = viewModel.getConfiguration()
                 )
@@ -52,7 +52,7 @@ class PublicKeyImportFragment : PinProtectedFragment<FragmentPublicKeyImportBind
             navigate(
                 R.id.nameWalletFragment,
                 bundle,
-                com.intuisoft.plaid.common.util.Constants.Navigation.ANIMATED_ENTER_EXIT_RIGHT_NAV_OPTION
+                Constants.Navigation.ANIMATED_ENTER_EXIT_RIGHT_NAV_OPTION
             )
         })
 

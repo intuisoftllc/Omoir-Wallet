@@ -3,7 +3,7 @@ package com.intuisoft.plaid.common.local.db
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.intuisoft.plaid.common.network.nownodes.response.SupportedCurrencyModel
+import com.intuisoft.plaid.common.network.blockchair.response.SupportedCurrencyModel
 
 @Entity(tableName = "supported_currency")
 data class SupportedCurrency(

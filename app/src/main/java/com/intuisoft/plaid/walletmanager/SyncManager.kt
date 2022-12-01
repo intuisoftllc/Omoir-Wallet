@@ -44,13 +44,13 @@ class SyncManager(
 
     private fun runInBackground(run: suspend () -> Unit) =
         @OptIn(DelicateCoroutinesApi::class)
-        GlobalScope.launch {
+        CoroutineScope(Dispatchers.IO).launch {
             run()
         }
 
     private fun lazyRunInBackground(run: suspend () -> Unit) =
         @OptIn(DelicateCoroutinesApi::class)
-        GlobalScope.launch(start = CoroutineStart.LAZY) {
+        CoroutineScope(Dispatchers.IO).launch(start = CoroutineStart.LAZY) {
             run()
         }
 

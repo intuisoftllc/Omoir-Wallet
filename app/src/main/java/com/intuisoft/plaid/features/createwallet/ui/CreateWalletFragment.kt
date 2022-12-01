@@ -7,6 +7,8 @@ import android.view.ViewGroup
 import android.widget.NumberPicker
 import android.widget.TextView
 import androidx.core.os.bundleOf
+import androidx.core.view.isVisible
+import androidx.lifecycle.Observer
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.intuisoft.plaid.R
@@ -50,7 +52,7 @@ class CreateWalletFragment : PinProtectedFragment<FragmentCreateImportWalletBind
 
         binding.importWallet.onClick {
             var bundle = bundleOf(
-                com.intuisoft.plaid.common.util.Constants.Navigation.FRAGMENT_CONFIG to FragmentConfiguration(
+                Constants.Navigation.FRAGMENT_CONFIG to FragmentConfiguration(
                     configurationType = FragmentConfigurationType.CONFIGURATION_WALLET_DATA,
                     configData = viewModel.getConfiguration()
                 )
@@ -59,13 +61,13 @@ class CreateWalletFragment : PinProtectedFragment<FragmentCreateImportWalletBind
             navigate(
                 R.id.importWalletFragment,
                 bundle,
-                com.intuisoft.plaid.common.util.Constants.Navigation.ANIMATED_ENTER_EXIT_RIGHT_NAV_OPTION
+                Constants.Navigation.ANIMATED_ENTER_EXIT_RIGHT_NAV_OPTION
             )
         }
 
         binding.createNewWallet.onClick {
             var bundle = bundleOf(
-                com.intuisoft.plaid.common.util.Constants.Navigation.FRAGMENT_CONFIG to FragmentConfiguration(
+                Constants.Navigation.FRAGMENT_CONFIG to FragmentConfiguration(
                     configurationType = FragmentConfigurationType.CONFIGURATION_WALLET_DATA,
                     configData = viewModel.getConfiguration()
                 )
@@ -74,7 +76,7 @@ class CreateWalletFragment : PinProtectedFragment<FragmentCreateImportWalletBind
             navigate(
                 R.id.backupWalletFragment,
                 bundle,
-                com.intuisoft.plaid.common.util.Constants.Navigation.ANIMATED_ENTER_EXIT_RIGHT_NAV_OPTION
+                Constants.Navigation.ANIMATED_ENTER_EXIT_RIGHT_NAV_OPTION
             )
         }
 

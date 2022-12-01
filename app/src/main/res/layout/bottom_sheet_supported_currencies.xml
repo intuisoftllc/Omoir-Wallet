@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/container"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/search_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginBottom="@dimen/horizontal_padding_size"
+        app:cardCornerRadius="24dp"
+        android:layout_marginTop="@dimen/margin_26"
+        android:layout_marginHorizontal="@dimen/margin_20"
+        app:layout_constraintHorizontal_bias="0">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/margin_38"
+            android:orientation="horizontal"
+            android:paddingHorizontal="@dimen/horizontal_padding_size">
+
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:src="@drawable/ic_search"
+                android:layout_gravity="center_vertical"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+            <EditText
+                android:id="@+id/search"
+                style="@style/TextStyle.Medium.14"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:layout_gravity="center_vertical"
+                android:layout_marginHorizontal="@dimen/margin_4"
+                android:paddingVertical="@dimen/margin_4"
+                android:hint="@string/search_currencies_hint"
+                android:maxLength="25"
+                android:maxLines="1"
+                android:layout_weight="5"
+                android:inputType="text"
+                android:textColorHint="@color/color_disabled"
+                android:textSize="14sp"
+                tools:ignore="TextContrastCheck,TouchTargetSizeCheck" />
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/searchResults"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/search_container"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        tools:itemCount="0"
+        android:layout_marginHorizontal="@dimen/margin_20"
+        app:layout_constraintVertical_bias="0"
+        android:layout_marginTop="@dimen/parent_top_margin_med"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:listitem="@layout/list_item_supported_currency_details" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

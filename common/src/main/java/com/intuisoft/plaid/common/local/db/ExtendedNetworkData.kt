@@ -12,19 +12,23 @@ data class ExtendedNetworkData(
     @ColumnInfo(name = "height") var height: Int,
     @ColumnInfo(name = "difficulty") var difficulty: Long,
     @ColumnInfo(name = "blockchain_size") var blockchainSize: Long,
-    @ColumnInfo(name = "avg_tx_size") var avgTxSize: Int,
-    @ColumnInfo(name = "avg_fee_rate") var avgFeeRate: Int,
     @ColumnInfo(name = "unconfirmed_txs") var unconfirmedTxs: Int,
-    @ColumnInfo(name = "avg_conf_time") var avgConfTime: Double
+    @ColumnInfo(name = "avg_conf_time") var avgConfTime: Double,
+    @ColumnInfo(name = "nodes_on_network") var nodesOnNetwork: Int,
+    @ColumnInfo(name = "mem_pool_size") var memPoolSize: Long,
+    @ColumnInfo(name = "tx_per_second") var txPerSecond: Int,
+    @ColumnInfo(name = "addresses_with_balance") var addressesWithBalance: Long
 ) {
     fun from() =
         ExtendedNetworkDataModel(
             height = height,
             difficulty = difficulty,
             blockchainSize = blockchainSize,
-            avgTxSize = avgTxSize,
-            avgFeeRate = avgFeeRate,
+            nodesOnNetwork = nodesOnNetwork,
+            memPoolSize = memPoolSize,
+            txPerSecond = txPerSecond,
             unconfirmedTxs = unconfirmedTxs,
+            addressesWithBalance = addressesWithBalance,
             avgConfTime = avgConfTime
         )
 
@@ -36,9 +40,11 @@ data class ExtendedNetworkData(
                 height = extendedData.height,
                 difficulty = extendedData.difficulty,
                 blockchainSize = extendedData.blockchainSize,
-                avgTxSize = extendedData.avgTxSize,
-                avgFeeRate = extendedData.avgFeeRate,
+                memPoolSize = extendedData.memPoolSize,
+                txPerSecond = extendedData.txPerSecond,
                 unconfirmedTxs = extendedData.unconfirmedTxs,
+                addressesWithBalance = extendedData.addressesWithBalance,
+                nodesOnNetwork = extendedData.nodesOnNetwork,
                 avgConfTime = extendedData.avgConfTime
             )
     }

@@ -1,15 +1,17 @@
 package com.intuisoft.plaid.common.local.memorycache
 
+import com.intuisoft.plaid.common.model.ChartIntervalType
 import com.intuisoft.plaid.common.model.CurrencyRangeLimitModel
 import com.intuisoft.plaid.common.model.WholeCoinConversionModel
-import com.intuisoft.plaid.common.network.nownodes.response.CurrencyRangeLimitResponse
 
 class MemoryCache(
 
 ) {
     private val rangeLimits: HashMap<String, Pair<Long, CurrencyRangeLimitModel>> = hashMapOf()
-    private var wholeCoinConversionFixed: Pair<WholeCoinConversionModel, Long>? = null
-    private var wholeCoinConversionFloating: Pair<WholeCoinConversionModel, Long>? = null
+    private val chartPriceUpdateTimes: HashMap<Int, Long> = hashMapOf()
+    private var wholeCoinConversionFixedCache: MutableList<Pair<WholeCoinConversionModel, Long>> = mutableListOf()
+    private var wholeCoinConversionFloatingCache: MutableList<Pair<WholeCoinConversionModel, Long>> = mutableListOf()
+    private val exchangeUpdateTimes: HashMap<String, Long> = hashMapOf()
 
     fun getCurrencySwapRangeLimit(from: String, to: String, fixed: Boolean): CurrencyRangeLimitModel? {
         return rangeLimits.get(from + to + if(fixed) 1 else 0)?.second
@@ -23,38 +25,81 @@ class MemoryCache(
         rangeLimits[from + to + if(fixed) 1 else 0] = currentTime to limit
     }
 
-    fun setWholeCoinConversion(from: String, to: String, value: Double, fixed: Boolean, currentTime: Long) {
+    fun setChartPriceUpdateTime(type: ChartIntervalType, time: Long) {
+        chartPriceUpdateTimes.put(type.ordinal, time)
+    }
+
+    fun getChartPriceUpdateTimes(type: ChartIntervalType) : Long {
+        return chartPriceUpdateTimes.get(type.ordinal) ?: 0
+    }
+
+    fun setWholeCoinConversion(coin: String, value: Double, fixed: Boolean, currentTime: Long) {
         if(fixed) {
-            wholeCoinConversionFixed = WholeCoinConversionModel(from, to, value) to currentTime
+            val cached = getWholeCoinConversion(coin, wholeCoinConversionFixedCache)
+            if(cached != null) {
+                wholeCoinConversionFixedCache.removeAt(cached.first)
+            }
+
+            wholeCoinConversionFixedCache.add(WholeCoinConversionModel(coin, value) to currentTime)
         } else {
-            wholeCoinConversionFloating = WholeCoinConversionModel(from, to, value) to currentTime
+            val cached = getWholeCoinConversion(coin, wholeCoinConversionFloatingCache)
+            if(cached != null) {
+                wholeCoinConversionFloatingCache.removeAt(cached.first)
+            }
+
+            wholeCoinConversionFloatingCache.add(WholeCoinConversionModel(coin, value) to currentTime)
         }
     }
 
-    fun getWholeCoinConversion(from: String, to: String, fixed: Boolean): Double? {
-        if(fixed) {
-            if(from == wholeCoinConversionFixed?.first?.from && to == wholeCoinConversionFixed?.first?.to)
-                return wholeCoinConversionFixed?.first?.conversion
-            else if(from == wholeCoinConversionFixed?.first?.to && to == wholeCoinConversionFixed?.first?.from)
-                return 1.0 / (wholeCoinConversionFixed?.first?.conversion ?: 0.0)
-            else {
-                wholeCoinConversionFixed = null
-            }
-        } else {
-            if(from == wholeCoinConversionFloating?.first?.from && to == wholeCoinConversionFloating?.first?.to)
-                return wholeCoinConversionFloating?.first?.conversion
-            else if(from == wholeCoinConversionFloating?.first?.to && to == wholeCoinConversionFloating?.first?.from)
-                return 1.0 / (wholeCoinConversionFloating?.first?.conversion ?: 0.0)
-            else {
-                wholeCoinConversionFloating = null
-            }
+    private fun getWholeCoinConversion(coin: String, cache: MutableList<Pair<WholeCoinConversionModel, Long>>): Pair<Int, Pair<WholeCoinConversionModel, Long>>? {
+        cache.forEachIndexed { index, pair ->
+            if(pair.first.altCoin == coin)
+                return index to pair
         }
 
         return null
     }
 
-    fun getLastWholeCoinConversionUpdateTime(fixed: Boolean): Long {
-        return if(fixed) wholeCoinConversionFixed?.second ?: 0
-        else wholeCoinConversionFloating?.second ?: 0
+    fun getWholeCoinConversion(coin: String, fromBTC: Boolean, fixed: Boolean): Double? {
+        if(fixed) {
+            val cached = getWholeCoinConversion(coin, wholeCoinConversionFixedCache)?.second
+            if(coin != cached?.first?.altCoin) return null
+            else if(fromBTC) return cached.first.conversion
+            else return 1.0 / (cached.first.conversion)
+        } else {
+            val cached = getWholeCoinConversion(coin, wholeCoinConversionFloatingCache)?.second
+            if(coin != cached?.first?.altCoin) return null
+            else if(fromBTC) return cached.first.conversion
+            else return 1.0 / (cached.first.conversion)
+        }
+    }
+
+    fun getLastWholeCoinConversionUpdateTime(coin: String, fixed: Boolean): Long {
+        return if(fixed) {
+            val cached = getWholeCoinConversion(coin, wholeCoinConversionFixedCache)?.second
+            cached?.second ?: 0
+        }
+        else {
+            val cached = getWholeCoinConversion(coin, wholeCoinConversionFloatingCache)?.second
+            cached?.second ?: 0
+        }
+    }
+
+    fun hasWholeCoinConversion(coin: String, fixed: Boolean): Boolean {
+        if(fixed) {
+            val cached = getWholeCoinConversion(coin, wholeCoinConversionFixedCache)?.second
+            return coin == cached?.first?.altCoin
+        } else {
+            val cached = getWholeCoinConversion(coin, wholeCoinConversionFloatingCache)?.second
+            return coin == cached?.first?.altCoin
+        }
+    }
+
+    fun getLastExchangeUpdateTime(id: String): Long {
+        return exchangeUpdateTimes.get(id) ?: 0
+    }
+
+    fun setLastExchangeUpdateTime(id: String, time: Long) {
+        exchangeUpdateTimes.put(id, time)
     }
 }

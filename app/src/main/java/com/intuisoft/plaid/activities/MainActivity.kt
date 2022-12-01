@@ -20,12 +20,12 @@ import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.*
 import com.intuisoft.plaid.common.model.DevicePerformanceLevel
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
+import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.databinding.ActivityMainBinding
 import com.intuisoft.plaid.features.splash.ui.SplashFragment
 import com.intuisoft.plaid.listeners.BarcodeResultListener
 import com.intuisoft.plaid.listeners.NetworkStateChangeListener
 import com.intuisoft.plaid.recievers.NetworkChangeReceiver
-import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.walletmanager.AbstractWalletManager
 import org.koin.android.ext.android.inject
 
@@ -39,12 +39,13 @@ class MainActivity : BindingActivity<ActivityMainBinding>(), ActionBarDelegate {
 
     companion object {
         private val TOP_LEVEL_DESTINATIONS = setOf(
-            R.id.homescreenFragment
+            R.id.homescreenFragment,
+            R.id.proHomescreenFragment
         )
 
         private val TOP_LEVEL_BOTTOM_BAR_DESTINATIONS = setOf(
             R.id.walletDashboardFragment,
-            R.id.swapFragment,
+            R.id.exchangeFragment,
             R.id.marketFragment
         )
 
@@ -161,7 +162,7 @@ class MainActivity : BindingActivity<ActivityMainBinding>(), ActionBarDelegate {
         binding.bottomBar.setupDestinations(
             R.id.walletDashboardFragment,
             0,
-            R.id.swapFragment,
+            R.id.exchangeFragment,
             R.id.marketFragment,
             0
         )

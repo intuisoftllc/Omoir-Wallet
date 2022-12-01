@@ -4,7 +4,6 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.intuisoft.plaid.common.model.TransactionMemoModel
-import com.intuisoft.plaid.common.network.nownodes.response.SupportedCurrencyModel
 
 @Entity(tableName = "transaction_memo")
 data class TransactionMemo(

@@ -5,6 +5,8 @@ import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.NetworkRequest
+import android.util.Log
+import io.horizontalsystems.bitcoincore.BitcoinCore
 import io.horizontalsystems.bitcoincore.core.IConnectionManager
 import io.horizontalsystems.bitcoincore.core.IConnectionManagerListener
 
@@ -27,10 +29,12 @@ class ConnectionManager(context: Context) : IConnectionManager {
         setInitialValues()
         try {
             connectivityManager.unregisterNetworkCallback(callback)
+            connectivityManager.registerNetworkCallback(NetworkRequest.Builder().build(), callback)
         } catch (e: Exception) {
             //was not registered, or already unregistered
         }
-        connectivityManager.registerNetworkCallback(NetworkRequest.Builder().build(), callback)
+        if(BitcoinCore.loggingEnabled)
+            Log.i(ConnectivityManager::class.java.simpleName, "Connections: ${connectivityManager.allNetworkInfo.size}")
     }
 
     override fun onEnterBackground() {

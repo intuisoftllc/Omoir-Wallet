@@ -35,6 +35,7 @@ import com.intuisoft.plaid.features.settings.viewmodel.AddressBookViewModel
 import com.intuisoft.plaid.listeners.BarcodeResultListener
 import com.intuisoft.plaid.common.model.FeeType
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
+import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.util.Plural
 import com.intuisoft.plaid.common.util.SimpleCoinNumberFormat
 import com.intuisoft.plaid.common.util.extensions.toArrayList
@@ -224,8 +225,8 @@ class WithdrawConfirmationFragment : PinProtectedFragment<FragmentWithdrawConfir
             broadcastTransaction.onClick {
                 if(viewModel.isFingerprintEnabled()) {
                     validateFingerprint(
-                        title = com.intuisoft.plaid.common.util.Constants.Strings.USE_BIOMETRIC_AUTH,
-                        subTitle = com.intuisoft.plaid.common.util.Constants.Strings.USE_BIOMETRIC_REASON_6,
+                        title = Constants.Strings.USE_BIOMETRIC_AUTH,
+                        subTitle = Constants.Strings.USE_BIOMETRIC_REASON_6,
                         onSuccess = {
                             if(viewModel.broadcast(transaction)) {
                                 bottomSheetDialog.dismiss()

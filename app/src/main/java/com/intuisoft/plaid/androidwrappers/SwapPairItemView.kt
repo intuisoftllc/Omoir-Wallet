@@ -38,6 +38,7 @@ class SwapPairItemView(context: Context, attrs: AttributeSet?) : LinearLayout(co
     private var symbolUrl: String = ""
     private var value: Double = 0.0
     private var tickerClickable: Boolean = true
+    private var tickerClicked: (() -> Unit)? = null
 
     companion object {
         // button text positions
@@ -109,6 +110,7 @@ class SwapPairItemView(context: Context, attrs: AttributeSet?) : LinearLayout(co
         setPairTitle(title)
         setTickerClickable(tickerClickable)
         onTextChanged?.let { setOnTextChangedListener(it) }
+        tickerClicked?.let { onTickerClicked(it) }
     }
 
     fun setTicker(name: String) {
@@ -142,10 +144,10 @@ class SwapPairItemView(context: Context, attrs: AttributeSet?) : LinearLayout(co
 
     fun setValue(value: Double) {
         this.value = value
-        var valueStr = SimpleCoinNumberFormat.formatCurrency(value) ?: ""
+        var valueStr = if(value == 0.0) " ?" else SimpleCoinNumberFormat.formatCrypto(value) ?: ""
 
-        if(valueStr.endsWith(".00"))
-            valueStr = valueStr.dropLast(3)
+        if(valueStr.endsWith(".0000000000000000"))
+            valueStr = valueStr.dropLast(17)
 
         show_value_tv?.text = "~$valueStr"
 
@@ -160,6 +162,7 @@ class SwapPairItemView(context: Context, attrs: AttributeSet?) : LinearLayout(co
     }
 
     fun onTickerClicked(onClick: () -> Unit) {
+        tickerClicked = onClick
         swap_pair_ticker_container?.setOnClickListener {
             onClick()
         }

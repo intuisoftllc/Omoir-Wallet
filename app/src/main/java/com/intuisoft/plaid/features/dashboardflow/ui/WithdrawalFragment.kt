@@ -217,7 +217,7 @@ class WithdrawalFragment : PinProtectedFragment<FragmentWithdrawBinding>(), Stat
     }
 
     override fun onWalletStateUpdated(wallet: LocalWalletModel) {
-        if(wallet.uuid == viewModel.getWalletId()) {
+        if(viewModel.getWallet() != null && wallet.uuid == viewModel.getWalletId()) {
             viewModel.showWalletDisplayUnit()
         }
     }

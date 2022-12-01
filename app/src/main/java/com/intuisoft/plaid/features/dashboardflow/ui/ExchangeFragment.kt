@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.EditText
 import android.widget.TextView
 import androidx.cardview.widget.CardView
@@ -12,27 +13,31 @@ import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
 import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.gson.Gson
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.*
 import com.intuisoft.plaid.common.model.ExchangeInfoDataModel
+import com.intuisoft.plaid.common.network.blockchair.response.SupportedCurrencyModel
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.common.util.Constants
-import com.intuisoft.plaid.features.pin.ui.PinProtectedFragment
 import com.intuisoft.plaid.common.util.extensions.containsNumbers
+import com.intuisoft.plaid.common.util.extensions.toArrayList
 import com.intuisoft.plaid.databinding.FragmentSwapBinding
-import com.intuisoft.plaid.features.dashboardflow.viewmodel.SwapViewModel
+import com.intuisoft.plaid.features.dashboardflow.viewmodel.ExchangeViewModel
+import com.intuisoft.plaid.features.homescreen.adapters.SupportedCurrenciesAdapter
+import com.intuisoft.plaid.features.pin.ui.PinProtectedFragment
 import com.intuisoft.plaid.util.NetworkUtil
 import com.intuisoft.plaid.util.fragmentconfig.ConfigSwapData
-import com.intuisoft.plaid.util.fragmentconfig.SendFundsData
 import io.horizontalsystems.bitcoinkit.BitcoinKit
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
-class SwapFragment : PinProtectedFragment<FragmentSwapBinding>() {
-    private val viewModel: SwapViewModel by viewModel()
+class ExchangeFragment : PinProtectedFragment<FragmentSwapBinding>() {
+    private val viewModel: ExchangeViewModel by viewModel()
     private val localStore: LocalStoreRepository by inject()
 
     override fun onCreateView(
@@ -127,6 +132,14 @@ class SwapFragment : PinProtectedFragment<FragmentSwapBinding>() {
 
         binding.floating.onClick {
             viewModel.setFixed(false)
+        }
+
+        binding.swapPairSend.onTickerClicked {
+            supportedCurrenciesDialog(true)
+        }
+
+        binding.swapPairReceive.onTickerClicked {
+            supportedCurrenciesDialog(false)
         }
 
         viewModel.screenFunctionsEnabled.observe(viewLifecycleOwner, Observer {
@@ -298,8 +311,41 @@ class SwapFragment : PinProtectedFragment<FragmentSwapBinding>() {
         bottomSheetDialog.show()
     }
 
+    fun supportedCurrenciesDialog(sending: Boolean) {
+        val bottomSheetDialog = BottomSheetDialog(requireContext())
+        bottomSheetDialog.setContentView(R.layout.bottom_sheet_supported_currencies)
+        val searchResults = bottomSheetDialog.findViewById<RecyclerView>(R.id.searchResults)!!
+        val search = bottomSheetDialog.findViewById<EditText>(R.id.search)!!
+
+        val adapter = SupportedCurrenciesAdapter(
+            onCurrencySelected = {
+                bottomSheetDialog.cancel()
+                binding.swapPairSend.setValue(0.0)
+                if(sending) {
+                    viewModel.setSendCurrency(it.ticker)
+                }
+                else viewModel.setReceiveCurrency(it.ticker)
+            }
+        )
+
+        val onResult: (Pair<List<SupportedCurrencyModel>, List<SupportedCurrencyModel>>) -> Unit = { (mostUsed, results) ->
+            adapter.addCurrencies(requireContext(), mostUsed.toArrayList(), results.toArrayList())
+        }
+
+        searchResults.adapter = adapter
+        viewModel.updateSearchValue("", onResult)
+
+        search.doOnTextChanged { text, start, before, count ->
+            viewModel.updateSearchValue(text?.toString() ?: "", onResult)
+        }
+
+        bottomSheetDialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
+        bottomSheetDialog.behavior.isFitToContents = false
+        bottomSheetDialog.show()
+    }
+
     private fun confirmExchange(
-        info: SwapViewModel.ExchangeInfoDisplay
+        info: ExchangeViewModel.ExchangeInfoDisplay
     ) {
         val bottomSheetDialog = BottomSheetDialog(requireContext())
         bottomSheetDialog.setContentView(R.layout.bottom_sheet_confirm_swap)
@@ -359,9 +405,12 @@ class SwapFragment : PinProtectedFragment<FragmentSwapBinding>() {
     }
 
     override fun onActionRight() {
-        if(viewModel.getWalletNetwork() != BitcoinKit.NetworkType.TestNet) {
-            // todo: impl
-        }
+
+        navigate(
+            R.id.exchangeHistoryFragment,
+            viewModel.getWalletId(),
+            Constants.Navigation.ANIMATED_ENTER_EXIT_RIGHT_NAV_OPTION
+        )
     }
 
     override fun actionBarSubtitle(): Int {
@@ -369,6 +418,6 @@ class SwapFragment : PinProtectedFragment<FragmentSwapBinding>() {
     }
 
     override fun navigationId(): Int {
-        return R.id.swapFragment
+        return R.id.exchangeFragment
     }
 }

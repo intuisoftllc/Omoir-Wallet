@@ -1,10 +1,9 @@
 package com.intuisoft.plaid.common.repositories
 
 import com.intuisoft.plaid.common.listeners.WipeDataListener
-import com.intuisoft.plaid.common.local.db.SupportedCurrency
 import com.intuisoft.plaid.common.local.db.listeners.DatabaseListener
 import com.intuisoft.plaid.common.model.*
-import com.intuisoft.plaid.common.network.nownodes.response.SupportedCurrencyModel
+import com.intuisoft.plaid.common.network.blockchair.response.SupportedCurrencyModel
 
 interface LocalStoreRepository {
 
@@ -90,10 +89,6 @@ interface LocalStoreRepository {
 
     fun getLastExtendedMarketDataUpdateTime(): Long
 
-    fun getLastTickerPriceChartDataUpdateTime(): Long
-
-    fun setLastTickerPriceChartDataUpdate(time: Long)
-
     fun updateVersionTappedCount()
 
     fun versionTapLimitReached(): Boolean
@@ -120,7 +115,7 @@ interface LocalStoreRepository {
 
     fun getBasicNetworkData(): BasicNetworkDataModel?
 
-    suspend fun setBasicNetworkData(circulatingSupply: Long, memPoolTxCount: Int)
+    suspend fun setBasicNetworkData(circulatingSupply: Long)
 
     fun getExtendedNetworkData(testnetWallet: Boolean): ExtendedNetworkDataModel?
 

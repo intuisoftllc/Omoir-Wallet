@@ -3,7 +3,7 @@ package com.intuisoft.plaid.common.repositories.db
 import com.intuisoft.plaid.common.local.db.*
 import com.intuisoft.plaid.common.local.db.listeners.DatabaseListener
 import com.intuisoft.plaid.common.model.*
-import com.intuisoft.plaid.common.network.nownodes.response.SupportedCurrencyModel
+import com.intuisoft.plaid.common.network.blockchair.response.SupportedCurrencyModel
 
 class DatabaseRepository_Impl(
     private val database: PlaidDatabase,
@@ -85,10 +85,9 @@ class DatabaseRepository_Impl(
     }
 
     override suspend fun setBasicNetworkData(
-        circulatingSupply: Long,
-        memPoolTx: Int
+        circulatingSupply: Long
     ) {
-        baseNetworkDataDao.insert(BasicNetworkData.consume(circulatingSupply, memPoolTx))
+        baseNetworkDataDao.insert(BasicNetworkData.consume(circulatingSupply))
         database.onUpdate()
     }
 

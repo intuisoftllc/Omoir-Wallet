@@ -1,7 +1,7 @@
 package com.intuisoft.plaid.common.repositories
 
 import com.intuisoft.plaid.common.model.*
-import com.intuisoft.plaid.common.network.nownodes.response.SupportedCurrencyModel
+import com.intuisoft.plaid.common.network.blockchair.response.SupportedCurrencyModel
 
 interface ApiRepository {
 
@@ -25,7 +25,12 @@ interface ApiRepository {
         amount: Double, walletId: String
     ): ExchangeInfoDataModel?
 
-    suspend fun getWholeCoinConversion(from: String, to: String, fixed: Boolean): Double
+    suspend fun updateExchange(
+        id: String,
+        walletId: String
+    ): ExchangeInfoDataModel?
+
+    suspend fun getConversion(from: String, to: String, fixed: Boolean): Double
 
     suspend fun refreshLocalCache()
 }

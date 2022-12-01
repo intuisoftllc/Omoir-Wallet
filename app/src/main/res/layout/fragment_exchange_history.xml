@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/filter_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginBottom="@dimen/horizontal_padding_size"
+        app:cardCornerRadius="24dp"
+        android:layout_marginTop="@dimen/margin_26"
+        android:layout_marginHorizontal="@dimen/margin_20"
+        app:layout_constraintHorizontal_bias="0">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="@dimen/margin_3">
+
+                <com.intuisoft.plaid.androidwrappers.RoundedButtonView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    app:text_position="center"
+                    app:btn_text="@string/exchange_history_filter_1"
+                    app:button_style="pill"
+                    android:id="@+id/all"
+                    android:layout_weight="1"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"/>
+
+                <com.intuisoft.plaid.androidwrappers.RoundedButtonView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    app:text_position="center"
+                    app:btn_text="@string/exchange_history_filter_2"
+                    app:button_style="transparent"
+                    android:id="@+id/finished"
+                    android:layout_weight="1"
+                    android:layout_marginHorizontal="@dimen/margin_10"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"/>
+
+                <com.intuisoft.plaid.androidwrappers.RoundedButtonView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    app:text_position="center"
+                    app:btn_text="@string/exchange_history_filter_3"
+                    app:button_style="transparent"
+                    android:id="@+id/failed"
+                    android:layout_weight="1"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"/>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_container"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:enabled="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/filter_container"
+        app:layout_constraintVertical_bias="0.0">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/exchanges"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    tools:itemCount="5"
+                    android:layout_marginHorizontal="@dimen/margin_20"
+                    app:layout_constraintVertical_bias="0"
+                    android:layout_marginTop="@dimen/parent_top_margin_small"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    tools:listitem="@layout/list_item_basic_exchange_details" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

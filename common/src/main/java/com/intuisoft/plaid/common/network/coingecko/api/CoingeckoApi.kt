@@ -1,8 +1,7 @@
-package com.intuisoft.plaid.common.network.nownodes.api
+package com.intuisoft.plaid.common.network.blockchair.api
 
-import com.intuisoft.plaid.common.network.nownodes.response.BasicPriceDataResponse
-import com.intuisoft.plaid.common.network.nownodes.response.BlockchainStatsResponse
-import com.intuisoft.plaid.common.network.nownodes.response.ChartDataResponse
+import com.intuisoft.plaid.common.network.blockchair.response.BasicPriceDataResponse
+import com.intuisoft.plaid.common.network.blockchair.response.ChartDataResponse
 import retrofit2.Call
 import retrofit2.http.*
 
