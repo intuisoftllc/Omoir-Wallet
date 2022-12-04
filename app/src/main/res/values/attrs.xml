@@ -115,4 +115,74 @@
         <attr name="time_period_text" format="string"/>
         <attr name="is_selected" format="boolean"/>
     </declare-styleable>
+
+    <declare-styleable name="ChartProgressBar">
+        <attr name="hdMaxValue" format="float"/>
+        <attr name="hdBarWidth" format="dimension"/>
+        <attr name="hdBarHeight" format="dimension"/>
+        <attr name="hdEmptyColor" format="color"/>
+        <attr name="hdProgressColor" format="color"/>
+        <attr name="hdProgressDisableColor" format="color"/>
+        <attr name="hdProgressClickColor" format="color"/>
+        <attr name="hdBarRadius" format="dimension"/>
+        <attr name="hdPinTextColor" format="color"/>
+        <attr name="hdPinBackgroundColor" format="color"/>
+        <attr name="hdPinPaddingTop" format="dimension"/>
+        <attr name="hdPinPaddingBottom" format="dimension"/>
+        <attr name="hdPinPaddingEnd" format="dimension"/>
+        <attr name="hdPinPaddingStart" format="dimension"/>
+        <attr name="hdBarCanBeClick" format="boolean"/>
+        <attr name="hdPinsVisible" format="boolean"/>
+        <attr name="hdBarTitleColor" format="color"/>
+        <attr name="hdBarTitleMarginTop" format="dimension"/>
+        <attr name="hdBarTitleTxtSize" format="dimension"/>
+        <attr name="hdPinTxtSize" format="dimension"/>
+        <attr name="hdPinMarginTop" format="dimension"/>
+        <attr name="hdPinMarginBottom" format="dimension"/>
+        <attr name="hdPinMarginEnd" format="dimension"/>
+        <attr name="hdPinMarginStart" format="dimension"/>
+        <attr name="hdPinDrawable" format="integer"/>
+        <attr name="hdBarTitleSelectedColor" format="color"/>
+        <attr name="hdBarCanBeToggle" format="boolean"/>
+    </declare-styleable>
+
+    <declare-styleable name="BarChartAttrs">
+        <attr format="dimension" name="chart_spacing"/>
+        <attr format="color" name="chart_barsColor"/>
+        <attr format="color" name="chart_barSelectedColor"/>
+        <attr format="color" name="chart_emptyDataLabelColor"/>
+        <attr format="reference" name="chart_barsColorsList"/>
+        <attr format="color" name="chart_barsBackgroundColor"/>
+        <attr format="dimension" name="chart_barsRadius"/>
+    </declare-styleable>
+    <declare-styleable name="ChartAttrs">
+
+        <!-- Axis -->
+        <attr name="chart_axis">
+            <enum name="none" value="0"/>
+            <enum name="x" value="1"/>
+            <enum name="y" value="2"/>
+            <enum name="xy" value="3"/>
+        </attr>
+
+        <!-- Labels -->
+        <attr format="color" name="chart_labelsColor"/>
+        <attr format="dimension" name="chart_labelsSize"/>
+        <attr format="reference" name="chart_labelsFont"/>
+
+        <!-- Grid -->
+        <attr name="chart_grid">
+            <enum name="full" value="0"/>
+            <enum name="vertical" value="1"/>
+            <enum name="horizontal" value="2"/>
+        </attr>
+        <attr name="chart_gridEffect">
+            <enum name="solid" value="0"/>
+            <enum name="dashed" value="1"/>
+            <enum name="dotted" value="2"/>
+        </attr>
+        <attr format="color" name="chart_gridColor"/>
+        <attr format="dimension" name="chart_gridStrokeWidth"/>
+
+    </declare-styleable>
 </resources>

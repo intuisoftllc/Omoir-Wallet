@@ -81,4 +81,8 @@ val viewModelModule = module {
     viewModel {
         ExchangeHistoryViewModel(get(), get(), get(), get())
     }
+
+    viewModel {
+        ReportDetailsViewModel(get(), get(), get(), get())
+    }
 }

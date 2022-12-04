@@ -5,6 +5,8 @@ import android.content.Context
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
+import com.intuisoft.plaid.PlaidApp
+import com.intuisoft.plaid.R
 import com.intuisoft.plaid.common.model.AppMode
 import com.intuisoft.plaid.common.model.BitcoinDisplayUnit
 import com.intuisoft.plaid.common.model.TransactionMemoModel
@@ -168,7 +170,7 @@ open class WalletViewModel(
 
     fun getMemoForTx(txId: String) {
         viewModelScope.launch {
-            _txMemo.postValue(localStoreRepository.getTransactionMemo(txId)?.memo ?: "")
+            _txMemo.postValue(localStoreRepository.getTransactionMemo(txId)?.memo ?: getApplication<PlaidApp>().getString(R.string.not_applicable))
         }
     }
 
@@ -378,6 +380,11 @@ open class WalletViewModel(
               }
           }
         }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        disposables.dispose()
     }
 
     suspend fun doesWalletExist(walletName: String) : Boolean {

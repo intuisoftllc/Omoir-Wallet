@@ -32,7 +32,7 @@ class RateConverter(
     }
 
 
-    fun setLocalRate(type: RateType, amount: Double) {
+    fun setLocalRate(type: RateType, amount: Double): RateConverter {
         when(type) {
             RateType.BTC_RATE -> {
                 localBTC = (amount * Constants.Limit.SATS_PER_BTC).roundToLong()
@@ -46,8 +46,25 @@ class RateConverter(
                 localBTC = ((amount / fiatRate) * Constants.Limit.SATS_PER_BTC).roundToLong()
             }
         }
+
+        return this
     }
 
+    fun from(type: RateType): Double {
+        when(type) {
+            RateType.BTC_RATE -> {
+                return getRawBtcRate()
+            }
+
+            RateType.SATOSHI_RATE -> {
+                return localBTC.toDouble()
+            }
+
+            RateType.FIAT_RATE -> {
+                return getRawFiatRate()
+            }
+        }
+    }
     fun from(type: RateType, localCurrency: String, shortenSats: Boolean = true) : Pair<String, String> {
         when(type) {
             RateType.SATOSHI_RATE -> {

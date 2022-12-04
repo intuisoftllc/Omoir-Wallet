@@ -14,6 +14,8 @@ import kotlinx.coroutines.withContext
 import java.io.*
 import java.text.CharacterIterator
 import java.text.StringCharacterIterator
+import kotlin.math.pow
+import kotlin.math.roundToInt
 
 @FlowPreview
 public fun <T> (suspend () -> T).asFlow(): Flow<T> = flow {
@@ -170,3 +172,9 @@ fun File.readFromFile(context: Context): String? {
     }
     return ret
 }
+
+fun Double.roundTo(numFractionDigits: Int): Double {
+    val factor = 10.0.pow(numFractionDigits.toDouble())
+    return (this * factor).roundToInt() / factor
+}
+

@@ -71,6 +71,12 @@
                     android:padding="@dimen/margin_8"
                     android:background="?android:selectableItemBackground"
                     android:src="@drawable/ic_swap_crypto"/>
+
+                <ProgressBar
+                    android:id="@+id/loading"
+                    android:visibility="gone"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
             </LinearLayout>
 
             <com.intuisoft.plaid.androidwrappers.SwapPairItemView

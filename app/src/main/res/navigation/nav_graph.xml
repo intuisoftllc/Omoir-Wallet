@@ -252,6 +252,30 @@
     </fragment>
 
     <fragment
+        android:id="@+id/atpFragment"
+        android:name="com.intuisoft.plaid.features.dashboardflow.ui.AtpFragment"
+        android:label="@string/atp_fragment_label"
+        tools:layout="@layout/fragment_atp">
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/reportsFragment"
+        android:name="com.intuisoft.plaid.features.dashboardflow.ui.ReportsFragment"
+        android:label="@string/reports_fragment_label"
+        tools:layout="@layout/fragment_reports">
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/reportDetailsFragment"
+        android:name="com.intuisoft.plaid.features.dashboardflow.ui.ReportDetailsFragment"
+        android:label="@string/reports_fragment_label"
+        tools:layout="@layout/fragment_report_details">
+
+    </fragment>
+
+    <fragment
         android:id="@+id/addressBookFragment"
         android:name="com.intuisoft.plaid.features.settings.ui.AddressBookFragment"
         android:label="@string/address_book_fragment_label"
@@ -359,7 +383,7 @@
         android:id="@+id/exchangeFragment"
         android:name="com.intuisoft.plaid.features.dashboardflow.ui.ExchangeFragment"
         android:label="@string/swap_fragment_label"
-        tools:layout="@layout/fragment_swap">
+        tools:layout="@layout/fragment_exchange">
     </fragment>
 
     <fragment

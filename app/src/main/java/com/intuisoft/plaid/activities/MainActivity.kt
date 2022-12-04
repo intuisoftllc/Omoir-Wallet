@@ -46,7 +46,9 @@ class MainActivity : BindingActivity<ActivityMainBinding>(), ActionBarDelegate {
         private val TOP_LEVEL_BOTTOM_BAR_DESTINATIONS = setOf(
             R.id.walletDashboardFragment,
             R.id.exchangeFragment,
-            R.id.marketFragment
+            R.id.marketFragment,
+            R.id.atpFragment,
+            R.id.reportsFragment
         )
 
     }
@@ -134,38 +136,61 @@ class MainActivity : BindingActivity<ActivityMainBinding>(), ActionBarDelegate {
         val navController = getNavController()
 
         if (localStoreRepository.isProEnabled()) {
-            // todo
-        } else {
+            binding.bottomBar.setConfiguration(
+                getString(R.string.wallet),
+                R.drawable.ic_bottom_bar_wallet_selected,
+                R.drawable.ic_bottom_bar_wallet_unselected,
+                getString(R.string.market),
+                R.drawable.ic_bottom_bar_market_selected,
+                R.drawable.ic_bottom_bar_market_unselected,
+                R.drawable.ic_bottom_bar_swap_selected,
+                R.drawable.ic_bottom_bar_swap_unselected,
+                getString(R.string.atp),
+                R.drawable.ic_atp_selected,
+                R.drawable.ic_atp_unselected,
+                getString(R.string.reports),
+                R.drawable.ic_reports_selected,
+                R.drawable.ic_reports_unselected,
+                R.color.brand_color_dark_blue,
+                R.color.text_grey
+            )
 
+            binding.bottomBar.setupDestinations(
+                R.id.walletDashboardFragment,
+                R.id.marketFragment,
+                R.id.exchangeFragment,
+                R.id.atpFragment,
+                R.id.reportsFragment
+            )
+        } else {
+            binding.bottomBar.setConfiguration(
+                getString(R.string.wallet),
+                R.drawable.ic_bottom_bar_wallet_selected,
+                R.drawable.ic_bottom_bar_wallet_unselected,
+                "",
+                0,
+                0,
+                R.drawable.ic_bottom_bar_swap_selected,
+                R.drawable.ic_bottom_bar_swap_unselected,
+                getString(R.string.market),
+                R.drawable.ic_bottom_bar_market_selected,
+                R.drawable.ic_bottom_bar_market_unselected,
+                "",
+                0,
+                0,
+                R.color.brand_color_dark_blue,
+                R.color.text_grey
+            )
+
+            binding.bottomBar.setupDestinations(
+                R.id.walletDashboardFragment,
+                0,
+                R.id.exchangeFragment,
+                R.id.marketFragment,
+                0
+            )
         }
 
-
-        binding.bottomBar.setConfiguration(
-            getString(R.string.wallet),
-            R.drawable.ic_bottom_bar_wallet_selected,
-            R.drawable.ic_bottom_bar_wallet_unselected,
-            "",
-            0,
-            0,
-            R.drawable.ic_bottom_bar_swap_selected,
-            R.drawable.ic_bottom_bar_swap_unselected,
-            getString(R.string.market),
-            R.drawable.ic_bottom_bar_market_selected,
-            R.drawable.ic_bottom_bar_market_unselected,
-            "",
-            0,
-            0,
-            R.color.brand_color_dark_blue,
-            R.color.text_grey
-        )
-
-        binding.bottomBar.setupDestinations(
-            R.id.walletDashboardFragment,
-            0,
-            R.id.exchangeFragment,
-            R.id.marketFragment,
-            0
-        )
 
         binding.bottomBar.onItemClicked { destination ->
             val delegate = supportFragmentManager.currentNavigationFragment as? FragmentBottomBarBarDelegate

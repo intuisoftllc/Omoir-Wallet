@@ -25,18 +25,19 @@ import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.common.util.extensions.containsNumbers
 import com.intuisoft.plaid.common.util.extensions.toArrayList
-import com.intuisoft.plaid.databinding.FragmentSwapBinding
+import com.intuisoft.plaid.databinding.FragmentExchangeBinding
 import com.intuisoft.plaid.features.dashboardflow.viewmodel.ExchangeViewModel
 import com.intuisoft.plaid.features.homescreen.adapters.SupportedCurrenciesAdapter
 import com.intuisoft.plaid.features.pin.ui.PinProtectedFragment
 import com.intuisoft.plaid.util.NetworkUtil
 import com.intuisoft.plaid.util.fragmentconfig.ConfigSwapData
+import com.mifmif.common.regex.Generex
 import io.horizontalsystems.bitcoinkit.BitcoinKit
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
-class ExchangeFragment : PinProtectedFragment<FragmentSwapBinding>() {
+class ExchangeFragment : PinProtectedFragment<FragmentExchangeBinding>() {
     private val viewModel: ExchangeViewModel by viewModel()
     private val localStore: LocalStoreRepository by inject()
 
@@ -45,7 +46,7 @@ class ExchangeFragment : PinProtectedFragment<FragmentSwapBinding>() {
         savedInstanceState: Bundle?
     ): View? {
 
-        _binding = FragmentSwapBinding.inflate(inflater, container, false)
+        _binding = FragmentExchangeBinding.inflate(inflater, container, false)
         setupConfiguration(viewModel, listOf())
 
         return binding.root
@@ -143,7 +144,8 @@ class ExchangeFragment : PinProtectedFragment<FragmentSwapBinding>() {
         }
 
         viewModel.screenFunctionsEnabled.observe(viewLifecycleOwner, Observer {
-            binding.swapSendReceive.isClickable = it
+            binding.swapSendReceive.isVisible = it
+            binding.loading.isVisible = !it
             binding.fixed.enableButton(it)
             binding.floating.enableButton(it)
             binding.swapPairSend.setTickerClickable(it)
@@ -268,6 +270,26 @@ class ExchangeFragment : PinProtectedFragment<FragmentSwapBinding>() {
         depositAddrTitle.text = depositAddressTitle
         memoTitle.isVisible = memoValidationRegex != null
         memoContainer.isVisible = memoValidationRegex != null
+
+        var generex = Generex(addressValidationRegex)
+        var addr = generex.random().drop(1)
+
+        address.hint =
+            if(addr.length <= Constants.Limit.ADDRESS_HINT_LENGTH)
+                getString(R.string.swap_deposit_address_entry_hint_full, addr)
+            else
+                getString(R.string.swap_deposit_address_entry_hint_partial, addr.substring(0..Constants.Limit.ADDRESS_HINT_LENGTH))
+
+        memoValidationRegex?.let {
+            generex = Generex(it)
+            addr = generex.random().drop(1)
+
+            memo.hint =
+                if(addr.length <= Constants.Limit.ADDRESS_HINT_LENGTH)
+                    getString(R.string.swap_deposit_address_entry_hint_full, addr)
+                else
+                    getString(R.string.swap_deposit_address_entry_hint_partial, addr.substring(0..Constants.Limit.ADDRESS_HINT_LENGTH))
+        }
 
         address.doOnTextChanged { text, start, before, count ->
             validationError.isVisible = false

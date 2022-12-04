@@ -477,7 +477,8 @@
     <string name="swap_refund_address_title">Refund Address</string>
     <string name="swap_deposit_address_entry_title">Deposit Address For %1$s</string>
     <string name="swap_refund_address_entry_title">Refund Address For %1$s</string>
-    <string name="swap_deposit_address_entry_hint">0x71C7656EC7ab88…</string>
+    <string name="swap_deposit_address_entry_hint_partial">%1$s…</string>
+    <string name="swap_deposit_address_entry_hint_full">%1$s</string>
     <string name="swap_deposit_address_entry_memo_title">Memo</string>
     <string name="swap_deposit_address_entry_memo_hint">coffee</string>
     <string name="swap_deposit_address_dialog_invalid_address_error">Invalid %1$s address</string>
@@ -497,6 +498,31 @@
     <string name="swap_details_with_memo">With Memo:</string>
     <string name="swap_view_full_details_link">https://simpleswap.io/exchange?id=%1$s</string>
 <!--    Swap Details Strings End -->
+
+<!--    Report Details Strings -->
+    <string name="report_details_inflow_title">Inflow Report</string>
+    <string name="report_details_outflow_title">Outflow Report</string>
+    <string name="report_details_fee_title">Fees Report</string>
+    <string name="report_details_time_period_1">Last Week</string>
+    <string name="report_details_time_period_2">Last Month</string>
+    <string name="report_details_time_period_3">Last 6 Months</string>
+    <string name="report_details_time_period_4">Last Year</string>
+    <string name="report_details_time_period_5">All Time</string>
+    <string name="report_details_time_period_title">Time Period</string>
+    <string name="report_details_report_type_inflow_title">Total Inflow</string>
+    <string name="report_details_report_type_outflow_title">Total Outflow</string>
+    <string name="report_details_report_type_fee_title">Total Fees</string>
+    <string name="report_details_no_transactions">No Transactions Yet</string>
+<!--    Report Details Strings End -->
+
+<!--    Reports Strings -->
+    <string name="report_type_inflow_title">Inflow Report</string>
+    <string name="report_type_inflow_subtitle">See your income</string>
+    <string name="report_type_outflow_title">Outflow Report</string>
+    <string name="report_type_outflow_subtitle">See how much you spent</string>
+    <string name="report_type_fees_title">Tx Fee Report</string>
+    <string name="report_type_fees_subtitle">See how much you paid in fees</string>
+<!--    Reports Strings -->
 
 <!--    Generic Use Strings -->
     <string name="welcome">Welcome</string>
@@ -564,6 +590,7 @@
     <string name="exchange">Exchange</string>
     <string name="currencies">Currencies</string>
     <string name="deposit">Deposit</string>
+    <string name="no_data">No Data</string>
     <string name="memo">Memo</string>
     <string name="today">Today</string>
     <string name="yesterday">Yesterday</string>
@@ -595,6 +622,8 @@
     <string name="swap_history_fragment_label">History</string>
     <string name="manage_wallets_fragment_label">Manage Wallets</string>
     <string name="swap_details_fragment_label">Exchange Details</string>
+    <string name="atp_fragment_label">ATP</string>
+    <string name="reports_fragment_label">Reports</string>
     <string name="withdraw_fragment_label">Send BTC</string>
     <string name="withdraw_confirmation_fragment_label">Withdraw</string>
     <string name="transaction_details_fragment_label">Transaction Details</string>

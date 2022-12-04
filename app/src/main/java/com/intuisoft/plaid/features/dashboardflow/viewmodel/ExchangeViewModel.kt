@@ -88,8 +88,12 @@ class ExchangeViewModel(
     private var searchValue = ""
 
     fun setFixed(fixed: Boolean) {
-        this.fixed = fixed
-        setFixedFloatingRange()
+        viewModelScope.launch {
+            _screenFunctionsEnabled.postValue(false)
+            this@ExchangeViewModel.fixed = fixed
+            setFixedFloatingRange().join()
+            _screenFunctionsEnabled.postValue(true)
+        }
     }
 
     fun updateSearchValue(search: String, onResult: (Pair<List<SupportedCurrencyModel>, List<SupportedCurrencyModel>>) -> Unit) {
@@ -113,6 +117,10 @@ class ExchangeViewModel(
                 }
 
                 val supportedCurrencies = apiRepository.getSupportedCurrencies(fixed)
+                    .filter {
+                        it.ticker != BTC_TICKER
+                    }
+
                 val sorted = timesUsed.sortedByDescending { it.second }.take(3)
                     .filter { frequent ->
                         supportedCurrencies.find { it.ticker == frequent.first.lowercase() } != null
@@ -126,7 +134,7 @@ class ExchangeViewModel(
                     }
                 } else {
                     val filtered = supportedCurrencies.filter {
-                        it.ticker.contains(searchValue) || it.name.contains(searchValue)
+                        it.ticker.contains(searchValue, true) || it.name.contains(searchValue, true)
                     }
 
                     withContext(Dispatchers.Main) {

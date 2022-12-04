@@ -113,7 +113,6 @@ open class BaseViewModel(
 
     fun softRestart(fragment: Fragment) {
         walletManager.stop()
-        localStoreRepository.resetPinCheckedTime()
         fragment.navigate(R.id.splashFragment)
     }
 }
