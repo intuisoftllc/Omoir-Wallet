@@ -13,6 +13,8 @@ import com.intuisoft.plaid.androidwrappers.*
 import com.intuisoft.plaid.common.CommonService
 import com.intuisoft.plaid.common.model.AppMode
 import com.intuisoft.plaid.common.model.BitcoinDisplayUnit
+import com.intuisoft.plaid.common.model.ChartDataModel
+import com.intuisoft.plaid.common.model.ChartIntervalType
 import com.intuisoft.plaid.databinding.FragmentWalletDashboardBinding
 import com.intuisoft.plaid.features.homescreen.adapters.BasicTransactionAdapter
 import com.intuisoft.plaid.features.pin.ui.PinProtectedFragment
@@ -20,16 +22,22 @@ import com.intuisoft.plaid.listeners.StateListener
 import com.intuisoft.plaid.model.LocalWalletModel
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.common.util.Constants
+import com.intuisoft.plaid.common.util.SimpleCoinNumberFormat
+import com.intuisoft.plaid.common.util.SimpleCurrencyFormat
 import com.intuisoft.plaid.common.util.extensions.toArrayList
+import com.intuisoft.plaid.features.dashboardflow.adapters.BasicLineChartAdapter
+import com.intuisoft.plaid.features.dashboardflow.viewmodel.DashboardViewModel
+import com.intuisoft.plaid.util.SimpleTimeFormat
 import com.intuisoft.plaid.util.fragmentconfig.ConfigQrDisplayData
 import com.intuisoft.plaid.util.fragmentconfig.ConfigTransactionData
 import com.intuisoft.plaid.walletmanager.AbstractWalletManager
 import io.horizontalsystems.bitcoincore.models.TransactionInfo
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import java.util.*
 
 class DashboardFragment : PinProtectedFragment<FragmentWalletDashboardBinding>(), StateListener {
-    protected val viewModel: WalletViewModel by viewModel()
+    protected val viewModel: DashboardViewModel by viewModel()
     protected val localStoreRepository: LocalStoreRepository by inject()
     protected val walletManager: AbstractWalletManager by inject()
 
@@ -38,6 +46,8 @@ class DashboardFragment : PinProtectedFragment<FragmentWalletDashboardBinding>()
         getConfirmationsForTransaction = ::getConfirmationsForTransaction,
         localStoreRepository = localStoreRepository
     )
+
+    val balanceHistoryAdapter = BasicLineChartAdapter()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -51,6 +61,10 @@ class DashboardFragment : PinProtectedFragment<FragmentWalletDashboardBinding>()
     }
 
     override fun onConfiguration(configuration: FragmentConfiguration?) {
+        onBackPressedCallback {
+            onNavigateBottomBarPrimaryFragmentBackwards(localStoreRepository)
+        }
+
         viewModel.getTransactions()
         viewModel.displayCurrentWallet()
         viewModel.showWalletBalance(requireContext())
@@ -58,9 +72,57 @@ class DashboardFragment : PinProtectedFragment<FragmentWalletDashboardBinding>()
         viewModel.addWalletStateListener(this)
         viewModel.refreshLocalCache()
 
-        onBackPressedCallback {
-            onNavigateBottomBarPrimaryFragmentBackwards(localStoreRepository)
+        binding.sparkview.setAdapter(balanceHistoryAdapter)
+        binding.sparkview.isScrubEnabled = true
+
+        binding.chartContainer.isVisible = localStoreRepository.isProEnabled()
+        binding.sparkview.setScrubListener {
+
+            if(it != null) {
+                val data = it as ChartDataModel
+                binding.percentageGain.visibility = View.INVISIBLE
+                binding.scrubTime.visibility = View.VISIBLE
+                binding.price.text = viewModel.transformScrubValue(data)
+
+                binding.scrubTime.text = SimpleTimeFormat.getDateByLocale(data.time * Constants.Time.MILLS_PER_SEC, Locale.US.language)
+            } else {
+                binding.percentageGain.visibility = View.VISIBLE
+                binding.scrubTime.visibility = View.INVISIBLE
+                viewModel.showWalletBalance(requireContext())
+            }
         }
+
+        binding.price.setOnClickListener {
+            if(!viewModel.isWalletSyncing()) {
+                when (viewModel.getDisplayUnit()) {
+                    BitcoinDisplayUnit.BTC -> {
+                        viewModel.setDisplayUnit(BitcoinDisplayUnit.SATS)
+                    }
+
+                    BitcoinDisplayUnit.SATS -> {
+                        viewModel.setDisplayUnit(BitcoinDisplayUnit.FIAT)
+                    }
+
+                    BitcoinDisplayUnit.FIAT -> {
+                        viewModel.setDisplayUnit(BitcoinDisplayUnit.BTC)
+                    }
+                }
+
+                adapter.updateConversion()
+                viewModel.showWalletBalance(requireContext())
+                viewModel.onDisplayUnitChanged()
+            }
+        }
+
+        viewModel.percentageGain.observe(viewLifecycleOwner, Observer {
+            binding.percentageGain.text = SimpleCoinNumberFormat.formatCurrency(it) + "%"
+
+            if(it > 0.0) {
+                binding.percentageGain.setTextColor(resources.getColor(R.color.success_color))
+            } else {
+                binding.percentageGain.setTextColor(resources.getColor(R.color.alt_error_color))
+            }
+        })
 
         binding.swipeContainer.setOnRefreshListener {
             if(binding.swipeContainer.isRefreshing) {
@@ -68,8 +130,102 @@ class DashboardFragment : PinProtectedFragment<FragmentWalletDashboardBinding>()
             }
         }
 
+        binding.interval1day.setOnClickListener {
+            viewModel.changeChartInterval(ChartIntervalType.INTERVAL_1DAY)
+            binding.interval1day.selectTimePeriod(true)
+            binding.interval1week.selectTimePeriod(false)
+            binding.interval1Month.selectTimePeriod(false)
+            binding.interval3Month.selectTimePeriod(false)
+            binding.interval6Month.selectTimePeriod(false)
+            binding.interval1Year.selectTimePeriod(false)
+            binding.intervalMax.selectTimePeriod(false)
+        }
+
+        binding.interval1week.setOnClickListener {
+            viewModel.changeChartInterval(ChartIntervalType.INTERVAL_1WEEK)
+            binding.interval1day.selectTimePeriod(false)
+            binding.interval1week.selectTimePeriod(true)
+            binding.interval1Month.selectTimePeriod(false)
+            binding.interval3Month.selectTimePeriod(false)
+            binding.interval6Month.selectTimePeriod(false)
+            binding.interval1Year.selectTimePeriod(false)
+            binding.intervalMax.selectTimePeriod(false)
+        }
+
+        binding.interval1Month.setOnClickListener {
+            viewModel.changeChartInterval(ChartIntervalType.INTERVAL_1MONTH)
+            binding.interval1day.selectTimePeriod(false)
+            binding.interval1week.selectTimePeriod(false)
+            binding.interval1Month.selectTimePeriod(true)
+            binding.interval3Month.selectTimePeriod(false)
+            binding.interval6Month.selectTimePeriod(false)
+            binding.interval1Year.selectTimePeriod(false)
+            binding.intervalMax.selectTimePeriod(false)
+        }
+
+        binding.interval3Month.setOnClickListener {
+            viewModel.changeChartInterval(ChartIntervalType.INTERVAL_3MONTHS)
+            binding.interval1day.selectTimePeriod(false)
+            binding.interval1week.selectTimePeriod(false)
+            binding.interval1Month.selectTimePeriod(false)
+            binding.interval3Month.selectTimePeriod(true)
+            binding.interval6Month.selectTimePeriod(false)
+            binding.interval1Year.selectTimePeriod(false)
+            binding.intervalMax.selectTimePeriod(false)
+        }
+
+        binding.interval6Month.setOnClickListener {
+            viewModel.changeChartInterval(ChartIntervalType.INTERVAL_6MONTHS)
+            binding.interval1day.selectTimePeriod(false)
+            binding.interval1week.selectTimePeriod(false)
+            binding.interval1Month.selectTimePeriod(false)
+            binding.interval3Month.selectTimePeriod(false)
+            binding.interval6Month.selectTimePeriod(true)
+            binding.interval1Year.selectTimePeriod(false)
+            binding.intervalMax.selectTimePeriod(false)
+        }
+
+        binding.interval1Year.setOnClickListener {
+            viewModel.changeChartInterval(ChartIntervalType.INTERVAL_1YEAR)
+            binding.interval1day.selectTimePeriod(false)
+            binding.interval1week.selectTimePeriod(false)
+            binding.interval1Month.selectTimePeriod(false)
+            binding.interval3Month.selectTimePeriod(false)
+            binding.interval6Month.selectTimePeriod(false)
+            binding.interval1Year.selectTimePeriod(true)
+            binding.intervalMax.selectTimePeriod(false)
+        }
+
+        binding.intervalMax.setOnClickListener {
+            viewModel.changeChartInterval(ChartIntervalType.INTERVAL_ALL_TIME)
+            binding.interval1day.selectTimePeriod(false)
+            binding.interval1week.selectTimePeriod(false)
+            binding.interval1Month.selectTimePeriod(false)
+            binding.interval3Month.selectTimePeriod(false)
+            binding.interval6Month.selectTimePeriod(false)
+            binding.interval1Year.selectTimePeriod(false)
+            binding.intervalMax.selectTimePeriod(true)
+        }
+
         viewModel.readOnlyWallet.observe(viewLifecycleOwner, Observer {
             binding.withdraw.enableButton(false)
+        })
+
+        viewModel.showChartContent.observe(viewLifecycleOwner, Observer {
+            binding.sparkview.isVisible = it
+            binding.errorMessage.isVisible = !it
+            binding.errorMessage.text = getString(R.string.no_internet_connection)
+        })
+
+        viewModel.noChartData.observe(viewLifecycleOwner, Observer {
+            binding.sparkview.isVisible = false
+            binding.errorMessage.isVisible = true
+            binding.errorMessage.text = getString(R.string.no_data)
+        })
+
+
+        viewModel.chartData.observe(viewLifecycleOwner, Observer {
+            balanceHistoryAdapter.setItems(it)
         })
 
         viewModel.displayWallet.observe(viewLifecycleOwner, Observer { wallet ->
@@ -78,7 +234,11 @@ class DashboardFragment : PinProtectedFragment<FragmentWalletDashboardBinding>()
         })
 
         viewModel.walletBalance.observe(viewLifecycleOwner, Observer {
-            (requireActivity() as MainActivity).setActionBarSubTitle(it)
+            if(localStoreRepository.isProEnabled()) {
+                binding.price.text = it
+            } else {
+                (requireActivity() as MainActivity).setActionBarSubTitle(it)
+            }
         })
 
         binding.transactions.adapter = adapter
@@ -86,6 +246,7 @@ class DashboardFragment : PinProtectedFragment<FragmentWalletDashboardBinding>()
             binding.noTransactionsIcon.isVisible = it.isEmpty()
             binding.noTransactionsMessage.isVisible = it.isEmpty()
             binding.transactions.isVisible = it.isNotEmpty()
+            viewModel.onTransactionsUpdated(it)
 
 
             adapter.addTransactions(it.toArrayList())
@@ -149,14 +310,18 @@ class DashboardFragment : PinProtectedFragment<FragmentWalletDashboardBinding>()
     override fun onWalletStateUpdated(wallet: LocalWalletModel) {
         if(viewModel.getWallet() != null && wallet.uuid == viewModel.getWalletId()
             && activity != null && _binding != null) {
-            (requireActivity() as MainActivity).setActionBarSubTitle(
-                wallet.onWalletStateChanged(
-                    requireContext(),
-                    wallet.syncPercentage,
-                    false,
-                    localStoreRepository
-                )
+            val state = wallet.onWalletStateChanged(
+                requireContext(),
+                wallet.syncPercentage,
+                false,
+                localStoreRepository
             )
+
+            if(localStoreRepository.isProEnabled()) {
+                binding.price.text = state
+            } else {
+                (requireActivity() as MainActivity).setActionBarSubTitle(state)
+            }
 
             if (wallet.isSynced && wallet.isSynced)
                 viewModel.getTransactions()
@@ -199,27 +364,6 @@ class DashboardFragment : PinProtectedFragment<FragmentWalletDashboardBinding>()
             R.id.walletSettingsFragment,
             viewModel.getWalletId()
         )
-    }
-
-    override fun onSubtitleClicked() {
-        if(!viewModel.isWalletSyncing()) {
-            when (viewModel.getDisplayUnit()) {
-                BitcoinDisplayUnit.BTC -> {
-                    viewModel.setDisplayUnit(BitcoinDisplayUnit.SATS)
-                }
-
-                BitcoinDisplayUnit.SATS -> {
-                    viewModel.setDisplayUnit(BitcoinDisplayUnit.FIAT)
-                }
-
-                BitcoinDisplayUnit.FIAT -> {
-                    viewModel.setDisplayUnit(BitcoinDisplayUnit.BTC)
-                }
-            }
-
-            adapter.updateConversion()
-            viewModel.showWalletBalance(requireContext())
-        }
     }
 
     override fun onDestroyView() {

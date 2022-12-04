@@ -85,4 +85,8 @@ val viewModelModule = module {
     viewModel {
         ReportDetailsViewModel(get(), get(), get(), get())
     }
+
+    viewModel {
+        DashboardViewModel(get(), get(), get(), get())
+    }
 }

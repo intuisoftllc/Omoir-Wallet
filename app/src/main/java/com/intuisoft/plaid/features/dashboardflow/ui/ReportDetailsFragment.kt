@@ -168,6 +168,10 @@ class ReportDetailsFragment : PinProtectedFragment<FragmentReportDetailsBinding>
                 ReportHistoryTimeFilter.ALL_TIME -> {
                     binding.timePeriod.setButtonText(getString(R.string.report_details_time_period_5))
                 }
+
+                else -> {
+                    binding.timePeriod.setButtonText(getString(R.string.report_details_time_period_1))
+                }
             }
         })
 

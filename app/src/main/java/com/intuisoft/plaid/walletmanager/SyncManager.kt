@@ -162,7 +162,7 @@ class SyncManager(
     }
 
     fun sync(wallet: LocalWalletModel) : Boolean {
-        if (!wallet.isSyncing && !wallet.isSynced) {
+        if (!wallet.isSyncing && !wallet.isSynced &&(System.currentTimeMillis() - (listener?.getLastSyncedTime(wallet) ?: 0) >= Constants.Time.MIN_SYNC_TIME)) {
             runInBackground {
                 syncInternal(wallet)
             }
