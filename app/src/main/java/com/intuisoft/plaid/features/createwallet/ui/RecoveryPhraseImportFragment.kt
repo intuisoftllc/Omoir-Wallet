@@ -15,14 +15,13 @@ import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.*
 import com.intuisoft.plaid.databinding.FragmentRecoveryPhraseImportBinding
 import com.intuisoft.plaid.features.createwallet.viewmodel.CreateWalletViewModel
-import com.intuisoft.plaid.features.pin.ui.PinProtectedFragment
 import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.util.fragmentconfig.WalletConfigurationData
 import kotlinx.android.synthetic.main.fragment_public_key_import.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
-class RecoveryPhraseImportFragment : PinProtectedFragment<FragmentRecoveryPhraseImportBinding>() {
+class RecoveryPhraseImportFragment : ConfigurableFragment<FragmentRecoveryPhraseImportBinding>(pinProtection = true) {
     protected val viewModel: CreateWalletViewModel by viewModel()
 
     override fun onCreateView(

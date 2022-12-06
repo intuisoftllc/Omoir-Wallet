@@ -89,4 +89,8 @@ val viewModelModule = module {
     viewModel {
         DashboardViewModel(get(), get(), get(), get())
     }
+
+    viewModel {
+        UtxoDistributionViewModel(get(), get(), get(), get())
+    }
 }

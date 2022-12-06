@@ -14,12 +14,12 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.intuisoft.plaid.R
+import com.intuisoft.plaid.activities.MainActivity
 import com.intuisoft.plaid.androidwrappers.*
 import com.intuisoft.plaid.common.model.BitcoinDisplayUnit
 import com.intuisoft.plaid.databinding.FragmentWithdrawBinding
 import com.intuisoft.plaid.features.dashboardflow.viewmodel.WithdrawalViewModel
 import com.intuisoft.plaid.features.homescreen.adapters.CoinControlAdapter
-import com.intuisoft.plaid.features.pin.ui.PinProtectedFragment
 import com.intuisoft.plaid.listeners.StateListener
 import com.intuisoft.plaid.model.LocalWalletModel
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
@@ -27,15 +27,21 @@ import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.common.util.Constants.Navigation.ANIMATED_ENTER_EXIT_RIGHT_NAV_OPTION
 import com.intuisoft.plaid.common.util.SimpleCurrencyFormat
 import com.intuisoft.plaid.common.util.extensions.toArrayList
+import com.intuisoft.plaid.util.fragmentconfig.BasicConfigData
 import com.intuisoft.plaid.util.fragmentconfig.SendFundsData
+import com.intuisoft.plaid.walletmanager.AbstractWalletManager
+import com.mifmif.common.regex.Main
+import io.horizontalsystems.bitcoincore.models.PublicKey
 import io.horizontalsystems.bitcoincore.storage.UnspentOutput
+import kotlinx.coroutines.*
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
-class WithdrawalFragment : PinProtectedFragment<FragmentWithdrawBinding>(), StateListener {
+class WithdrawalFragment : ConfigurableFragment<FragmentWithdrawBinding>(pinProtection = true), StateListener {
     private val viewModel: WithdrawalViewModel by viewModel()
     private val localStoreRepository: LocalStoreRepository by inject()
+    private val walletManager: AbstractWalletManager by inject()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -44,12 +50,21 @@ class WithdrawalFragment : PinProtectedFragment<FragmentWithdrawBinding>(), Stat
 
         _binding = FragmentWithdrawBinding.inflate(inflater, container, false)
         setupConfiguration(viewModel,
-            listOf()
+            listOf(
+                FragmentConfigurationType.CONFIGURATION_SPEND_COIN
+            )
         )
         return binding.root
     }
 
     override fun onConfiguration(configuration: FragmentConfiguration?) {
+        when (configuration?.configurationType) {
+            FragmentConfigurationType.CONFIGURATION_SPEND_COIN -> {
+                val data = configuration!!.configData as BasicConfigData
+                viewModel.setInitialSpendUtxo(data.payload)
+            }
+        }
+
         viewModel.addWalletStateListener(this)
         viewModel.showWalletDisplayUnit()
         viewModel.refreshLocalCache()
@@ -106,6 +121,7 @@ class WithdrawalFragment : PinProtectedFragment<FragmentWithdrawBinding>(), Stat
         binding.availableBalance.onClick {
             showCoinControlBottomSheet(
                 context = requireContext(),
+                showHint = true,
                 getUnspentOutputs = {
                     viewModel.getUnspentOutputs()
                 },
@@ -115,7 +131,13 @@ class WithdrawalFragment : PinProtectedFragment<FragmentWithdrawBinding>(), Stat
                 updateSelectedUTXOs = {
                     viewModel.updateUTXOs(it.toMutableList())
                 },
-                localStoreRepository
+                localStoreRepository = localStoreRepository,
+                getFullKeyPath = {
+                    walletManager.getFullPublicKeyPath(it)
+                },
+                addSingleUTXO = {
+                    viewModel.addSingleUTXO(it)
+                }
             )
         }
 
@@ -229,30 +251,71 @@ class WithdrawalFragment : PinProtectedFragment<FragmentWithdrawBinding>(), Stat
     companion object {
         fun showCoinControlBottomSheet(
             context: Context,
+            showHint: Boolean,
             getUnspentOutputs: () -> List<UnspentOutput>,
             getSelectedUTXOs: () -> List<UnspentOutput>,
             updateSelectedUTXOs: (List<UnspentOutput>) -> Unit,
+            addSingleUTXO: (UnspentOutput) -> Unit,
+            getFullKeyPath: (PublicKey) -> String,
             localStoreRepository: LocalStoreRepository
         ) {
             val bottomSheetDialog = BottomSheetDialog(context)
             bottomSheetDialog.setContentView(R.layout.bottom_sheet_coin_control)
             val selectAll = bottomSheetDialog.findViewById<RoundedButtonView>(R.id.select_all)!!
             val noUTXOs = bottomSheetDialog.findViewById<TextView>(R.id.no_utxos)!!
+            val hint = bottomSheetDialog.findViewById<TextView>(R.id.hint)
             val unspentOutputsList = bottomSheetDialog.findViewById<RecyclerView>(R.id.utxos)!!
             val utxos = getUnspentOutputs().sortedBy { it.output.value }.reversed()
+
+            var itemClickCount = 0
 
             if (utxos.isEmpty()) {
                 selectAll.enableButton(false)
                 noUTXOs.isVisible = true
                 unspentOutputsList.isVisible = false
             } else {
-                val adapter = CoinControlAdapter(localStoreRepository) {
-                    if (it) {
-                        selectAll.setButtonStyle(RoundedButtonView.ButtonStyle.ROUNDED_STYLE)
-                    } else {
-                        selectAll.setButtonStyle(RoundedButtonView.ButtonStyle.OUTLINED_STYLE)
+                MainScope().launch {
+                    if(showHint) {
+                        hint?.isVisible = true
+                        delay(2 * Constants.Time.MILLS_PER_SEC.toLong())
+                        hint?.isVisible = false
                     }
                 }
+
+                val adapter = CoinControlAdapter(
+                    localStoreRepository = localStoreRepository,
+                    onAllItemsSelected = {
+                        if (it) {
+                            selectAll.setButtonStyle(RoundedButtonView.ButtonStyle.ROUNDED_STYLE)
+                        } else {
+                            selectAll.setButtonStyle(RoundedButtonView.ButtonStyle.OUTLINED_STYLE)
+                        }
+                    },
+                    onItemLongClicked = {
+                        bottomSheetDialog.cancel()
+                        UtxoDistributionFragment.showCoinInfoBottomSheet(
+                            context = context,
+                            coin = it,
+                            localStoreRepository = localStoreRepository,
+                            getFullKeyPath = getFullKeyPath,
+                            onDismiss = {
+                                showCoinControlBottomSheet(
+                                    context = context,
+                                    showHint = false,
+                                    getUnspentOutputs = getUnspentOutputs,
+                                    getSelectedUTXOs = getSelectedUTXOs,
+                                    updateSelectedUTXOs = updateSelectedUTXOs,
+                                    addSingleUTXO = addSingleUTXO,
+                                    getFullKeyPath = getFullKeyPath,
+                                    localStoreRepository = localStoreRepository
+                                )
+                            },
+                            onSpendCoin = {
+                                addSingleUTXO(it)
+                            }
+                        )
+                    }
+                )
 
                 unspentOutputsList.adapter = adapter
                 adapter.addUTXOs(utxos.toArrayList(), getSelectedUTXOs().toArrayList())

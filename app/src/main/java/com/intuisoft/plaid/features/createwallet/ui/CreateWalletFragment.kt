@@ -17,14 +17,13 @@ import com.intuisoft.plaid.databinding.FragmentCreateImportWalletBinding
 import com.intuisoft.plaid.features.createwallet.ZoomOutPageTransformer
 import com.intuisoft.plaid.features.createwallet.adapters.WalletBenefitsAdapter
 import com.intuisoft.plaid.features.createwallet.viewmodel.CreateWalletViewModel
-import com.intuisoft.plaid.features.pin.ui.PinProtectedFragment
 import com.intuisoft.plaid.common.util.Constants
 import io.horizontalsystems.hdwalletkit.HDWallet
 import io.horizontalsystems.hdwalletkit.Mnemonic
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
-class CreateWalletFragment : PinProtectedFragment<FragmentCreateImportWalletBinding>() {
+class CreateWalletFragment : ConfigurableFragment<FragmentCreateImportWalletBinding>(pinProtection = true) {
     protected val viewModel: CreateWalletViewModel by viewModel()
 
     override fun onCreateView(

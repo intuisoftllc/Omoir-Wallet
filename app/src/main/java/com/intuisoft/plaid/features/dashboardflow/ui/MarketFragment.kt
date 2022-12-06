@@ -14,7 +14,6 @@ import com.intuisoft.plaid.common.model.ChartDataModel
 import com.intuisoft.plaid.common.model.ChartIntervalType
 import com.intuisoft.plaid.common.model.CongestionRating
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
-import com.intuisoft.plaid.features.pin.ui.PinProtectedFragment
 import com.intuisoft.plaid.common.util.SimpleCoinNumberFormat
 import com.intuisoft.plaid.common.util.SimpleCurrencyFormat
 import com.intuisoft.plaid.databinding.FragmentMarketBinding
@@ -26,7 +25,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.*
 
 
-class MarketFragment : PinProtectedFragment<FragmentMarketBinding>() {
+class MarketFragment : ConfigurableFragment<FragmentMarketBinding>(pinProtection = true) {
     private val viewModel: MarketViewModel by viewModel()
     private val localStore: LocalStoreRepository by inject()
 
@@ -45,7 +44,7 @@ class MarketFragment : PinProtectedFragment<FragmentMarketBinding>() {
 
     override fun onConfiguration(configuration: FragmentConfiguration?) {
         onBackPressedCallback {
-            onNavigateBottomBarSecondaryFragmentBackwards(localStore)
+            onNavigateBottomBarSecondaryFragmentBackwards()
         }
 
         binding.sparkview.setAdapter(adapter)
@@ -61,7 +60,7 @@ class MarketFragment : PinProtectedFragment<FragmentMarketBinding>() {
                     data.value.toDouble()
                 )
 
-                binding.scrubTime.text = SimpleTimeFormat.getDateByLocale(data.time, Locale.US.language)
+                binding.scrubTime.text = SimpleTimeFormat.getDateByLocale(data.time, Locale.US)
             } else {
                 binding.percentageGain.visibility = View.VISIBLE
                 binding.scrubTime.visibility = View.INVISIBLE

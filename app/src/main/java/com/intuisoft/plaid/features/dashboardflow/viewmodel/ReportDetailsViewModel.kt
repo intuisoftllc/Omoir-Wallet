@@ -152,7 +152,6 @@ class ReportDetailsViewModel(
 
                 setTimePeriod(periods.first().second.first, periods.last().second.second)
                 setTotal(data!!.total)
-                delay(200) // reduces possibility of flicker for animation
                 _gettingData.postValue(false)
                 _noData.postValue(false)
                 _barData.postValue(data)

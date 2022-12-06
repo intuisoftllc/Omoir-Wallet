@@ -119,6 +119,10 @@ abstract class AbstractKit {
         bitcoinCore.validateAddress(address, pluginData)
     }
 
+    fun validateAddress(key: PublicKey): String {
+        return bitcoinCore.getFullPublicKeyPath(key)
+    }
+
     fun isAddressValid(address: String) : Boolean =
         bitcoinCore.isAddressValid(address)
 
@@ -139,6 +143,10 @@ abstract class AbstractKit {
 
     fun getPublicKeyByPath(path: String): PublicKey {
         return bitcoinCore.getPublicKeyByPath(path)
+    }
+
+    fun getFullPublicKeyPath(key: PublicKey): String {
+        return bitcoinCore.getFullPublicKeyPath(key)
     }
 
     fun watchTransaction(filter: TransactionFilter, listener: WatchedTransactionManager.Listener) {

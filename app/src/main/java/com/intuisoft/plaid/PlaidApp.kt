@@ -14,7 +14,7 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.context.startKoin
 import org.koin.core.logger.Level
 
-class PlaidApp : Application(), KoinComponent {
+class PlaidApp : Application(), Application.ActivityLifecycleCallbacks, KoinComponent {
     private val preferences: UserData?
         get() = CommonService.getUserData()
     lateinit var devicePerformance: DevicePerformance
@@ -49,5 +49,31 @@ class PlaidApp : Application(), KoinComponent {
                 )
             )
         }
+
+        registerActivityLifecycleCallbacks(this)
+    }
+
+    override fun onActivityCreated(p0: Activity, p1: Bundle?) {
+    }
+
+    override fun onActivityStarted(p0: Activity) {
+    }
+
+    override fun onActivityResumed(p0: Activity) {
+    }
+
+    override fun onActivityPaused(p0: Activity) {
+    }
+
+    override fun onActivityStopped(p0: Activity) {
+        if(preferences?.pinTimeout == Constants.Time.INSTANT_TIME_OFFSET) {
+            preferences?.lastCheckPin = 0
+        }
+    }
+
+    override fun onActivitySaveInstanceState(p0: Activity, p1: Bundle) {
+    }
+
+    override fun onActivityDestroyed(p0: Activity) {
     }
 }

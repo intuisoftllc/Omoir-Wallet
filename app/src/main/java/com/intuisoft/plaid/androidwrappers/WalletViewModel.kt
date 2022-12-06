@@ -101,6 +101,8 @@ open class WalletViewModel(
 
     fun getCurrentBlock() = localWallet!!.walletKit!!.lastBlockInfo?.height ?: 0
 
+    fun getUnspentOutputs() = localWallet!!.walletKit!!.getUnspentOutputs()
+
     fun calculateFee(sats: Long, feeRate: Int, address: String?, retry: Boolean = true) : Long {
         try {
             return localWallet!!.walletKit!!.fee(sats, address, true, feeRate)

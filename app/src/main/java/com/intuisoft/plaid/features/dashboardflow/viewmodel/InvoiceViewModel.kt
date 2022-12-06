@@ -162,7 +162,12 @@ class InvoiceViewModel(
         updateAvailableBalance()
     }
 
-    fun getUnspentOutputs() = localWallet!!.walletKit!!.getUnspentOutputs()
+    fun addSingleUTXO(utxo: UnspentOutput) {
+        if(selectedUTXOs.find { it == utxo } == null) {
+            selectedUTXOs.add(utxo)
+            updateAvailableBalance()
+        }
+    }
 
     fun getSelectedUTXOs() = selectedUTXOs
 

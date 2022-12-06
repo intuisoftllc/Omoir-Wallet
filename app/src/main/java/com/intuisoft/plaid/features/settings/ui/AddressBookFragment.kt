@@ -16,7 +16,6 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.*
 import com.intuisoft.plaid.databinding.FragmentAddressBookBinding
-import com.intuisoft.plaid.features.pin.ui.PinProtectedFragment
 import com.intuisoft.plaid.features.settings.adapters.AddressBookAdapter
 import com.intuisoft.plaid.features.settings.viewmodel.AddressBookViewModel
 import com.intuisoft.plaid.common.model.SavedAddressModel
@@ -24,7 +23,7 @@ import com.intuisoft.plaid.common.util.extensions.toArrayList
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
-class AddressBookFragment : PinProtectedFragment<FragmentAddressBookBinding>() {
+class AddressBookFragment : ConfigurableFragment<FragmentAddressBookBinding>(pinProtection = true) {
     private val viewModel: AddressBookViewModel by viewModel()
 
     private val adapter = AddressBookAdapter(

@@ -12,18 +12,17 @@ import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.*
 import com.intuisoft.plaid.common.model.ExchangeHistoryFilter
 import com.intuisoft.plaid.common.model.ExchangeInfoDataModel
-import com.intuisoft.plaid.features.pin.ui.PinProtectedFragment
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.common.util.extensions.toArrayList
 import com.intuisoft.plaid.databinding.FragmentExchangeHistoryBinding
 import com.intuisoft.plaid.features.dashboardflow.viewmodel.ExchangeHistoryViewModel
 import com.intuisoft.plaid.features.homescreen.adapters.ExchangeHistoryAdapter
-import com.intuisoft.plaid.util.fragmentconfig.ConfigSwapData
+import com.intuisoft.plaid.util.fragmentconfig.BasicConfigData
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class ExchangeHistoryFragment : PinProtectedFragment<FragmentExchangeHistoryBinding>() {
+class ExchangeHistoryFragment : ConfigurableFragment<FragmentExchangeHistoryBinding>(pinProtection = true) {
     protected val viewModel: ExchangeHistoryViewModel by viewModel()
     protected val localStoreRepository: LocalStoreRepository by inject()
 
@@ -101,7 +100,7 @@ class ExchangeHistoryFragment : PinProtectedFragment<FragmentExchangeHistoryBind
                 actionLeft = 0,
                 actionRight = 0,
                 configurationType = FragmentConfigurationType.CONFIGURATION_SWAP_DATA,
-                configData = ConfigSwapData(
+                configData = BasicConfigData(
                     payload = Gson().toJson(exchange, ExchangeInfoDataModel::class.java)
                 )
             ),

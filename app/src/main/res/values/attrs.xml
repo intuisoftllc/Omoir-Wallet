@@ -116,39 +116,10 @@
         <attr name="is_selected" format="boolean"/>
     </declare-styleable>
 
-    <declare-styleable name="ChartProgressBar">
-        <attr name="hdMaxValue" format="float"/>
-        <attr name="hdBarWidth" format="dimension"/>
-        <attr name="hdBarHeight" format="dimension"/>
-        <attr name="hdEmptyColor" format="color"/>
-        <attr name="hdProgressColor" format="color"/>
-        <attr name="hdProgressDisableColor" format="color"/>
-        <attr name="hdProgressClickColor" format="color"/>
-        <attr name="hdBarRadius" format="dimension"/>
-        <attr name="hdPinTextColor" format="color"/>
-        <attr name="hdPinBackgroundColor" format="color"/>
-        <attr name="hdPinPaddingTop" format="dimension"/>
-        <attr name="hdPinPaddingBottom" format="dimension"/>
-        <attr name="hdPinPaddingEnd" format="dimension"/>
-        <attr name="hdPinPaddingStart" format="dimension"/>
-        <attr name="hdBarCanBeClick" format="boolean"/>
-        <attr name="hdPinsVisible" format="boolean"/>
-        <attr name="hdBarTitleColor" format="color"/>
-        <attr name="hdBarTitleMarginTop" format="dimension"/>
-        <attr name="hdBarTitleTxtSize" format="dimension"/>
-        <attr name="hdPinTxtSize" format="dimension"/>
-        <attr name="hdPinMarginTop" format="dimension"/>
-        <attr name="hdPinMarginBottom" format="dimension"/>
-        <attr name="hdPinMarginEnd" format="dimension"/>
-        <attr name="hdPinMarginStart" format="dimension"/>
-        <attr name="hdPinDrawable" format="integer"/>
-        <attr name="hdBarTitleSelectedColor" format="color"/>
-        <attr name="hdBarCanBeToggle" format="boolean"/>
-    </declare-styleable>
-
     <declare-styleable name="BarChartAttrs">
         <attr format="dimension" name="chart_spacing"/>
         <attr format="color" name="chart_barsColor"/>
+        <attr format="boolean" name="chart_isHorizontal"/>
         <attr format="color" name="chart_barSelectedColor"/>
         <attr format="color" name="chart_emptyDataLabelColor"/>
         <attr format="reference" name="chart_barsColorsList"/>
@@ -184,5 +155,10 @@
         <attr format="color" name="chart_gridColor"/>
         <attr format="dimension" name="chart_gridStrokeWidth"/>
 
+    </declare-styleable>
+
+    <declare-styleable name="RingChartAttrs">
+        <attr format="color" name="RingChartPrimaryColor"/>
+        <attr format="color" name="RingChartSecondaryColor"/>
     </declare-styleable>
 </resources>

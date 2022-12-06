@@ -178,3 +178,13 @@ fun Double.roundTo(numFractionDigits: Int): Double {
     return (this * factor).roundToInt() / factor
 }
 
+fun List<Long>.median(): Double {
+    val array = this.sorted()
+
+    if (array.size % 2 == 0) {
+        return ((array[array.size / 2] + array[array.size / 2 - 1]) / 2).toDouble()
+    } else {
+        return (array[array.size / 2]).toDouble()
+    }
+}
+

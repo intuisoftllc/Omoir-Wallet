@@ -198,6 +198,7 @@ interface IAccountWallet {
     fun publicKey(index: Int, external: Boolean): PublicKey
     fun publicKeys(indices: IntRange, external: Boolean): List<PublicKey>
     fun masterPublicKey(purpose: HDWallet.Purpose, mainNet: Boolean): String
+    fun fullPublicKeyPath(key: PublicKey): String
 }
 
 interface IPublicKeyManager {
@@ -208,4 +209,5 @@ interface IPublicKeyManager {
     fun gapShifts(): Boolean
     fun getPublicKeyByPath(path: String): PublicKey
     fun masterPublicKey(purpose: HDWallet.Purpose, mainNet: Boolean): String
+    fun fullPublicKeyPath(key: PublicKey): String
 }

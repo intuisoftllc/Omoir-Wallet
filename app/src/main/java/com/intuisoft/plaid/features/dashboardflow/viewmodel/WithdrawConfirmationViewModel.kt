@@ -253,8 +253,6 @@ class WithdrawConfirmationViewModel(
         }
     }
 
-    fun getUnspentOutputs() = localWallet!!.walletKit!!.getUnspentOutputs()
-
     fun utxoToUnspentOutput() : List<UnspentOutput> {
         return getUnspentOutputs().filter { selectedUTXOs.find { utxo -> it.output.address!! == utxo } != null }
     }

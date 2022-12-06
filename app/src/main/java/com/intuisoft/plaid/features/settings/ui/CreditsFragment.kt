@@ -6,17 +6,17 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import com.intuisoft.plaid.R
+import com.intuisoft.plaid.androidwrappers.ConfigurableFragment
 import com.intuisoft.plaid.androidwrappers.FragmentConfiguration
 import com.intuisoft.plaid.androidwrappers.TopBarView
 import com.intuisoft.plaid.androidwrappers.openLink
 import com.intuisoft.plaid.databinding.FragmentAboutUsBinding
 import com.intuisoft.plaid.databinding.FragmentCreditsBinding
-import com.intuisoft.plaid.features.pin.ui.PinProtectedFragment
 import com.intuisoft.plaid.features.settings.viewmodel.SettingsViewModel
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 
-class CreditsFragment : PinProtectedFragment<FragmentCreditsBinding>() {
+class CreditsFragment : ConfigurableFragment<FragmentCreditsBinding>(pinProtection = true) {
     private val viewModel: SettingsViewModel by sharedViewModel()
 
     override fun onCreateView(

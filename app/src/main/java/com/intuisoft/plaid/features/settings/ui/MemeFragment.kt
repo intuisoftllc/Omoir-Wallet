@@ -6,13 +6,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import com.intuisoft.plaid.R
+import com.intuisoft.plaid.androidwrappers.ConfigurableFragment
 import com.intuisoft.plaid.androidwrappers.FragmentConfiguration
 import com.intuisoft.plaid.androidwrappers.TopBarView
 import com.intuisoft.plaid.databinding.FragmentEasterEggBinding
-import com.intuisoft.plaid.features.pin.ui.PinProtectedFragment
 
 
-class MemeFragment : PinProtectedFragment<FragmentEasterEggBinding>() {
+class MemeFragment : ConfigurableFragment<FragmentEasterEggBinding>(pinProtection = true) {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

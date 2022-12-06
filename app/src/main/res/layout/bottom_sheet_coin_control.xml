@@ -40,6 +40,20 @@
                 app:layout_constraintEnd_toEndOf="parent"/>
 
             <TextView
+                android:id="@+id/hint"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/select_all"
+                android:text="@string/coin_control_hint"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:gravity="center"
+                android:visibility="gone"
+                android:layout_marginTop="@dimen/margin_8"
+                style="@style/TextStyle.Semibold.16"
+                android:textColor="@color/text_grey"/>
+
+            <TextView
                 android:id="@+id/no_utxos"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -60,7 +74,7 @@
                 android:layout_height="wrap_content"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/select_all"
+                app:layout_constraintTop_toBottomOf="@id/hint"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 tools:itemCount="5"
                 app:layout_constraintVertical_bias="0"

@@ -211,8 +211,8 @@ object SimpleTimeFormat {
 
     fun fullDateShort(time: Instant) = time.atZone(ZoneId.systemDefault()).format(DateTimeFormatter.ofPattern("MMM-dd-YY"))
 
-    fun getDateByLocale(timeInMills: Long, locale: String?): String? {
-        return SimpleDateFormat("MMM dd, yyyy hh:mm aa", Locale(locale)).format(Date(timeInMills))
+    fun getDateByLocale(timeInMills: Long, locale: Locale): String? {
+        return SimpleDateFormat("MMM dd, yyyy hh:mm aa", locale).format(Date(timeInMills))
     }
 
     fun getShortHistoryDateByLocale(timeInMills: Long, locale: String?): String? {

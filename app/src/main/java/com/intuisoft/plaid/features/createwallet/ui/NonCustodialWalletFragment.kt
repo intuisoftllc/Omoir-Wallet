@@ -5,14 +5,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.intuisoft.plaid.R
+import com.intuisoft.plaid.androidwrappers.ConfigurableFragment
 import com.intuisoft.plaid.androidwrappers.FragmentConfiguration
 import com.intuisoft.plaid.databinding.FragmentNonCustodialWalletBinding
 import com.intuisoft.plaid.features.createwallet.viewmodel.CreateWalletViewModel
-import com.intuisoft.plaid.features.pin.ui.PinProtectedFragment
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 
-class NonCustodialWalletFragment : PinProtectedFragment<FragmentNonCustodialWalletBinding>() {
+class NonCustodialWalletFragment : ConfigurableFragment<FragmentNonCustodialWalletBinding>(pinProtection = true) {
     protected val viewModel: CreateWalletViewModel by sharedViewModel()
 
     override fun onCreateView(

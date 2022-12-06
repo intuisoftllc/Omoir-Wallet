@@ -4,6 +4,6 @@ import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-data class ConfigTransactionData(
+data class BasicConfigData(
     val payload: String
 ): Parcelable

@@ -345,10 +345,10 @@ class PasscodeView @JvmOverloads constructor(
             return
         }
 
-        CommonService.provideLocalPin(psd)
         if ((passcodeType == TYPE_SET_PASSCODE && equals(psd))
-                || (passcodeType == TYPE_CHECK_PASSCODE && UserData.checkPin())) {
+                || (passcodeType == TYPE_CHECK_PASSCODE && UserData.load(psd) != null)) {
             // match
+            CommonService.provideLocalPin(psd)
             CommonService.loadOrSaveUserData()
             pinValidationSuccess = true
             runOkAnimation()

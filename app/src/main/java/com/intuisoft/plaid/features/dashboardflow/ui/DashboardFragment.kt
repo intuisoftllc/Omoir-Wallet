@@ -11,32 +11,29 @@ import com.intuisoft.plaid.R
 import com.intuisoft.plaid.activities.MainActivity
 import com.intuisoft.plaid.androidwrappers.*
 import com.intuisoft.plaid.common.CommonService
-import com.intuisoft.plaid.common.model.AppMode
 import com.intuisoft.plaid.common.model.BitcoinDisplayUnit
 import com.intuisoft.plaid.common.model.ChartDataModel
 import com.intuisoft.plaid.common.model.ChartIntervalType
 import com.intuisoft.plaid.databinding.FragmentWalletDashboardBinding
 import com.intuisoft.plaid.features.homescreen.adapters.BasicTransactionAdapter
-import com.intuisoft.plaid.features.pin.ui.PinProtectedFragment
 import com.intuisoft.plaid.listeners.StateListener
 import com.intuisoft.plaid.model.LocalWalletModel
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.common.util.SimpleCoinNumberFormat
-import com.intuisoft.plaid.common.util.SimpleCurrencyFormat
 import com.intuisoft.plaid.common.util.extensions.toArrayList
 import com.intuisoft.plaid.features.dashboardflow.adapters.BasicLineChartAdapter
 import com.intuisoft.plaid.features.dashboardflow.viewmodel.DashboardViewModel
 import com.intuisoft.plaid.util.SimpleTimeFormat
 import com.intuisoft.plaid.util.fragmentconfig.ConfigQrDisplayData
-import com.intuisoft.plaid.util.fragmentconfig.ConfigTransactionData
+import com.intuisoft.plaid.util.fragmentconfig.BasicConfigData
 import com.intuisoft.plaid.walletmanager.AbstractWalletManager
 import io.horizontalsystems.bitcoincore.models.TransactionInfo
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.*
 
-class DashboardFragment : PinProtectedFragment<FragmentWalletDashboardBinding>(), StateListener {
+class DashboardFragment : ConfigurableFragment<FragmentWalletDashboardBinding>(pinProtection = true), StateListener {
     protected val viewModel: DashboardViewModel by viewModel()
     protected val localStoreRepository: LocalStoreRepository by inject()
     protected val walletManager: AbstractWalletManager by inject()
@@ -84,7 +81,7 @@ class DashboardFragment : PinProtectedFragment<FragmentWalletDashboardBinding>()
                 binding.scrubTime.visibility = View.VISIBLE
                 binding.price.text = viewModel.transformScrubValue(data)
 
-                binding.scrubTime.text = SimpleTimeFormat.getDateByLocale(data.time * Constants.Time.MILLS_PER_SEC, Locale.US.language)
+                binding.scrubTime.text = SimpleTimeFormat.getDateByLocale(data.time * Constants.Time.MILLS_PER_SEC, Locale.US)
             } else {
                 binding.percentageGain.visibility = View.VISIBLE
                 binding.scrubTime.visibility = View.INVISIBLE
@@ -293,7 +290,7 @@ class DashboardFragment : PinProtectedFragment<FragmentWalletDashboardBinding>()
         var bundle = bundleOf(
             Constants.Navigation.FRAGMENT_CONFIG to FragmentConfiguration(
                 configurationType = FragmentConfigurationType.CONFIGURATION_TRANSACTION_DATA,
-                configData = ConfigTransactionData(
+                configData = BasicConfigData(
                     payload = CommonService.getGsonInstance().toJson(transaction)
                 )
             ),

@@ -125,7 +125,6 @@ class SyncManager(
             running = true
 
             syncWallets()
-            startAutoSync()
         }
     }
 

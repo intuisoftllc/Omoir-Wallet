@@ -8,16 +8,16 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.intuisoft.plaid.R
+import com.intuisoft.plaid.androidwrappers.ConfigurableFragment
 import com.intuisoft.plaid.androidwrappers.FragmentConfiguration
 import com.intuisoft.plaid.androidwrappers.TopBarView
 import com.intuisoft.plaid.databinding.FragmentAppearanceBinding
-import com.intuisoft.plaid.features.pin.ui.PinProtectedFragment
 import com.intuisoft.plaid.features.settings.viewmodel.SettingsViewModel
 import com.intuisoft.plaid.common.model.AppTheme
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 
-class AppearanceFragment : PinProtectedFragment<FragmentAppearanceBinding>() {
+class AppearanceFragment : ConfigurableFragment<FragmentAppearanceBinding>(pinProtection = true) {
     private val viewModel: SettingsViewModel by sharedViewModel()
 
     override fun onCreateView(

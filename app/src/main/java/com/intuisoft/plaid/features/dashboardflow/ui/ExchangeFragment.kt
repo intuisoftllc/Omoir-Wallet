@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager
 import android.widget.EditText
 import android.widget.TextView
 import androidx.cardview.widget.CardView
@@ -28,16 +27,15 @@ import com.intuisoft.plaid.common.util.extensions.toArrayList
 import com.intuisoft.plaid.databinding.FragmentExchangeBinding
 import com.intuisoft.plaid.features.dashboardflow.viewmodel.ExchangeViewModel
 import com.intuisoft.plaid.features.homescreen.adapters.SupportedCurrenciesAdapter
-import com.intuisoft.plaid.features.pin.ui.PinProtectedFragment
 import com.intuisoft.plaid.util.NetworkUtil
-import com.intuisoft.plaid.util.fragmentconfig.ConfigSwapData
+import com.intuisoft.plaid.util.fragmentconfig.BasicConfigData
 import com.mifmif.common.regex.Generex
 import io.horizontalsystems.bitcoinkit.BitcoinKit
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
-class ExchangeFragment : PinProtectedFragment<FragmentExchangeBinding>() {
+class ExchangeFragment : ConfigurableFragment<FragmentExchangeBinding>(pinProtection = true) {
     private val viewModel: ExchangeViewModel by viewModel()
     private val localStore: LocalStoreRepository by inject()
 
@@ -55,8 +53,8 @@ class ExchangeFragment : PinProtectedFragment<FragmentExchangeBinding>() {
 
     override fun onConfiguration(configuration: FragmentConfiguration?) {
 
-        onBackPressedCallback {
-            onNavigateBottomBarSecondaryFragmentBackwards(localStore)
+        onBackPressedCallback { // todo: prevent user from creatig an exchange in watch only wallets when they must send btc
+            onNavigateBottomBarSecondaryFragmentBackwards()
         }
 
         viewModel.setInitialValues()
@@ -185,7 +183,7 @@ class ExchangeFragment : PinProtectedFragment<FragmentExchangeBinding>() {
                     actionLeft = 0,
                     actionRight = 0,
                     configurationType = FragmentConfigurationType.CONFIGURATION_SWAP_DATA,
-                    configData = ConfigSwapData(
+                    configData = BasicConfigData(
                         payload = Gson().toJson(it, ExchangeInfoDataModel::class.java)
                     )
                 ),

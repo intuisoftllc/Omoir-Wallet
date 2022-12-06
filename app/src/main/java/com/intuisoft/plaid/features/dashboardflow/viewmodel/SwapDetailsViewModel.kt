@@ -11,6 +11,7 @@ import com.intuisoft.plaid.androidwrappers.WalletViewModel
 import com.intuisoft.plaid.common.model.BitcoinDisplayUnit
 import com.intuisoft.plaid.common.repositories.ApiRepository
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
+import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.common.util.RateConverter
 import com.intuisoft.plaid.common.util.SimpleCurrencyFormat
 import com.intuisoft.plaid.util.entensions.addChars
@@ -57,7 +58,7 @@ class SwapDetailsViewModel(
     fun copyDataItemClicked(copyIcon: ImageView, data: String) {
         viewModelScope.launch {
             _copyData.postValue(copyIcon to data)
-            delay(600)
+            delay(Constants.Time.ITEM_COPY_DELAY.toLong())
             _copyData.postValue(copyIcon to null)
         }
     }

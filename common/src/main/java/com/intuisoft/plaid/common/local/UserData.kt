@@ -126,8 +126,7 @@ class UserData {
         CoroutineScope(Dispatchers.IO).launch {
             synchronized(this@UserData::class.java) {
                 val json = Gson().toJson(this@UserData, UserData::class.java)
-                AESUtils.setPassword(CommonService.getUserPin())
-                AESUtils.encrypt(json)?.let { usrData ->
+                AESUtils.encrypt(json, CommonService.getUserPin())?.let { usrData ->
                     val dir: File = CommonService.getApplication().filesDir
                     File(dir, FILE_NAME).writeToFile(
                         usrData,
@@ -142,28 +141,26 @@ class UserData {
         private const val FILE_NAME = "plaid_wallet_usr_data"
         private const val SECONDARY_FILE_NAME = "plaid_wallet_data"
 
-        fun checkPin() =
-            load() != null
+        fun load(pin: String): UserData? {
+            synchronized(this::class.java) {
+                try {
+                    val dir: File = CommonService.getApplication().filesDir
+                    val data = File(dir, FILE_NAME).readFromFile(CommonService.getApplication())
 
-        fun load(): UserData? {
-            try {
-                val dir: File = CommonService.getApplication().filesDir
-                val data = File(dir, FILE_NAME).readFromFile(CommonService.getApplication())
+                    if (data != null && data.isNotEmpty()) {
+                        val json = AESUtils.decrypt(data.trim(), pin)
 
-                if (data != null && data.isNotEmpty()) {
-                    AESUtils.setPassword(CommonService.getUserPin())
-                    val json = AESUtils.decrypt(data.trim())
-
-                    if (json != null) {
-                        return Gson().fromJson(json, UserData::class.java)
+                        if (json != null) {
+                            return Gson().fromJson(json, UserData::class.java)
+                        } else {
+                            return null
+                        }
                     } else {
-                        return null
+                        return UserData()
                     }
-                } else {
-                    return UserData()
+                } catch (t: Throwable) {
+                    return null
                 }
-            } catch(t: Throwable) {
-                return null
             }
         }
 

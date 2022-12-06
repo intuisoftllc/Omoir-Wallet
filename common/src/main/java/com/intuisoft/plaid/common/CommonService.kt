@@ -313,7 +313,7 @@ object CommonService {
     // loaders
     fun loadOrSaveUserData(): Boolean {
         if(userData == null)
-            userData = UserData.load()
+            userData = UserData.load(localPin)
         else userData?.save()
         return userData != null
     }

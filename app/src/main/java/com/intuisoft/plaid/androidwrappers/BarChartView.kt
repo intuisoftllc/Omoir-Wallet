@@ -10,12 +10,14 @@ import androidx.annotation.Size
 import androidx.core.view.doOnPreDraw
 import com.db.williamchart.ChartContract
 import com.db.williamchart.ExperimentalFeature
+import com.db.williamchart.animation.DefaultHorizontalAnimation
 import com.db.williamchart.animation.NoAnimation
 import com.db.williamchart.data.*
 import com.db.williamchart.data.configuration.BarChartConfiguration
 import com.db.williamchart.data.configuration.ChartConfiguration
 import com.db.williamchart.extensions.drawChartBar
 import com.db.williamchart.extensions.obtainStyledAttributes
+import com.db.williamchart.renderer.HorizontalBarChartRenderer
 import com.db.williamchart.view.AxisChartView
 import com.intuisoft.plaid.R
 
@@ -51,6 +53,9 @@ class BarChartView @JvmOverloads constructor(
 
     @Suppress("MemberVisibilityCanBePrivate")
     var barSelectedColor: Int = defaultBarsColor
+
+    @Suppress("MemberVisibilityCanBePrivate")
+    var isHorizontal: Boolean = false
 
     @Suppress("MemberVisibilityCanBePrivate")
     var listener: BarSelectedListener? = null
@@ -116,9 +121,15 @@ class BarChartView @JvmOverloads constructor(
             )
 
     init {
-        renderer = BarChartRender(this, painter, NoAnimation())
-        onDataPointClickListener = onBarSelected
         handleAttributes(obtainStyledAttributes(attrs, R.styleable.BarChartAttrs))
+
+        if(isHorizontal) {
+            animation = DefaultHorizontalAnimation()
+            renderer = HorizontalBarChartRenderer(this, painter, NoAnimation())
+        } else {
+            renderer = BarChartRender(this, painter, NoAnimation())
+        }
+        onDataPointClickListener = onBarSelected
         handleEditMode()
     }
 
@@ -196,6 +207,7 @@ class BarChartView @JvmOverloads constructor(
             spacing = getDimension(R.styleable.BarChartAttrs_chart_spacing, spacing)
             barsColor = getColor(R.styleable.BarChartAttrs_chart_barsColor, barsColor)
             barSelectedColor = getColor(R.styleable.BarChartAttrs_chart_barSelectedColor, barSelectedColor)
+            isHorizontal = getBoolean(R.styleable.BarChartAttrs_chart_isHorizontal, isHorizontal)
             emptyDataLabelColor = getColor(R.styleable.BarChartAttrs_chart_emptyDataLabelColor, emptyDataLabelColor)
             barRadius = getDimension(R.styleable.BarChartAttrs_chart_barsRadius, barRadius)
             barsBackgroundColor =

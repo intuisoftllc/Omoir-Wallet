@@ -22,11 +22,13 @@ class BarChartLabelRender : Labels {
 
     override fun draw(canvas: Canvas, paint: Paint, xLabels: List<Label>) {
         xLabels.forEachIndexed { index, label ->
-            val hasData = data[index].second != 0.0f
-            if(!hasData) {
-                paint.color = emptyDataLabelColor
-            } else {
-                paint.color = hasDataLabelColor
+            if(data.isNotEmpty()) {
+                val hasData = data[index].second != 0.0f
+                if (!hasData) {
+                    paint.color = emptyDataLabelColor
+                } else {
+                    paint.color = hasDataLabelColor
+                }
             }
 
             drawString(

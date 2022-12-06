@@ -6,6 +6,7 @@ import com.intuisoft.plaid.androidwrappers.SingleLiveData
 import com.intuisoft.plaid.listeners.StateListener
 import com.intuisoft.plaid.model.LocalWalletModel
 import io.horizontalsystems.bitcoincore.models.BitcoinPaymentData
+import io.horizontalsystems.bitcoincore.models.PublicKey
 import io.horizontalsystems.bitcoinkit.BitcoinKit
 import io.horizontalsystems.hdwalletkit.HDWallet
 import java.util.concurrent.atomic.AtomicBoolean
@@ -43,5 +44,6 @@ abstract class AbstractWalletManager {
     abstract fun getBaseWallet(mainNet: Boolean = true): BitcoinKit
     abstract fun openWallet(wallet: LocalWalletModel)
     abstract fun closeWallet()
+    abstract fun getFullPublicKeyPath(key: PublicKey): String
     abstract fun getOpenedWallet(): LocalWalletModel?
 }

@@ -12,14 +12,13 @@ import com.intuisoft.plaid.androidwrappers.*
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.databinding.FragmentOnboardingAllSetBinding
 import com.intuisoft.plaid.features.onboarding.viewmodel.OnboardingViewModel
-import com.intuisoft.plaid.features.pin.ui.PinProtectedFragment
 import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.util.fragmentconfig.AllSetData
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 
-class AllSetFragment : PinProtectedFragment<FragmentOnboardingAllSetBinding>() {
+class AllSetFragment : ConfigurableFragment<FragmentOnboardingAllSetBinding>(pinProtection = true) {
     private val viewModel: OnboardingViewModel by sharedViewModel()
     private val localStoreRepository: LocalStoreRepository by inject()
 

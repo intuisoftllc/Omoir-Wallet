@@ -12,7 +12,6 @@ import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.*
 import com.intuisoft.plaid.databinding.FragmentManageWalletsBinding
 import com.intuisoft.plaid.features.homescreen.free.adapters.BasicWalletDataAdapter
-import com.intuisoft.plaid.features.pin.ui.PinProtectedFragment
 import com.intuisoft.plaid.model.LocalWalletModel
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.common.util.Constants
@@ -21,7 +20,7 @@ import com.intuisoft.plaid.walletmanager.AbstractWalletManager
 import org.koin.android.ext.android.inject
 
 
-class ViewWalletsFragment : PinProtectedFragment<FragmentManageWalletsBinding>() {
+class ViewWalletsFragment : ConfigurableFragment<FragmentManageWalletsBinding>(pinProtection = true) {
     protected val localStoreRepository: LocalStoreRepository by inject()
     protected val walletManager: AbstractWalletManager by inject()
 

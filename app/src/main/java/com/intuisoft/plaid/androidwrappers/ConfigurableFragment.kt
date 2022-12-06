@@ -5,13 +5,19 @@ import android.view.View
 import androidx.navigation.fragment.findNavController
 import androidx.viewbinding.ViewBinding
 import com.intuisoft.plaid.R
+import com.intuisoft.plaid.activities.MainActivity
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.common.util.Constants
+import com.intuisoft.plaid.features.pin.viewmodel.PinViewModel
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 
-abstract class ConfigurableFragment<T: ViewBinding> : BindingFragment<T>() {
+abstract class ConfigurableFragment<T: ViewBinding>(
+    private val pinProtection: Boolean = false
+) : BindingFragment<T>(), PinProtectedFragmentDelegate {
     protected var baseVM: BaseViewModel? = null
     private var configTypes = listOf<FragmentConfigurationType>()
+    protected val pinViewModel: PinViewModel by sharedViewModel()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -55,15 +61,23 @@ abstract class ConfigurableFragment<T: ViewBinding> : BindingFragment<T>() {
         }
     }
 
+    override fun checkPin() {
+        if(pinProtection) {
+            pinViewModel.checkPinStatus {
+                navigate(
+                    R.id.pinFragment,
+                    Constants.Navigation.ANIMATED_FADE_IN_EXIT_NAV_OPTION
+                )
+            }
+        }
+    }
+
     fun configSet(): Boolean {
         return baseVM!!.currentConfig != null
     }
 
-    fun onNavigateBottomBarSecondaryFragmentBackwards(localStoreRepository: LocalStoreRepository) {
-        if(localStoreRepository.isProEnabled())
-            findNavController().popBackStack(R.id.walletDashboardFragment, false) // todo: change to pro dashboard
-        else
-            findNavController().popBackStack(R.id.walletDashboardFragment, false)
+    fun onNavigateBottomBarSecondaryFragmentBackwards() {
+        findNavController().popBackStack(R.id.walletDashboardFragment, false)
     }
 
     fun onNavigateBottomBarPrimaryFragmentBackwards(localStoreRepository: LocalStoreRepository) {

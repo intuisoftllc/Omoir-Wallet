@@ -10,7 +10,6 @@ import androidx.lifecycle.Observer
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.activities.MainActivity
 import com.intuisoft.plaid.androidwrappers.*
-import com.intuisoft.plaid.features.pin.ui.PinProtectedFragment
 import com.intuisoft.plaid.listeners.StateListener
 import com.intuisoft.plaid.model.LocalWalletModel
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
@@ -21,7 +20,7 @@ import io.horizontalsystems.bitcoincore.models.TransactionInfo
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class WithdrawalTypeFragment : PinProtectedFragment<FragmentWithdrawalTypeBinding>() {
+class WithdrawalTypeFragment : ConfigurableFragment<FragmentWithdrawalTypeBinding>(pinProtection = true) {
     protected val viewModel: WalletViewModel by viewModel()
 
     override fun onCreateView(

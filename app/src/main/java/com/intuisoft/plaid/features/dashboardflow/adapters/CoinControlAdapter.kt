@@ -16,7 +16,8 @@ import io.horizontalsystems.bitcoincore.storage.UnspentOutput
 
 class CoinControlAdapter(
     var localStoreRepository: LocalStoreRepository,
-    private val onAllItemsSelected: (Boolean) -> Unit
+    private val onAllItemsSelected: (Boolean) -> Unit,
+    private val onItemLongClicked: (UnspentOutput) -> Unit
 ) : RecyclerView.Adapter<BindingViewHolder>() {
 
     var utxoDetail = arrayListOf<UnspentOutputDetail>()
@@ -73,12 +74,16 @@ class CoinControlAdapter(
         onAllItemsSelected(areAllItemsSelected())
     }
 
+    fun onUtxoLongClicked(utxo: UnspentOutput) {
+        onItemLongClicked(utxo)
+    }
+
     fun areAllItemsSelected() = selectedUTXOs.size == utxoDetail.size
 
     fun addUTXOs(items: ArrayList<UnspentOutput>, selectedItems: ArrayList<UnspentOutput>) {
         utxoDetail.clear()
         utxoDetail.addAll(items.mapIndexed { index, utxo ->
-            val detail = UnspentOutputDetail(utxo, ::onUtxoSelected, localStoreRepository)
+            val detail = UnspentOutputDetail(utxo, ::onUtxoSelected, ::onUtxoLongClicked, localStoreRepository)
             if(selectedItems.find { it.output.address == utxo.output.address } != null) {
                 detail.setChecked(true)
             }

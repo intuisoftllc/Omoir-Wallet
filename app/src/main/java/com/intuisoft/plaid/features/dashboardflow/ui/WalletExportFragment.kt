@@ -28,7 +28,6 @@ import com.intuisoft.plaid.common.util.extensions.containsNumbers
 import com.intuisoft.plaid.common.util.extensions.deleteAt
 import com.intuisoft.plaid.databinding.FragmentWalletExportBinding
 import com.intuisoft.plaid.features.dashboardflow.viewmodel.WalletExportViewModel
-import com.intuisoft.plaid.features.pin.ui.PinProtectedFragment
 import com.intuisoft.plaid.util.entensions.charsAfter
 import com.intuisoft.plaid.util.fragmentconfig.ConfigQrDisplayData
 import com.journeyapps.barcodescanner.BarcodeEncoder
@@ -38,7 +37,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.*
 
 
-class WalletExportFragment : PinProtectedFragment<FragmentWalletExportBinding>() {
+class WalletExportFragment : ConfigurableFragment<FragmentWalletExportBinding>(pinProtection = true) {
     private val viewModel: WalletExportViewModel by viewModel()
     private val localStoreRepository: LocalStoreRepository by inject()
 

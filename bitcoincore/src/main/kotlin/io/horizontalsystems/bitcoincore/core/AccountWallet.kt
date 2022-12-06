@@ -25,6 +25,9 @@ class AccountWallet(private val hdWallet: HDWalletAccount, override val gapLimit
         }
     }
 
+    override fun fullPublicKeyPath(key: PublicKey): String =
+        hdWallet.fullPublicKeyPath(key.index, if(key.external) Chain.EXTERNAL else Chain.INTERNAL)
+
     override fun masterPublicKey(purpose: Purpose, mainNet: Boolean) =
         hdWallet.masterPublicKey(purpose, mainNet)
 

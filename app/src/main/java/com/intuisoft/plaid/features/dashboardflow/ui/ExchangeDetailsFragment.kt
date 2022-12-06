@@ -13,19 +13,18 @@ import com.google.gson.Gson
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.*
 import com.intuisoft.plaid.common.model.ExchangeInfoDataModel
-import com.intuisoft.plaid.features.pin.ui.PinProtectedFragment
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.common.util.SimpleCoinNumberFormat
 import com.intuisoft.plaid.databinding.FragmentExchangeDetailsBinding
 import com.intuisoft.plaid.features.dashboardflow.viewmodel.SwapDetailsViewModel
 import com.intuisoft.plaid.model.ExchangeStatus
+import com.intuisoft.plaid.util.fragmentconfig.BasicConfigData
 import com.intuisoft.plaid.util.fragmentconfig.ConfigInvoiceData
-import com.intuisoft.plaid.util.fragmentconfig.ConfigSwapData
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class ExchangeDetailsFragment : PinProtectedFragment<FragmentExchangeDetailsBinding>() {
+class ExchangeDetailsFragment : ConfigurableFragment<FragmentExchangeDetailsBinding>(pinProtection = true) {
     protected val viewModel: SwapDetailsViewModel by viewModel()
     protected val localStoreRepository: LocalStoreRepository by inject()
 
@@ -45,7 +44,7 @@ class ExchangeDetailsFragment : PinProtectedFragment<FragmentExchangeDetailsBind
 
     @SuppressLint("SetTextI18n")
     override fun onConfiguration(configuration: FragmentConfiguration?) {
-        val swapData = configuration!!.configData as ConfigSwapData
+        val swapData = configuration!!.configData as BasicConfigData
         val data = Gson().fromJson(swapData.payload, ExchangeInfoDataModel::class.java)
 
         binding.status.text = data.status

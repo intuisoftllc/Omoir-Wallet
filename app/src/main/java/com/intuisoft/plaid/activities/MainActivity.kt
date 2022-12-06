@@ -5,6 +5,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import androidx.activity.result.contract.ActivityResultContracts
@@ -108,6 +109,14 @@ class MainActivity : BindingActivity<ActivityMainBinding>(), ActionBarDelegate {
             configurationSetup = true
             setupPerformanceLevel()
             setupBottomNavigationBar()
+        }
+    }
+
+    override fun onWindowFocusChanged(hasFocus: Boolean) {
+        super.onWindowFocusChanged(hasFocus)
+        if(hasFocus) {
+            val protectedFragment = supportFragmentManager.currentNavigationFragment as? PinProtectedFragmentDelegate
+            protectedFragment?.checkPin()
         }
     }
 

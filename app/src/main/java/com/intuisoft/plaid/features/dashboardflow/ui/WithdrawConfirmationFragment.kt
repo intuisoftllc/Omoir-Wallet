@@ -29,7 +29,6 @@ import com.intuisoft.plaid.databinding.FragmentWithdrawConfirmationBinding
 import com.intuisoft.plaid.features.dashboardflow.adapters.AddressBookAdapter
 import com.intuisoft.plaid.features.dashboardflow.adapters.TransferToWalletAdapter
 import com.intuisoft.plaid.features.dashboardflow.viewmodel.WithdrawConfirmationViewModel
-import com.intuisoft.plaid.features.pin.ui.PinProtectedFragment
 import com.intuisoft.plaid.features.settings.ui.AddressBookFragment
 import com.intuisoft.plaid.features.settings.viewmodel.AddressBookViewModel
 import com.intuisoft.plaid.listeners.BarcodeResultListener
@@ -49,7 +48,7 @@ import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
-class WithdrawConfirmationFragment : PinProtectedFragment<FragmentWithdrawConfirmationBinding>(), BarcodeResultListener {
+class WithdrawConfirmationFragment : ConfigurableFragment<FragmentWithdrawConfirmationBinding>(pinProtection = true), BarcodeResultListener {
     private val viewModel: WithdrawConfirmationViewModel by viewModel()
     private val addressBookVM: AddressBookViewModel by viewModel()
     private val localStoreRepository: LocalStoreRepository by inject()
@@ -200,7 +199,7 @@ class WithdrawConfirmationFragment : PinProtectedFragment<FragmentWithdrawConfir
                 rawTransaction.showCheck(true)
 
                 viewModel.viewModelScope.launch {
-                    delay(550)
+                    delay(Constants.Time.ITEM_COPY_DELAY.toLong())
                     rawTransaction.showCopy(true)
                     rawTransaction.showCheck(false)
                 }
@@ -212,7 +211,7 @@ class WithdrawConfirmationFragment : PinProtectedFragment<FragmentWithdrawConfir
                 txId.showCheck(true)
 
                 viewModel.viewModelScope.launch {
-                    delay(550)
+                    delay(Constants.Time.ITEM_COPY_DELAY.toLong())
                     txId.showCopy(true)
                     txId.showCheck(false)
                 }

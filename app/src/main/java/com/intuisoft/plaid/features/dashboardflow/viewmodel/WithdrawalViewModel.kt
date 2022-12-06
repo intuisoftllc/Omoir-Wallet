@@ -373,12 +373,22 @@ class WithdrawalViewModel(
         }
     }
 
+    fun setInitialSpendUtxo(utxo: String) {
+        selectedUTXOs = mutableListOf(getUnspentOutputs().find { it.output.address == utxo }!!)
+        displayTotalBalance()
+    }
+
     fun updateUTXOs(utxos: MutableList<UnspentOutput>) {
         selectedUTXOs = utxos
         displayTotalBalance()
     }
 
-    fun getUnspentOutputs() = localWallet!!.walletKit!!.getUnspentOutputs()
+    fun addSingleUTXO(utxo: UnspentOutput) {
+        if(selectedUTXOs.find { it == utxo } == null) {
+            selectedUTXOs.add(utxo)
+            displayTotalBalance()
+        }
+    }
 
     fun getSelectedUTXOs() = selectedUTXOs
 

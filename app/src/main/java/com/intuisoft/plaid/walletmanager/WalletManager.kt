@@ -10,6 +10,7 @@ import com.intuisoft.plaid.model.LocalWalletModel
 import io.horizontalsystems.bitcoincore.BitcoinCore
 import io.horizontalsystems.bitcoincore.models.BalanceInfo
 import io.horizontalsystems.bitcoincore.models.BitcoinPaymentData
+import io.horizontalsystems.bitcoincore.models.PublicKey
 import io.horizontalsystems.bitcoincore.models.TransactionInfo
 import io.horizontalsystems.bitcoinkit.BitcoinKit
 import io.horizontalsystems.hdwalletkit.HDExtendedKey
@@ -128,6 +129,10 @@ class WalletManager(
 
     override fun arePeersReady(localWallet: LocalWalletModel) : Boolean {
         return localWallet.walletKit!!.arePeersReady()
+    }
+
+    override fun getFullPublicKeyPath(key: PublicKey): String {
+        return getOpenedWallet()!!.walletKit!!.getFullPublicKeyPath(key)
     }
 
     private fun getTotalBalance(): Long {
@@ -250,8 +255,11 @@ class WalletManager(
        localStoreRepository.getStoredWalletInfo().walletIdentifiers.add(wallet)
        localStoreRepository.setStoredWalletInfo(localStoreRepository.getStoredWalletInfo())
        updateWallets()
-       syncer.startAutoSync()
    }
+
+    fun startAutoSync() {
+        syncer.startAutoSync()
+    }
 
    override fun getBaseWallet(mainNet: Boolean) =
        if(mainNet)

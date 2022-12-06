@@ -44,4 +44,17 @@
         app:layout_constraintTop_toBottomOf="@id/outflow"
         android:id="@+id/fees"/>
 
+    <com.intuisoft.plaid.androidwrappers.SettingsItemView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:item_title="@string/report_type_utx_distro_title"
+        app:item_subtitle="@string/report_type_utx_distro_subtitle"
+        app:settings_variant="card"
+        app:show_chevron="true"
+        android:layout_marginTop="@dimen/horizontal_padding_size"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/fees"
+        android:id="@+id/utx_distro"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

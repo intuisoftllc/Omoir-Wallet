@@ -1,6 +1,5 @@
 package com.intuisoft.plaid.features.dashboardflow.ui
 
-import android.animation.Animator
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,10 +11,8 @@ import androidx.navigation.fragment.findNavController
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.*
 import com.intuisoft.plaid.common.CommonService
-import com.intuisoft.plaid.common.model.BitcoinDisplayUnit
 import com.intuisoft.plaid.common.model.ReportHistoryTimeFilter
 import com.intuisoft.plaid.common.model.ReportType
-import com.intuisoft.plaid.features.pin.ui.PinProtectedFragment
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.common.util.RateConverter
@@ -25,12 +22,12 @@ import com.intuisoft.plaid.features.dashboardflow.viewmodel.ReportDetailsViewMod
 import com.intuisoft.plaid.features.homescreen.adapters.BasicTransactionAdapter
 import com.intuisoft.plaid.util.Plural
 import com.intuisoft.plaid.util.SimpleTimeFormat
-import com.intuisoft.plaid.util.fragmentconfig.ConfigTransactionData
+import com.intuisoft.plaid.util.fragmentconfig.BasicConfigData
 import io.horizontalsystems.bitcoincore.models.TransactionInfo
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class ReportDetailsFragment : PinProtectedFragment<FragmentReportDetailsBinding>() {
+class ReportDetailsFragment : ConfigurableFragment<FragmentReportDetailsBinding>(pinProtection = true) {
     protected val viewModel: ReportDetailsViewModel by viewModel()
     protected val localStoreRepository: LocalStoreRepository by inject()
 
@@ -197,7 +194,7 @@ class ReportDetailsFragment : PinProtectedFragment<FragmentReportDetailsBinding>
         var bundle = bundleOf(
             Constants.Navigation.FRAGMENT_CONFIG to FragmentConfiguration(
                 configurationType = FragmentConfigurationType.CONFIGURATION_TRANSACTION_DATA,
-                configData = ConfigTransactionData(
+                configData = BasicConfigData(
                     payload = CommonService.getGsonInstance().toJson(transaction)
                 )
             ),

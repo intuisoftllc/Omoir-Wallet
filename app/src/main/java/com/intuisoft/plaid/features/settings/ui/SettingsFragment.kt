@@ -24,7 +24,6 @@ import com.intuisoft.plaid.androidwrappers.*
 import com.intuisoft.plaid.common.model.AppMode
 import com.intuisoft.plaid.common.model.AppTheme
 import com.intuisoft.plaid.databinding.FragmentSettingsBinding
-import com.intuisoft.plaid.features.pin.ui.PinProtectedFragment
 import com.intuisoft.plaid.features.settings.viewmodel.SettingsViewModel
 import com.intuisoft.plaid.common.model.BitcoinDisplayUnit
 import com.intuisoft.plaid.common.util.Constants
@@ -32,7 +31,7 @@ import com.intuisoft.plaid.common.util.SimpleCurrencyFormat
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 
-class SettingsFragment : PinProtectedFragment<FragmentSettingsBinding>() {
+class SettingsFragment : ConfigurableFragment<FragmentSettingsBinding>(pinProtection = true) {
     private val viewModel: SettingsViewModel by sharedViewModel()
 
     override fun onCreateView(
@@ -141,7 +140,7 @@ class SettingsFragment : PinProtectedFragment<FragmentSettingsBinding>() {
             var newLimit = originalLimit
 
             numberPicker?.minValue = 1
-            numberPicker?.maxValue = 999
+            numberPicker?.maxValue = 9999
             numberPicker?.value = originalLimit
             numberPicker?.wrapSelectorWheel = true
             numberPicker?.setOnValueChangedListener { picker, oldVal, newVal ->

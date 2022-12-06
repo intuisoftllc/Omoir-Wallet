@@ -9,7 +9,6 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.*
-import com.intuisoft.plaid.features.pin.ui.PinProtectedFragment
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.databinding.FragmentInvoiceBinding
@@ -17,13 +16,15 @@ import com.intuisoft.plaid.features.dashboardflow.viewmodel.InvoiceViewModel
 import com.intuisoft.plaid.listeners.BarcodeResultListener
 import com.intuisoft.plaid.util.fragmentconfig.ConfigInvoiceData
 import com.intuisoft.plaid.util.fragmentconfig.SendFundsData
+import com.intuisoft.plaid.walletmanager.AbstractWalletManager
 import io.horizontalsystems.bitcoincore.models.BitcoinPaymentData
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class InvoiceFragment : PinProtectedFragment<FragmentInvoiceBinding>(), BarcodeResultListener {
+class InvoiceFragment : ConfigurableFragment<FragmentInvoiceBinding>(pinProtection = true), BarcodeResultListener {
     protected val viewModel: InvoiceViewModel by viewModel()
     protected val localStoreRepository: LocalStoreRepository by inject()
+    protected val walletManager: AbstractWalletManager by inject()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -105,6 +106,7 @@ class InvoiceFragment : PinProtectedFragment<FragmentInvoiceBinding>(), BarcodeR
         binding.availableBalance.onClick {
             WithdrawalFragment.showCoinControlBottomSheet(
                 context = requireContext(),
+                showHint = true,
                 getUnspentOutputs = {
                     viewModel.getUnspentOutputs()
                 },
@@ -114,7 +116,13 @@ class InvoiceFragment : PinProtectedFragment<FragmentInvoiceBinding>(), BarcodeR
                 updateSelectedUTXOs = {
                     viewModel.updateUTXOs(it.toMutableList())
                 },
-                localStoreRepository = localStoreRepository
+                localStoreRepository = localStoreRepository,
+                getFullKeyPath = {
+                    walletManager.getFullPublicKeyPath(it)
+                },
+                addSingleUTXO = {
+                    viewModel.addSingleUTXO(it)
+                }
             )
         }
 

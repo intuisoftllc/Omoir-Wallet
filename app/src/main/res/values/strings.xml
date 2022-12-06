@@ -321,6 +321,7 @@
 <!--    Coin Control Bottom Sheet Strings -->
     <string name="coin_control_title">Coin Control</string>
     <string name="coin_control_no_utxos">No UTXO\'s Available For Spend</string>
+    <string name="coin_control_hint">Long press coins to view more info</string>
 <!--    Coin Control Bottom Sheet Strings End -->
 
 <!--    Withdrawal Type Strings -->
@@ -503,16 +504,27 @@
     <string name="report_details_inflow_title">Inflow Report</string>
     <string name="report_details_outflow_title">Outflow Report</string>
     <string name="report_details_fee_title">Fees Report</string>
+    <string name="report_details_utxo_distro">Coin Distribution</string>
     <string name="report_details_time_period_1">Last Week</string>
     <string name="report_details_time_period_2">Last Month</string>
     <string name="report_details_time_period_3">Last 6 Months</string>
     <string name="report_details_time_period_4">Last Year</string>
     <string name="report_details_time_period_5">All Time</string>
     <string name="report_details_time_period_title">Time Period</string>
+    <string name="report_details_total_utxos_title">Total Coins</string>
     <string name="report_details_report_type_inflow_title">Total Inflow</string>
+    <string name="report_details_report_type_median_utxo_title">Median Amount</string>
     <string name="report_details_report_type_outflow_title">Total Outflow</string>
     <string name="report_details_report_type_fee_title">Total Fees</string>
     <string name="report_details_no_transactions">No Transactions Yet</string>
+    <string name="report_details_utxos_list_tite">Coins</string>
+    <string name="report_details_utxo_range_1">0 – 1k</string>
+    <string name="report_details_utxo_range_2">1k – 10k</string>
+    <string name="report_details_utxo_range_3">10k – 100k</string>
+    <string name="report_details_utxo_range_4">100k – 1Mil</string>
+    <string name="report_details_utxo_range_5">1Mil – 10Mil</string>
+    <string name="report_details_utxo_range_6">10Mil – 100Mil</string>
+    <string name="report_details_utxo_range_7">> 1 BTC</string>
 <!--    Report Details Strings End -->
 
 <!--    Reports Strings -->
@@ -522,6 +534,8 @@
     <string name="report_type_outflow_subtitle">See how much you spent</string>
     <string name="report_type_fees_title">Tx Fee Report</string>
     <string name="report_type_fees_subtitle">See how much you paid in fees</string>
+    <string name="report_type_utx_distro_title">Coin Distribution</string>
+    <string name="report_type_utx_distro_subtitle">See how your utxo\'s are distributed throughout the wallet</string>
 <!--    Reports Strings -->
 
 <!--    Generic Use Strings -->
@@ -546,6 +560,10 @@
     <string name="update">Update</string>
     <string name="bitcoin">Bitcoin</string>
     <string name="status">Status</string>
+    <string name="path">Path</string>
+    <string name="info">Info</string>
+    <string name="balance">Balance</string>
+    <string name="date_received">Date Received</string>
     <string name="one_day">1D</string>
     <string name="one_week">1W</string>
     <string name="one_month">1M</string>
@@ -579,6 +597,7 @@
     <string name="share">share</string>
     <string name="bytes">bytes</string>
     <string name="nodes">nodes</string>
+    <string name="spend">Spend</string>
     <string name="addresses">addresses</string>
     <string name="sat_per_byte">Sat/byte</string>
     <string name="tx_per_sec">tx/s</string>
@@ -619,6 +638,7 @@
     <string name="local_currency_fragment_label">Local Currency</string>
     <string name="address_book_fragment_label">Address Book</string>
     <string name="withdrawal_type_fragment_label">Withdrawal Type</string>
+    <string name="utxo_distro_fragment_label">Utxo Distribution</string>
     <string name="swap_history_fragment_label">History</string>
     <string name="manage_wallets_fragment_label">Manage Wallets</string>
     <string name="swap_details_fragment_label">Exchange Details</string>

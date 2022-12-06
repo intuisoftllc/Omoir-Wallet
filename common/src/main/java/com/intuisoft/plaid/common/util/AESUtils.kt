@@ -6,14 +6,13 @@ import javax.crypto.SecretKey
 import javax.crypto.spec.SecretKeySpec
 
 object AESUtils {
-    private var passwordKey = mutableListOf<Byte>()
 
-    fun setPassword(password: String) {
+    private fun passwordToBytes(password: String) : MutableList<Byte> {
         if(password.isEmpty() || password.isBlank())
-            return
+            return mutableListOf()
 
         val paddingByte = (password[0].code + 24).toByte()
-        passwordKey = mutableListOf()
+        var passwordKey = mutableListOf<Byte>()
 
         var x = 0
         var y = 0
@@ -31,13 +30,16 @@ object AESUtils {
             passwordKey.add(password[x % password.length].code.toByte())
             x++
         }
+
+        return passwordKey
     }
 
-    fun encrypt(cleartext: String): String? {
+    fun encrypt(cleartext: String, password: String): String? {
         try {
+            val passwordKey = passwordToBytes(password)
             if(passwordKey.isEmpty()) return null
 
-            val rawKey = rawKey
+            val rawKey = getRawKey(passwordKey)
             val result = encrypt(rawKey, cleartext.toByteArray())
             return toHex(result)
         } catch (e: Throwable) {
@@ -47,26 +49,24 @@ object AESUtils {
         }
     }
 
-    fun decrypt(encrypted: String): String? {
+    fun decrypt(encrypted: String, password: String): String? {
         try {
+            val passwordKey = passwordToBytes(password)
             if(passwordKey.isEmpty()) return null
 
             val enc = toByte(encrypted)
-            val result = decrypt(enc)
+            val result = decrypt(enc, passwordKey)
             return String(result)
         } catch (e: Throwable) {
             e.printStackTrace()
-            FirebaseCrashlytics.getInstance().recordException(e)
             return null
         }
     }
 
-    @get:Throws(Exception::class)
-    private val rawKey: ByteArray
-        private get() {
-            val key: SecretKey = SecretKeySpec(passwordKey.toByteArray(), "AES")
-            return key.encoded
-        }
+    private fun getRawKey(passwordKey: MutableList<Byte>): ByteArray {
+        val key = SecretKeySpec(passwordKey.toByteArray(), "AES")
+        return key.encoded
+    }
 
     @Throws(Exception::class)
     private fun encrypt(raw: ByteArray, clear: ByteArray): ByteArray {
@@ -77,7 +77,7 @@ object AESUtils {
     }
 
     @Throws(Exception::class)
-    private fun decrypt(encrypted: ByteArray): ByteArray {
+    private fun decrypt(encrypted: ByteArray, passwordKey: MutableList<Byte>): ByteArray {
         val skeySpec: SecretKey = SecretKeySpec(passwordKey.toByteArray(), "AES")
         val cipher = Cipher.getInstance("AES")
         cipher.init(Cipher.DECRYPT_MODE, skeySpec)

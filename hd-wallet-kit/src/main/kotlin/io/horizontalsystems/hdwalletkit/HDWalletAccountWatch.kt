@@ -11,6 +11,9 @@ class HDWalletAccountWatch(
         return HDPublicKey(hdKeychain.getKeyByPath("${chain.ordinal}/$index"))
     }
 
+    fun fullPublicKeyPath(index: Int, chain: Chain) =
+        hdKeychain.getKeyByPath("${chain.ordinal}/$index").toString()
+
     fun masterPublicKey(purpose: HDWallet.Purpose, mainNet: Boolean) =
         hdKeychain.getKeyByPath("m/${purpose.value}'/${if(mainNet) 1 else 0}'/0'")
             .serializePublic(

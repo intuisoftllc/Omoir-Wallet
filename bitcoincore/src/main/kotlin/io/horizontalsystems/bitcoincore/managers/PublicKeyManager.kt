@@ -36,6 +36,10 @@ class PublicKeyManager(
         return getPublicKey(true)
     }
 
+    override fun fullPublicKeyPath(key: PublicKey): String {
+        return wallet.fullPublicKeyPath(key)
+    }
+
     @Throws
     override fun changePublicKey(): PublicKey {
         return getPublicKey(external = false)

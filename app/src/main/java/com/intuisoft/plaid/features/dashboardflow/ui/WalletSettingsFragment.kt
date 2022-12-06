@@ -20,7 +20,6 @@ import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.*
 import com.intuisoft.plaid.databinding.FragmentWalletSettingsBinding
 import com.intuisoft.plaid.features.dashboardflow.viewmodel.WalletSettingsViewModel
-import com.intuisoft.plaid.features.pin.ui.PinProtectedFragment
 import com.intuisoft.plaid.features.settings.ui.SettingsFragment
 import com.intuisoft.plaid.features.settings.viewmodel.SettingsViewModel
 import com.intuisoft.plaid.common.util.Constants
@@ -32,7 +31,7 @@ import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
-class WalletSettingsFragment : PinProtectedFragment<FragmentWalletSettingsBinding>() {
+class WalletSettingsFragment : ConfigurableFragment<FragmentWalletSettingsBinding>(pinProtection = true) {
     private val viewModel: WalletSettingsViewModel by viewModel()
     private val appSettingsViewModel: SettingsViewModel by sharedViewModel()
 

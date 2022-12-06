@@ -13,6 +13,7 @@ import kotlinx.android.synthetic.main.list_item_saved_address.view.*
 class UnspentOutputDetail(
     val utxo: UnspentOutput,
     val onClick: (UnspentOutput, Boolean) -> Unit,
+    val onLongClick: (UnspentOutput) -> Unit,
     private val localStoreRepository: LocalStoreRepository
 ) : ListItem {
     override val layoutId: Int
@@ -31,6 +32,10 @@ class UnspentOutputDetail(
             saved_address.onClick {
                 val checked = !it.isChecked()
                 setChecked(checked)
+            }
+
+            saved_address.onLongClick {
+                onLongClick(utxo)
             }
         }
     }

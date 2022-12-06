@@ -17,7 +17,6 @@ import com.intuisoft.plaid.common.model.BitcoinDisplayUnit
 import com.intuisoft.plaid.databinding.FragmentHomescreenBinding
 import com.intuisoft.plaid.features.homescreen.free.adapters.BasicWalletDataAdapter
 import com.intuisoft.plaid.features.homescreen.shared.viewmodel.HomeScreenViewModel
-import com.intuisoft.plaid.features.pin.ui.PinProtectedFragment
 import com.intuisoft.plaid.listeners.StateListener
 import com.intuisoft.plaid.model.LocalWalletModel
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
@@ -31,7 +30,7 @@ import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
-class ProHomescreenFragment : PinProtectedFragment<FragmentProHomescreenBinding>(), StateListener {
+class ProHomescreenFragment : ConfigurableFragment<FragmentProHomescreenBinding>(pinProtection = true), StateListener {
     protected val viewModel: HomeScreenViewModel by viewModel()
     protected val walletVM: WalletViewModel by viewModel()
     protected val localStoreRepository: LocalStoreRepository by inject()

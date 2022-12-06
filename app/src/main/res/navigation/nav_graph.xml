@@ -292,6 +292,14 @@
     </fragment>
 
     <fragment
+        android:id="@+id/utxoDistroFragment"
+        android:name="com.intuisoft.plaid.features.dashboardflow.ui.UtxoDistributionFragment"
+        android:label="@string/utxo_distro_fragment_label"
+        tools:layout="@layout/fragment_utxo_distro_report">
+
+    </fragment>
+
+    <fragment
         android:id="@+id/exchangeHistoryFragment"
         android:name="com.intuisoft.plaid.features.dashboardflow.ui.ExchangeHistoryFragment"
         android:label="@string/swap_history_fragment_label"

@@ -7,16 +7,16 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.intuisoft.plaid.R
+import com.intuisoft.plaid.androidwrappers.ConfigurableFragment
 import com.intuisoft.plaid.androidwrappers.FragmentConfiguration
 import com.intuisoft.plaid.androidwrappers.TopBarView
 import com.intuisoft.plaid.databinding.FragmentBitcoinUnitBinding
-import com.intuisoft.plaid.features.pin.ui.PinProtectedFragment
 import com.intuisoft.plaid.features.settings.viewmodel.SettingsViewModel
 import com.intuisoft.plaid.common.model.BitcoinDisplayUnit
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 
-class BitcoinUnitFragment : PinProtectedFragment<FragmentBitcoinUnitBinding>() {
+class BitcoinUnitFragment : ConfigurableFragment<FragmentBitcoinUnitBinding>(pinProtection = true) {
     private val viewModel: SettingsViewModel by sharedViewModel()
 
     override fun onCreateView(

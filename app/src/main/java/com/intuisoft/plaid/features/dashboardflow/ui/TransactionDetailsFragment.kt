@@ -12,15 +12,13 @@ import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.*
 import com.intuisoft.plaid.common.CommonService
 import com.intuisoft.plaid.databinding.FragmentTransactionDetailsBinding
-import com.intuisoft.plaid.features.pin.ui.PinProtectedFragment
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.util.Plural
 import com.intuisoft.plaid.common.util.SimpleCoinNumberFormat
 import com.intuisoft.plaid.features.settings.ui.SettingsFragment
 import com.intuisoft.plaid.util.SimpleTimeFormat.getDateByLocale
-import com.intuisoft.plaid.util.fragmentconfig.ConfigTransactionData
-import io.horizontalsystems.bitcoincore.extensions.toHexString
+import com.intuisoft.plaid.util.fragmentconfig.BasicConfigData
 import io.horizontalsystems.bitcoincore.models.TransactionInfo
 import io.horizontalsystems.bitcoincore.models.TransactionStatus
 import io.horizontalsystems.bitcoincore.models.TransactionType
@@ -30,7 +28,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.*
 
 
-class TransactionDetailsFragment : PinProtectedFragment<FragmentTransactionDetailsBinding>() {
+class TransactionDetailsFragment : ConfigurableFragment<FragmentTransactionDetailsBinding>(pinProtection = true) {
     private val viewModel: WalletViewModel by viewModel()
     private val localStoreRepository: LocalStoreRepository by inject()
 
@@ -52,7 +50,7 @@ class TransactionDetailsFragment : PinProtectedFragment<FragmentTransactionDetai
             when(it.configurationType) {
                 FragmentConfigurationType.CONFIGURATION_TRANSACTION_DATA -> {
                     val transaction = CommonService.getGsonInstance()
-                        .fromJson((it.configData as ConfigTransactionData).payload, TransactionInfo::class.java)
+                        .fromJson((it.configData as BasicConfigData).payload, TransactionInfo::class.java)
 
                     viewModel.getMemoForTx(transaction.transactionHash)
                     when(transaction.type) {
@@ -77,7 +75,7 @@ class TransactionDetailsFragment : PinProtectedFragment<FragmentTransactionDetai
                     }
 
                     binding.amount.setSubTitleText(SimpleCoinNumberFormat.format(localStoreRepository, transaction.amount, false))
-                    binding.transactionDate.setSubTitleText(getDateByLocale(transaction.timestamp * 1000, Locale.US.language)!!)
+                    binding.transactionDate.setSubTitleText(getDateByLocale(transaction.timestamp * 1000, Locale.US)!!)
                     viewModel.txMemo.observe(viewLifecycleOwner, Observer {
                         binding.memo.setSubTitleText(it)
                     })

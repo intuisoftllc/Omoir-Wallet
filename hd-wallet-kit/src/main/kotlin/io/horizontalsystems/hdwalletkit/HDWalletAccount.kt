@@ -11,6 +11,9 @@ class HDWalletAccount(
         return hdKeychain.getKeyByPath("${chain.ordinal}/$index")
     }
 
+    fun fullPublicKeyPath(index: Int, chain: Chain): String =
+        hdKeychain.getKeyByPath("${chain.ordinal}/$index").toString()
+
     fun privateKey(path: String): HDKey {
         return hdKeychain.getKeyByPath(path)
     }

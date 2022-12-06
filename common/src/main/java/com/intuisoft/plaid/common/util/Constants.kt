@@ -101,6 +101,8 @@ class Constants {
         const val INSTANT = -1
         const val INSTANT_TIME_OFFSET = ((ONE_MINUTE * 60) * 24) * 10000
         const val SYNC_TIMEOUT = MILLS_PER_SEC * 10
+        const val ITEM_COPY_DELAY = 600
+        const val ITEM_COPY_DELAY_LONG = 1000
         const val AUTO_SYNC_TIME: Long = (MILLS_PER_SEC * TWO_MINUTES).toLong()
         const val GENERAL_CACHE_UPDATE_TIME: Long = (MILLS_PER_SEC * TEN_MINUTES).toLong()
         const val GENERAL_CACHE_UPDATE_TIME_MED: Long = (MILLS_PER_SEC * FIVE_MINUTES).toLong()

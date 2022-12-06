@@ -9,19 +9,19 @@ import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.intuisoft.plaid.R
+import com.intuisoft.plaid.androidwrappers.ConfigurableFragment
 import com.intuisoft.plaid.androidwrappers.FragmentConfiguration
 import com.intuisoft.plaid.androidwrappers.FragmentConfigurationType
 import com.intuisoft.plaid.androidwrappers.navigate
 import com.intuisoft.plaid.databinding.FragmentSeedPhraseBinding
 import com.intuisoft.plaid.features.createwallet.viewmodel.CreateWalletViewModel
-import com.intuisoft.plaid.features.pin.ui.PinProtectedFragment
 import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.util.fragmentconfig.ConfigSeedData
 import com.intuisoft.plaid.util.fragmentconfig.WalletConfigurationData
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
-class SeedPhraseFragment : PinProtectedFragment<FragmentSeedPhraseBinding>() {
+class SeedPhraseFragment : ConfigurableFragment<FragmentSeedPhraseBinding>(pinProtection = true) {
     protected val viewModel: CreateWalletViewModel by viewModel()
 
 
