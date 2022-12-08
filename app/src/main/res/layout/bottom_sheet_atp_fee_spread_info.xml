@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:paddingHorizontal="@dimen/margin_20"
+    android:paddingTop="@dimen/margin_28"
+    android:paddingBottom="@dimen/horizontal_padding_size"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <TextView
+        android:id="@+id/bottom_sheet_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/atp_fee_spread_info_title"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        style="@style/TextStyle.Semibold.24"
+        android:textStyle="bold"
+        android:textColor="?attr/colorPrimaryVariant"/>
+
+    <TextView
+        android:id="@+id/part1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        style="@style/TextStyle.Medium.12"
+        android:textColor="@color/text_black"
+        android:gravity="center"
+        app:layout_constraintTop_toBottomOf="@id/bottom_sheet_title"
+        android:layout_marginHorizontal="@dimen/margin_24"
+        android:layout_marginTop="@dimen/horizontal_padding_size"
+        android:text="@string/atp_fee_spread_info_description"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -58,9 +58,14 @@ object CommonService {
     private var simpleSwapApiUrl: String? = ""
     private var simpleSwapClientSecret: String? = ""
     private var localPin: String = ""
+    private var walletSecret: String = ""
 
     fun getUserData(): UserData? {
         return userData
+    }
+
+    fun getWalletSecret(): String {
+        return walletSecret
     }
 
     fun getAppPrefs(): AppPrefs {
@@ -253,6 +258,18 @@ object CommonService {
                 ),
                 provideExchangeInfoDao(
                     application!!
+                ),
+                provideAssetTransferDao(
+                    application!!
+                ),
+                provideBatchDao(
+                    application!!
+                ),
+                provideTransactionBlacklistDao(
+                    application!!
+                ),
+                provideAddressBlacklistDao(
+                    application!!
                 )
             )
         }
@@ -284,7 +301,8 @@ object CommonService {
         testNetBlockchairApiUrl: String,
         blockchainInfoApiUrl: String,
         coingeckoApiUrl: String,
-        simpleSwapApiUrl: String
+        simpleSwapApiUrl: String,
+        walletSecret: String
     ) {
         provideApplication(application)
         provideBlockchairSecret(blockchairSecret)
@@ -296,6 +314,7 @@ object CommonService {
         provideBlockchainInfoApiUrl(blockchainInfoApiUrl)
         provideCoingeckoApiUrl(coingeckoApiUrl)
         provideSimpleSwapApiUrl(simpleSwapApiUrl)
+        provideWalletSecret(walletSecret)
 
         // create singleton instance of all classes
         getAppPrefs()
@@ -345,6 +364,10 @@ object CommonService {
 
     private fun provideNowNodesNodeApiUrl(url: String) {
         this.blockchairApiUrl = url
+    }
+
+    private fun provideWalletSecret(secret: String) {
+        this.walletSecret = secret
     }
 
     private fun provideNowNodesTestNetNodeApiUrl(url: String) {
@@ -423,6 +446,30 @@ object CommonService {
         return PlaidDatabase.getInstance(context).exchangeInfoDao()
     }
 
+    private fun provideAssetTransferDao(
+        context: Context
+    ): AssetTransferDao {
+        return PlaidDatabase.getInstance(context).assetTransfersDao()
+    }
+
+    private fun provideBatchDao(
+        context: Context
+    ): BatchDao {
+        return PlaidDatabase.getInstance(context).batchDataDao()
+    }
+
+    private fun provideTransactionBlacklistDao(
+        context: Context
+    ): TransactionBlacklistDao {
+        return PlaidDatabase.getInstance(context).transactionBlacklistDao()
+    }
+
+    private fun provideAddressBlacklistDao(
+        context: Context
+    ): AddressBlacklistDao {
+        return PlaidDatabase.getInstance(context).addressBlacklistDao()
+    }
+
     private fun provideDatabaseRepository(
         database: PlaidDatabase,
         suggestedFeeRateDao: SuggestedFeeRateDao,
@@ -432,7 +479,11 @@ object CommonService {
         tickerPriceChartDataDao: TickerPriceChartDataDao,
         supportedCurrencyDao: SupportedCurrencyDao,
         transactionMemoDao: TransactionMemoDao,
-        exchangeInfoDao: ExchangeInfoDao
+        exchangeInfoDao: ExchangeInfoDao,
+        transferDao: AssetTransferDao,
+        batchDao: BatchDao,
+        transactionBlacklistDao: TransactionBlacklistDao,
+        addressBlacklistDao: AddressBlacklistDao
     ): DatabaseRepository {
         return DatabaseRepository_Impl(
             database,
@@ -443,7 +494,11 @@ object CommonService {
             tickerPriceChartDataDao,
             supportedCurrencyDao,
             transactionMemoDao,
-            exchangeInfoDao
+            exchangeInfoDao,
+            transferDao,
+            batchDao,
+            transactionBlacklistDao,
+            addressBlacklistDao
         )
     }
 

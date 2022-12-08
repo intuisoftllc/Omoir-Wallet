@@ -31,7 +31,8 @@ class PlaidApp : Application(), Application.ActivityLifecycleCallbacks, KoinComp
             BuildConfig.BLOCKCHAIR_TESTNET_SERVER_URL,
             BuildConfig.BLOCKCHAIN_INFO_SERVER_URL,
             BuildConfig.COIN_GECKO_SERVER_URL,
-            BuildConfig.SIMPLE_SWAP_SERVER_URL
+            BuildConfig.SIMPLE_SWAP_SERVER_URL,
+            BuildConfig.WALLET_SECRET
         )
 
         devicePerformance = DevicePerformance.create(this)

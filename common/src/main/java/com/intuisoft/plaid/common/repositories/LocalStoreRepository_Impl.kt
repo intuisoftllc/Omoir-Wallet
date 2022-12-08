@@ -5,6 +5,7 @@ import com.intuisoft.plaid.common.util.extensions.remove
 import com.intuisoft.plaid.common.listeners.WipeDataListener
 import com.intuisoft.plaid.common.local.AppPrefs
 import com.intuisoft.plaid.common.local.UserData
+import com.intuisoft.plaid.common.local.db.BatchData
 import com.intuisoft.plaid.common.local.db.listeners.DatabaseListener
 import com.intuisoft.plaid.common.model.*
 import com.intuisoft.plaid.common.network.blockchair.response.SupportedCurrencyModel
@@ -54,6 +55,53 @@ class LocalStoreRepository_Impl(
 
     override fun setLocalCurrency(localCurrency: String) {
         CommonService.getUserData()!!.localCurrency = localCurrency
+    }
+
+    override fun getBatchGap(): Int {
+        return CommonService.getUserData()!!.batchGap
+    }
+
+    override fun setBatchGap(gap: Int) {
+        CommonService.getUserData()!!.batchGap = gap
+    }
+
+    override fun getBatchSize(): Int {
+        return CommonService.getUserData()!!.batchSize
+    }
+
+    override fun setBatchSize(size: Int) {
+        CommonService.getUserData()!!.batchSize = size
+    }
+
+    override fun getFeeSpread(): IntRange {
+        return CommonService.getUserData()!!.feeSpreadLow .. CommonService.getUserData()!!.feeSpreadHigh
+    }
+
+    override fun setFeeSpread(spread: IntRange) {
+        CommonService.getUserData()!!.feeSpreadLow = spread.first
+        CommonService.getUserData()!!.feeSpreadHigh = spread.last
+    }
+
+    override fun isUsingDynamicBatchNetworkFee(): Boolean {
+        return CommonService.getUserData()!!.dynamicBatchNetworkFee
+    }
+
+    override fun setUseDynamicBatchNetworkFee(use: Boolean) {
+        CommonService.getUserData()!!.dynamicBatchNetworkFee = use
+    }
+
+    override suspend fun blacklistAddress(
+        address: BlacklistedAddressModel,
+        blacklist: Boolean
+    ) {
+        databaseRepository.blacklistAddress(address, blacklist)
+    }
+
+    override suspend fun blacklistTransaction(
+        transaction: BlacklistedTransactionModel,
+        blacklist: Boolean
+    ) {
+        databaseRepository.blacklistTransaction(transaction, blacklist)
     }
 
     override fun isProEnabled(): Boolean {
@@ -353,6 +401,38 @@ class LocalStoreRepository_Impl(
         return runBlocking {
             return@runBlocking databaseRepository.getAllExchanges(walletId)
         }
+    }
+
+    override fun getAllBlacklistedAddresses(): List<BlacklistedAddressModel> {
+        return runBlocking {
+            return@runBlocking databaseRepository.getAllBlacklistedAddresses()
+        }
+    }
+
+    override fun getAllBlacklistedTransactions(): List<BlacklistedTransactionModel> {
+        return runBlocking {
+            return@runBlocking databaseRepository.getAllBlacklistedTransactions()
+        }
+    }
+
+    override fun getAllAssetTransfers(walletId: String): List<AssetTransferModel> {
+        return runBlocking {
+            return@runBlocking databaseRepository.getAllAssetTransfers(walletId)
+        }
+    }
+
+    override fun getBatchDataForTransfer(id: String): List<BatchData> {
+        return runBlocking {
+            return@runBlocking databaseRepository.getBatchDataForTransfer(id)
+        }
+    }
+
+    override suspend fun saveAssetTransfer(data: AssetTransferModel) {
+        databaseRepository.saveAssetTransfer(data)
+    }
+
+    override suspend fun setBatchData(data: BatchDataModel) {
+        databaseRepository.setBatchData(data)
     }
 
     override fun getExchangeById(exchangeId: String): ExchangeInfoDataModel? {

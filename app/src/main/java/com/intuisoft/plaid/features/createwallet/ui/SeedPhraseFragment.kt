@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager.LayoutParams
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
@@ -21,7 +22,10 @@ import com.intuisoft.plaid.util.fragmentconfig.WalletConfigurationData
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
-class SeedPhraseFragment : ConfigurableFragment<FragmentSeedPhraseBinding>(pinProtection = true) {
+class SeedPhraseFragment : ConfigurableFragment<FragmentSeedPhraseBinding>(
+    pinProtection = true,
+    secureScreen = true
+) {
     protected val viewModel: CreateWalletViewModel by viewModel()
 
 

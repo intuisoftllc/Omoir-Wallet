@@ -11,6 +11,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.navOptions
 import com.intuisoft.plaid.PlaidApp
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
@@ -28,8 +29,8 @@ open class BaseViewModel(
     private val _fingerprintSupported = SingleLiveData<Boolean>()
     val fingerprintSupported: LiveData<Boolean> = _fingerprintSupported
 
-    private val _loadng = MutableLiveData<Boolean>()
-    val loadng: LiveData<Boolean> = _loadng
+    protected val _loading = MutableLiveData<Boolean>()
+    val loading: LiveData<Boolean> = _loading
 
     var currentConfig: FragmentConfiguration? = null
 
@@ -38,7 +39,7 @@ open class BaseViewModel(
     }
 
     fun <T> execute(call: suspend () -> T,  onFinish: suspend (Result<T>) -> Unit) {
-        _loadng.postValue(true)
+        _loading.postValue(true)
         viewModelScope.launch {
             var result : Result<T>
 
@@ -49,7 +50,7 @@ open class BaseViewModel(
                     result = Result.failure(e)
                 }
 
-                _loadng.postValue(false)
+                _loading.postValue(false)
 
                 onFinish(result)
             }
@@ -112,7 +113,16 @@ open class BaseViewModel(
     }
 
     fun softRestart(fragment: Fragment) {
-        walletManager.stop()
-        fragment.navigate(R.id.splashFragment)
+        (fragment as FragmentBottomBarBarDelegate).apply {
+            walletManager.stop()
+            fragment.navigate(
+                R.id.splashFragment,
+                navOptions {
+                    popUpTo(navigationId()) {
+                        inclusive = true
+                    }
+                }
+            )
+        }
     }
 }

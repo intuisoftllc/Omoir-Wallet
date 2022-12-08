@@ -14,6 +14,7 @@ import com.intuisoft.plaid.common.repositories.ApiRepository
 import com.intuisoft.plaid.listeners.StateListener
 import com.intuisoft.plaid.model.LocalWalletModel
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
+import com.intuisoft.plaid.common.util.RateConverter
 import com.intuisoft.plaid.walletmanager.AbstractWalletManager
 import io.horizontalsystems.bitcoincore.managers.SendValueErrors
 import io.horizontalsystems.bitcoincore.models.TransactionInfo
@@ -78,6 +79,8 @@ open class WalletViewModel(
     protected val localWallet: LocalWalletModel?
         get() = walletManager.getOpenedWallet()
 
+    var selectedUTXOs: MutableList<UnspentOutput> = mutableListOf()
+
     private val disposables = CompositeDisposable()
 
     fun showWalletBalance(context: Context) {
@@ -101,7 +104,7 @@ open class WalletViewModel(
 
     fun getCurrentBlock() = localWallet!!.walletKit!!.lastBlockInfo?.height ?: 0
 
-    fun getUnspentOutputs() = localWallet!!.walletKit!!.getUnspentOutputs()
+    fun getUnspentOutputs() = localWallet!!.getWhitelistedUtxos(localStoreRepository)
 
     fun calculateFee(sats: Long, feeRate: Int, address: String?, retry: Boolean = true) : Long {
         try {
@@ -170,6 +173,24 @@ open class WalletViewModel(
         }
     }
 
+    fun calculateFeeForMaxSpend(unspentOutput: UnspentOutput, feeRate: Int, address: String?) : Long {
+        try {
+            var max = localWallet!!.walletKit!!.maximumSpendableValue(
+                listOf(unspentOutput),
+                address,
+                feeRate
+            )
+
+            return localWallet!!.walletKit!!.fee(listOf(unspentOutput), max, address, true, feeRate)
+        } catch(e: SendValueErrors.Dust) {
+            return -2
+        } catch(e: SendValueErrors.InsufficientUnspentOutputs) {
+            return -1
+        } catch(e: Exception) {
+            return 0
+        }
+    }
+
     fun getMemoForTx(txId: String) {
         viewModelScope.launch {
             _txMemo.postValue(localStoreRepository.getTransactionMemo(txId)?.memo ?: getApplication<PlaidApp>().getString(R.string.not_applicable))
@@ -188,6 +209,13 @@ open class WalletViewModel(
             _onEditMemo.postValue(localStoreRepository.getTransactionMemo(txId) ?: TransactionMemoModel(txId, ""))
         }
     }
+
+    fun canTransferToWallet(recepient: LocalWalletModel): Boolean {
+        return recepient.testNetWallet == localWallet!!.testNetWallet
+                && recepient.uuid != localWallet!!.uuid // ensure same network transferability
+    }
+
+    fun getWallets() = walletManager.getWallets()
 
     fun showWalletName() {
         _walletName.postValue(getWalletName())
@@ -288,11 +316,47 @@ open class WalletViewModel(
             BitcoinKit.NetworkType.TestNet
         else BitcoinKit.NetworkType.MainNet
 
+    fun isTestNetWallet() = walletManager.findStoredWallet(localWallet!!.uuid)!!.isTestNet
+
     fun getWalletName() = localWallet!!.name
 
     fun getWalletId() = localWallet!!.uuid
 
-    open fun getWalletBalance() = localWallet!!.walletKit!!.balance.spendable
+    open fun getWalletBalance() = localWallet!!.getWhitelistedBalance(localStoreRepository)
+
+
+    open fun setInitialSpendUtxo(utxo: String) {
+        selectedUTXOs = mutableListOf(getUnspentOutputs().find { it.output.address == utxo }!!)
+    }
+
+    open fun updateUTXOs(utxos: MutableList<UnspentOutput>) {
+        selectedUTXOs = utxos
+    }
+
+    open fun addSingleUTXO(utxo: UnspentOutput) {
+        if(selectedUTXOs.find { it == utxo } == null) {
+            selectedUTXOs.add(utxo)
+        }
+    }
+
+    open fun getMaxSpend() : RateConverter {
+        val rate = RateConverter(localStoreRepository.getRateFor(localStoreRepository.getLocalCurrency())?.currentPrice ?: 0.0)
+        rate.setLocalRate(RateConverter.RateType.SATOSHI_RATE, getAdjustedWalletBalance().toDouble())
+        return rate
+    }
+
+    fun getAdjustedWalletBalance() : Long {
+        if(selectedUTXOs.isEmpty())
+            return localWallet!!.getWhitelistedBalance(localStoreRepository)
+        else {
+            var balance = 0L
+            selectedUTXOs.forEach {
+                balance += it.output.value
+            }
+
+            return balance
+        }
+    }
 
     fun getWalletBip(): HDWallet.Purpose {
         val bip = walletManager.findStoredWallet(localWallet!!.uuid)!!.bip

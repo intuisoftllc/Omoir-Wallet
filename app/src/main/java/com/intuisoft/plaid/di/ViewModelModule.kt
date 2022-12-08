@@ -93,4 +93,8 @@ val viewModelModule = module {
     viewModel {
         UtxoDistributionViewModel(get(), get(), get(), get())
     }
+
+    viewModel {
+        AtpViewModel(get(), get(), get(), get())
+    }
 }

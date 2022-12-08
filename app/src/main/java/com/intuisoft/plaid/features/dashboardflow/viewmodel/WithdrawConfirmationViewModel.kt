@@ -54,7 +54,6 @@ class WithdrawConfirmationViewModel(
     private var feeRate: Int = 0
     private var address: String? = null
     private var invalidAddressErrors = 0
-    private var selectedUTXOs: MutableList<String> = mutableListOf()
     private var amountToSpend: RateConverter = RateConverter(localStoreRepository.getRateFor(localStoreRepository.getLocalCurrency())?.currentPrice ?: 0.0)
     private var networkFeeRate: NetworkFeeRate = NetworkFeeRate(1, 2, 6)
 
@@ -72,8 +71,6 @@ class WithdrawConfirmationViewModel(
         invoiceSend = fromInvoice
     }
 
-    fun getWallets() = walletManager.getWallets()
-
     fun setNetworkFeeRate() {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
@@ -88,11 +85,6 @@ class WithdrawConfirmationViewModel(
                 setDefaultFeeRate()
             }
         }
-    }
-
-    fun canTransferToWallet(recepient: LocalWalletModel): Boolean {
-        return recepient.testNetWallet == localWallet!!.testNetWallet
-                && recepient.uuid != localWallet!!.uuid // ensure same network transferability
     }
 
     fun animateSentAmount(period: Long) {
@@ -202,7 +194,7 @@ class WithdrawConfirmationViewModel(
 
     fun getTotalFee(retry: Boolean = true): Long {
         if(selectedUTXOs.isNotEmpty()) {
-            return calculateFee(utxoToUnspentOutput(), amountToSpend.getRawRate(), feeRate, address, retry)
+            return calculateFee(selectedUTXOs, amountToSpend.getRawRate(), feeRate, address, retry)
         } else {
             return calculateFee(amountToSpend.getRawRate(), feeRate, address, retry)
         }
@@ -216,7 +208,7 @@ class WithdrawConfirmationViewModel(
 
     private fun adjustLocalSpendToFitFee(spend: RateConverter) {
         if(selectedUTXOs.isNotEmpty()) {
-            spend.setLocalRate(RateConverter.RateType.SATOSHI_RATE, localWallet!!.walletKit!!.maximumSpendableValue(utxoToUnspentOutput(), address, feeRate).toDouble())
+            spend.setLocalRate(RateConverter.RateType.SATOSHI_RATE, localWallet!!.walletKit!!.maximumSpendableValue(selectedUTXOs, address, feeRate).toDouble())
         } else {
             spend.setLocalRate(RateConverter.RateType.SATOSHI_RATE, localWallet!!.walletKit!!.maximumSpendableValue(address, feeRate).toDouble())
         }
@@ -229,7 +221,7 @@ class WithdrawConfirmationViewModel(
 
             if(selectedUTXOs.isNotEmpty()) {
                 return spend to localWallet!!.walletKit!!.redeem(
-                    unspentOutputs = utxoToUnspentOutput(),
+                    unspentOutputs = selectedUTXOs,
                     value = spend.getRawRate(),
                     address = address!!,
                     feeRate = feeRate,
@@ -237,13 +229,12 @@ class WithdrawConfirmationViewModel(
                     createOnly = true
                 )
             } else {
-                return spend to localWallet!!.walletKit!!.send(
-                    address = address!!,
+                return spend to localWallet!!.walletKit!!.redeem(
+                    unspentOutputs = getUnspentOutputs(),
                     value = spend.getRawRate(),
-                    senderPay = true,
+                    address = address!!,
                     feeRate = feeRate,
                     sortType = TransactionDataSortType.Shuffle,
-                    pluginData = mapOf(),
                     createOnly = true
                 )
             }
@@ -253,12 +244,8 @@ class WithdrawConfirmationViewModel(
         }
     }
 
-    fun utxoToUnspentOutput() : List<UnspentOutput> {
-        return getUnspentOutputs().filter { selectedUTXOs.find { utxo -> it.output.address!! == utxo } != null }
-    }
-
-    fun updateUTXOs(utxos: MutableList<String>) {
-        selectedUTXOs = utxos
+    fun updateUTXOAddresses(utxos: MutableList<String>) {
+        selectedUTXOs = getUnspentOutputs().filter { utxos.find { utxo -> it.output.address!! == utxo } != null }.toMutableList()
     }
 
     fun updateSendAmount(amount: Long) {

@@ -228,6 +228,14 @@
     </fragment>
 
     <fragment
+        android:id="@+id/atpInfoFragment"
+        android:name="com.intuisoft.plaid.features.dashboardflow.ui.AtpInfoFragment"
+        android:label="@string/atp_info_fragment_label"
+        tools:layout="@layout/fragment_atp_info">
+
+    </fragment>
+
+    <fragment
         android:id="@+id/localCurrencyFragment"
         android:name="com.intuisoft.plaid.features.settings.ui.LocalCurrencyFragment"
         android:label="@string/local_currency_fragment_label"

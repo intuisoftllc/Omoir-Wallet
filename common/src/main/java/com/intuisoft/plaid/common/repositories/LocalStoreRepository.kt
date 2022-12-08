@@ -1,6 +1,7 @@
 package com.intuisoft.plaid.common.repositories
 
 import com.intuisoft.plaid.common.listeners.WipeDataListener
+import com.intuisoft.plaid.common.local.db.BatchData
 import com.intuisoft.plaid.common.local.db.listeners.DatabaseListener
 import com.intuisoft.plaid.common.model.*
 import com.intuisoft.plaid.common.network.blockchair.response.SupportedCurrencyModel
@@ -24,6 +25,22 @@ interface LocalStoreRepository {
     fun getLocalCurrency(): String
 
     fun setLocalCurrency(localCurrency: String)
+
+    fun getBatchGap(): Int
+
+    fun setBatchGap(gap: Int)
+
+    fun getBatchSize(): Int
+
+    fun setBatchSize(size: Int)
+
+    fun getFeeSpread(): IntRange
+
+    fun setFeeSpread(spread: IntRange)
+
+    fun isUsingDynamicBatchNetworkFee(): Boolean
+
+    fun setUseDynamicBatchNetworkFee(use: Boolean)
 
     fun isProEnabled(): Boolean
 
@@ -140,6 +157,22 @@ interface LocalStoreRepository {
     suspend fun setSuggestedFeeRate(networkFeeRate: NetworkFeeRate, testNetWallet: Boolean)
 
     suspend fun saveExchangeData(data: ExchangeInfoDataModel, walletId: String)
+
+    suspend fun setBatchData(data: BatchDataModel)
+
+    fun getBatchDataForTransfer(id: String): List<BatchData>
+
+    suspend fun saveAssetTransfer(data: AssetTransferModel)
+
+    fun getAllAssetTransfers(walletId: String): List<AssetTransferModel>
+
+    suspend fun blacklistTransaction(transaction: BlacklistedTransactionModel, blacklist: Boolean)
+
+    fun getAllBlacklistedTransactions(): List<BlacklistedTransactionModel>
+
+    suspend fun blacklistAddress(address: BlacklistedAddressModel, blacklist: Boolean)
+
+    fun getAllBlacklistedAddresses(): List<BlacklistedAddressModel>
 
     fun getAllExchanges(walletId: String): List<ExchangeInfoDataModel>
 

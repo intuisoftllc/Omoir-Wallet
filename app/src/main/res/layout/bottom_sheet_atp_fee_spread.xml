@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingHorizontal="20sp"
+    android:paddingTop="20dp"
+    android:paddingBottom="0dp"
+    android:paddingVertical="40dp"
+    android:orientation="vertical">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/bottom_sheet_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="@string/atp_setting_5_title"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            style="@style/TextStyle.Semibold.24"
+            android:textStyle="bold"
+            android:textColor="?attr/colorPrimaryVariant"/>
+
+        <ImageView
+            android:id="@+id/alert"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_alert_red"
+            app:layout_constraintTop_toTopOf="@id/bottom_sheet_title"
+            app:layout_constraintBottom_toBottomOf="@id/bottom_sheet_title"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:tint="?attr/colorPrimaryVariant"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/TextStyle.Semibold.12"
+        android:layout_marginTop="@dimen/horizontal_padding_size"
+        android:textColor="@color/settings_category_text_color"
+        android:text="@string/atp_fee_spread_settings_title"
+        android:layout_gravity="start"/>
+
+    <com.intuisoft.plaid.androidwrappers.SettingsItemView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:item_title="@string/atp_fee_spread_min"
+        android:id="@+id/atp_fee_spread_min"
+        android:layout_marginTop="@dimen/horizontal_padding_size"
+        app:show_chevron="true"
+        app:show_switch="false"/>
+
+    <com.intuisoft.plaid.androidwrappers.SettingsItemView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:item_title="@string/atp_fee_spread_max"
+        android:layout_marginTop="@dimen/horizontal_padding_size"
+        android:id="@+id/atp_fee_spread_max"
+        app:show_chevron="true"
+        app:show_switch="false"/>
+
+    <com.intuisoft.plaid.androidwrappers.SettingsItemView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:item_subtitle="@string/atp_fee_auto"
+        android:id="@+id/atp_fee_auto"
+        android:layout_marginTop="@dimen/horizontal_padding_size"
+        app:show_switch="true"
+        app:title_text_color="@color/white"/>
+
+
+</LinearLayout>

@@ -132,7 +132,7 @@ class DashboardViewModel(
                                     (it.time / Constants.Time.MILLS_PER_SEC) >= history.first().second
                                 }
 
-                            if(data != null) {
+                            if(data != null && data.isNotEmpty()) {
                                 val start = getBalanceAtTime(data.first().time / Constants.Time.MILLS_PER_SEC) * data.first().value
                                 val end = getBalanceAtTime(data.last().time / Constants.Time.MILLS_PER_SEC) * data.last().value
                                 gain = 100 * ((end.toDouble() - start) / start.toDouble())
@@ -179,7 +179,7 @@ class DashboardViewModel(
                                         (it.time / Constants.Time.MILLS_PER_SEC) >= history.first().second
                                     }
 
-                                if(data != null) {
+                                if(data != null && data.isNotEmpty()) {
                                     _chartData.postValue(
                                         data.map {
                                             ChartDataModel(
@@ -249,8 +249,13 @@ class DashboardViewModel(
     private fun generateBalanceHistory(): List<Pair<Long, Long>> {
         val balanceHistory = mutableListOf<Pair<Long, Long>>()
         var balance = 0L
+        var incomeFound = false
 
-        walletTransactions.reversed().forEach {
+        walletTransactions.reversed().filter {
+            if(it.type == TransactionType.Incoming)
+                incomeFound = true
+            incomeFound
+        }.forEach {
             when(it.type) {
                 TransactionType.Incoming -> {
                     balance += it.amount

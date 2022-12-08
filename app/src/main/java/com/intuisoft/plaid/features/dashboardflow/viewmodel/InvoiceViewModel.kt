@@ -40,7 +40,6 @@ class InvoiceViewModel(
     protected val _onAvailableBalanceUpdated = SingleLiveData<String>()
     val onAvailableBalanceUpdated: LiveData<String> = _onAvailableBalanceUpdated
 
-    private var selectedUTXOs: MutableList<UnspentOutput> = mutableListOf()
     private var amountToSpend: RateConverter = RateConverter(localStoreRepository.getRateFor(localStoreRepository.getLocalCurrency())?.currentPrice ?: 0.0)
     private var description: String = ""
     private var address: String = ""
@@ -69,25 +68,6 @@ class InvoiceViewModel(
         _onAvailableBalanceUpdated.postValue(
             getMaxSpend().from(localStoreRepository.getBitcoinDisplayUnit().toRateType(), localStoreRepository.getLocalCurrency(), false).second!!
         )
-    }
-
-    override fun getWalletBalance() : Long {
-        if(selectedUTXOs.isEmpty())
-            return localWallet!!.walletKit!!.balance.spendable
-        else {
-            var balance = 0L
-            selectedUTXOs.forEach {
-                balance += it.output.value
-            }
-
-            return balance
-        }
-    }
-
-    fun getMaxSpend() : RateConverter {
-        val rate = RateConverter(amountToSpend.getFiatRate())
-        rate.setLocalRate(RateConverter.RateType.SATOSHI_RATE, getWalletBalance().toDouble())
-        return rate
     }
 
     private fun isSpendOverBalance(converter: RateConverter) : Boolean {
@@ -157,19 +137,15 @@ class InvoiceViewModel(
         }
     }
 
-    fun updateUTXOs(utxos: MutableList<UnspentOutput>) {
-        selectedUTXOs = utxos
+    override fun updateUTXOs(utxos: MutableList<UnspentOutput>) {
+        super.updateUTXOs(utxos)
         updateAvailableBalance()
     }
 
-    fun addSingleUTXO(utxo: UnspentOutput) {
-        if(selectedUTXOs.find { it == utxo } == null) {
-            selectedUTXOs.add(utxo)
-            updateAvailableBalance()
-        }
+    override fun addSingleUTXO(utxo: UnspentOutput) {
+        super.addSingleUTXO(utxo)
+        updateAvailableBalance()
     }
-
-    fun getSelectedUTXOs() = selectedUTXOs
 
     data class InvoiceDetails(
         val amount: String,

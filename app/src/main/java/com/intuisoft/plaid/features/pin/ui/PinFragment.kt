@@ -18,8 +18,9 @@ import com.intuisoft.plaid.features.pin.viewmodel.PinViewModel
 import com.intuisoft.plaid.common.util.Constants
 import org.koin.android.ext.android.inject
 
-class PinFragment: BindingFragment<FragmentPinBinding>() {
-    private val pinViewModel: PinViewModel by inject()
+class PinFragment: ConfigurableFragment<FragmentPinBinding>(
+    secureScreen = true
+) {
     private val localStoreRepository: LocalStoreRepository by inject()
 
     var setupPin = false
@@ -33,11 +34,11 @@ class PinFragment: BindingFragment<FragmentPinBinding>() {
         _binding = FragmentPinBinding.inflate(inflater, container, false)
         setupPin = arguments?.get(Constants.Navigation.PIN_SETUP) as? Boolean ?: false
         homePassthrough = arguments?.get(Constants.Navigation.HOME_PASS_THROUGH) as? Boolean ?: false
+        setupConfiguration(pinViewModel, listOf())
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun onConfiguration(configuration: FragmentConfiguration?) {
         binding.passcodeView.setPasscodeType(TYPE_CHECK_PASSCODE)
 
         if(setupPin) {

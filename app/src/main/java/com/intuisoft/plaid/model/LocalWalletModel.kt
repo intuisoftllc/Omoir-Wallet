@@ -7,6 +7,7 @@ import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.common.util.SimpleCoinNumberFormat
 import com.intuisoft.plaid.util.entensions.sha256
 import com.intuisoft.plaid.walletmanager.WalletIdentifier
+import io.horizontalsystems.bitcoincore.storage.UnspentOutput
 import io.horizontalsystems.bitcoinkit.BitcoinKit
 import io.horizontalsystems.hdwalletkit.HDWallet
 
@@ -87,8 +88,20 @@ data class LocalWalletModel(
         }
     }
 
+    fun getWhitelistedBalance(localStoreRepository: LocalStoreRepository): Long {
+        return getWhitelistedUtxos(localStoreRepository).map { it.output.value }.sum()
+    }
+
+    fun getWhitelistedUtxos(localStoreRepository: LocalStoreRepository): List<UnspentOutput> {
+        val blacklist = localStoreRepository.getAllBlacklistedAddresses()
+        val utxos = walletKit!!.getUnspentOutputs()
+        return utxos.filter { utxo ->
+            blacklist.find { it.address == utxo.output.address!! } == null
+        }
+    }
+
     fun getBalance(localStoreRepository: LocalStoreRepository, shortenSats: Boolean): String {
-        return SimpleCoinNumberFormat.format(localStoreRepository, walletKit!!.balance.spendable, shortenSats)
+        return SimpleCoinNumberFormat.format(localStoreRepository, getWhitelistedBalance(localStoreRepository), shortenSats)
     }
 
     fun onWalletStateChanged(

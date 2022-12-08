@@ -25,8 +25,6 @@ abstract class BindingFragment<T: ViewBinding> : Fragment(), FragmentActionBarDe
         (requireActivity() as MainActivity).setActionBarActionLeft(actionBarActionLeft())
         (requireActivity() as MainActivity).setActionBarActionRight(actionBarActionRight())
         activateAnimatedLoading(false, "")
-        activateContentUnavailable(false, "")
-        activateNoInternet(false)
     }
 
     fun scanBarcode() {

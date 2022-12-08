@@ -44,7 +44,6 @@ class WithdrawalViewModel(
 
     private var amountToSpend: RateConverter = RateConverter(localStoreRepository.getRateFor(localStoreRepository.getLocalCurrency())?.currentPrice ?: 0.0)
     private var internalAmountString: String = "0"
-    private var selectedUTXOs: MutableList<UnspentOutput> = mutableListOf()
     private var overBalanceErrors = 0
     private var maxDecimalErrors = 0
     private var decimalPlaceNotAllowedErrors = 0
@@ -90,12 +89,6 @@ class WithdrawalViewModel(
         } else
             _localSpendAmount.postValue(spend.second!!)
         _shouldAdvance.postValue(amountToSpend.getRawRate() > 0L)
-    }
-
-    fun getMaxSpend() : RateConverter {
-        val rate = RateConverter(amountToSpend.getFiatRate())
-        rate.setLocalRate(RateConverter.RateType.SATOSHI_RATE, getWalletBalance().toDouble())
-        return rate
     }
 
     fun displayTotalBalance() {
@@ -250,6 +243,21 @@ class WithdrawalViewModel(
         displaySpendAmount()
     }
 
+    override fun setInitialSpendUtxo(utxo: String) {
+        super.setInitialSpendUtxo(utxo)
+        displayTotalBalance()
+    }
+
+    override fun updateUTXOs(utxos: MutableList<UnspentOutput>) {
+        super.updateUTXOs(utxos)
+        displayTotalBalance()
+    }
+
+    override fun addSingleUTXO(utxo: UnspentOutput) {
+        super.addSingleUTXO(utxo)
+        displayTotalBalance()
+    }
+
     private fun overBalanceError() {
         _onInputRejected.postValue(Unit)
         overBalanceErrors++
@@ -314,19 +322,6 @@ class WithdrawalViewModel(
         }
     }
 
-    override fun getWalletBalance() : Long {
-        if(selectedUTXOs.isEmpty())
-            return localWallet!!.walletKit!!.balance.spendable
-        else {
-            var balance = 0L
-            selectedUTXOs.forEach {
-                balance += it.output.value
-            }
-
-            return balance
-        }
-    }
-
     private fun isSpendOverBalance(converter: RateConverter) : Boolean {
         if(converter.getRawRate() <= getMaxSpend().getRawRate()) {
             return false
@@ -372,25 +367,6 @@ class WithdrawalViewModel(
             }
         }
     }
-
-    fun setInitialSpendUtxo(utxo: String) {
-        selectedUTXOs = mutableListOf(getUnspentOutputs().find { it.output.address == utxo }!!)
-        displayTotalBalance()
-    }
-
-    fun updateUTXOs(utxos: MutableList<UnspentOutput>) {
-        selectedUTXOs = utxos
-        displayTotalBalance()
-    }
-
-    fun addSingleUTXO(utxo: UnspentOutput) {
-        if(selectedUTXOs.find { it == utxo } == null) {
-            selectedUTXOs.add(utxo)
-            displayTotalBalance()
-        }
-    }
-
-    fun getSelectedUTXOs() = selectedUTXOs
 
     companion object {
         private const val errorThreshold = 5

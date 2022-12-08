@@ -2,8 +2,10 @@ package com.intuisoft.plaid.androidwrappers
 
 import android.os.Bundle
 import android.view.View
+import android.view.WindowManager
 import androidx.navigation.fragment.findNavController
 import androidx.viewbinding.ViewBinding
+import com.intuisoft.plaid.BuildConfig
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.activities.MainActivity
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
@@ -13,7 +15,8 @@ import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 
 abstract class ConfigurableFragment<T: ViewBinding>(
-    private val pinProtection: Boolean = false
+    private val pinProtection: Boolean = false,
+    private val secureScreen: Boolean = false,
 ) : BindingFragment<T>(), PinProtectedFragmentDelegate {
     protected var baseVM: BaseViewModel? = null
     private var configTypes = listOf<FragmentConfigurationType>()
@@ -21,6 +24,16 @@ abstract class ConfigurableFragment<T: ViewBinding>(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        if(secureScreen) {
+            requireActivity().window.setFlags(
+                WindowManager.LayoutParams.FLAG_SECURE,
+                WindowManager.LayoutParams.FLAG_SECURE
+            )
+        } else {
+            requireActivity().window.clearFlags(
+                WindowManager.LayoutParams.FLAG_SECURE
+            )
+        }
         onConfiguration(baseVM?.currentConfig)
     }
 
@@ -64,6 +77,7 @@ abstract class ConfigurableFragment<T: ViewBinding>(
     override fun checkPin() {
         if(pinProtection) {
             pinViewModel.checkPinStatus {
+//                if(BuildConfig.FLAVOR == "prod") {
                 navigate(
                     R.id.pinFragment,
                     Constants.Navigation.ANIMATED_FADE_IN_EXIT_NAV_OPTION

@@ -37,6 +37,7 @@ class MainActivity : BindingActivity<ActivityMainBinding>(), ActionBarDelegate {
     protected val localStoreRepository: LocalStoreRepository by inject()
     protected val walletManager: AbstractWalletManager by inject()
     var configurationSetup = false
+    var ignorePinCheck = false
 
     companion object {
         private val TOP_LEVEL_DESTINATIONS = setOf(
@@ -58,6 +59,7 @@ class MainActivity : BindingActivity<ActivityMainBinding>(), ActionBarDelegate {
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
 
             if (result.resultCode == Activity.RESULT_OK) {
+                ignorePinCheck = false
                 val bitcoinAddress = result.data?.getStringExtra(Constants.ActivityResult.BARCODE_EXTRA)
                 bitcoinAddress?.let {
                     val listener = supportFragmentManager.currentNavigationFragment as? BarcodeResultListener
@@ -114,7 +116,7 @@ class MainActivity : BindingActivity<ActivityMainBinding>(), ActionBarDelegate {
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         super.onWindowFocusChanged(hasFocus)
-        if(hasFocus) {
+        if(hasFocus && !ignorePinCheck) {
             val protectedFragment = supportFragmentManager.currentNavigationFragment as? PinProtectedFragmentDelegate
             protectedFragment?.checkPin()
         }
@@ -231,11 +233,13 @@ class MainActivity : BindingActivity<ActivityMainBinding>(), ActionBarDelegate {
     }
 
     fun scanBarcode() {
+        ignorePinCheck = true
         BarcodeScannerActivity.invoiceMode = false
         barcodeLauncher.launch(Intent(this, BarcodeScannerActivity::class.java))
     }
 
     fun scanInvoice() {
+        ignorePinCheck = true
         BarcodeScannerActivity.invoiceMode = true
         barcodeLauncher.launch(Intent(this, BarcodeScannerActivity::class.java))
     }

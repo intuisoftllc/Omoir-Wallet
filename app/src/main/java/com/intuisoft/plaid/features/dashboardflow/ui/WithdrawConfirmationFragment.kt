@@ -1,6 +1,7 @@
 package com.intuisoft.plaid.features.dashboardflow.ui
 
 import android.app.Dialog
+import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -38,6 +39,7 @@ import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.util.Plural
 import com.intuisoft.plaid.common.util.SimpleCoinNumberFormat
 import com.intuisoft.plaid.common.util.extensions.toArrayList
+import com.intuisoft.plaid.model.LocalWalletModel
 import com.intuisoft.plaid.util.fragmentconfig.SendFundsData
 import io.horizontalsystems.bitcoincore.extensions.toHexString
 import io.horizontalsystems.bitcoincore.extensions.toReversedHex
@@ -70,7 +72,7 @@ class WithdrawConfirmationFragment : ConfigurableFragment<FragmentWithdrawConfir
     override fun onConfiguration(configuration: FragmentConfiguration?) {
         val data = configuration!!.configData as SendFundsData
 
-        viewModel.updateUTXOs(data.spendFrom.toMutableList())
+        viewModel.updateUTXOAddresses(data.spendFrom.toMutableList())
         viewModel.updateSendAmount(data.amountToSend)
         viewModel.setNetworkFeeRate()
         viewModel.setInvoiceSend(data.invoiceSend)
@@ -325,30 +327,37 @@ class WithdrawConfirmationFragment : ConfigurableFragment<FragmentWithdrawConfir
         bottomSheetDialog.show()
     }
 
-    fun showSendToWalletBottomSheet() {
-        val bottomSheetDialog = BottomSheetDialog(requireContext())
-        bottomSheetDialog.setContentView(R.layout.bottom_sheet_wallet_transfer)
-        val noWallets = bottomSheetDialog.findViewById<TextView>(R.id.no_wallets)!!
-        val wallets = bottomSheetDialog.findViewById<RecyclerView>(R.id.wallets)!!
-        val walletsList = viewModel.getWallets().filter {
-            viewModel.canTransferToWallet(it)
-        }
-
-        if(walletsList.isEmpty()) {
-            noWallets.isVisible = true
-            wallets.isVisible = false
-        } else {
-            val adapter = TransferToWalletAdapter(localStoreRepository) {
-                binding.address.setText(it.walletKit!!.receiveAddress())
-                styledSnackBar(requireView(), getString(R.string.withdraw_confirmation_transfer_notice, it.name), true)
-                bottomSheetDialog.cancel()
+    companion object {
+        fun showSendToWalletBottomSheet(
+            context: Context,
+            localStoreRepository: LocalStoreRepository,
+            canTransferToWallet: (LocalWalletModel) -> Boolean,
+            onWalletSelected: (LocalWalletModel) -> Unit,
+            getWallets: () -> List<LocalWalletModel>,
+        ) {
+            val bottomSheetDialog = BottomSheetDialog(context)
+            bottomSheetDialog.setContentView(R.layout.bottom_sheet_wallet_transfer)
+            val noWallets = bottomSheetDialog.findViewById<TextView>(R.id.no_wallets)!!
+            val wallets = bottomSheetDialog.findViewById<RecyclerView>(R.id.wallets)!!
+            val walletsList = getWallets().filter {
+                canTransferToWallet(it)
             }
 
-            wallets.adapter = adapter
-            adapter.addWallets(walletsList.toArrayList())
-        }
+            if (walletsList.isEmpty()) {
+                noWallets.isVisible = true
+                wallets.isVisible = false
+            } else {
+                val adapter = TransferToWalletAdapter(localStoreRepository) {
+                    onWalletSelected(it)
+                    bottomSheetDialog.cancel()
+                }
 
-        bottomSheetDialog.show()
+                wallets.adapter = adapter
+                adapter.addWallets(walletsList.toArrayList())
+            }
+
+            bottomSheetDialog.show()
+        }
     }
 
     private fun showAdvancedOptionsDialog() {
@@ -373,7 +382,24 @@ class WithdrawConfirmationFragment : ConfigurableFragment<FragmentWithdrawConfir
 
             sendToOtherWallets.onClick {
                 bottomSheetDialog.cancel()
-                showSendToWalletBottomSheet()
+                showSendToWalletBottomSheet(
+                    context = requireContext(),
+                    localStoreRepository = localStoreRepository,
+                    canTransferToWallet = {
+                         viewModel.canTransferToWallet(it)
+                    },
+                    onWalletSelected = {
+                        binding.address.setText(it.walletKit!!.receiveAddress())
+                        styledSnackBar(
+                            requireView(),
+                            getString(R.string.withdraw_confirmation_transfer_notice, it.name),
+                            true
+                        )
+                    },
+                    getWallets = {
+                        viewModel.getWallets()
+                    }
+                )
             }
         }
 

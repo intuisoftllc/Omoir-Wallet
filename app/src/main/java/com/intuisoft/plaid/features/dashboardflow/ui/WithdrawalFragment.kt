@@ -126,7 +126,7 @@ class WithdrawalFragment : ConfigurableFragment<FragmentWithdrawBinding>(pinProt
                     viewModel.getUnspentOutputs()
                 },
                 getSelectedUTXOs = {
-                    viewModel.getSelectedUTXOs()
+                    viewModel.selectedUTXOs
                 },
                 updateSelectedUTXOs = {
                     viewModel.updateUTXOs(it.toMutableList())
@@ -220,7 +220,7 @@ class WithdrawalFragment : ConfigurableFragment<FragmentWithdrawBinding>(pinProt
                     configurationType = FragmentConfigurationType.CONFIGURATION_WITHDRAW,
                     configData = SendFundsData(
                         amountToSend = viewModel.getSatsToSpend(),
-                        spendFrom = viewModel.getSelectedUTXOs().map { it.output.address!! }
+                        spendFrom = viewModel.selectedUTXOs.map { it.output.address!! }
                     )
                 ),
                 Constants.Navigation.WALLET_UUID_BUNDLE_ID to viewModel.getWalletId()

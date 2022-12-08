@@ -8,7 +8,7 @@
         android:id="@+id/illustration_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_escape_pod_protocol_intro"
+        android:src="@drawable/ic_asset_transfer_protocol_intro"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

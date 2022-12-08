@@ -112,6 +112,21 @@
     <string name="non_custodial_wallet_description">Not your keys, not your crypto! Your\nsecret pharse and private keys, never\nleave your device.</string>
 <!--    Non-Custodial Wallet Strings End -->
 
+<!--    What is ATP Strings -->
+    <string name="what_is_atp_title">What is\nAsset transfer Protocol (ATP)?</string>
+    <string name="what_is_atp_description">Asset transfer protocol is a convenient new way for you to transfer your assets from one wallet to another without sacrificing security.</string>
+<!--    What is ATP Strings End -->
+
+<!--    How does ATP work Strings -->
+    <string name="how_does_atp_work_title">How does it work?</string>
+    <string name="how_does_atp_work_description">ATP works by individually sending each of your UTXO’s to another location in “batches” or groups of up to 25.\n\nThis helps preserve Bitcoin\'s original purpose of providing pseudonymity to its users thus obfuscating your wallet\'s true total balance to onlookers.</string>
+<!--     How does ATP work End -->
+
+<!--    Your In Full Control Strings -->
+    <string name="your_in_full_control_title">Your In Full Control</string>
+    <string name="your_in_full_control_description">Plaid Crypto Wallet™ puts you in the drivers seat by giving you the power to control how much you spend in fees, to how fast the transfer will happen.\n\nTake back your financial security by using ATP to move funds privately on the bitcoin network.</string>
+<!--    Your In Full Control End -->
+
 <!--    Private & Secure Wallet Strings -->
     <string name="private_secure_wallet_title">Private &amp; Secure Wallet</string>
     <string name="private_secure_wallet_description">Your wallet is protected via a pin code\nand fingerprint if enabled. Your wallet\ndata stored on the device is also AES\nencrypted.</string>
@@ -126,6 +141,49 @@
     <string name="exchange_assets_title">Exchange Assets</string>
     <string name="exchange_assets_description">Effortlessly top your bitcoin wallet\nfrom other cryptocurrencies, without\nleaving the app.</string>
 <!--    Exchange Assets Strings End -->
+
+<!--    ATP Strings -->
+    <string name="atp_setting_1_title">Transferring To</string>
+    <string name="atp_setting_2_title">Transfer Amount</string>
+    <string name="atp_setting_3_title">Batch Gap</string>
+    <string name="atp_setting_4_title">Batch Size</string>
+    <string name="atp_setting_5_title">Fee Spread</string>
+    <string name="atp_batch_gap_info_title_title">What is Batch Gap?</string>
+    <string name="atp_batch_gap_info_description">Batch Gap is a term that describes how many blocks are between each batch during an ATP transaction. For example, if you set your batch gap to 1 that means that there must be at least a 1 block "gap" between each batch that gets sent out.\n\ni.e. each batch will take a total of at least 1 block (where the transaction was made) + 1 additional block before sending the next batch.\n\nThis can greatly increase the anonymity of your transfer depending on how large the gap is set.</string>
+    <string name="atp_batch_size_info_title">What is Batch Size?</string>
+    <string name="atp_batch_size_info_description">Batch Size is a term that refers to the size or amount of utxos sent per batch.</string>
+    <string name="atp_batch_size_info_description_part2">Size penalty</string>
+    <string name="atp_batch_size_info_description_part3">To prevent network congestion, ATP will require there to be at minimum a 1 block gap/batch for every 10 utxos sent.\n\ni.e. Suppose you have a total of 40 utxos you want to send in 2 batches. This would mean a 2 block penalty will be applied per batch (excluding the last one). In other words, ATP will send the first batch, wait for the batch gap + the penalty (if needed) to be satisfied. Then finally send the last batch.\n\nIf you would like to test out the functionality of this protocol, It\'s recommended to test it via a testnet wallet first before using real funds.\n\n**Please note that the penalty does not apply if the batch gap is >= to the penalty**</string>
+    <string name="atp_fee_spread_settings_title">sat/vbyte</string>
+    <string name="atp_fee_spread_min">Minimum Fee</string>
+    <string name="atp_fee_spread_max">Maximum Fee</string>
+    <string name="atp_fee_auto">Adjust To Network</string>
+    <string name="atp_fee_spread_info_title">What is Fee Spread?</string>
+    <string name="atp_fee_spread_info_description">Fee Spread is a term that represents the minimum and maximum fees that will be paid per batch. Once an ATP transfer is created each batch will randomly choose the fees to be paid per transaction based on the provided range.\n\nIf "Adjust To Network" flag is enabled, the network fee will be set to the current rate + the fee range.\n\ni.e. If we assume the min/max fee is 1–5 and "Adjust To Network" is disabled, ATP will generate transaction fees within that range. However if you enable "Adjust To Network" and the current network rate is 20, ATP may generate transactions of the following values: 21, 25, 23, etc.</string>
+<!--    ATP End -->
+
+<!--    Atp Confirm Strings -->
+    <string name="atp_confirm_title">Asset transfer</string>
+    <string name="atp_confirm_info_1_title">Sending To</string>
+    <string name="atp_confirm_info_2_title">Batch Gap</string>
+    <string name="atp_confirm_info_3_title">Batch Size</string>
+    <string name="atp_confirm_info_4_title">Estimated Time To Completion</string>
+    <string name="atp_confirm_info_5_title">Estimated Fees To Be Paid</string>
+    <string name="atp_confirm_info_6_title">Amount Sent</string>
+    <string name="atp_confirm_error_not_enough_funds">Not enough funds to complete transfer with given parameters</string>
+    <string name="atp_confirm_error_not_enough_funds_no_utxo">Not enough funds to complete transfer</string>
+    <string name="atp_confirm_skipped_utxos">%1$s (some utxos were skipped)</string>
+    <string name="atp_confirm_batch_size_adjusted">%1$s (adjusted)</string>
+<!--    Atp Confirm Strings -->
+
+<!--    Atp Utxo Transfers Strings -->
+    <string name="atp_utxo_transfers">Utxo Transfers</string>
+    <string name="atp_utxo_transfer_fee_amount">%1$s - %2$s/vbyte</string>
+    <string name="atp_utxo_transfer_error_1">Skipped (balance too small)</string>
+    <string name="atp_utxo_transfer_error_2">Skipped (not enough to cover fees)</string>
+    <string name="atp_utxo_transfer_error_3">Skipped (failed to transfer utxo)</string>
+    <string name="atp_creating_transfer">Creating Transfer</string>
+<!--    Atp Utxo Transfers Strings -->
 
 <!--    Backup Seed Phrase Strings -->
     <string name="backup_seed_phrase_title">Backup Your Seed Phrase</string>
@@ -574,6 +632,7 @@
     <string name="address">Address</string>
     <string name="explorer">Explorer</string>
     <string name="website">Website</string>
+    <string name="configuration">Configuration</string>
     <string name="no_internet_connection">No Internet Connection!</string>
     <string name="reconnecting_to_core">Syncing with the network, please wait…</string>
     <string name="advanced_options">Advanced Options</string>
@@ -616,6 +675,7 @@
     <string name="withdraw">Withdraw</string>
     <string name="upgrade_to_pro">Upgrade To Pro</string>
     <string name="transaction_id">Transaction ID</string>
+    <string name="dynamic_network_fee">Dynamic Network Fee</string>
     <string name="no_connection">Lost Connection to Servers…</string>
     <string name="not_connected_to_internet">You are not connected\nto the Internet</string>
     <string name="content_not_available">The following content is not available for testnet wallets</string>
@@ -635,6 +695,7 @@
     <string name="wallet_export_fragment_label">Export Wallet</string>
     <string name="display_unit_fragment_label">Bitcoin Unit</string>
     <string name="appearance_fragment_label">Appearance</string>
+    <string name="atp_info_fragment_label">What Is ATP</string>
     <string name="local_currency_fragment_label">Local Currency</string>
     <string name="address_book_fragment_label">Address Book</string>
     <string name="withdrawal_type_fragment_label">Withdrawal Type</string>

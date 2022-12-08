@@ -12,7 +12,9 @@ import com.intuisoft.plaid.common.util.Constants
     value = [
         LongListItemConverter::class,
         FloatListItemConverter::class,
-        InstantConverter::class
+        InstantConverter::class,
+        AssetTransferStatusConverter::class,
+        UtxoTransferConverter::class
     ]
 )
 @Database(
@@ -24,7 +26,11 @@ import com.intuisoft.plaid.common.util.Constants
         TickerPriceChartData::class,
         SupportedCurrency::class,
         TransactionMemo::class,
-        ExchangeInfoData::class
+        ExchangeInfoData::class,
+        AssetTransfer::class,
+        BatchData::class,
+        AddressBlacklist::class,
+        TransactionBlacklist::class
     ),
     version = Constants.Database.DB_VERSION
 )
@@ -35,8 +41,8 @@ abstract class PlaidDatabase : RoomDatabase() {
         listener = databaseListener
     }
 
-    fun onUpdate() {
-        listener?.onDatabaseUpdated()
+    fun onUpdate(dao: Any?) {
+        listener?.onDatabaseUpdated(dao)
     }
 
     companion object {
@@ -70,4 +76,12 @@ abstract class PlaidDatabase : RoomDatabase() {
     abstract fun transactionMemoDao(): TransactionMemoDao
 
     abstract fun exchangeInfoDao(): ExchangeInfoDao
+
+    abstract fun assetTransfersDao(): AssetTransferDao
+
+    abstract fun batchDataDao(): BatchDao
+
+    abstract fun addressBlacklistDao(): AddressBlacklistDao
+
+    abstract fun transactionBlacklistDao(): TransactionBlacklistDao
 }

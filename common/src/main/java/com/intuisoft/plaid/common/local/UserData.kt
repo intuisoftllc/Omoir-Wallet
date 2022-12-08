@@ -122,11 +122,41 @@ class UserData {
             save()
         }
 
+    var batchGap: Int = 0
+        set(value) {
+            field = value
+            save()
+        }
+
+    var batchSize: Int = 0
+        set(value) {
+            field = value
+            save()
+        }
+
+    var feeSpreadLow: Int = 1
+        set(value) {
+            field = value
+            save()
+        }
+
+    var feeSpreadHigh: Int = 1
+        set(value) {
+            field = value
+            save()
+        }
+
+    var dynamicBatchNetworkFee: Boolean = false
+        set(value) {
+            field = value
+            save()
+        }
+
     fun save() {
         CoroutineScope(Dispatchers.IO).launch {
             synchronized(this@UserData::class.java) {
                 val json = Gson().toJson(this@UserData, UserData::class.java)
-                AESUtils.encrypt(json, CommonService.getUserPin())?.let { usrData ->
+                AESUtils.encrypt(json, CommonService.getUserPin(), CommonService.getWalletSecret())?.let { usrData ->
                     val dir: File = CommonService.getApplication().filesDir
                     File(dir, FILE_NAME).writeToFile(
                         usrData,
@@ -148,7 +178,7 @@ class UserData {
                     val data = File(dir, FILE_NAME).readFromFile(CommonService.getApplication())
 
                     if (data != null && data.isNotEmpty()) {
-                        val json = AESUtils.decrypt(data.trim(), pin)
+                        val json = AESUtils.decrypt(data.trim(), pin, CommonService.getWalletSecret())
 
                         if (json != null) {
                             return Gson().fromJson(json, UserData::class.java)

@@ -87,7 +87,7 @@ class InvoiceFragment : ConfigurableFragment<FragmentInvoiceBinding>(pinProtecti
                     configurationType = FragmentConfigurationType.CONFIGURATION_WITHDRAW,
                     configData = SendFundsData(
                         amountToSend = viewModel.getSatsToSpend(),
-                        spendFrom = viewModel.getSelectedUTXOs().map { it.output.address!! },
+                        spendFrom = viewModel.selectedUTXOs.map { it.output.address!! },
                         address = it.address,
                         memo = it.description,
                         invoiceSend = true
@@ -111,7 +111,7 @@ class InvoiceFragment : ConfigurableFragment<FragmentInvoiceBinding>(pinProtecti
                     viewModel.getUnspentOutputs()
                 },
                 getSelectedUTXOs = {
-                    viewModel.getSelectedUTXOs()
+                    viewModel.selectedUTXOs
                 },
                 updateSelectedUTXOs = {
                     viewModel.updateUTXOs(it.toMutableList())

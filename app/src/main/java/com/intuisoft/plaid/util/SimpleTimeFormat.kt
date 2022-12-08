@@ -14,13 +14,22 @@ import kotlin.math.roundToLong
 
 object SimpleTimeFormat {
 
-    fun timeToString(time: Long): String? {
-        var convTime: String? = null
-        val prefix = ""
-        val suffix = "Ago"
+    fun timeToString(time: Long, suffix: String = "Ago"): String {
+        var convTime: String
         val pasTime: Date = Date(time * 1000)
         val nowTime = Date()
-        val dateDiff: Long = nowTime.getTime() - pasTime.getTime()
+        val dateDiff: Long
+
+        if(pasTime < nowTime)
+            dateDiff = nowTime.getTime() - pasTime.getTime()
+        else
+            dateDiff = pasTime.getTime() - nowTime.getTime()
+
+        return internalTimeToString(dateDiff, suffix)
+    }
+
+    private fun internalTimeToString(dateDiff: Long, suffix: String): String {
+        var convTime: String
         val second: Long = TimeUnit.MILLISECONDS.toSeconds(dateDiff)
         val minute: Long = TimeUnit.MILLISECONDS.toMinutes(dateDiff)
         val hour: Long = TimeUnit.MILLISECONDS.toHours(dateDiff)

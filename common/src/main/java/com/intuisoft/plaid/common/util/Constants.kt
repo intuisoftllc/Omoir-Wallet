@@ -7,7 +7,7 @@ class Constants {
 
     object Database {
         const val DB_NAME = "plaid.db"
-        const val DB_VERSION = 22
+        const val DB_VERSION = 23
     }
 
     object Files {
@@ -103,6 +103,7 @@ class Constants {
         const val SYNC_TIMEOUT = MILLS_PER_SEC * 10
         const val ITEM_COPY_DELAY = 600
         const val ITEM_COPY_DELAY_LONG = 1000
+        const val BLOCK_TIME = 10
         const val AUTO_SYNC_TIME: Long = (MILLS_PER_SEC * TWO_MINUTES).toLong()
         const val GENERAL_CACHE_UPDATE_TIME: Long = (MILLS_PER_SEC * TEN_MINUTES).toLong()
         const val GENERAL_CACHE_UPDATE_TIME_MED: Long = (MILLS_PER_SEC * FIVE_MINUTES).toLong()
@@ -122,7 +123,13 @@ class Constants {
         const val SATS_PER_BTC = 100000000
         const val MAX_PEERS = 10
         const val PAGE_LIMIT = 50
+        const val MIN_BATCH_GAP = 0
+        const val MAX_BATCH_GAP = 144
+        const val MIN_BATCH_SIZE = 1
+        const val MAX_BATCH_SIZE = 50
         const val MIN_CONFIRMATIONS = 3
+        const val MIN_FEE = 1
+        const val MAX_FEE = 999
         const val FREE_MAX_WALLETS = 4
         const val PRO_MAX_WALLETS = 10
         const val SYNC_RESTART_LIMIT = 6

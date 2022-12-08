@@ -13,7 +13,6 @@ import io.horizontalsystems.bitcoincore.models.TransactionType
 import kotlinx.android.synthetic.main.list_item_basic_transaction_detail.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 

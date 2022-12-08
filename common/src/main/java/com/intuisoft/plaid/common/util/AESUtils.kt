@@ -7,19 +7,20 @@ import javax.crypto.spec.SecretKeySpec
 
 object AESUtils {
 
-    private fun passwordToBytes(password: String) : MutableList<Byte> {
+    private fun passwordToBytes(password: String, salt: String) : MutableList<Byte> {
         if(password.isEmpty() || password.isBlank())
             return mutableListOf()
 
-        val paddingByte = (password[0].code + 24).toByte()
+        val salted = password + salt
+        val paddingByte = (salted[0].code + 24).toByte()
         var passwordKey = mutableListOf<Byte>()
 
         var x = 0
         var y = 0
         while(x < 16) {
-            if(x > 0 && (x % password.length) == 0 && passwordKey.last() != paddingByte) {
+            if(x > 0 && (x % salted.length) == 0 && passwordKey.last() != paddingByte) {
                 y = 0
-                while(y < password.length && x < 16) {
+                while(y < salted.length && x < 16) {
                     passwordKey.add(paddingByte)
                     y++
                     x++
@@ -27,16 +28,16 @@ object AESUtils {
                 continue
             }
 
-            passwordKey.add(password[x % password.length].code.toByte())
+            passwordKey.add(salted[x % salted.length].code.toByte())
             x++
         }
 
         return passwordKey
     }
 
-    fun encrypt(cleartext: String, password: String): String? {
+    fun encrypt(cleartext: String, password: String, salt: String): String? {
         try {
-            val passwordKey = passwordToBytes(password)
+            val passwordKey = passwordToBytes(password, salt)
             if(passwordKey.isEmpty()) return null
 
             val rawKey = getRawKey(passwordKey)
@@ -49,9 +50,9 @@ object AESUtils {
         }
     }
 
-    fun decrypt(encrypted: String, password: String): String? {
+    fun decrypt(encrypted: String, password: String, salt: String): String? {
         try {
-            val passwordKey = passwordToBytes(password)
+            val passwordKey = passwordToBytes(password, salt)
             if(passwordKey.isEmpty()) return null
 
             val enc = toByte(encrypted)

@@ -15,7 +15,7 @@ class PinViewModel(
     fun checkPinStatus(onShowPinScreen: () -> Unit) {
         if(localStoreRepository.hasPinTimedOut()) {
             // TODO: I hate entering passwords, uncomment this for production
-//            onShowPinScreen()
+            onShowPinScreen()
         }
     }
 
