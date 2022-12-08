@@ -32,5 +32,9 @@ interface ApiRepository {
 
     suspend fun getConversion(from: String, to: String, fixed: Boolean): Double
 
+    fun getAddressTransactions(address: String): AddressTransactionData?
+
+    fun getHashForHeight(height: Int): String?
+
     suspend fun refreshLocalCache()
 }

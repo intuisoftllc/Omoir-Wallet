@@ -21,7 +21,10 @@ import kotlinx.android.synthetic.main.fragment_public_key_import.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
-class RecoveryPhraseImportFragment : ConfigurableFragment<FragmentRecoveryPhraseImportBinding>(pinProtection = true) {
+class RecoveryPhraseImportFragment : ConfigurableFragment<FragmentRecoveryPhraseImportBinding>(
+    pinProtection = true,
+    secureScreen = true
+) {
     protected val viewModel: CreateWalletViewModel by viewModel()
 
     override fun onCreateView(

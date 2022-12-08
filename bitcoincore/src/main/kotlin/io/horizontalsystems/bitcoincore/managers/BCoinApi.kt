@@ -2,6 +2,7 @@ package io.horizontalsystems.bitcoincore.managers
 
 import com.eclipsesource.json.Json
 import com.eclipsesource.json.JsonObject
+import com.intuisoft.plaid.common.CommonService
 import io.horizontalsystems.bitcoincore.BitcoinCore
 import io.horizontalsystems.bitcoincore.core.IInitialSyncApi
 import java.util.logging.Logger
@@ -11,37 +12,36 @@ class BCoinApi(host: String) : IInitialSyncApi {
     private val logger = Logger.getLogger("BCoinApi")
 
     override fun getTransactions(addresses: List<String>): List<TransactionItem> {
-        val requestData = JsonObject().apply {
-            this["addresses"] = Json.array(*addresses.toTypedArray())
-        }
-
-        if(BitcoinCore.loggingEnabled)  logger.info("Request transactions for ${addresses.size} addresses: [${addresses.first()}, ...]")
-
-        val response = apiManager.post("tx/address", requestData.toString()).asArray()
-
-        if(BitcoinCore.loggingEnabled)  logger.info("Got ${response.size()} transactions for requested addresses")
-
         val transactions = mutableListOf<TransactionItem>()
 
-        for (txItem in response) {
-            val tx = txItem.asObject()
+        addresses.forEach {
+            if(BitcoinCore.loggingEnabled)  logger.info("Request transactions for ${addresses.size} addresses: [${addresses.first()}, ...]")
+            val result = CommonService.getApiRepositoryInstance().getAddressTransactions(it)
 
-            val blockHashJson = tx["block"] ?: continue
-            val blockHash = if (blockHashJson.isString) blockHashJson.asString() else continue
-
-            val outputs = mutableListOf<TransactionOutputItem>()
-            for (outputItem in tx["outputs"].asArray()) {
-                val outputJson = outputItem.asObject()
-
-                val scriptJson = outputJson["script"] ?: continue
-                val addressJson = outputJson["address"] ?: continue
-
-                if (scriptJson.isString && addressJson.isString) {
-                    outputs.add(TransactionOutputItem(scriptJson.asString(), addressJson.asString()))
-                }
+            if(BitcoinCore.loggingEnabled)  {
+                if(result == null)
+                    logger.info("Got transactions for requested address: $it")
+                else
+                    logger.info("Failed to get transactions for requested address: $it")
             }
 
-            transactions.add(TransactionItem(blockHash, tx["height"].asInt(), outputs))
+            result?.let {
+                val blockHash = it.status.blockHash ?: return@forEach
+                val height = it.status.height ?: return@forEach
+
+                transactions.add(
+                    TransactionItem(
+                        blockHash = blockHash,
+                        blockHeight = height,
+                        txOutputs = it.outputs.map { output ->
+                            TransactionOutputItem(
+                                script = output.script,
+                                address = output.address
+                            )
+                        }
+                    )
+                )
+            }
         }
 
         return transactions

@@ -10,6 +10,7 @@ import com.intuisoft.plaid.common.network.blockchair.repository.SimpleSwapReposi
 import com.intuisoft.plaid.common.network.blockchair.response.SupportedCurrencyModel
 import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.common.util.Constants.Strings.BTC_TICKER
+import kotlinx.coroutines.runBlocking
 
 
 class ApiRepository_Impl(
@@ -164,6 +165,20 @@ class ApiRepository_Impl(
     override suspend fun getConversion(from: String, to: String, fixed: Boolean): Double {
         updateWholeCoinConversionData(if(from == BTC_TICKER) to else from, fixed)
         return memoryCache.getWholeCoinConversion(if(from == BTC_TICKER) to else from, from == BTC_TICKER, fixed) ?: 0.0
+    }
+
+    /* On-Demand Call */ // testnet only!!!
+    override fun getAddressTransactions(address: String): AddressTransactionData? {
+        return runBlocking {
+            return@runBlocking blockstreamInfoTestNetRepository.getAddressTransactions(address).getOrNull()
+        }
+    }
+
+    /* On-Demand Call */ // mainnet only!!!
+    override fun getHashForHeight(height: Int): String? {
+        return runBlocking {
+            return@runBlocking blockstreamInfoRepository.getHashForHeight(height).getOrNull()
+        }
     }
 
     private suspend fun updateSuggestedFeeRates() {

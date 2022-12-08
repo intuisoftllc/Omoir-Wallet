@@ -1,15 +1,14 @@
 package io.horizontalsystems.bitcoincore.managers
 
 import com.eclipsesource.json.JsonValue
+import com.intuisoft.plaid.common.CommonService
 import io.horizontalsystems.bitcoincore.core.IInitialSyncApi
 import java.lang.Integer.min
 import java.util.concurrent.Callable
 import java.util.concurrent.Executors
 
-class BlockchainComApi(transactionApiUrl: String, blocksApiUrl: String) : IInitialSyncApi {
-
+class BlockchainComApi(transactionApiUrl: String) : IInitialSyncApi {
     private val transactionsApiManager = ApiManager(transactionApiUrl)
-    private val blocksApiManager = ApiManager(blocksApiUrl)
 
     private fun getTransactions(addresses: List<String>, offset: Int = 0): List<TransactionResponse> {
         val joinedAddresses = addresses.joinToString("|")
@@ -40,17 +39,25 @@ class BlockchainComApi(transactionApiUrl: String, blocksApiUrl: String) : IIniti
     }
 
     private fun blocks(heights: List<Int>): List<BlockResponse> {
-        val joinedHeights = heights.sorted().joinToString(",") { it.toString() }
-        val blocks = blocksApiManager.doOkHttpGet(false, "hashes?numbers=$joinedHeights").asArray()
+        val response = mutableListOf<BlockResponse>()
 
-        return blocks.map { blockJson ->
-            val block = blockJson.asObject()
+        heights.forEach {
+            val hash = CommonService.getApiRepositoryInstance().getHashForHeight(it)
 
-            BlockResponse(
-                block["number"].asInt(),
-                block["hash"].asString()
-            )
+            if(hash != null) {
+                response.add(
+                    BlockResponse(
+                        it,
+                        hash
+                    )
+                )
+            } else {
+                response.clear()
+                return emptyList()
+            }
         }
+
+        return response
     }
 
     private fun getItems(addresses: List<String>, offset: Int): List<TransactionItem> {

@@ -1,7 +1,13 @@
 package com.intuisoft.plaid.common.network.blockstreaminfo.repository
 
+import com.intuisoft.plaid.common.model.AddressTransactionData
 import com.intuisoft.plaid.common.model.NetworkFeeRate
+import com.intuisoft.plaid.common.model.TxOutput
+import com.intuisoft.plaid.common.model.TxStatus
 import com.intuisoft.plaid.common.network.blockstreaminfo.api.BlockStreamInfoApi
+import com.intuisoft.plaid.common.network.blockstreaminfo.response.FeeEstimatesResponse
+import retrofit2.Call
+import retrofit2.http.Path
 import kotlin.math.roundToInt
 
 interface BlockstreamInfoRepository {
@@ -9,10 +15,48 @@ interface BlockstreamInfoRepository {
         get() = this.javaClass.simpleName
 
     fun getFeeEstimates(): Result<NetworkFeeRate>
+    fun getAddressTransactions(address: String): Result<AddressTransactionData>
+
+    fun getHashForHeight(height: Int): Result<String>
 
     private class Impl(
         private val api: BlockStreamInfoApi,
     ) : BlockstreamInfoRepository {
+
+        override fun getHashForHeight(height: Int): Result<String> {
+            try {
+                val result = api.getHashForHeight(height).execute().body()
+
+                return Result.success(
+                    result!!
+                )
+            } catch (t: Throwable) {
+                return Result.failure(t)
+            }
+        }
+
+        override fun getAddressTransactions(address: String): Result<AddressTransactionData> {
+            try {
+                val txs = api.getAddressTransactions(address).execute().body()
+
+                return Result.success(
+                    AddressTransactionData(
+                        status = TxStatus(
+                            height = txs!!.status.block_height,
+                            blockHash = txs!!.status.block_hash
+                        ),
+                        outputs = txs.vout.map {
+                            TxOutput(
+                                script = it.scriptpubkey,
+                                address = it.scriptpubkey_address
+                            )
+                        }
+                    )
+                )
+            } catch (t: Throwable) {
+                return Result.failure(t)
+            }
+        }
 
         override fun getFeeEstimates(): Result<NetworkFeeRate> {
             try {
