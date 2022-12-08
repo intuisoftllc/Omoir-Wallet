@@ -160,7 +160,7 @@ interface LocalStoreRepository {
 
     suspend fun setBatchData(data: BatchDataModel)
 
-    fun getBatchDataForTransfer(id: String): List<BatchData>
+    fun getBatchDataForTransfer(id: String): List<BatchDataModel>
 
     suspend fun saveAssetTransfer(data: AssetTransferModel)
 

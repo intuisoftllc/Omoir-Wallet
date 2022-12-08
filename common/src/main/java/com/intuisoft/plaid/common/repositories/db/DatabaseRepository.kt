@@ -28,7 +28,7 @@ interface DatabaseRepository {
 
     suspend fun setBatchData(data: BatchDataModel)
 
-    suspend fun getBatchDataForTransfer(id: String): List<BatchData>
+    suspend fun getBatchDataForTransfer(id: String): List<BatchDataModel>
 
     suspend fun saveAssetTransfer(data: AssetTransferModel)
 

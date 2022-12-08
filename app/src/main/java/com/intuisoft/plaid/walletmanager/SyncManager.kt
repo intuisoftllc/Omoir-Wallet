@@ -2,13 +2,11 @@ package com.intuisoft.plaid.walletmanager
 
 import android.app.Application
 import android.util.Log
-import com.intuisoft.plaid.PlaidApp
 import com.intuisoft.plaid.common.model.DevicePerformanceLevel
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.model.LocalWalletModel
 import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.common.util.extensions.remove
-import com.intuisoft.plaid.util.NetworkUtil
 import com.intuisoft.plaid.util.entensions.splitIntoGroupOf
 import kotlinx.coroutines.*
 import java.util.concurrent.CopyOnWriteArrayList
@@ -59,21 +57,18 @@ class SyncManager(
     fun openWallet(wallet: LocalWalletModel) {
         openedWallet = wallet
         wallet.walletKit?.onEnterForeground()
-        wallet.walletKit?.start()
     }
 
     fun closeWallet() {
         openedWallet?.walletKit?.onEnterBackground()
-        openedWallet?.walletKit?.stop()
         openedWallet = null
     }
 
     fun getOpenedWallet() = openedWallet
 
-    private fun safeStop(wallet: LocalWalletModel) {
+    fun safeBackground(wallet: LocalWalletModel) {
         if(wallet != openedWallet) {
             wallet.walletKit!!.onEnterBackground()
-            wallet.walletKit!!.stop()
         }
     }
 
@@ -239,7 +234,7 @@ class SyncManager(
                             }
 
                             group.items.forEach {
-                                safeStop(it)
+                                safeBackground(it)
                             }
                         }
                     )

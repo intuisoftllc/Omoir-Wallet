@@ -1,7 +1,7 @@
 package com.intuisoft.plaid.common.model
 
 data class UtxoTransfer(
-    val txId: String,
+    var txId: String,
     val address: String,
-    val feeRate: Int
+    var feeRate: Int,
 )

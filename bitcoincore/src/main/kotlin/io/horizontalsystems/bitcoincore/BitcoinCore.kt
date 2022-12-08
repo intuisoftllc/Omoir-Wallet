@@ -555,6 +555,10 @@ class BitcoinCore(
         return dataProvider.transactions(fromUid, type, limit)
     }
 
+    fun getAllTransactions(): List<TransactionInfo> {
+        return dataProvider.getAllTransactions()
+    }
+
     fun fee(value: Long, address: String? = null, senderPay: Boolean = true, feeRate: Int, pluginData: Map<Byte, IPluginData>): Long {
         return transactionFeeCalculator?.fee(value, feeRate, senderPay, address, pluginData) ?: throw CoreError.ReadOnlyCore
     }
@@ -597,6 +601,14 @@ class BitcoinCore(
 
     fun receiveAddress(): String {
         return addressConverter.convert(publicKeyManager.receivePublicKey(), purpose.scriptType).string
+    }
+
+    fun receiveAddresses(): List<String> {
+        return publicKeyManager.receivePublicKeys().map { addressConverter.convert(it, purpose.scriptType).string }
+    }
+
+    fun fillGap() {
+        publicKeyManager.fillGap()
     }
 
     fun receivePublicKey(): PublicKey {

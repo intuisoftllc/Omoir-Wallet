@@ -421,7 +421,7 @@ class LocalStoreRepository_Impl(
         }
     }
 
-    override fun getBatchDataForTransfer(id: String): List<BatchData> {
+    override fun getBatchDataForTransfer(id: String): List<BatchDataModel> {
         return runBlocking {
             return@runBlocking databaseRepository.getBatchDataForTransfer(id)
         }

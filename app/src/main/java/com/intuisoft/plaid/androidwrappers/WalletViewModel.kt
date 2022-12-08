@@ -173,24 +173,6 @@ open class WalletViewModel(
         }
     }
 
-    fun calculateFeeForMaxSpend(unspentOutput: UnspentOutput, feeRate: Int, address: String?) : Long {
-        try {
-            var max = localWallet!!.walletKit!!.maximumSpendableValue(
-                listOf(unspentOutput),
-                address,
-                feeRate
-            )
-
-            return localWallet!!.walletKit!!.fee(listOf(unspentOutput), max, address, true, feeRate)
-        } catch(e: SendValueErrors.Dust) {
-            return -2
-        } catch(e: SendValueErrors.InsufficientUnspentOutputs) {
-            return -1
-        } catch(e: Exception) {
-            return 0
-        }
-    }
-
     fun getMemoForTx(txId: String) {
         viewModelScope.launch {
             _txMemo.postValue(localStoreRepository.getTransactionMemo(txId)?.memo ?: getApplication<PlaidApp>().getString(R.string.not_applicable))

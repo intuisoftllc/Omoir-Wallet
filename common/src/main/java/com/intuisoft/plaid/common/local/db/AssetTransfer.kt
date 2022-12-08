@@ -22,6 +22,9 @@ data class AssetTransfer(
     @ColumnInfo(name = "expected_amount") val expectedAmount: Long,
     @ColumnInfo(name = "sent") val sent: Long,
     @ColumnInfo(name = "fees_paid") val feesPaid: Long,
+    @ColumnInfo(name = "fee_range_low") val feeRangeLow: Int,
+    @ColumnInfo(name = "fee_range_high") val feeRangeHigh: Int,
+    @ColumnInfo(name = "dynamic_fees") val dynamicFees: Boolean,
     @ColumnInfo(name = "status") val status: AssetTransferStatus,
     @ColumnInfo(name = "batches") val batches: List<String>
 ) {
@@ -35,7 +38,10 @@ data class AssetTransfer(
             batchSize = batchSize,
             expectedAmount = expectedAmount,
             sent = sent,
+            feeRangeLow = feeRangeLow,
+            feeRangeHigh = feeRangeHigh,
             feesPaid = feesPaid,
+            dynamicFees = dynamicFees,
             status = status,
             batches = batches
         )
@@ -52,6 +58,9 @@ data class AssetTransfer(
            expectedAmount: Long,
            sent: Long,
            feesPaid: Long,
+           feeRangeLow: Int,
+           feeRangeHigh: Int,
+           dynamicFees: Boolean,
            status: AssetTransferStatus,
            batches: List<String>
         ) =
@@ -65,6 +74,9 @@ data class AssetTransfer(
                 expectedAmount = expectedAmount,
                 sent = sent,
                 feesPaid = feesPaid,
+                feeRangeLow = feeRangeLow,
+                feeRangeHigh = feeRangeHigh,
+                dynamicFees = dynamicFees,
                 status = status,
                 batches = batches
             )

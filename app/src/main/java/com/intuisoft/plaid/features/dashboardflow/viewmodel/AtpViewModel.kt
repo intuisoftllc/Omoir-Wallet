@@ -152,6 +152,9 @@ class AtpViewModel(
                     expectedAmount = data.sendAmount,
                     sent = 0,
                     feesPaid = 0,
+                    feeRangeLow = getFeeSpread().first,
+                    feeRangeHigh = getFeeSpread().last,
+                    dynamicFees = isUsingDynamicBatchNetworkFee(),
                     status = AssetTransferStatus.NOT_STARTED,
                     batches = batches
                 )

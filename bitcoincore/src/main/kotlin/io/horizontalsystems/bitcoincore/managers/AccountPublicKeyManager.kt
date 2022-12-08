@@ -37,6 +37,11 @@ class AccountPublicKeyManager(
     }
 
     @Throws
+    override fun receivePublicKeys(): List<PublicKey> {
+        return getPublicKeys(external = true)
+    }
+
+    @Throws
     override fun changePublicKey(): PublicKey {
         return getPublicKey(external = false)
     }
@@ -107,6 +112,13 @@ class AccountPublicKeyManager(
             .filter { it.external == external }
             .sortedWith(compareBy { it.index })
             .firstOrNull() ?: throw Error.NoUnusedPublicKey
+    }
+
+    @Throws
+    private fun getPublicKeys(external: Boolean): List<PublicKey> {
+        return storage.getPublicKeysUnused()
+            .filter { it.external == external }
+            .sortedWith(compareBy { it.index }) ?: throw Error.NoUnusedPublicKey
     }
 
     companion object {

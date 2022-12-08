@@ -78,6 +78,11 @@ class DataProvider(
         }
     }
 
+    fun getAllTransactions(): List<TransactionInfo> {
+        val transactions = storage.getFullTransactionInfo(null, null, null)
+        return transactions.map { transactionInfoConverter.transactionInfo(it) }
+    }
+
     fun getRawTransaction(transactionHash: String): String? {
         val hashByteArray = transactionHash.hexToByteArray().reversedArray()
         return storage.getFullTransactionInfo(hashByteArray)?.rawTransaction

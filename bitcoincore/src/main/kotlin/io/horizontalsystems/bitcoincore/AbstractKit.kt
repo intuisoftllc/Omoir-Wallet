@@ -64,6 +64,10 @@ abstract class AbstractKit {
         return bitcoinCore.transactions(fromUid, type, limit)
     }
 
+    fun getAllTransactions(): List<TransactionInfo> {
+        return bitcoinCore.getAllTransactions()
+    }
+
     fun getTransaction(hash: String): TransactionInfo? {
         return bitcoinCore.getTransaction(hash)
     }
@@ -103,6 +107,14 @@ abstract class AbstractKit {
 
     fun receiveAddress(): String {
         return bitcoinCore.receiveAddress()
+    }
+
+    fun receiveAddresses(): List<String> {
+        return bitcoinCore.receiveAddresses()
+    }
+
+    fun fillGap() {
+        bitcoinCore.fillGap()
     }
 
     fun getMasterPublicKey(mainNet: Boolean = true) = bitcoinCore.getMasterPublicKey(mainNet)

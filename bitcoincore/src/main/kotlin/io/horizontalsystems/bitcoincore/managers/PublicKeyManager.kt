@@ -36,6 +36,11 @@ class PublicKeyManager(
         return getPublicKey(true)
     }
 
+    @Throws
+    override fun receivePublicKeys(): List<PublicKey> {
+        return getPublicKeys(true)
+    }
+
     override fun fullPublicKeyPath(key: PublicKey): String {
         return wallet.fullPublicKeyPath(key)
     }
@@ -126,6 +131,13 @@ class PublicKeyManager(
                 .filter { it.account == 0 && it.external == external }
                 .sortedWith(compareBy { it.index })
                 .firstOrNull() ?: throw Error.NoUnusedPublicKey
+    }
+
+    @Throws
+    private fun getPublicKeys(external: Boolean): List<PublicKey> {
+        return storage.getPublicKeysUnused()
+                .filter { it.account == 0 && it.external == external }
+                .sortedWith(compareBy { it.index }) ?: throw Error.NoUnusedPublicKey
     }
 
     companion object {

@@ -50,8 +50,8 @@ class DatabaseRepository_Impl(
         database.onUpdate(batchDao)
     }
 
-    override suspend fun getBatchDataForTransfer(id: String): List<BatchData> =
-        batchDao.getBatchesForTransfer(id)
+    override suspend fun getBatchDataForTransfer(id: String): List<BatchDataModel> =
+        batchDao.getBatchesForTransfer(id).map { it.from() }
 
     override suspend fun saveAssetTransfer(data: AssetTransferModel) {
         transferDao.insert(
@@ -65,6 +65,9 @@ class DatabaseRepository_Impl(
                 data.expectedAmount,
                 data.sent,
                 data.feesPaid,
+                data.feeRangeLow,
+                data.feeRangeHigh,
+                data.dynamicFees,
                 data.status,
                 data.batches,
             )
