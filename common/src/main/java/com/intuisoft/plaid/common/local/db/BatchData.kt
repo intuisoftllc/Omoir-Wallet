@@ -12,6 +12,7 @@ import java.time.Instant
 data class BatchData(
     @PrimaryKey(autoGenerate = false) @ColumnInfo(name = "id") var id: String,
     @ColumnInfo(name = "batch_number") var batchNumber: Int,
+    @ColumnInfo(name = "completion_height") var completionHeight: Int,
     @ColumnInfo(name = "transfer_id") var transferId: String,
     @ColumnInfo(name = "utxos") val utxos: List<UtxoTransfer>,
     @ColumnInfo(name = "status") val status: AssetTransferStatus
@@ -21,6 +22,7 @@ data class BatchData(
             id = id,
             transferId = transferId,
             batchNumber = batchNumber,
+            completionHeight = completionHeight,
             utxos = utxos,
             status = status
         )
@@ -31,6 +33,7 @@ data class BatchData(
             id: String,
             transferId: String,
             batchNumber: Int,
+            completionHeight: Int,
             utxos: List<UtxoTransfer>,
             status: AssetTransferStatus
         ) =
@@ -38,6 +41,7 @@ data class BatchData(
                 id = id,
                 transferId = transferId,
                 batchNumber = batchNumber,
+                completionHeight = completionHeight,
                 utxos = utxos,
                 status = status
             )

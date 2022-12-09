@@ -8,17 +8,11 @@ import com.intuisoft.plaid.PlaidApp
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.SingleLiveData
 import com.intuisoft.plaid.androidwrappers.WalletViewModel
-import com.intuisoft.plaid.common.model.BitcoinDisplayUnit
 import com.intuisoft.plaid.common.repositories.ApiRepository
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.common.util.RateConverter
-import com.intuisoft.plaid.common.util.SimpleCurrencyFormat
-import com.intuisoft.plaid.util.entensions.addChars
-import com.intuisoft.plaid.util.entensions.charsAfter
 import com.intuisoft.plaid.walletmanager.AbstractWalletManager
-import io.horizontalsystems.bitcoincore.models.BitcoinPaymentData
-import io.horizontalsystems.bitcoincore.storage.UnspentOutput
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch

@@ -16,14 +16,13 @@ import com.intuisoft.plaid.util.NetworkUtil
 import com.intuisoft.plaid.util.Plural
 import com.intuisoft.plaid.util.entensions.splitIntoGroupOf
 import com.intuisoft.plaid.walletmanager.AbstractWalletManager
+import com.intuisoft.plaid.walletmanager.AtpManager
 import io.horizontalsystems.bitcoincore.storage.UnspentOutput
 import kotlinx.coroutines.launch
 import java.security.SecureRandom
 import java.util.*
 import kotlin.math.min
 import kotlin.math.roundToInt
-import kotlin.random.Random
-import kotlin.random.nextInt
 
 
 class AtpViewModel(
@@ -110,7 +109,7 @@ class AtpViewModel(
         if((spread.first == 0 && spread.last == 0) || localStoreRepository.isUsingDynamicBatchNetworkFee()) {
             _feeSpread.postValue(getApplication<PlaidApp>().getString(R.string.dynamic_network_fee))
         } else {
-            _feeSpread.postValue("${spread.first}-${spread.last} sat/vbyte")
+            _feeSpread.postValue(getApplication<PlaidApp>().getString(R.string.sat_per_vbyte, "${spread.first}-${spread.last}"))
         }
     }
 
@@ -129,6 +128,7 @@ class AtpViewModel(
                             id = batches.last(),
                             transferId = transferId,
                             batchNumber = index,
+                            completionHeight = 0,
                             utxos = batch.items.map {
                                 UtxoTransfer(
                                     txId = "",
@@ -152,6 +152,7 @@ class AtpViewModel(
                     expectedAmount = data.sendAmount,
                     sent = 0,
                     feesPaid = 0,
+                    retries = 0,
                     feeRangeLow = getFeeSpread().first,
                     feeRangeHigh = getFeeSpread().last,
                     dynamicFees = isUsingDynamicBatchNetworkFee(),
@@ -197,11 +198,11 @@ class AtpViewModel(
                             localStoreRepository.getSuggestedFeeRate(isTestNetWallet())?.highFee ?: 0
                         val estimatedTime = blocksNeeded * Constants.Time.BLOCK_TIME.toLong()
                         val estimatedFees = selectedUTXOs.mapIndexed { index, it ->
-                            var result = calculateFeeForMaxSpend(it, baseFee + randomFees[index], null)
+                            var result = AtpManager.calculateFeeForMaxSpend(getWallet()!!, it, baseFee + randomFees[index], null)
 
-                            if(result == -1L) { // use lowest possible fee
-                                calculateFeeForMaxSpend(it, baseFee + getFeeSpread().first, null) to baseFee + getFeeSpread().first
-                            } else result to baseFee + randomFees[index]
+                            if(result.first == -1L) { // use lowest possible fee
+                                AtpManager.calculateFeeForMaxSpend(getWallet()!!, it, baseFee + getFeeSpread().first, null).first to baseFee + getFeeSpread().first
+                            } else result.first to baseFee + randomFees[index]
                         }
 
                         val estimatedFee = estimatedFees.filter { it.first > 0 }.map { it.first }.sum()
@@ -240,23 +241,23 @@ class AtpViewModel(
                     } else {
                         val suggestedFees = localStoreRepository.getSuggestedFeeRate(isTestNetWallet()) ?: NetworkFeeRate(0,0,0)
                         val estimatedFees = selectedUTXOs.mapIndexed { index, it ->
-                            var result = calculateFeeForMaxSpend(it, randomFees[index], null)
+                            var result = AtpManager.calculateFeeForMaxSpend(getWallet()!!, it, randomFees[index], null)
                             var fee = randomFees[index]
 
-                            if(result == -1L) { // use lowest possible fee
-                                result = calculateFeeForMaxSpend(it, getFeeSpread().first, null)
+                            if(result.first == -1L) { // use lowest possible fee
+                                result = AtpManager.calculateFeeForMaxSpend(getWallet()!!, it, getFeeSpread().first, null)
                                 fee = getFeeSpread().first
                             }
 
-                            if(result > 0 && suggestedFees.lowFee != suggestedFees.medFee) {
-                                if (fee in (suggestedFees.lowFee + 1)..suggestedFees.medFee) {
+                            if(result.first > 0 && suggestedFees.lowFee != suggestedFees.medFee) {
+                                if (fee in suggestedFees.lowFee..suggestedFees.medFee) {
                                     blocksNeeded += 5
-                                } else if (fee <= suggestedFees.lowFee) {
+                                } else if (fee < suggestedFees.lowFee) {
                                     blocksNeeded += 143
                                 }
                             }
 
-                            result
+                            result.first
                         }
 
                         val estimatedTime = blocksNeeded * Constants.Time.BLOCK_TIME.toLong()

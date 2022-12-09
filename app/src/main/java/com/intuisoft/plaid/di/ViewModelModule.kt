@@ -97,4 +97,12 @@ val viewModelModule = module {
     viewModel {
         AtpViewModel(get(), get(), get(), get())
     }
+
+    viewModel {
+        AtpHistoryViewModel(get(), get(), get(), get())
+    }
+
+    viewModel {
+        AtpDetailsViewModel(get(), get(), get(), get())
+    }
 }

@@ -236,6 +236,22 @@
     </fragment>
 
     <fragment
+        android:id="@+id/atpHistoryFragment"
+        android:name="com.intuisoft.plaid.features.dashboardflow.ui.AtpHistoryFragment"
+        android:label="@string/atp_history_fragment_label"
+        tools:layout="@layout/fragment_atp_history">
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/atpDetailsFragment"
+        android:name="com.intuisoft.plaid.features.dashboardflow.ui.AssetTransferDetailsFragment"
+        android:label="@string/atp_details_fragment_label"
+        tools:layout="@layout/fragment_asset_transfer_details">
+
+    </fragment>
+
+    <fragment
         android:id="@+id/localCurrencyFragment"
         android:name="com.intuisoft.plaid.features.settings.ui.LocalCurrencyFragment"
         android:label="@string/local_currency_fragment_label"

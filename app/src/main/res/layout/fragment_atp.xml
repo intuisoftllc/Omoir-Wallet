@@ -89,8 +89,7 @@
                     android:layout_height="wrap_content"
                     app:settings_variant="normal"
                     android:layout_marginBottom="@dimen/horizontal_padding_size"
-                    app:item_title="@string/atp_setting_3_title"
-                    app:item_subtitle="2 Blocks"/>
+                    app:item_title="@string/atp_setting_3_title"/>
 
                 <com.intuisoft.plaid.androidwrappers.SettingsItemView
                     android:id="@+id/batch_size"
@@ -98,8 +97,7 @@
                     android:layout_height="wrap_content"
                     app:settings_variant="normal"
                     android:layout_marginBottom="@dimen/horizontal_padding_size"
-                    app:item_title="@string/atp_setting_4_title"
-                    app:item_subtitle="5 Utxo's"/>
+                    app:item_title="@string/atp_setting_4_title"/>
 
                 <com.intuisoft.plaid.androidwrappers.SettingsItemView
                     android:id="@+id/fee_spread"
@@ -107,7 +105,7 @@
                     android:layout_height="wrap_content"
                     app:settings_variant="normal"
                     app:item_title="@string/atp_setting_5_title"
-                    app:item_subtitle="1-8 sat/vbyte"/>
+                    app:item_subtitle=""/>
 
             </LinearLayout>
 

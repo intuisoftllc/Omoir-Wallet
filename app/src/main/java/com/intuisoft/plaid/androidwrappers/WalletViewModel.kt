@@ -7,7 +7,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
 import com.intuisoft.plaid.PlaidApp
 import com.intuisoft.plaid.R
-import com.intuisoft.plaid.common.model.AppMode
 import com.intuisoft.plaid.common.model.BitcoinDisplayUnit
 import com.intuisoft.plaid.common.model.TransactionMemoModel
 import com.intuisoft.plaid.common.repositories.ApiRepository
@@ -100,6 +99,18 @@ open class WalletViewModel(
             || (currentBlock - transaction.blockHeight!!) < 0) {
             return 0
         } else return (currentBlock - transaction.blockHeight!!) + 1
+    }
+
+    fun getWalletName(id: String): String {
+        val wallet = walletManager.getWallets().find {
+            it.uuid == id
+        }
+
+        return if(wallet != null) {
+            wallet.name
+        } else {
+            id
+        }
     }
 
     fun getCurrentBlock() = localWallet!!.walletKit!!.lastBlockInfo?.height ?: 0

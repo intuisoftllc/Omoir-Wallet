@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/parent_top_margin_small"
+        android:paddingHorizontal="@dimen/horizontal_padding_size"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/horizontal_padding_size"
+                        android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/status"
+                                android:layout_marginRight="@dimen/margin_8"
+                                style="@style/TextStyle.Regular.14"
+                                android:textColor="@color/text_grey"/>
+
+                            <TextView
+                                android:id="@+id/status"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                style="@style/TextStyle.Medium.14"
+                                android:textStyle="bold"
+                                tools:text="In Progress"/>
+                    </LinearLayout>
+
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/settings_security"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/settings_general"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginBottom="@dimen/margin_2"
+                    app:cardCornerRadius="4dp"
+                    android:layout_marginHorizontal="@dimen/margin_2"
+                    app:layout_constraintHorizontal_bias="0">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="16dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            style="@style/TextStyle.Semibold.12"
+                            android:textColor="@color/settings_category_text_color"
+                            android:textStyle="bold"
+                            android:layout_marginBottom="@dimen/horizontal_padding_size"
+                            android:text="@string/configuration"/>
+
+                        <com.intuisoft.plaid.androidwrappers.SettingsItemView
+                            android:id="@+id/recipient"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            app:settings_variant="normal"
+                            android:layout_marginBottom="@dimen/horizontal_padding_size"
+                            app:item_title="@string/recipient"
+                            app:max_lines_subtitle="1"
+                            app:elipsize_subtitle="true"
+                            app:item_subtitle="My Wallet"/>
+
+                        <com.intuisoft.plaid.androidwrappers.SettingsItemView
+                            android:id="@+id/created_at"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            app:settings_variant="normal"
+                            android:layout_marginBottom="@dimen/horizontal_padding_size"
+                            app:item_title="@string/atp_initiated_title"
+                            app:item_subtitle="Jan 2, 2022 5:43 pm"/>
+
+                        <com.intuisoft.plaid.androidwrappers.SettingsItemView
+                            android:id="@+id/batch_gap"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            app:settings_variant="normal"
+                            android:layout_marginBottom="@dimen/horizontal_padding_size"
+                            app:item_title="@string/atp_batch_gap_title"
+                            app:item_subtitle="0 Blocks"/>
+
+                        <com.intuisoft.plaid.androidwrappers.SettingsItemView
+                            android:id="@+id/batch_size"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            app:settings_variant="normal"
+                            android:layout_marginBottom="@dimen/horizontal_padding_size"
+                            app:item_title="@string/atp_batch_size_title"
+                            app:item_subtitle="5 Utxos"/>
+
+                        <com.intuisoft.plaid.androidwrappers.SettingsItemView
+                            android:id="@+id/expected_amount"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            app:settings_variant="normal"
+                            android:layout_marginBottom="@dimen/horizontal_padding_size"
+                            app:item_title="@string/atp_expected_amount_title"
+                            app:item_subtitle="56,483 Sats"/>
+
+                        <com.intuisoft.plaid.androidwrappers.SettingsItemView
+                            android:id="@+id/amount_sent"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            app:settings_variant="normal"
+                            android:layout_marginBottom="@dimen/horizontal_padding_size"
+                            app:item_title="@string/atp_amount_sent_title"
+                            app:item_subtitle="56,483 Sats"/>
+
+                        <com.intuisoft.plaid.androidwrappers.SettingsItemView
+                            android:id="@+id/fees_paid"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            app:settings_variant="normal"
+                            android:layout_marginBottom="@dimen/horizontal_padding_size"
+                            app:item_title="@string/atp_fees_paid_title"
+                            app:item_subtitle="6,483 Sats"/>
+
+                        <com.intuisoft.plaid.androidwrappers.SettingsItemView
+                            android:id="@+id/fee_range"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            app:settings_variant="normal"
+                            android:layout_marginBottom="@dimen/horizontal_padding_size"
+                            app:item_title="@string/atp_fee_range_title"
+                            app:item_subtitle="4 - 6 sat/vbyte"/>
+
+                        <com.intuisoft.plaid.androidwrappers.SettingsItemView
+                            android:id="@+id/adjust_to_network"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            app:settings_variant="normal"
+                            app:item_title="@string/atp_adjust_to_network_title"
+                            app:item_subtitle="No"/>
+
+                    </LinearLayout>
+
+                </androidx.cardview.widget.CardView>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/batches"
+                    android:layout_marginTop="@dimen/parent_top_margin_small"
+                    style="@style/TextStyle.Semibold.12"
+                    android:textColor="@color/text_grey"/>
+
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/transfers"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    tools:itemCount="3"
+                    android:layout_marginHorizontal="@dimen/horizontal_padding_size"
+                    app:layout_constraintVertical_bias="0"
+                    android:layout_marginTop="@dimen/horizontal_padding_size"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    tools:listitem="@layout/list_item_basic_batch_info_item" />
+            </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

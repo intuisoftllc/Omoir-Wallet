@@ -9,7 +9,6 @@ import io.horizontalsystems.bitcoincore.models.BitcoinPaymentData
 import io.horizontalsystems.bitcoincore.models.PublicKey
 import io.horizontalsystems.bitcoinkit.BitcoinKit
 import io.horizontalsystems.hdwalletkit.HDWallet
-import java.util.concurrent.atomic.AtomicBoolean
 
 abstract class AbstractWalletManager {
 
@@ -22,8 +21,11 @@ abstract class AbstractWalletManager {
     protected val _wallets = MutableLiveData<List<LocalWalletModel>>()
     val wallets: LiveData<List<LocalWalletModel>> = _wallets
 
+    protected val _databaseUpdated = SingleLiveData<Any?>()
+    val databaseUpdated: LiveData<Any?> = _databaseUpdated
+
     abstract fun start()
-    abstract fun stop()
+    abstract suspend fun stop()
     abstract fun updateWalletName(localWallet: LocalWalletModel, newName: String)
     abstract fun validAddress(address: String) : Boolean
     abstract fun parseInvoice(invoiceData: String) : BitcoinPaymentData

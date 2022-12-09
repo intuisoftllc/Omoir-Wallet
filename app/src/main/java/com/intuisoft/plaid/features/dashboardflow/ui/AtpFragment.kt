@@ -4,26 +4,22 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
 import android.widget.ImageView
 import android.widget.NumberPicker
 import android.widget.TextView
 import androidx.core.view.isVisible
-import androidx.core.widget.doOnTextChanged
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.*
-import com.intuisoft.plaid.common.network.blockchair.response.SupportedCurrencyModel
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.common.util.RateConverter
 import com.intuisoft.plaid.common.util.extensions.toArrayList
 import com.intuisoft.plaid.databinding.FragmentAtpBinding
 import com.intuisoft.plaid.features.dashboardflow.viewmodel.AtpViewModel
-import com.intuisoft.plaid.features.homescreen.adapters.SupportedCurrenciesAdapter
 import com.intuisoft.plaid.features.homescreen.adapters.UtxoTransfersAdapter
 import com.intuisoft.plaid.util.Plural
 import com.intuisoft.plaid.util.SimpleTimeFormat
@@ -216,7 +212,7 @@ class AtpFragment : ConfigurableFragment<FragmentAtpBinding>(pinProtection = tru
 
         confirm?.onClick {
             bottomSheetDialog.dismiss()
-            viewModel.confirmAssetTransfer()
+            viewModel.createTransfer(data)
         }
 
         cancel?.onClick {
@@ -415,6 +411,9 @@ class AtpFragment : ConfigurableFragment<FragmentAtpBinding>(pinProtection = tru
     }
 
     override fun onActionRight() {
+        navigate(
+            R.id.atpHistoryFragment
+        )
     }
 
     override fun actionBarSubtitle(): Int {

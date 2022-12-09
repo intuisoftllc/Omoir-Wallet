@@ -596,7 +596,7 @@ class BitcoinCore(
     }
 
     fun redeem(unspentOutputs: List<UnspentOutput>, value: Long, address: String, feeRate: Int, sortType: TransactionDataSortType, createOnly: Boolean): FullTransaction {
-        return transactionCreator?.create(unspentOutputs.map { it.output.address!! }, value, address, feeRate, sortType, createOnly) ?: throw CoreError.ReadOnlyCore
+        return transactionCreator?.create(unspentOutputs.map { it.output.address!! }.distinct(), value, address, feeRate, sortType, createOnly) ?: throw CoreError.ReadOnlyCore
     }
 
     fun receiveAddress(): String {

@@ -38,8 +38,7 @@ class AtpManager(
         }
 
     private fun runInBackground(run: suspend () -> Unit) =
-        @OptIn(DelicateCoroutinesApi::class)
-        CoroutineScope(GlobalScope.coroutineContext + NonCancellable).launch {
+        CoroutineScope(Dispatchers.IO + NonCancellable).launch {
             run()
         }
 
@@ -61,42 +60,50 @@ class AtpManager(
         }
     }
 
-    suspend fun spendUtxo(
+    private suspend fun spendUtxo(
         utxo: UnspentOutput,
         address: String,
         feeRate: Int,
         fallbackFeeRate: Int,
         wallet: LocalWalletModel
-    ): Pair<Int, String>? {
+    ): UtxoSpendResult? {
 
-        var maxSpend = calculateFeeForMaxSpend(wallet, utxo, feeRate, address)
-        if(maxSpend > 0) {
-            return feeRate to wallet!!.walletKit!!.redeem(
-                unspentOutputs = listOf(utxo),
-                value = maxSpend,
-                address = address,
+        var fee = calculateFeeForMaxSpend(wallet, utxo, feeRate, address)
+        if(fee.first > 0) {
+            return UtxoSpendResult(
                 feeRate = feeRate,
-                sortType = TransactionDataSortType.Shuffle,
-                createOnly = true
-            ).header.hash.toReversedHex()
+                fees = fee.first,
+                txId = wallet!!.walletKit!!.redeem(
+                    unspentOutputs = listOf(utxo),
+                    value = fee.second,
+                    address = address,
+                    feeRate = feeRate,
+                    sortType = TransactionDataSortType.Shuffle
+                ).header.hash.toReversedHex(),
+                amountSent = fee.second
+            )
         }
 
-        maxSpend = calculateFeeForMaxSpend(wallet, utxo, fallbackFeeRate, address)
-        if(maxSpend > 0) {
-            return fallbackFeeRate to wallet!!.walletKit!!.redeem(
-                unspentOutputs = listOf(utxo),
-                value = maxSpend,
-                address = address,
+        fee = calculateFeeForMaxSpend(wallet, utxo, fallbackFeeRate, address)
+        if(fee.first > 0) {
+            return UtxoSpendResult(
                 feeRate = fallbackFeeRate,
-                sortType = TransactionDataSortType.Shuffle,
-                createOnly = true
-            ).header.hash.toReversedHex()
+                fees = fee.first,
+                txId = wallet!!.walletKit!!.redeem(
+                    unspentOutputs = listOf(utxo),
+                    value = fee.second,
+                    address = address,
+                    feeRate = fallbackFeeRate,
+                    sortType = TransactionDataSortType.Shuffle
+                ).header.hash.toReversedHex(),
+                amountSent = fee.second
+            )
         }
 
         return null
     }
 
-    suspend fun processBatch(
+    private suspend fun processBatch(
         batch: BatchDataModel,
         lastBatch: BatchDataModel?,
         transfer: AssetTransferModel,
@@ -109,7 +116,7 @@ class AtpManager(
             (lastBatch.status.id in AssetTransferStatus.PARTIALLY_COMPLETED.id..AssetTransferStatus.CANCELLED.id)) {
 
             if(lastBatch != null && transfer.batchGap > 0
-                && (wallet.walletKit!!.lastBlockInfo?.height ?: 0) < (transfer.batchGap + lastBatch.lastBlockTransacted)) {
+                && (wallet.walletKit!!.lastBlockInfo?.height ?: 0) <= (transfer.batchGap + lastBatch.completionHeight)) {
                 return
             }
 
@@ -141,8 +148,10 @@ class AtpManager(
                                 )
 
                                 if (result != null) {
-                                    utxo.txId = result.second
-                                    utxo.feeRate = result.first
+                                    utxo.txId = result.txId
+                                    utxo.feeRate = result.feeRate
+                                    transfer.feesPaid += result.fees
+                                    transfer.sent += result.amountSent
                                 } else {
                                     localStoreRepository.blacklistAddress(
                                         BlacklistedAddressModel(address = output.output.address!!),
@@ -161,6 +170,8 @@ class AtpManager(
                     }
 
                     batch.status = AssetTransferStatus.IN_PROGRESS
+                    localStoreRepository.setBatchData(batch)
+                    localStoreRepository.saveAssetTransfer(transfer)
                 }
 
                 AssetTransferStatus.IN_PROGRESS -> {
@@ -171,12 +182,12 @@ class AtpManager(
 
                     if(txs.all { it.blockHeight != null }) {
                         batch.status = AssetTransferStatus.COMPLETED
-                        batch.lastBlockTransacted = txs.map { it.blockHeight!! }.maxOrNull() ?: 0
+                        batch.completionHeight = txs.map { it.blockHeight!! }.maxOrNull() ?: 0
                     } else if(txs.all { it.status == TransactionStatus.INVALID }) {
                         batch.status = AssetTransferStatus.FAILED
                     } else if(txs.all { it.blockHeight != null || it.status == TransactionStatus.INVALID}) {
                         batch.status = AssetTransferStatus.PARTIALLY_COMPLETED
-                        batch.lastBlockTransacted = txs.map { it.blockHeight ?: 0 }.maxOrNull() ?: 0
+                        batch.completionHeight = txs.map { it.blockHeight ?: 0 }.maxOrNull() ?: 0
                     }
 
                     localStoreRepository.setBatchData(batch)
@@ -185,7 +196,7 @@ class AtpManager(
         }
     }
 
-    suspend fun processTransfer(transfer: AssetTransferModel, wallet: LocalWalletModel) {
+    private suspend fun processTransfer(transfer: AssetTransferModel, wallet: LocalWalletModel) {
         if(!NetworkUtil.hasInternet(application)) return
 
         if(transfer.status == AssetTransferStatus.IN_PROGRESS || transfer.status == AssetTransferStatus.NOT_STARTED) {
@@ -226,7 +237,8 @@ class AtpManager(
 
                 syncer.safeBackground(wallet)
                 syncer.safeBackground(recipient)
-            } else {
+            } else if(++transfer.retries >= Constants.Limit.ATP_MAX_RETRY_LIMIT) {
+                transfer.retries++
                 transfer.status = AssetTransferStatus.FAILED
             }
 
@@ -234,11 +246,11 @@ class AtpManager(
         }
     }
 
-    fun run() {
+    private fun run() {
         if(running && masterJob == null) {
             masterJob = runInBackground {
                 while(true) {
-                    if(running) {
+                    if(running && syncer.isRunning()) {
                         stopped = false
                         syncer.getWallets().forEach { wallet ->
                             val transfers = localStoreRepository.getAllAssetTransfers(wallet.uuid)
@@ -262,9 +274,16 @@ class AtpManager(
         }
     }
 
+    data class UtxoSpendResult(
+        val feeRate: Int,
+        val fees: Long,
+        val txId: String,
+        val amountSent: Long
+    )
+
     companion object {
 
-        fun calculateFeeForMaxSpend(wallet: LocalWalletModel, unspentOutput: UnspentOutput, feeRate: Int, address: String?) : Long {
+        fun calculateFeeForMaxSpend(wallet: LocalWalletModel, unspentOutput: UnspentOutput, feeRate: Int, address: String?) : Pair<Long, Long> {
             try {
                 var max = wallet!!.walletKit!!.maximumSpendableValue(
                     listOf(unspentOutput),
@@ -272,13 +291,13 @@ class AtpManager(
                     feeRate
                 )
 
-                return wallet!!.walletKit!!.fee(listOf(unspentOutput), max, address, true, feeRate)
+                return wallet!!.walletKit!!.fee(listOf(unspentOutput), max, address, true, feeRate) to max
             } catch(e: SendValueErrors.Dust) {
-                return -2
+                return -2L to 0L
             } catch(e: SendValueErrors.InsufficientUnspentOutputs) {
-                return -1
+                return -1L to 0L
             } catch(e: Exception) {
-                return 0
+                return 0L to 0L
             }
         }
     }

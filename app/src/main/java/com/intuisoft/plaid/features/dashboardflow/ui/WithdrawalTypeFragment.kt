@@ -4,20 +4,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.os.bundleOf
-import androidx.core.view.isVisible
-import androidx.lifecycle.Observer
 import com.intuisoft.plaid.R
-import com.intuisoft.plaid.activities.MainActivity
 import com.intuisoft.plaid.androidwrappers.*
-import com.intuisoft.plaid.listeners.StateListener
-import com.intuisoft.plaid.model.LocalWalletModel
-import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.databinding.FragmentWithdrawalTypeBinding
-import com.intuisoft.plaid.walletmanager.AbstractWalletManager
-import io.horizontalsystems.bitcoincore.models.TransactionInfo
-import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class WithdrawalTypeFragment : ConfigurableFragment<FragmentWithdrawalTypeBinding>(pinProtection = true) {

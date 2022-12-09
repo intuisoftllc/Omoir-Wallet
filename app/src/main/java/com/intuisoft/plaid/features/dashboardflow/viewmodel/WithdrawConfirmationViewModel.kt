@@ -8,7 +8,6 @@ import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.SingleLiveData
 import com.intuisoft.plaid.androidwrappers.WalletViewModel
 import com.intuisoft.plaid.common.model.FeeType
-import com.intuisoft.plaid.model.LocalWalletModel
 import com.intuisoft.plaid.common.model.NetworkFeeRate
 import com.intuisoft.plaid.common.repositories.ApiRepository
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
@@ -17,7 +16,6 @@ import com.intuisoft.plaid.common.util.RateConverter
 import com.intuisoft.plaid.walletmanager.AbstractWalletManager
 import io.horizontalsystems.bitcoincore.models.TransactionDataSortType
 import io.horizontalsystems.bitcoincore.storage.FullTransaction
-import io.horizontalsystems.bitcoincore.storage.UnspentOutput
 import io.horizontalsystems.bitcoinkit.BitcoinKit
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay

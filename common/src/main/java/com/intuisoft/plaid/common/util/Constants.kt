@@ -7,7 +7,7 @@ class Constants {
 
     object Database {
         const val DB_NAME = "plaid.db"
-        const val DB_VERSION = 25
+        const val DB_VERSION = 27
     }
 
     object Files {
@@ -132,6 +132,7 @@ class Constants {
         const val MAX_FEE = 999
         const val FREE_MAX_WALLETS = 4
         const val PRO_MAX_WALLETS = 10
+        const val ATP_MAX_RETRY_LIMIT = 3
         const val SYNC_RESTART_LIMIT = 6
         const val ADDRESS_HINT_LENGTH = 16
         const val BITCOIN_SUPPLY_CAP = 21000000

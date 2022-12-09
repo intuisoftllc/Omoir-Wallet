@@ -4,7 +4,6 @@ import android.app.Application
 import com.intuisoft.plaid.androidwrappers.BaseViewModel
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.walletmanager.AbstractWalletManager
-import com.intuisoft.plaid.walletmanager.WalletManager
 
 class PinViewModel(
     application: Application,

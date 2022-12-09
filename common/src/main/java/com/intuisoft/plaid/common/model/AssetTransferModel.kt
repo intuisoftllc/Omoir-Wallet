@@ -8,6 +8,7 @@ data class AssetTransferModel(
     val batchGap: Int,
     val batchSize: Int,
     val expectedAmount: Long,
+    var retries: Long,
     var sent: Long,
     var feesPaid: Long,
     var feeRangeLow: Int,

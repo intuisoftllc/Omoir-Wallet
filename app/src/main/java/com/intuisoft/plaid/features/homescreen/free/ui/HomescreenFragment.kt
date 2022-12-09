@@ -6,11 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
-import androidx.recyclerview.widget.GridLayoutManager
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.activities.MainActivity
 import com.intuisoft.plaid.androidwrappers.*
-import com.intuisoft.plaid.common.CommonService
 import com.intuisoft.plaid.databinding.FragmentHomescreenBinding
 import com.intuisoft.plaid.features.homescreen.free.adapters.BasicWalletDataAdapter
 import com.intuisoft.plaid.features.homescreen.shared.viewmodel.HomeScreenViewModel

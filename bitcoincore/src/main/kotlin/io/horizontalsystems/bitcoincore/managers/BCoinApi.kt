@@ -8,7 +8,6 @@ import io.horizontalsystems.bitcoincore.core.IInitialSyncApi
 import java.util.logging.Logger
 
 class BCoinApi(host: String) : IInitialSyncApi {
-    private val apiManager = ApiManager(host)
     private val logger = Logger.getLogger("BCoinApi")
 
     override fun getTransactions(addresses: List<String>): List<TransactionItem> {

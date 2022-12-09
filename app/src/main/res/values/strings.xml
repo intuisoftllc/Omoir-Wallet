@@ -183,7 +183,28 @@
     <string name="atp_utxo_transfer_error_2">Skipped (not enough to cover fees)</string>
     <string name="atp_utxo_transfer_error_3">Skipped (failed to transfer utxo)</string>
     <string name="atp_creating_transfer">Creating Transfer</string>
-<!--    Atp Utxo Transfers Strings -->
+<!--    Atp Utxo Transfers Strings End -->
+
+<!--    ATP Status Strings -->
+    <string name="atp_status_not_started">Not Started</string>
+    <string name="atp_status_in_progress">In Progress</string>
+    <string name="atp_status_partially_completed">Partially Completed</string>
+    <string name="atp_status_completed">Completed</string>
+    <string name="atp_status_failed">Failed</string>
+    <string name="atp_status_cancelled">Cancelled</string>
+<!--    ATP Status Strings End -->
+
+
+<!--    ATP Configuration Strings -->
+    <string name="atp_initiated_title">Initiated At</string>
+    <string name="atp_batch_gap_title">Batch Gap</string>
+    <string name="atp_batch_size_title">Batch Size</string>
+    <string name="atp_expected_amount_title">Expected Send Amount</string>
+    <string name="atp_amount_sent_title">Amount Sent</string>
+    <string name="atp_fees_paid_title">Fees Paid</string>
+    <string name="atp_fee_range_title">Fee Range</string>
+    <string name="atp_adjust_to_network_title">Adjust Fees To Network</string>
+<!--    ATP Configuration Strings End -->
 
 <!--    Backup Seed Phrase Strings -->
     <string name="backup_seed_phrase_title">Backup Your Seed Phrase</string>
@@ -594,7 +615,7 @@
     <string name="report_type_fees_subtitle">See how much you paid in fees</string>
     <string name="report_type_utx_distro_title">Coin Distribution</string>
     <string name="report_type_utx_distro_subtitle">See how your utxo\'s are distributed throughout the wallet</string>
-<!--    Reports Strings -->
+<!--    Reports Strings End -->
 
 <!--    Generic Use Strings -->
     <string name="welcome">Welcome</string>
@@ -657,7 +678,11 @@
     <string name="bytes">bytes</string>
     <string name="nodes">nodes</string>
     <string name="spend">Spend</string>
+    <string name="recipient">Recipient</string>
     <string name="addresses">addresses</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="batches">Batches</string>
     <string name="sat_per_byte">Sat/byte</string>
     <string name="tx_per_sec">tx/s</string>
     <string name="import_wallet">Import Wallet</string>
@@ -676,6 +701,7 @@
     <string name="upgrade_to_pro">Upgrade To Pro</string>
     <string name="transaction_id">Transaction ID</string>
     <string name="dynamic_network_fee">Dynamic Network Fee</string>
+    <string name="sat_per_vbyte">%1$s sat/vbyte</string>
     <string name="no_connection">Lost Connection to Servers…</string>
     <string name="not_connected_to_internet">You are not connected\nto the Internet</string>
     <string name="content_not_available">The following content is not available for testnet wallets</string>
@@ -696,6 +722,8 @@
     <string name="display_unit_fragment_label">Bitcoin Unit</string>
     <string name="appearance_fragment_label">Appearance</string>
     <string name="atp_info_fragment_label">What Is ATP</string>
+    <string name="atp_history_fragment_label">Asset Transfers</string>
+    <string name="atp_details_fragment_label">Transfer</string>
     <string name="local_currency_fragment_label">Local Currency</string>
     <string name="address_book_fragment_label">Address Book</string>
     <string name="withdrawal_type_fragment_label">Withdrawal Type</string>

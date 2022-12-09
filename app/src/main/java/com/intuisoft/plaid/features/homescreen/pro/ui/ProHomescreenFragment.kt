@@ -1,21 +1,16 @@
 package com.intuisoft.plaid.features.homescreen.pro.ui
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.activities.MainActivity
 import com.intuisoft.plaid.androidwrappers.*
-import com.intuisoft.plaid.common.CommonService
 import com.intuisoft.plaid.common.model.BitcoinDisplayUnit
-import com.intuisoft.plaid.databinding.FragmentHomescreenBinding
-import com.intuisoft.plaid.features.homescreen.free.adapters.BasicWalletDataAdapter
 import com.intuisoft.plaid.features.homescreen.shared.viewmodel.HomeScreenViewModel
 import com.intuisoft.plaid.listeners.StateListener
 import com.intuisoft.plaid.model.LocalWalletModel
@@ -24,7 +19,6 @@ import com.intuisoft.plaid.common.util.SimpleCoinNumberFormat
 import com.intuisoft.plaid.common.util.extensions.toArrayList
 import com.intuisoft.plaid.databinding.FragmentProHomescreenBinding
 import com.intuisoft.plaid.features.homescreen.pro.adapters.ProWalletDataAdapter
-import com.intuisoft.plaid.features.homescreen.pro.adapters.detail.ProWalletDataDetail
 import com.intuisoft.plaid.walletmanager.AbstractWalletManager
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel

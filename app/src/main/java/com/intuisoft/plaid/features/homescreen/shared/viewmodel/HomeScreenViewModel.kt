@@ -3,16 +3,9 @@ package com.intuisoft.plaid.features.homescreen.shared.viewmodel
 import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
 import com.intuisoft.plaid.androidwrappers.BaseViewModel
-import com.intuisoft.plaid.androidwrappers.SingleLiveData
-import com.intuisoft.plaid.common.CommonService
-import com.intuisoft.plaid.model.LocalWalletModel
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.walletmanager.AbstractWalletManager
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.util.*
 
 

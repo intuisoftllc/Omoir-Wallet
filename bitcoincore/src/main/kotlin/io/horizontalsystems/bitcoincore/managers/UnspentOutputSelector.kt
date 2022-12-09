@@ -83,13 +83,13 @@ class UnspentOutputSelector(private val calculator: TransactionSizeCalculator, p
             recipientValue = if (senderPay) value else value - fee
             sentValue = if (senderPay) value + fee else value
 
-            if (sentValue <= totalValue) {      // totalValue is enough
-                if (recipientValue >= dust) {   // receivedValue won't be dust
-                    break
-                } else {
+            if(totalValue >= recipientValue) {
+                if(recipientValue < dust) {
                     // Here senderPay is false, because otherwise "dust" exception would throw far above.
                     // Adding more UTXOs will make fee even greater, making recipientValue even less and dust anyway
                     throw SendValueErrors.Dust
+                } else if(sentValue >= recipientValue) {
+                    break
                 }
             }
         }
@@ -99,17 +99,17 @@ class UnspentOutputSelector(private val calculator: TransactionSizeCalculator, p
             throw SendValueErrors.InsufficientUnspentOutputs
         }
 
-        val changeOutputHavingTransactionFee = calculator.transactionSize(selectedOutputs.map { it.output }, listOf(outputType, changeType), pluginDataOutputSize) * feeRate
-        val withChangeRecipientValue = if (senderPay) value else value - changeOutputHavingTransactionFee
-        val withChangeSentValue = if (senderPay) value + changeOutputHavingTransactionFee else value
+        val feeWithChangeAddress = calculator.transactionSize(selectedOutputs.map { it.output }, listOf(outputType, changeType), pluginDataOutputSize) * feeRate
+        val sendValueWithChange = if (senderPay) value + feeWithChangeAddress  else value - feeWithChangeAddress
+
         // if selected UTXOs total value >= recipientValue(toOutput value) + fee(for transaction with change output) + dust(minimum changeOutput value)
-        if (totalValue >= withChangeRecipientValue + changeOutputHavingTransactionFee + dust) {
+        if (totalValue >= sendValueWithChange) {
             // totalValue is too much, we must have change output
-            if (withChangeRecipientValue <= dust) {
+            if (sendValueWithChange <= dust) {
                 throw SendValueErrors.Dust
             }
 
-            return SelectedUnspentOutputInfo(selectedOutputs, withChangeRecipientValue, totalValue - withChangeSentValue)
+            return SelectedUnspentOutputInfo(selectedOutputs, value, totalValue - sendValueWithChange)
         }
 
         // No change needed

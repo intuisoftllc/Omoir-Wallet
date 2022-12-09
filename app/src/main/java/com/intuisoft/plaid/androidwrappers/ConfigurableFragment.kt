@@ -17,6 +17,7 @@ import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 abstract class ConfigurableFragment<T: ViewBinding>(
     private val pinProtection: Boolean = false,
     private val secureScreen: Boolean = false,
+    private val requiresWallet: Boolean = false, // todo: impl
 ) : BindingFragment<T>(), PinProtectedFragmentDelegate {
     protected var baseVM: BaseViewModel? = null
     private var configTypes = listOf<FragmentConfigurationType>()

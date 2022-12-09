@@ -17,8 +17,7 @@ class TransactionSender(
         private val initialBlockDownload: InitialBlockDownload,
         private val storage: IStorage,
         private val timer: TransactionSendTimer,
-        private val maxRetriesCount: Int = 3,
-        private val retriesPeriod: Int = 60)
+        private val maxRetriesCount: Int = 3)
     : IPeerTaskHandler, TransactionSendTimer.Listener {
 
     @Synchronized
@@ -57,7 +56,7 @@ class TransactionSender(
     private fun getTransactionsToSend(transactions: List<FullTransaction>): List<FullTransaction> {
         return transactions.filter { transaction ->
             storage.getSentTransaction(transaction.header.hash)?.let { sentTransaction ->
-                sentTransaction.retriesCount < maxRetriesCount && sentTransaction.lastSendTime < (System.currentTimeMillis() - retriesPeriod * 1000)
+                sentTransaction.retriesCount < maxRetriesCount
             } ?: true
         }
     }

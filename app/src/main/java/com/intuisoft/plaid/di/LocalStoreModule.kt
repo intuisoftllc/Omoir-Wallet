@@ -2,8 +2,10 @@ package com.intuisoft.plaid.di
 
 import android.app.Application
 import com.intuisoft.plaid.common.CommonService
+import com.intuisoft.plaid.common.repositories.ApiRepository
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.walletmanager.AbstractWalletManager
+import com.intuisoft.plaid.walletmanager.AtpManager
 import com.intuisoft.plaid.walletmanager.WalletManager
 import com.intuisoft.plaid.walletmanager.SyncManager
 import org.koin.dsl.module
@@ -24,8 +26,9 @@ val apiRepositoriesModule = module {
 
 val walletManagerModule = module {
 
-    single { provideWalletManager(get(), get(), get()) }
+    single { provideWalletManager(get(), get(), get(), get()) }
     single { provideWalletSyncer(get(), get()) }
+    single { provideWalletAtpManager(get(), get(), get(), get()) }
 }
 
 fun provideWalletSyncer(
@@ -35,10 +38,20 @@ fun provideWalletSyncer(
     return SyncManager(application, localStoreRepository)
 }
 
+fun provideWalletAtpManager(
+    application: Application,
+    localStoreRepository: LocalStoreRepository,
+    apiRepository: ApiRepository,
+    syncer: SyncManager
+): AtpManager {
+    return AtpManager(application, localStoreRepository, apiRepository, syncer)
+}
+
 fun provideWalletManager(
     application: Application,
     localStoreRepository: LocalStoreRepository,
-    syncer: SyncManager
+    syncer: SyncManager,
+    atpManager: AtpManager
 ): AbstractWalletManager {
-    return WalletManager(application, localStoreRepository, syncer)
+    return WalletManager(application, localStoreRepository, syncer, atpManager)
 }

@@ -12,13 +12,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.navOptions
-import com.intuisoft.plaid.PlaidApp
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.walletmanager.AbstractWalletManager
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 
 open class BaseViewModel(
     application: Application,
@@ -114,15 +111,20 @@ open class BaseViewModel(
 
     fun softRestart(fragment: Fragment) {
         (fragment as FragmentBottomBarBarDelegate).apply {
-            walletManager.stop()
-            fragment.navigate(
-                R.id.splashFragment,
-                navOptions {
-                    popUpTo(navigationId()) {
-                        inclusive = true
-                    }
+            runBlocking {
+                walletManager.stop()
+
+                MainScope().launch {
+                    fragment.navigate(
+                        R.id.splashFragment,
+                        navOptions {
+                            popUpTo(navigationId()) {
+                                inclusive = true
+                            }
+                        }
+                    )
                 }
-            )
+            }
         }
     }
 }

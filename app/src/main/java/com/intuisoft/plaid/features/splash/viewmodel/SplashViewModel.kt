@@ -6,7 +6,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavDirections
 import com.intuisoft.plaid.androidwrappers.BaseViewModel
-import com.intuisoft.plaid.common.CommonService
 import com.intuisoft.plaid.features.splash.ui.SplashFragmentDirections
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.walletmanager.AbstractWalletManager

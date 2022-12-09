@@ -2,6 +2,7 @@ package com.intuisoft.plaid.walletmanager
 
 import android.app.Application
 import com.intuisoft.plaid.common.listeners.WipeDataListener
+import com.intuisoft.plaid.common.local.db.listeners.DatabaseListener
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.common.util.extensions.remove
@@ -20,14 +21,14 @@ import io.horizontalsystems.hdwalletkit.Mnemonic
 import kotlinx.coroutines.*
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import java.text.NumberFormat
 import java.util.*
 
 class WalletManager(
     val application: Application,
     val localStoreRepository: LocalStoreRepository,
-    val syncer: SyncManager
-): AbstractWalletManager(), WipeDataListener, SyncManager.SyncEvent {
+    val syncer: SyncManager,
+    val atp: AtpManager
+): AbstractWalletManager(), WipeDataListener, DatabaseListener, SyncManager.SyncEvent {
     private val localPassphrases: MutableMap<String,String> = mutableMapOf()
     private val mutex = Mutex()
     private var _baseMainNetWallet: BitcoinKit? = null
@@ -45,15 +46,18 @@ class WalletManager(
                 _baseTestNetWallet =
                     createBaseWallet(_baseTestNetWallet, BitcoinKit.NetworkType.TestNet)
                 localStoreRepository.setOnWipeDataListener(this@WalletManager)
+                localStoreRepository.setDatabaseListener(this@WalletManager)
                 syncer.start()
+                atp.start()
                 syncer.addListener(this@WalletManager)
                 updateWallets()
             }
         }
     }
 
-    override fun stop() {
+    override suspend fun stop() {
         syncer.stop()
+        atp.stop()
     }
 
     private fun createBaseWallet(baseWallet: BitcoinKit?, network: BitcoinKit.NetworkType): BitcoinKit {
@@ -93,6 +97,10 @@ class WalletManager(
 
     override fun getOpenedWallet(): LocalWalletModel? {
         return syncer.getOpenedWallet()
+    }
+
+    override fun onDatabaseUpdated(dao: Any?) {
+        _databaseUpdated.postValue(dao)
     }
 
     override fun updateWalletName(localWallet: LocalWalletModel, newName: String) {
@@ -256,10 +264,6 @@ class WalletManager(
        localStoreRepository.setStoredWalletInfo(localStoreRepository.getStoredWalletInfo())
        updateWallets()
    }
-
-    fun startAutoSync() {
-        syncer.startAutoSync()
-    }
 
    override fun getBaseWallet(mainNet: Boolean) =
        if(mainNet)
