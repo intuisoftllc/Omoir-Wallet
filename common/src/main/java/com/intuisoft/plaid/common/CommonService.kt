@@ -84,7 +84,8 @@ object CommonService {
         if(localStoreRepository == null) {
             localStoreRepository = provideLocalRepository(
                 getAppPrefs(),
-                getDatabaseRepositoryInstance()
+                getDatabaseRepositoryInstance(),
+                getMemoryCacheInstance()
             )
         }
 
@@ -510,9 +511,10 @@ object CommonService {
 
     private fun provideLocalRepository(
         appPrefs: AppPrefs,
-        databaseRepository: DatabaseRepository
+        databaseRepository: DatabaseRepository,
+        memoryCache: MemoryCache
     ): LocalStoreRepository {
-        return LocalStoreRepository_Impl(appPrefs, databaseRepository)
+        return LocalStoreRepository_Impl(appPrefs, databaseRepository, memoryCache)
     }
 
     private fun provideAppPrefs(

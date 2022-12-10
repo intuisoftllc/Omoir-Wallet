@@ -8,6 +8,7 @@ import com.intuisoft.plaid.common.model.AssetTransferModel
 import com.intuisoft.plaid.common.repositories.ApiRepository
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.walletmanager.AbstractWalletManager
+import io.horizontalsystems.bitcoincore.models.TransactionInfo
 
 
 class AtpDetailsViewModel(
@@ -38,6 +39,10 @@ class AtpDetailsViewModel(
                 // error
             }
         }
+    }
+
+    fun getTransaction(id: String): TransactionInfo? {
+        return getWallet()!!.walletKit!!.getTransaction(id)
     }
 
     fun setTransferId(transferId: String) {

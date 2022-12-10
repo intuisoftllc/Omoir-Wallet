@@ -98,6 +98,14 @@ interface LocalStoreRepository {
 
     fun getLastSupportedCurrenciesUpdateTime(): Long
 
+    fun setLastExchangeTicker(ticker: String)
+
+    fun getLastExchangeTicker(): String
+
+    fun isSendingBTC(): Boolean
+
+    fun setIsSendingBTC(sending: Boolean)
+
     fun setLastBasicNetworkDataUpdate(time: Long)
 
     fun getLastBasicNetworkDataUpdateTime(): Long

@@ -122,6 +122,18 @@ class UserData {
             save()
         }
 
+    var exchangeSendBTC: Boolean = true
+        set(value) {
+            field = value
+            save()
+        }
+
+    var lastExchangeTicker: String = "eth"
+        set(value) {
+            field = value
+            save()
+        }
+
     var batchGap: Int = 0
         set(value) {
             field = value

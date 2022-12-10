@@ -52,6 +52,9 @@ class ExchangeViewModel(
     protected val _confirmButtonEnabled = SingleLiveData<Boolean>()
     val confirmButtonEnabled: LiveData<Boolean> = _confirmButtonEnabled
 
+    protected val _disableBtcSeding = SingleLiveData<Unit>()
+    val disableBtcSeding: LiveData<Unit> = _disableBtcSeding
+
     protected val _showContent = SingleLiveData<Boolean>()
     val showContent: LiveData<Boolean> = _showContent
 
@@ -156,8 +159,8 @@ class ExchangeViewModel(
         }
 
         sending?.let { it ->
-            if(sendTicker.lowercase() == "btc" && it > Constants.Limit.BITCOIN_SUPPLY_CAP
-                || (sendTicker.lowercase() != "btc" && (it * wholeCoinConversion) > Constants.Limit.BITCOIN_SUPPLY_CAP)) {
+            if(sendTicker.lowercase() == BTC_TICKER && it > Constants.Limit.BITCOIN_SUPPLY_CAP
+                || (sendTicker.lowercase() != BTC_TICKER && (it * wholeCoinConversion) > Constants.Limit.BITCOIN_SUPPLY_CAP)) {
                 onBitcoinAmountLimitError()
                 return false
             }
@@ -205,7 +208,7 @@ class ExchangeViewModel(
     }
 
     fun getMemo(): String {
-        val isBitcoin = receiveTicker.lowercase() == "btc"
+        val isBitcoin = receiveTicker.lowercase() == BTC_TICKER
 
         if(isBitcoin) {
             if(refundAddressMemo.isNotEmpty()) return refundAddressMemo
@@ -217,8 +220,8 @@ class ExchangeViewModel(
     }
 
     fun confirmExchange() {
-        val sendingBitcoin = sendTicker.lowercase() == "btc"
-        val receivingBitcoin = receiveTicker.lowercase() == "btc"
+        val sendingBitcoin = sendTicker.lowercase() == BTC_TICKER
+        val receivingBitcoin = receiveTicker.lowercase() == BTC_TICKER
 
         _exchangeInfoDisplay.postValue(
             ExchangeInfoDisplay(
@@ -268,6 +271,14 @@ class ExchangeViewModel(
         }
     }
 
+    private fun saveLastTicker() {
+        if(sendTicker.lowercase() != BTC_TICKER) {
+            localStoreRepository.setLastExchangeTicker(sendTicker.lowercase())
+        } else {
+            localStoreRepository.setLastExchangeTicker(receiveTicker.lowercase())
+        }
+    }
+
     fun setInitialValues() {
         if(NetworkUtil.hasInternet(getApplication<PlaidApp>())) {
             this.fixed = true
@@ -279,7 +290,17 @@ class ExchangeViewModel(
             clearAddresses()
             _showContent.postValue(true)
             _confirmButtonEnabled.postValue(false)
-            modifySendReceive("btc", "eth")
+
+            if(isReadOnly()) {
+                _disableBtcSeding.postValue(Unit)
+                modifySendReceive(localStoreRepository.getLastExchangeTicker(), BTC_TICKER)
+            } else {
+                if(localStoreRepository.isSendingBTC()) {
+                    modifySendReceive(BTC_TICKER, localStoreRepository.getLastExchangeTicker())
+                } else {
+                    modifySendReceive(localStoreRepository.getLastExchangeTicker(), BTC_TICKER)
+                }
+            }
         } else {
             onNoInternet(false)
         }
@@ -302,6 +323,7 @@ class ExchangeViewModel(
                 setFixedFloatingRange().join()
                 wholeCoinConversion = 0.0
                 updateWholeCoinConversion(from, to)
+                saveLastTicker()
                 _screenFunctionsEnabled.postValue(true)
             }
         }
@@ -348,7 +370,7 @@ class ExchangeViewModel(
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
                 if (max == null || sendAmount <= (max ?: 0.0)) {
-                    val isBitcoin = sendTicker.lowercase() == "btc"
+                    val isBitcoin = sendTicker.lowercase() == BTC_TICKER
                     clearAddresses()
 
                     if (isBitcoin) {
@@ -390,7 +412,8 @@ class ExchangeViewModel(
 
                 if (currency.isNotEmpty()) {
                     val crypto = currency.first()
-                    val isBitcoin = ticker.lowercase() == "btc"
+                    val isBitcoin = ticker.lowercase() == BTC_TICKER
+                    localStoreRepository.setIsSendingBTC(isBitcoin)
 
                     _sendPairInfo.postValue(
                         SwapPairInfo(
@@ -426,7 +449,7 @@ class ExchangeViewModel(
 
                 if (currency.isNotEmpty()) {
                     val crypto = currency.first()
-                    val isBitcoin = ticker.lowercase() == "btc"
+                    val isBitcoin = ticker.lowercase() == BTC_TICKER
 
                     _recievePairInfo.postValue(
                         SwapPairInfo(

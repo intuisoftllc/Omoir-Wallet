@@ -39,10 +39,13 @@ class TransactionSender(
         }
     }
 
-    fun canSendTransaction() {
+    fun canSendTransaction(safeMode: Boolean = false) : Boolean {
         if (getPeersToSend().isEmpty()) {
-            throw PeerGroup.Error("peers not synced")
+            if(!safeMode) throw PeerGroup.Error("peers not synced")
+            return false
         }
+
+        return true
     }
 
     fun transactionsRelayed(transactions: List<FullTransaction>) {

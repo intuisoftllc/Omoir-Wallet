@@ -1,25 +1,35 @@
 package com.intuisoft.plaid.common.repositories
 
+import androidx.room.Database
 import com.intuisoft.plaid.common.CommonService
 import com.intuisoft.plaid.common.util.extensions.remove
 import com.intuisoft.plaid.common.listeners.WipeDataListener
 import com.intuisoft.plaid.common.local.AppPrefs
 import com.intuisoft.plaid.common.local.UserData
+import com.intuisoft.plaid.common.local.db.AddressBlacklistDao
+import com.intuisoft.plaid.common.local.db.BasicPriceDataDao
 import com.intuisoft.plaid.common.local.db.BatchData
+import com.intuisoft.plaid.common.local.db.TransactionBlacklistDao
 import com.intuisoft.plaid.common.local.db.listeners.DatabaseListener
+import com.intuisoft.plaid.common.local.memorycache.MemoryCache
 import com.intuisoft.plaid.common.model.*
 import com.intuisoft.plaid.common.network.blockchair.response.SupportedCurrencyModel
 import com.intuisoft.plaid.common.repositories.db.DatabaseRepository
 import com.intuisoft.plaid.common.util.Constants
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.*
 
 class LocalStoreRepository_Impl(
     private val appPrefs: AppPrefs,
-    private val databaseRepository: DatabaseRepository
-): LocalStoreRepository {
+    private val databaseRepository: DatabaseRepository,
+    private val memoryCache: MemoryCache
+): LocalStoreRepository, DatabaseListener {
 
     private var wipeDataListener: WipeDataListener? = null
-    private var cachedStoredWalletInfo: StoredWalletInfo? = null
+    private var databaseListener: DatabaseListener? = null
+
+    init {
+        databaseRepository.setDatabaseListener(this)
+    }
 
     override fun increaseIncorrectPinAttempts() {
         appPrefs.incorrectPinAttempts = appPrefs.incorrectPinAttempts + 1
@@ -236,6 +246,22 @@ class LocalStoreRepository_Impl(
         CommonService.getUserData()!!.lastBaseMarketDataUpdateTime = time
     }
 
+    override fun getLastExchangeTicker(): String {
+        return CommonService.getUserData()!!.lastExchangeTicker
+    }
+
+    override fun setIsSendingBTC(sending: Boolean) {
+        CommonService.getUserData()!!.exchangeSendBTC = sending
+    }
+
+    override fun isSendingBTC(): Boolean {
+        return CommonService.getUserData()!!.exchangeSendBTC
+    }
+
+    override fun setLastExchangeTicker(ticker: String) {
+        CommonService.getUserData()!!.lastExchangeTicker = ticker
+    }
+
     override fun getLastBasicNetworkDataUpdateTime(): Long {
         return CommonService.getUserData()!!.lastBaseMarketDataUpdateTime
     }
@@ -279,15 +305,14 @@ class LocalStoreRepository_Impl(
     }
 
     override fun getStoredWalletInfo(): StoredWalletInfo {
-        if(cachedStoredWalletInfo != null)
-            return cachedStoredWalletInfo!!
+        if(memoryCache.getStoredWalletInfo() == null)
+            memoryCache.setStoredWalletInfo(CommonService.getUserData()!!.storedWalletInfo)
 
-        cachedStoredWalletInfo = CommonService.getUserData()!!.storedWalletInfo
-        return cachedStoredWalletInfo!!
+        return memoryCache.getStoredWalletInfo()!!
     }
 
     override fun setStoredWalletInfo(storedWalletInfo: StoredWalletInfo?) {
-        cachedStoredWalletInfo = storedWalletInfo
+        memoryCache.setStoredWalletInfo(storedWalletInfo)
         CommonService.getUserData()!!.storedWalletInfo =
             storedWalletInfo ?: StoredWalletInfo(mutableListOf())
     }
@@ -302,6 +327,12 @@ class LocalStoreRepository_Impl(
 
     override fun getRateFor(currencyCode: String): BasicPriceDataModel? {
         return runBlocking {
+            if(memoryCache.getRateFor(currencyCode) == null) {
+                databaseRepository.getRateFor(currencyCode)?.let {
+                    memoryCache.setRateFor(it.currencyCode, it)
+                }
+            }
+
             return@runBlocking databaseRepository.getRateFor(currencyCode)
         }
     }
@@ -353,9 +384,7 @@ class LocalStoreRepository_Impl(
     }
 
     override suspend fun getTransactionMemo(txId: String): TransactionMemoModel? {
-        return runBlocking {
-            return@runBlocking databaseRepository.getMemoForTransaction(txId)
-        }
+        return databaseRepository.getMemoForTransaction(txId)
     }
 
     override fun getAllRates(): List<BasicPriceDataModel> {
@@ -405,13 +434,21 @@ class LocalStoreRepository_Impl(
 
     override fun getAllBlacklistedAddresses(): List<BlacklistedAddressModel> {
         return runBlocking {
-            return@runBlocking databaseRepository.getAllBlacklistedAddresses()
+            if(memoryCache.getBlacklistedAddresses() == null) {
+                memoryCache.setBlacklistedAddresses(databaseRepository.getAllBlacklistedAddresses())
+            }
+
+            return@runBlocking memoryCache.getBlacklistedAddresses()!!
         }
     }
 
     override fun getAllBlacklistedTransactions(): List<BlacklistedTransactionModel> {
         return runBlocking {
-            return@runBlocking databaseRepository.getAllBlacklistedTransactions()
+            if(memoryCache.getBlacklistedTransactions() == null) {
+                memoryCache.setBlacklistedTransactions(databaseRepository.getAllBlacklistedTransactions())
+            }
+
+            return@runBlocking memoryCache.getBlacklistedTransactions()!!
         }
     }
 
@@ -445,7 +482,31 @@ class LocalStoreRepository_Impl(
         return databaseRepository.getSuggestedFeeRate(testNetWallet)
     }
 
+    override fun onDatabaseUpdated(dao: Any?) {
+        CoroutineScope(Dispatchers.IO).launch {
+            when(dao) {
+                is AddressBlacklistDao -> {
+                    memoryCache.setBlacklistedAddresses(databaseRepository.getAllBlacklistedAddresses())
+                }
+
+                is TransactionBlacklistDao -> {
+                    memoryCache.setBlacklistedTransactions(databaseRepository.getAllBlacklistedTransactions())
+                }
+
+                is BasicPriceDataDao -> {
+                    databaseRepository.getAllRates().forEach {
+                        memoryCache.setRateFor(it.currencyCode, it)
+                    }
+                }
+            }
+
+            withContext(Dispatchers.Main) {
+                databaseListener?.onDatabaseUpdated(dao)
+            }
+        }
+    }
+
     override fun setDatabaseListener(databaseListener: DatabaseListener) {
-        databaseRepository.setDatabaseListener(databaseListener)
+        this.databaseListener = databaseListener
     }
 }

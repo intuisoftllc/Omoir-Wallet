@@ -33,6 +33,8 @@ class TransactionCreator(
         }
     }
 
+    fun canSendTransaction() = transactionSender.canSendTransaction(safeMode = true)
+
     fun broadcast(transaction: FullTransaction) : FullTransaction {
         try {
             processor.processCreated(transaction)

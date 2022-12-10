@@ -183,6 +183,8 @@
     <string name="atp_utxo_transfer_error_2">Skipped (not enough to cover fees)</string>
     <string name="atp_utxo_transfer_error_3">Skipped (failed to transfer utxo)</string>
     <string name="atp_creating_transfer">Creating Transfer</string>
+    <string name="atp_externally_spent">Externally spent: %1$s</string>
+    <string name="atp_failed_to_spend">Failed, fees too high:  %1$s</string>
 <!--    Atp Utxo Transfers Strings End -->
 
 <!--    ATP Status Strings -->
@@ -204,6 +206,7 @@
     <string name="atp_fees_paid_title">Fees Paid</string>
     <string name="atp_fee_range_title">Fee Range</string>
     <string name="atp_adjust_to_network_title">Adjust Fees To Network</string>
+    <string name="atp_batch_number">Batch #%1$s</string>
 <!--    ATP Configuration Strings End -->
 
 <!--    Backup Seed Phrase Strings -->
@@ -682,6 +685,7 @@
     <string name="addresses">addresses</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
+    <string name="tbd">TBD</string>
     <string name="batches">Batches</string>
     <string name="sat_per_byte">Sat/byte</string>
     <string name="tx_per_sec">tx/s</string>
@@ -705,6 +709,7 @@
     <string name="no_connection">Lost Connection to Servers…</string>
     <string name="not_connected_to_internet">You are not connected\nto the Internet</string>
     <string name="content_not_available">The following content is not available for testnet wallets</string>
+    <string name="content_not_available_2">The following content is not available for watch-only wallets</string>
     <string name="syncing_percent">Syncing... (%1$s%%)</string>
 <!--    Generic Use Strings End -->
 

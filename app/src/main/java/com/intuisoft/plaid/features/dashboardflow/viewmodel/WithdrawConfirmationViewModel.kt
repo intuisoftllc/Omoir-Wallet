@@ -133,8 +133,14 @@ class WithdrawConfirmationViewModel(
 
     fun broadcast(fullTransaction: FullTransaction): Boolean {
         if(NetworkUtil.hasInternet(getApplication<PlaidApp>())) {
-            localWallet!!.walletKit!!.broadcast(fullTransaction)
-            walletManager.synchronize(localWallet!!)
+            if(localWallet!!.walletKit!!.canSendTransaction())
+                localWallet!!.walletKit!!.broadcast(fullTransaction)
+            else {
+                walletManager.synchronize(localWallet!!)
+                _onNetworkError.postValue(getApplication<PlaidApp>().getString(R.string.reconnecting_to_core))
+                return false
+            }
+
             return true
         } else {
             _onNetworkError.postValue(getApplication<PlaidApp>().getString(R.string.no_internet_connection))

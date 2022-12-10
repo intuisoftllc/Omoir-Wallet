@@ -473,7 +473,7 @@ class BitcoinCore(
         return this
     }
 
-    fun arePeersReady() = peerGroup.arePeersReady()
+    fun canSendTransaction() = transactionCreator?.canSendTransaction() ?: false
 
     fun addMessageSerializer(messageSerializer: IMessageSerializer): BitcoinCore {
         networkMessageSerializer.add(messageSerializer)

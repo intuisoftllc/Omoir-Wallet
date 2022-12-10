@@ -142,8 +142,8 @@ abstract class AbstractKit {
         return bitcoinCore.parsePaymentAddress(paymentAddress)
     }
 
-    fun arePeersReady() =
-        bitcoinCore.arePeersReady()
+    fun canSendTransaction() =
+        bitcoinCore.canSendTransaction()
 
     fun showDebugInfo() {
         bitcoinCore.showDebugInfo()

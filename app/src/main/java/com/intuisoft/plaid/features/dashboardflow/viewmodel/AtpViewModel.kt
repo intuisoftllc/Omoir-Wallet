@@ -65,6 +65,9 @@ class AtpViewModel(
     protected val _transferCreated = SingleLiveData<String>()
     val transferCreated: LiveData<String> = _transferCreated
 
+    protected val _contentNotAvailable = SingleLiveData<Unit>()
+    val contentNotAvailable: LiveData<Unit> = _contentNotAvailable
+
     private var recipient: LocalWalletModel? = null
 
     fun setWallet(wallet: LocalWalletModel) {
@@ -73,26 +76,34 @@ class AtpViewModel(
     }
 
     fun getInitialWallet() {
-        recipient = walletManager.getWallets().filter {
-            it.uuid != getWalletId() && it.testNetWallet == isTestNetWallet()
-        }.firstOrNull()
-
-
-        if(recipient == null) {
-            _noWallets.postValue(Unit)
-            _nextEnabled.postValue(false)
+        if(isReadOnly()) {
+            _contentNotAvailable.postValue(Unit)
         } else {
-            setWallet(
-                recipient!!
-            )
+            recipient = walletManager.getWallets().filter {
+                it.uuid != getWalletId() && it.testNetWallet == isTestNetWallet()
+            }.firstOrNull()
+
+
+            if (recipient == null) {
+                _noWallets.postValue(Unit)
+                _nextEnabled.postValue(false)
+            } else {
+                setWallet(
+                    recipient!!
+                )
+            }
         }
     }
 
     fun updateValues() {
-        updateMaxSpend()
-        updateBatchGap()
-        updateBatchSize()
-        updateFeeSpread()
+        if(isReadOnly()) {
+            _contentNotAvailable.postValue(Unit)
+        } else {
+            updateMaxSpend()
+            updateBatchGap()
+            updateBatchSize()
+            updateFeeSpread()
+        }
     }
 
     fun updateBatchGap() {
@@ -170,6 +181,8 @@ class AtpViewModel(
                 )
             }
 
+            updateUTXOs(mutableListOf())
+            updateValues()
             _transferCreated.postValue(transferId)
         }
     }

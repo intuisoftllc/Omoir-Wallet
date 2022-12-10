@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.NumberPicker
 import android.widget.TextView
+import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
@@ -23,7 +24,9 @@ import com.intuisoft.plaid.features.dashboardflow.viewmodel.AtpViewModel
 import com.intuisoft.plaid.features.homescreen.adapters.UtxoTransfersAdapter
 import com.intuisoft.plaid.util.Plural
 import com.intuisoft.plaid.util.SimpleTimeFormat
+import com.intuisoft.plaid.util.fragmentconfig.BasicConfigData
 import com.intuisoft.plaid.walletmanager.AbstractWalletManager
+import io.horizontalsystems.bitcoincore.extensions.toReversedHex
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -52,6 +55,10 @@ class AtpFragment : ConfigurableFragment<FragmentAtpBinding>(pinProtection = tru
 
         viewModel.maxSpend.observe(viewLifecycleOwner, Observer {
             binding.transferAmount.setTitleText(it)
+        })
+
+        viewModel.contentNotAvailable.observe(viewLifecycleOwner, Observer {
+            activateContentUnavailable(true, getString(R.string.content_not_available_2))
         })
 
         viewModel.batchGap.observe(viewLifecycleOwner, Observer {
@@ -100,6 +107,22 @@ class AtpFragment : ConfigurableFragment<FragmentAtpBinding>(pinProtection = tru
 
         viewModel.transferCreated.observe(viewLifecycleOwner, Observer {
             activateAnimatedLoading(false, "")
+
+            var bundle = bundleOf(
+                Constants.Navigation.FRAGMENT_CONFIG to FragmentConfiguration(
+                    configurationType = FragmentConfigurationType.CONFIGURATION_ATP,
+                    configData = BasicConfigData(
+                        payload = it
+                    )
+                ),
+                Constants.Navigation.WALLET_UUID_BUNDLE_ID to viewModel.getWalletId()
+            )
+
+            navigate(
+                R.id.atpDetailsFragment,
+                bundle,
+                Constants.Navigation.ANIMATED_ENTER_EXIT_RIGHT_NAV_OPTION
+            )
         })
 
         binding.recipient.onClick {
@@ -211,8 +234,19 @@ class AtpFragment : ConfigurableFragment<FragmentAtpBinding>(pinProtection = tru
         }
 
         confirm?.onClick {
-            bottomSheetDialog.dismiss()
-            viewModel.createTransfer(data)
+            if(viewModel.isFingerprintEnabled()) {
+                validateFingerprint(
+                    title = Constants.Strings.USE_BIOMETRIC_AUTH,
+                    subTitle = Constants.Strings.USE_BIOMETRIC_REASON_6,
+                    onSuccess = {
+                        bottomSheetDialog.dismiss()
+                        viewModel.createTransfer(data)
+                    }
+                )
+            } else {
+                bottomSheetDialog.dismiss()
+                viewModel.createTransfer(data)
+            }
         }
 
         cancel?.onClick {

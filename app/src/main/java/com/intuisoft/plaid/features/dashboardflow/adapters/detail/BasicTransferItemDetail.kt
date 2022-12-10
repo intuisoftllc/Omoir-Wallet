@@ -10,6 +10,7 @@ import com.intuisoft.plaid.common.model.SavedAddressModel
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.common.util.SimpleCoinNumberFormat
 import com.intuisoft.plaid.common.util.SimpleCurrencyFormat
+import com.intuisoft.plaid.features.dashboardflow.ui.AssetTransferDetailsFragment
 import kotlinx.android.synthetic.main.list_item_basic_atp_history_item.view.*
 import kotlinx.android.synthetic.main.list_item_saved_address.view.*
 
@@ -38,38 +39,11 @@ class BasicTransferItemDetail(
             send_amount.text = SimpleCoinNumberFormat.format(localStoreRepository, transfer.expectedAmount)
             wallet_name.text = getWalletName(transfer.walletId)
 
-            when(transfer.status) {
-                AssetTransferStatus.NOT_STARTED -> {
-                    status.text = context.getString(R.string.atp_status_not_started)
-                    status.setTextColor(context.getColor(R.color.text_grey))
-                }
-
-                AssetTransferStatus.IN_PROGRESS -> {
-                    status.text = context.getString(R.string.atp_status_in_progress)
-                    status.setTextColor(context.getColor(R.color.text_grey))
-                }
-
-                AssetTransferStatus.PARTIALLY_COMPLETED -> {
-                    status.text = context.getString(R.string.atp_status_partially_completed)
-                    status.setTextColor(context.getColor(R.color.warning_color))
-                }
-
-                AssetTransferStatus.COMPLETED -> {
-                    status.text = context.getString(R.string.atp_status_completed)
-                    status.setTextColor(context.getColor(R.color.success_color))
-                }
-
-                AssetTransferStatus.FAILED -> {
-                    status.text = context.getString(R.string.atp_status_failed)
-                    status.setTextColor(context.getColor(R.color.error_color))
-                }
-
-                AssetTransferStatus.CANCELLED -> {
-                    status.text = context.getString(R.string.atp_status_cancelled)
-                    status.setTextColor(context.getColor(R.color.error_color))
-                }
-
-            }
+            AssetTransferDetailsFragment.showATPStatus(
+                context,
+                status,
+                transfer.status
+            )
 
             history_item_container.setOnClickListener {
                 onClick(transfer)

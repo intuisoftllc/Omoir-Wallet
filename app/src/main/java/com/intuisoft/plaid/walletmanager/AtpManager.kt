@@ -1,6 +1,7 @@
 package com.intuisoft.plaid.walletmanager
 
 import android.app.Application
+import com.intuisoft.plaid.R
 import com.intuisoft.plaid.common.model.*
 import com.intuisoft.plaid.common.repositories.ApiRepository
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
@@ -22,6 +23,7 @@ class AtpManager(
     val syncer: SyncManager
 ) {
     private var masterJob: Job? = null
+    private var reservedWallet: LocalWalletModel? = null
 
     private var _running = AtomicBoolean(false)
     protected var running: Boolean
@@ -41,6 +43,18 @@ class AtpManager(
         CoroutineScope(Dispatchers.IO + NonCancellable).launch {
             run()
         }
+
+    fun setReservedWallet(wallet: LocalWalletModel?) {
+        synchronized(this) {
+            reservedWallet = wallet
+        }
+    }
+
+    fun getReservedWallet() : LocalWalletModel? {
+        synchronized(this) {
+            return reservedWallet
+        }
+    }
 
     fun isRunning() = running
 
@@ -139,29 +153,33 @@ class AtpManager(
                                 else utxo.feeRate
 
                             if (output != null) {
-                                val result = spendUtxo(
-                                    output,
-                                    addresses[index],
-                                    feeRate,
-                                    transfer.feeRangeLow,
-                                    wallet
-                                )
-
-                                if (result != null) {
-                                    utxo.txId = result.txId
-                                    utxo.feeRate = result.feeRate
-                                    transfer.feesPaid += result.fees
-                                    transfer.sent += result.amountSent
-                                } else {
-                                    localStoreRepository.blacklistAddress(
-                                        BlacklistedAddressModel(address = output.output.address!!),
-                                        blacklist = false
+                                if(NetworkUtil.hasInternet(application)) {
+                                    val result = spendUtxo(
+                                        output,
+                                        addresses[index],
+                                        feeRate,
+                                        transfer.feeRangeLow,
+                                        wallet
                                     )
-                                    utxo.txId = "failed to spend due to network fees"
-                                    utxo.feeRate = -1
+
+                                    if (result != null) {
+                                        utxo.txId = result.txId
+                                        utxo.feeRate = result.feeRate
+                                        transfer.feesPaid += result.fees
+                                        transfer.sent += result.amountSent
+                                    } else {
+                                        localStoreRepository.blacklistAddress(
+                                            BlacklistedAddressModel(address = output.output.address!!),
+                                            blacklist = false
+                                        )
+                                        utxo.txId = application.getString(R.string.atp_externally_spent, "$addresses")
+                                        utxo.feeRate = -1
+                                    }
+                                } else {
+                                    return
                                 }
                             } else {
-                                utxo.txId = "externally spent"
+                                utxo.txId = application.getString(R.string.atp_failed_to_spend, "$addresses")
                                 utxo.feeRate = -1
                             }
 
@@ -205,12 +223,6 @@ class AtpManager(
             val recipient = syncer.getWallets().find { it.uuid == transfer.recipientWallet }
 
             if (recipient != null) {
-
-                wallet.walletKit!!.onEnterForeground()
-                wallet.walletKit!!.refresh()
-                recipient.walletKit!!.onEnterForeground()
-                recipient.walletKit!!.refresh()
-
                 batches.forEach {
                     if (!running) return@forEach
                     processBatch(it, lastBatch, transfer, wallet, recipient)
@@ -234,9 +246,6 @@ class AtpManager(
                         transfer.status = AssetTransferStatus.PARTIALLY_COMPLETED
                     }
                 }
-
-                syncer.safeBackground(wallet)
-                syncer.safeBackground(recipient)
             } else if(++transfer.retries >= Constants.Limit.ATP_MAX_RETRY_LIMIT) {
                 transfer.retries++
                 transfer.status = AssetTransferStatus.FAILED
@@ -255,10 +264,32 @@ class AtpManager(
                         syncer.getWallets().forEach { wallet ->
                             val transfers = localStoreRepository.getAllAssetTransfers(wallet.uuid)
 
+                            setReservedWallet(wallet)
+                            wallet.walletKit!!.onEnterForeground()
+                            wallet.walletKit!!.refresh()
+
+                            while(!wallet.walletKit!!.canSendTransaction()) {
+                                if (!running) {
+                                    setReservedWallet(null)
+                                    syncer.safeBackground(wallet)
+                                    return@forEach
+                                }
+
+                                delay(50)
+                            }
+
                             transfers.forEach {
-                                if(!running) return@forEach
+                                if(!running) {
+                                    setReservedWallet(null)
+                                    syncer.safeBackground(wallet)
+                                    return@forEach
+                                }
+
                                 processTransfer(it, wallet)
                             }
+
+                            setReservedWallet(null)
+                            syncer.safeBackground(wallet)
                         }
 
                         stopped = true

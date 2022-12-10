@@ -67,7 +67,7 @@ class SyncManager(
     fun getOpenedWallet() = openedWallet
 
     fun safeBackground(wallet: LocalWalletModel) {
-        if(wallet != openedWallet) {
+        if(wallet != openedWallet && listener?.isReserved(wallet) == false) {
             wallet.walletKit!!.onEnterBackground()
         }
     }
@@ -156,7 +156,7 @@ class SyncManager(
     }
 
     fun sync(wallet: LocalWalletModel) : Boolean {
-        if (!wallet.isSyncing && !wallet.isSynced &&(System.currentTimeMillis() - (listener?.getLastSyncedTime(wallet) ?: 0) >= Constants.Time.MIN_SYNC_TIME)) {
+        if (!wallet.isSyncing &&(System.currentTimeMillis() - (listener?.getLastSyncedTime(wallet) ?: 0) >= Constants.Time.MIN_SYNC_TIME)) {
             runInBackground {
                 syncInternal(wallet)
             }
@@ -257,5 +257,6 @@ class SyncManager(
         fun onSyncing(isSyncing: Boolean)
         fun onWalletsUpdated(wallets: List<LocalWalletModel>)
         fun getLastSyncedTime(wallet: LocalWalletModel): Long
+        fun isReserved(wallet: LocalWalletModel): Boolean
     }
 }

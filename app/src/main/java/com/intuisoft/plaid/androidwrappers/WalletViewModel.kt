@@ -361,10 +361,13 @@ open class WalletViewModel(
     }
 
     fun getTransactions() {
-        localWallet!!.walletKit!!.transactions(type = null).subscribe { txList: List<TransactionInfo> ->
-            _transactions.postValue(txList)
-        }.let {
-            disposables.add(it)
+        viewModelScope.launch {
+            localWallet!!.walletKit!!.transactions(type = null)
+                .subscribe { txList: List<TransactionInfo> ->
+                    _transactions.postValue(txList)
+                }.let {
+                disposables.add(it)
+            }
         }
     }
 

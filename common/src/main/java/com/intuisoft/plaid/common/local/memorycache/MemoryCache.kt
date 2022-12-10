@@ -1,28 +1,60 @@
 package com.intuisoft.plaid.common.local.memorycache
 
-import com.intuisoft.plaid.common.model.ChartIntervalType
-import com.intuisoft.plaid.common.model.CurrencyRangeLimitModel
-import com.intuisoft.plaid.common.model.WholeCoinConversionModel
+import com.intuisoft.plaid.common.model.*
 
+/**
+ * Memory Cache aims to lower the latency to requesting frequently used data by bypassing both
+ * remote server calls and database queries.
+ */
 class MemoryCache(
 
 ) {
-    private val rangeLimits: HashMap<String, Pair<Long, CurrencyRangeLimitModel>> = hashMapOf()
+    private val rangeLimitsCache: HashMap<String, Pair<Long, CurrencyRangeLimitModel>> = hashMapOf()
     private val chartPriceUpdateTimes: HashMap<Int, Long> = hashMapOf()
     private var wholeCoinConversionFixedCache: MutableList<Pair<WholeCoinConversionModel, Long>> = mutableListOf()
     private var wholeCoinConversionFloatingCache: MutableList<Pair<WholeCoinConversionModel, Long>> = mutableListOf()
     private val exchangeUpdateTimes: HashMap<String, Long> = hashMapOf()
+    private val currencyRateCache: HashMap<String, BasicPriceDataModel?> = hashMapOf()
+    private var storedWalletInfoCache: StoredWalletInfo? = null
+    private var blacklistedAddressesCache: List<BlacklistedAddressModel>? = null
+    private var blacklistedTransactionsCache: List<BlacklistedTransactionModel>? = null
+
+    fun getStoredWalletInfo() = storedWalletInfoCache
+
+    fun setStoredWalletInfo(info: StoredWalletInfo?) {
+        storedWalletInfoCache = info
+    }
+
+    fun getBlacklistedAddresses() = blacklistedAddressesCache
+
+    fun setBlacklistedAddresses(addresses: List<BlacklistedAddressModel>) {
+        blacklistedAddressesCache = addresses
+    }
+
+    fun getBlacklistedTransactions() = blacklistedTransactionsCache
+
+    fun setBlacklistedTransactions(transactions: List<BlacklistedTransactionModel>) {
+        blacklistedTransactionsCache = transactions
+    }
+
+    fun getRateFor(currencyCode: String): BasicPriceDataModel? {
+        return currencyRateCache.get(currencyCode)
+    }
+
+    fun setRateFor(currencyCode: String, rate: BasicPriceDataModel?) {
+        currencyRateCache.put(currencyCode, rate)
+    }
 
     fun getCurrencySwapRangeLimit(from: String, to: String, fixed: Boolean): CurrencyRangeLimitModel? {
-        return rangeLimits.get(from + to + if(fixed) 1 else 0)?.second
+        return rangeLimitsCache.get(from + to + if(fixed) 1 else 0)?.second
     }
 
     fun getLastCurrencySwapRangeLimitUpdateTime(from: String, to: String, fixed: Boolean): Long? {
-        return rangeLimits.get(from + to + if(fixed) 1 else 0)?.first
+        return rangeLimitsCache.get(from + to + if(fixed) 1 else 0)?.first
     }
 
     fun setCurrencySwapRangeLimit(from: String, to: String, fixed: Boolean, currentTime: Long, limit: CurrencyRangeLimitModel) {
-        rangeLimits[from + to + if(fixed) 1 else 0] = currentTime to limit
+        rangeLimitsCache[from + to + if(fixed) 1 else 0] = currentTime to limit
     }
 
     fun setChartPriceUpdateTime(type: ChartIntervalType, time: Long) {

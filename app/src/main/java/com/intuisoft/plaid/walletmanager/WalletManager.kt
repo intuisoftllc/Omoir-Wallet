@@ -47,9 +47,9 @@ class WalletManager(
                     createBaseWallet(_baseTestNetWallet, BitcoinKit.NetworkType.TestNet)
                 localStoreRepository.setOnWipeDataListener(this@WalletManager)
                 localStoreRepository.setDatabaseListener(this@WalletManager)
+                syncer.addListener(this@WalletManager)
                 syncer.start()
                 atp.start()
-                syncer.addListener(this@WalletManager)
                 updateWallets()
             }
         }
@@ -85,6 +85,10 @@ class WalletManager(
             return base
         } else
             return baseWallet
+    }
+
+    override fun isReserved(wallet: LocalWalletModel): Boolean {
+        return atp.getReservedWallet() == wallet
     }
 
     override fun openWallet(wallet: LocalWalletModel) {
@@ -135,8 +139,8 @@ class WalletManager(
         return _baseMainNetWallet!!.parsePaymentAddress(invoiceData)
     }
 
-    override fun arePeersReady(localWallet: LocalWalletModel) : Boolean {
-        return localWallet.walletKit!!.arePeersReady()
+    override fun canSendTransaction(localWallet: LocalWalletModel) : Boolean {
+        return localWallet.walletKit!!.canSendTransaction()
     }
 
     override fun getFullPublicKeyPath(key: PublicKey): String {
