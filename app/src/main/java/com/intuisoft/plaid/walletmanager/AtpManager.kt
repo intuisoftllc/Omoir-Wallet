@@ -7,74 +7,23 @@ import com.intuisoft.plaid.common.repositories.ApiRepository
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.model.LocalWalletModel
 import com.intuisoft.plaid.common.util.Constants
+import com.intuisoft.plaid.common.util.extensions.nextInt
 import com.intuisoft.plaid.util.NetworkUtil
+import com.intuisoft.plaid.util.entensions.ensureActive
 import io.horizontalsystems.bitcoincore.extensions.toReversedHex
 import io.horizontalsystems.bitcoincore.managers.SendValueErrors
 import io.horizontalsystems.bitcoincore.models.TransactionDataSortType
 import io.horizontalsystems.bitcoincore.models.TransactionStatus
 import io.horizontalsystems.bitcoincore.storage.UnspentOutput
 import kotlinx.coroutines.*
-import java.util.concurrent.atomic.AtomicBoolean
+import java.security.SecureRandom
 
 class AtpManager(
     private val application: Application,
     private val localStoreRepository: LocalStoreRepository,
-    private val apiRepository: ApiRepository,
-    val syncer: SyncManager
+    private val apiRepository: ApiRepository
 ) {
-    private var masterJob: Job? = null
-    private var reservedWallet: LocalWalletModel? = null
-
-    private var _running = AtomicBoolean(false)
-    protected var running: Boolean
-        get() = _running.get()
-        set(value) {
-            _running.set(value)
-        }
-
-    private var _stopped = AtomicBoolean(true)
-    protected var stopped: Boolean
-        get() = _stopped.get()
-        set(value) {
-            _stopped.set(value)
-        }
-
-    private fun runInBackground(run: suspend () -> Unit) =
-        CoroutineScope(Dispatchers.IO + NonCancellable).launch {
-            run()
-        }
-
-    fun setReservedWallet(wallet: LocalWalletModel?) {
-        synchronized(this) {
-            reservedWallet = wallet
-        }
-    }
-
-    fun getReservedWallet() : LocalWalletModel? {
-        synchronized(this) {
-            return reservedWallet
-        }
-    }
-
-    fun isRunning() = running
-
-    fun start() {
-        if(!running) {
-            running = true
-            run()
-        }
-    }
-
-    suspend fun stop() {
-        if(running) {
-            running = false
-            while(!stopped) {
-                delay(10)
-            }
-        }
-    }
-
-    private suspend fun spendUtxo(
+    private fun spendUtxo(
         utxo: UnspentOutput,
         address: String,
         feeRate: Int,
@@ -92,7 +41,8 @@ class AtpManager(
                     value = fee.second,
                     address = address,
                     feeRate = feeRate,
-                    sortType = TransactionDataSortType.Shuffle
+                    sortType = TransactionDataSortType.Shuffle,
+                    ghostBroadcast = true
                 ).header.hash.toReversedHex(),
                 amountSent = fee.second
             )
@@ -108,7 +58,8 @@ class AtpManager(
                     value = fee.second,
                     address = address,
                     feeRate = fallbackFeeRate,
-                    sortType = TransactionDataSortType.Shuffle
+                    sortType = TransactionDataSortType.Shuffle,
+                    ghostBroadcast = true
                 ).header.hash.toReversedHex(),
                 amountSent = fee.second
             )
@@ -123,20 +74,24 @@ class AtpManager(
         transfer: AssetTransferModel,
         wallet: LocalWalletModel,
         recipient: LocalWalletModel
-    ) {
-        if(!NetworkUtil.hasInternet(application)) return
+    ): Boolean {
+        if(!NetworkUtil.hasInternet(application)) return false
 
         if(lastBatch == null ||
             (lastBatch.status.id in AssetTransferStatus.PARTIALLY_COMPLETED.id..AssetTransferStatus.CANCELLED.id)) {
 
             if(lastBatch != null && transfer.batchGap > 0
-                && (wallet.walletKit!!.lastBlockInfo?.height ?: 0) <= (transfer.batchGap + lastBatch.completionHeight)) {
-                return
+                        && (wallet.walletKit!!.lastBlockInfo?.height ?: 0) <= (transfer.batchGap + lastBatch.completionHeight)) {
+                batch.status = AssetTransferStatus.WAITING
+                localStoreRepository.setBatchData(batch)
+                return false
             }
 
             when (batch.status) {
                 AssetTransferStatus.NOT_STARTED -> {
 
+                    var utxoSent = false
+                    val random = SecureRandom()
                     var addresses = recipient.walletKit!!.receiveAddresses()
                     if(addresses.size < batch.utxos.size) {
                         recipient.walletKit!!.fillGap()
@@ -148,8 +103,8 @@ class AtpManager(
                             val output = wallet.walletKit!!.getUnspentOutputs()
                                 .find { it.output.address == utxo.address }
                             val feeRate =
-                                if (transfer.dynamicFees) apiRepository.getSuggestedFeeRate(wallet.testNetWallet)?.highFee
-                                    ?: utxo.feeRate
+                                if (transfer.dynamicFees)
+                                    Math.min(apiRepository.getSuggestedFeeRate(wallet.testNetWallet)?.highFee?.plus(random.nextInt(transfer.feeRangeLow, transfer.feeRangeHigh)) ?: utxo.feeRate, utxo.feeRate)
                                 else utxo.feeRate
 
                             if (output != null) {
@@ -175,8 +130,10 @@ class AtpManager(
                                         utxo.txId = application.getString(R.string.atp_externally_spent, "$addresses")
                                         utxo.feeRate = -1
                                     }
+
+                                    utxoSent = true
                                 } else {
-                                    return
+                                    return utxoSent
                                 }
                             } else {
                                 utxo.txId = application.getString(R.string.atp_failed_to_spend, "$addresses")
@@ -190,6 +147,7 @@ class AtpManager(
                     batch.status = AssetTransferStatus.IN_PROGRESS
                     localStoreRepository.setBatchData(batch)
                     localStoreRepository.saveAssetTransfer(transfer)
+                    return utxoSent
                 }
 
                 AssetTransferStatus.IN_PROGRESS -> {
@@ -209,23 +167,27 @@ class AtpManager(
                     }
 
                     localStoreRepository.setBatchData(batch)
+                    return false
                 }
             }
         }
+
+        return false
     }
 
-    private suspend fun processTransfer(transfer: AssetTransferModel, wallet: LocalWalletModel) {
-        if(!NetworkUtil.hasInternet(application)) return
+    private suspend fun processTransfer(transfer: AssetTransferModel, wallet: LocalWalletModel, findWallet: (String) -> LocalWalletModel?): Boolean {
+        if(!NetworkUtil.hasInternet(application)) return false
 
         if(transfer.status == AssetTransferStatus.IN_PROGRESS || transfer.status == AssetTransferStatus.NOT_STARTED) {
             val batches = localStoreRepository.getBatchDataForTransfer(transfer.id)
             var lastBatch: BatchDataModel? = null
-            val recipient = syncer.getWallets().find { it.uuid == transfer.recipientWallet }
+            val recipient = findWallet(transfer.recipientWallet)
+            var utxoSent = false
 
             if (recipient != null) {
                 batches.forEach {
-                    if (!running) return@forEach
-                    processBatch(it, lastBatch, transfer, wallet, recipient)
+                    if(processBatch(it, lastBatch, transfer, wallet, recipient))
+                        utxoSent = true
                     lastBatch = it
                 }
 
@@ -252,57 +214,23 @@ class AtpManager(
             }
 
             localStoreRepository.saveAssetTransfer(transfer)
+            return utxoSent
         }
+
+        return false
     }
 
-    private fun run() {
-        if(running && masterJob == null) {
-            masterJob = runInBackground {
-                while(true) {
-                    if(running && syncer.isRunning()) {
-                        stopped = false
-                        syncer.getWallets().forEach { wallet ->
-                            val transfers = localStoreRepository.getAllAssetTransfers(wallet.uuid)
+    suspend fun updateTransfers(wallet: LocalWalletModel, findWallet: (String) -> LocalWalletModel?, job: Job?): Boolean {
+        val transfers = localStoreRepository.getAllAssetTransfers(wallet.uuid)
+        var utxoSent = false
 
-                            setReservedWallet(wallet)
-                            wallet.walletKit!!.onEnterForeground()
-                            wallet.walletKit!!.refresh()
-
-                            while(!wallet.walletKit!!.canSendTransaction()) {
-                                if (!running) {
-                                    setReservedWallet(null)
-                                    syncer.safeBackground(wallet)
-                                    return@forEach
-                                }
-
-                                delay(50)
-                            }
-
-                            transfers.forEach {
-                                if(!running) {
-                                    setReservedWallet(null)
-                                    syncer.safeBackground(wallet)
-                                    return@forEach
-                                }
-
-                                processTransfer(it, wallet)
-                            }
-
-                            setReservedWallet(null)
-                            syncer.safeBackground(wallet)
-                        }
-
-                        stopped = true
-                        delay(Constants.Time.MILLS_PER_SEC.toLong() * 5)
-                    } else {
-                        stopped = true
-                        while(!running) {
-                            delay(100)
-                        }
-                    }
-                }
-            }
+        transfers.forEach {
+            job?.ensureActive()
+            if(processTransfer(it, wallet, findWallet))
+                utxoSent = true
         }
+
+        return utxoSent
     }
 
     data class UtxoSpendResult(

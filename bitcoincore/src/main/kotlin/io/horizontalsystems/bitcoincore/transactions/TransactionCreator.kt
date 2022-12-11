@@ -24,11 +24,11 @@ class TransactionCreator(
     }
 
     @Throws
-    fun create(unspentOutputs: List<String>, value: Long, toAddress: String, feeRate: Int, sortType: TransactionDataSortType, createOnly: Boolean): FullTransaction {
+    fun create(unspentOutputs: List<Pair<Long, String>>, value: Long, toAddress: String, feeRate: Int, sortType: TransactionDataSortType, createOnly: Boolean, ghostBroadcast: Boolean): FullTransaction {
         if(createOnly)
             return builder.buildTransaction(unspentOutputs, value, toAddress, feeRate, sortType)
 
-        return create {
+        return create(ghostBroadcast) {
             builder.buildTransaction(unspentOutputs, value, toAddress, feeRate, sortType)
         }
     }
@@ -51,8 +51,8 @@ class TransactionCreator(
         return transaction
     }
 
-    private fun create(transactionBuilderFunction: () -> FullTransaction): FullTransaction {
-        transactionSender.canSendTransaction()
+    private fun create(ghostBroadcast: Boolean = false, transactionBuilderFunction: () -> FullTransaction): FullTransaction {
+        if(!ghostBroadcast) transactionSender.canSendTransaction()
         return broadcast(transactionBuilderFunction.invoke())
     }
 

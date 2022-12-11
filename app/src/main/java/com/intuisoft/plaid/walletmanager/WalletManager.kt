@@ -26,11 +26,9 @@ import java.util.*
 class WalletManager(
     val application: Application,
     val localStoreRepository: LocalStoreRepository,
-    val syncer: SyncManager,
-    val atp: AtpManager
+    val syncer: SyncManager
 ): AbstractWalletManager(), WipeDataListener, DatabaseListener, SyncManager.SyncEvent {
     private val localPassphrases: MutableMap<String,String> = mutableMapOf()
-    private val mutex = Mutex()
     private var _baseMainNetWallet: BitcoinKit? = null
     private var _baseTestNetWallet: BitcoinKit? = null
     private var stateListeners: MutableList<StateListener> = mutableListOf()
@@ -38,7 +36,6 @@ class WalletManager(
     open class BitcoinEventListener: BitcoinKit.Listener {}
 
     override fun start() {
-        @OptIn(DelicateCoroutinesApi::class)
         CoroutineScope(Dispatchers.IO).launch {
             if(!syncer.isRunning()) {
                 _baseMainNetWallet =
@@ -49,7 +46,6 @@ class WalletManager(
                 localStoreRepository.setDatabaseListener(this@WalletManager)
                 syncer.addListener(this@WalletManager)
                 syncer.start()
-                atp.start()
                 updateWallets()
             }
         }
@@ -57,7 +53,6 @@ class WalletManager(
 
     override suspend fun stop() {
         syncer.stop()
-        atp.stop()
     }
 
     private fun createBaseWallet(baseWallet: BitcoinKit?, network: BitcoinKit.NetworkType): BitcoinKit {
@@ -85,10 +80,6 @@ class WalletManager(
             return base
         } else
             return baseWallet
-    }
-
-    override fun isReserved(wallet: LocalWalletModel): Boolean {
-        return atp.getReservedWallet() == wallet
     }
 
     override fun openWallet(wallet: LocalWalletModel) {
@@ -214,7 +205,7 @@ class WalletManager(
     }
 
     private suspend fun onWalletStateUpdated(wallet: LocalWalletModel) {
-        mutex.withLock {
+        synchronized(this) {
             stateListeners.forEach {
                 CoroutineScope(Dispatchers.Main).launch {
                     it.onWalletStateUpdated(wallet)
@@ -223,8 +214,8 @@ class WalletManager(
         }
     }
 
-    private suspend fun onWalletAlreadySynced(wallet: LocalWalletModel) {
-        mutex.withLock {
+    override fun onWalletAlreadySynced(wallet: LocalWalletModel) {
+        synchronized(this) {
             stateListeners.forEach {
                 CoroutineScope(Dispatchers.Main).launch {
                     it.onWalletAlreadySynced(wallet)
@@ -234,7 +225,7 @@ class WalletManager(
     }
 
     override suspend fun addWalletSyncListener(listener: StateListener) {
-        mutex.withLock {
+        synchronized(this) {
             if(stateListeners.find { it == listener } == null) {
                 stateListeners.add(listener)
             }
@@ -242,7 +233,7 @@ class WalletManager(
     }
 
     override suspend fun removeSyncListener(listener: StateListener) {
-        mutex.withLock {
+        synchronized(this) {
             stateListeners.remove { it == listener }
         }
     }

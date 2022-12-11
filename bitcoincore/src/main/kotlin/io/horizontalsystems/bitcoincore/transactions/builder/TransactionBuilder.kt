@@ -25,7 +25,7 @@ class TransactionBuilder(
         return mutableTransaction.build()
     }
 
-    fun buildTransaction(unspentOutputs: List<String>, value: Long, toAddress: String, feeRate: Int, sortType: TransactionDataSortType): FullTransaction {
+    fun buildTransaction(unspentOutputs: List<Pair<Long, String>>, value: Long, toAddress: String, feeRate: Int, sortType: TransactionDataSortType): FullTransaction {
         val mutableTransaction = MutableTransaction(false)
 
         recipientSetter.setRecipient(mutableTransaction, toAddress, value, mapOf(), false)

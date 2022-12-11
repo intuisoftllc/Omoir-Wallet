@@ -9,15 +9,27 @@ import com.intuisoft.plaid.common.model.*
 class MemoryCache(
 
 ) {
-    private val rangeLimitsCache: HashMap<String, Pair<Long, CurrencyRangeLimitModel>> = hashMapOf()
-    private val chartPriceUpdateTimes: HashMap<Int, Long> = hashMapOf()
+    private var rangeLimitsCache: HashMap<String, Pair<Long, CurrencyRangeLimitModel>> = hashMapOf()
+    private var chartPriceUpdateTimes: HashMap<Int, Long> = hashMapOf()
     private var wholeCoinConversionFixedCache: MutableList<Pair<WholeCoinConversionModel, Long>> = mutableListOf()
     private var wholeCoinConversionFloatingCache: MutableList<Pair<WholeCoinConversionModel, Long>> = mutableListOf()
-    private val exchangeUpdateTimes: HashMap<String, Long> = hashMapOf()
-    private val currencyRateCache: HashMap<String, BasicPriceDataModel?> = hashMapOf()
+    private var exchangeUpdateTimes: HashMap<String, Long> = hashMapOf()
+    private var currencyRateCache: HashMap<String, BasicPriceDataModel?> = hashMapOf()
     private var storedWalletInfoCache: StoredWalletInfo? = null
     private var blacklistedAddressesCache: List<BlacklistedAddressModel>? = null
     private var blacklistedTransactionsCache: List<BlacklistedTransactionModel>? = null
+
+    fun clear() {
+        rangeLimitsCache = hashMapOf()
+        chartPriceUpdateTimes = hashMapOf()
+        wholeCoinConversionFixedCache = mutableListOf()
+        wholeCoinConversionFloatingCache = mutableListOf()
+        exchangeUpdateTimes = hashMapOf()
+        currencyRateCache = hashMapOf()
+        storedWalletInfoCache = null
+        blacklistedAddressesCache = null
+        blacklistedTransactionsCache = null
+    }
 
     fun getStoredWalletInfo() = storedWalletInfoCache
 

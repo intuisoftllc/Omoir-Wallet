@@ -56,7 +56,7 @@ class InputSetter(
         pluginManager.processInputs(mutableTransaction)
     }
 
-    fun setInputs(mutableTransaction: MutableTransaction, unspentOutputs: List<String>, feeRate: Int, senderPay: Boolean, sortType: TransactionDataSortType) {
+    fun setInputs(mutableTransaction: MutableTransaction, unspentOutputs: List<Pair<Long, String>>, feeRate: Int, senderPay: Boolean, sortType: TransactionDataSortType) {
         val value = mutableTransaction.recipientValue
         val dust = dustCalculator.dust(changeScriptType)
         val unspentOutputInfo = unspentOutputSelector.select(

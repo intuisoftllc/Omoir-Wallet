@@ -327,7 +327,7 @@ class DashboardFragment : ConfigurableFragment<FragmentWalletDashboardBinding>(p
     }
 
     override fun onWalletAlreadySynced(wallet: LocalWalletModel) {
-        if(wallet.uuid == viewModel.getWalletId() && activity != null && _binding != null) {
+        if(viewModel.getWallet() != null && wallet.uuid == viewModel.getWalletId() && activity != null && _binding != null) {
             binding.swipeContainer.isRefreshing = false
         }
     }

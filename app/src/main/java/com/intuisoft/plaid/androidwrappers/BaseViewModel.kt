@@ -113,6 +113,7 @@ open class BaseViewModel(
         (fragment as FragmentBottomBarBarDelegate).apply {
             runBlocking {
                 walletManager.stop()
+                localStoreRepository.clearCache()
 
                 MainScope().launch {
                     fragment.navigate(

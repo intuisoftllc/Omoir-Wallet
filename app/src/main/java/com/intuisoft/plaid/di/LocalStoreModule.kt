@@ -26,32 +26,31 @@ val apiRepositoriesModule = module {
 
 val walletManagerModule = module {
 
-    single { provideWalletManager(get(), get(), get(), get()) }
-    single { provideWalletSyncer(get(), get()) }
-    single { provideWalletAtpManager(get(), get(), get(), get()) }
+    single { provideWalletManager(get(), get(), get()) }
+    single { provideWalletSyncer(get(), get(), get()) }
+    single { provideWalletAtpManager(get(), get(), get()) }
 }
 
 fun provideWalletSyncer(
     application: Application,
-    localStoreRepository: LocalStoreRepository
+    localStoreRepository: LocalStoreRepository,
+    atpManager: AtpManager
 ): SyncManager {
-    return SyncManager(application, localStoreRepository)
+    return SyncManager(application, localStoreRepository, atpManager)
 }
 
 fun provideWalletAtpManager(
     application: Application,
     localStoreRepository: LocalStoreRepository,
-    apiRepository: ApiRepository,
-    syncer: SyncManager
+    apiRepository: ApiRepository
 ): AtpManager {
-    return AtpManager(application, localStoreRepository, apiRepository, syncer)
+    return AtpManager(application, localStoreRepository, apiRepository)
 }
 
 fun provideWalletManager(
     application: Application,
     localStoreRepository: LocalStoreRepository,
-    syncer: SyncManager,
-    atpManager: AtpManager
+    syncer: SyncManager
 ): AbstractWalletManager {
-    return WalletManager(application, localStoreRepository, syncer, atpManager)
+    return WalletManager(application, localStoreRepository, syncer)
 }

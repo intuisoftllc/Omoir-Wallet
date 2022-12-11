@@ -3,21 +3,24 @@ package com.intuisoft.plaid.walletmanager
 import android.app.Application
 import android.util.Log
 import com.intuisoft.plaid.common.model.DevicePerformanceLevel
+import com.intuisoft.plaid.common.repositories.ApiRepository
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.model.LocalWalletModel
 import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.common.util.extensions.remove
+import com.intuisoft.plaid.util.entensions.ensureActive
 import com.intuisoft.plaid.util.entensions.splitIntoGroupOf
+import io.horizontalsystems.bitcoincore.network.peer.PeerGroup
 import kotlinx.coroutines.*
 import java.util.concurrent.CopyOnWriteArrayList
 import java.util.concurrent.atomic.AtomicBoolean
 
 class SyncManager(
     private val application: Application,
-    private val localStoreRepository: LocalStoreRepository
+    private val localStoreRepository: LocalStoreRepository,
+    private val atp: AtpManager
 ) {
     private val _wallets: CopyOnWriteArrayList<LocalWalletModel> = CopyOnWriteArrayList()
-    private var syncJobs: MutableList<Job> = mutableListOf()
     private var masterSyncJob: Job? = null
     private var autoSyncJob: Job? = null
     private var listener: SyncEvent? = null
@@ -34,6 +37,7 @@ class SyncManager(
     protected var syncing: Boolean
         get() = _syncing.get()
         set(value) {
+            if(!value) masterSyncJob = null
             _syncing.set(value)
             listener?.onSyncing(value)
         }
@@ -41,14 +45,7 @@ class SyncManager(
     private var lastSynced: Long = 0
 
     private fun runInBackground(run: suspend () -> Unit) =
-        @OptIn(DelicateCoroutinesApi::class)
-        GlobalScope.launch {
-            run()
-        }
-
-    private fun lazyRunInBackground(run: suspend () -> Unit) =
-        @OptIn(DelicateCoroutinesApi::class)
-        GlobalScope.launch(start = CoroutineStart.LAZY) {
+        CoroutineScope(Dispatchers.IO).launch {
             run()
         }
 
@@ -67,7 +64,7 @@ class SyncManager(
     fun getOpenedWallet() = openedWallet
 
     fun safeBackground(wallet: LocalWalletModel) {
-        if(wallet != openedWallet && listener?.isReserved(wallet) == false) {
+        if(wallet != openedWallet) {
             wallet.walletKit!!.onEnterBackground()
         }
     }
@@ -108,7 +105,8 @@ class SyncManager(
         if(autoSyncJob == null) {
             autoSyncJob = runInBackground {
                 while (true) {
-                    delay(Constants.Time.AUTO_SYNC_TIME)
+                    autoSyncJob?.ensureActive()
+                    delay(Constants.Time.MIN_SYNC_TIME.toLong())
                     syncWallets()
                 }
             }
@@ -118,8 +116,8 @@ class SyncManager(
     fun start() {
         if(!running) {
             running = true
-
             syncWallets()
+            startAutoSync()
         }
     }
 
@@ -137,21 +135,20 @@ class SyncManager(
 
     fun stopAutoSyncer() {
         if(running) {
-            autoSyncJob?.cancel()
-            autoSyncJob = null
+            runBlocking {
+                autoSyncJob?.cancelAndJoin()
+                autoSyncJob = null
+            }
         }
     }
 
     private fun cancelAllJobs() {
         if(running && syncing) {
-            masterSyncJob?.cancel()
-            stopAutoSyncer()
-            syncJobs.forEach {
-                it.cancel()
+            runBlocking {
+                masterSyncJob?.cancelAndJoin()
+                stopAutoSyncer()
+                syncing = false
             }
-
-            syncJobs.clear()
-            syncing = false
         }
     }
 
@@ -171,6 +168,8 @@ class SyncManager(
         if (!wallet.isSyncing && !wallet.isSynced) {
             wallet.walletKit!!.onEnterForeground()
             wallet.walletKit!!.refresh()
+        } else {
+            listener?.onWalletAlreadySynced(wallet)
         }
     }
 
@@ -195,7 +194,7 @@ class SyncManager(
     }
 
     fun syncWallets() {
-        if(running && !syncing && syncJobs.isEmpty()) {
+        if(running && !syncing) {
             syncing = true
             if((System.currentTimeMillis() - lastSynced) <= Constants.Time.MIN_SYNC_TIME
                 || _wallets.isEmpty()) {
@@ -203,52 +202,64 @@ class SyncManager(
                 return
             }
 
-            _wallets
-                .splitIntoGroupOf(getSyncGrouping())
-                .forEach { group ->
-                    syncJobs.add(
-                        lazyRunInBackground {
-                            var startTime = System.currentTimeMillis()
-                            var restarts = 0
-                            group.items.forEach {
-                                syncInternal(it)
-                            }
+            masterSyncJob = runInBackground {
+                var resync = false
 
-                            // wait for this group of wallets to sync
-                            while(!group.items.all { it.isSynced }) {
-                                delay(100)
+                _wallets
+                    .splitIntoGroupOf(getSyncGrouping())
+                    .forEach { group ->
+                        var startTime = System.currentTimeMillis()
+                        var restarts = 0
+                        group.items.forEach {
+                            syncInternal(it)
+                        }
 
-                                if((System.currentTimeMillis() - startTime) >= Constants.Time.SYNC_TIMEOUT) {
-                                    group.items.forEach {
-                                        if (listener?.getLastSyncedTime(it) == 0L && !it.isSynced && it.syncPercentage == 0) { // restart stuck wallets
-                                            it.walletKit!!.restart()
-                                            startTime = System.currentTimeMillis()
-                                            ++restarts
-                                        }
-                                    }
+                        // wait for this group of wallets to sync
+                        while(!group.items.all { it.isSynced }) {
+                            masterSyncJob?.ensureActive()
+                            delay(100)
 
-                                    if(restarts > Constants.Limit.SYNC_RESTART_LIMIT) {
-                                        break
+                            if((System.currentTimeMillis() - startTime) >= Constants.Time.SYNC_TIMEOUT) {
+                                group.items.forEach {
+                                    if (listener?.getLastSyncedTime(it) == 0L && !it.isSynced && it.syncPercentage == 0) { // restart stuck wallets
+                                        it.walletKit!!.restart()
+                                        startTime = System.currentTimeMillis()
+                                        ++restarts
                                     }
                                 }
-                            }
 
-                            group.items.forEach {
-                                safeBackground(it)
+                                if(restarts > Constants.Limit.SYNC_RESTART_LIMIT) {
+                                    break
+                                }
                             }
                         }
-                    )
-                }
 
-            masterSyncJob = runInBackground {
-                syncJobs.forEach {
-                    it.start()
-                    it.join()
-                }
+                        group.items.forEach {
+                            safeBackground(it)
+
+                            if(it.isSynced && it.walletKit!!.canSendTransaction()) {
+                                if(
+                                    atp.updateTransfers(
+                                        wallet = it,
+                                        findWallet = { walletId ->
+                                            getWallets().find { it.uuid == walletId }
+                                        },
+                                        job = masterSyncJob
+                                    )
+                                ) {
+                                    resync = true
+                                }
+                            }
+                        }
+                    }
 
                 lastSynced = System.currentTimeMillis()
-                syncJobs.clear()
                 syncing = false
+
+                if(resync) {
+                    lastSynced = 0
+                    syncWallets()
+                }
             }
         }
     }
@@ -257,6 +268,6 @@ class SyncManager(
         fun onSyncing(isSyncing: Boolean)
         fun onWalletsUpdated(wallets: List<LocalWalletModel>)
         fun getLastSyncedTime(wallet: LocalWalletModel): Long
-        fun isReserved(wallet: LocalWalletModel): Boolean
+        fun onWalletAlreadySynced(wallet: LocalWalletModel)
     }
 }

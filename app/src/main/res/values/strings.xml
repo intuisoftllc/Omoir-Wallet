@@ -119,7 +119,7 @@
 
 <!--    How does ATP work Strings -->
     <string name="how_does_atp_work_title">How does it work?</string>
-    <string name="how_does_atp_work_description">ATP works by individually sending each of your UTXO’s to another location in “batches” or groups of up to 25.\n\nThis helps preserve Bitcoin\'s original purpose of providing pseudonymity to its users thus obfuscating your wallet\'s true total balance to onlookers.</string>
+    <string name="how_does_atp_work_description">ATP works by individually sending each of your UTXO’s to another location in “batches” or groups of up to 50.\n\nThis helps preserve Bitcoin\'s original purpose of providing pseudonymity to its users thus obfuscating your wallet\'s true total balance to onlookers.</string>
 <!--     How does ATP work End -->
 
 <!--    Your In Full Control Strings -->
@@ -189,6 +189,7 @@
 
 <!--    ATP Status Strings -->
     <string name="atp_status_not_started">Not Started</string>
+    <string name="atp_status_waiting">Waiting</string>
     <string name="atp_status_in_progress">In Progress</string>
     <string name="atp_status_partially_completed">Partially Completed</string>
     <string name="atp_status_completed">Completed</string>

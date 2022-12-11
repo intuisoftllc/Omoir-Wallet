@@ -17,7 +17,7 @@ class TransactionSender(
         private val initialBlockDownload: InitialBlockDownload,
         private val storage: IStorage,
         private val timer: TransactionSendTimer,
-        private val maxRetriesCount: Int = 3)
+        private val maxRetriesCount: Int = 4)
     : IPeerTaskHandler, TransactionSendTimer.Listener {
 
     @Synchronized

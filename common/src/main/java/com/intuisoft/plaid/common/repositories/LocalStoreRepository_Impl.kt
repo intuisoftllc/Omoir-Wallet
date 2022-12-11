@@ -468,6 +468,10 @@ class LocalStoreRepository_Impl(
         databaseRepository.saveAssetTransfer(data)
     }
 
+    override fun clearCache() {
+        memoryCache.clear()
+    }
+
     override suspend fun setBatchData(data: BatchDataModel) {
         databaseRepository.setBatchData(data)
     }

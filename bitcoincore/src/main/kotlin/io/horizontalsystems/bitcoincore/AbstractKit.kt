@@ -92,13 +92,14 @@ abstract class AbstractKit {
         value: Long,
         address: String,
         feeRate: Int,
-        sortType: TransactionDataSortType
+        sortType: TransactionDataSortType,
+        ghostBroadcast: Boolean
     , createOnly: Boolean = false): FullTransaction {
-        return bitcoinCore.redeem(unspentOutput, value, address, feeRate, sortType, createOnly)
+        return bitcoinCore.redeem(unspentOutput, value, address, feeRate, sortType, createOnly, ghostBroadcast)
     }
 
-    fun redeem(unspentOutputs: List<UnspentOutput>, value: Long, address: String, feeRate: Int, sortType: TransactionDataSortType = TransactionDataSortType.Shuffle, createOnly: Boolean = false): FullTransaction {
-        return bitcoinCore.redeem(unspentOutputs, value, address, feeRate, sortType, createOnly)
+    fun redeem(unspentOutputs: List<UnspentOutput>, value: Long, address: String, feeRate: Int, sortType: TransactionDataSortType = TransactionDataSortType.Shuffle, createOnly: Boolean = false, ghostBroadcast: Boolean = false): FullTransaction {
+        return bitcoinCore.redeem(unspentOutputs, value, address, feeRate, sortType, createOnly, ghostBroadcast)
     }
 
     fun broadcast(fullTransaction: FullTransaction) : FullTransaction {

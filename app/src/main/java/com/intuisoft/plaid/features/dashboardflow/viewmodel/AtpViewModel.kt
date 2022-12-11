@@ -11,6 +11,7 @@ import com.intuisoft.plaid.common.model.*
 import com.intuisoft.plaid.common.repositories.ApiRepository
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.common.util.Constants
+import com.intuisoft.plaid.common.util.extensions.nextInt
 import com.intuisoft.plaid.model.LocalWalletModel
 import com.intuisoft.plaid.util.NetworkUtil
 import com.intuisoft.plaid.util.Plural
@@ -69,6 +70,7 @@ class AtpViewModel(
     val contentNotAvailable: LiveData<Unit> = _contentNotAvailable
 
     private var recipient: LocalWalletModel? = null
+    val randomNumberGenerator = SecureRandom()
 
     fun setWallet(wallet: LocalWalletModel) {
         recipient = wallet
@@ -200,7 +202,7 @@ class AtpViewModel(
                 if(selectedUTXOs.isNotEmpty()) {
                     val batchGap = getBatchGap()
                     val batchSize = min(getBatchSize(), selectedUTXOs.size)
-                    val randomFees = selectedUTXOs.map { randomFee(getFeeSpread().first, getFeeSpread().last) }
+                    val randomFees = selectedUTXOs.map { randomNumberGenerator.nextInt(getFeeSpread().first, getFeeSpread().last) }
                     val batchesNeeded = (selectedUTXOs.size.toDouble() / batchSize).roundToInt()
                     var blocksNeeded =
                         if(batchesNeeded == 1) batchesNeeded
@@ -252,22 +254,11 @@ class AtpViewModel(
                             _onDisplayExplanation.postValue(getApplication<PlaidApp>().getString(R.string.atp_confirm_error_not_enough_funds))
                         }
                     } else {
-                        val suggestedFees = localStoreRepository.getSuggestedFeeRate(isTestNetWallet()) ?: NetworkFeeRate(0,0,0)
                         val estimatedFees = selectedUTXOs.mapIndexed { index, it ->
                             var result = AtpManager.calculateFeeForMaxSpend(getWallet()!!, it, randomFees[index], null)
-                            var fee = randomFees[index]
 
                             if(result.first == -1L) { // use lowest possible fee
                                 result = AtpManager.calculateFeeForMaxSpend(getWallet()!!, it, getFeeSpread().first, null)
-                                fee = getFeeSpread().first
-                            }
-
-                            if(result.first > 0 && suggestedFees.lowFee != suggestedFees.medFee) {
-                                if (fee in suggestedFees.lowFee..suggestedFees.medFee) {
-                                    blocksNeeded += 5
-                                } else if (fee < suggestedFees.lowFee) {
-                                    blocksNeeded += 143
-                                }
                             }
 
                             result.first
@@ -321,16 +312,6 @@ class AtpViewModel(
 
             _loading.postValue(false)
         }
-    }
-
-    fun randomFee(low: Int, high: Int): Int {
-        val random = SecureRandom()
-        var n: Int = 0
-        while(true) {
-            n = random.nextInt(high)
-            if(n >= low) break;
-        }
-        return n
     }
 
     fun setBatchGap(gap: Int) {

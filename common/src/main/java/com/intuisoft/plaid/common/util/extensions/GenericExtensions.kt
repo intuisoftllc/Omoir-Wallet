@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 import java.io.*
+import java.security.SecureRandom
 import java.text.CharacterIterator
 import java.text.StringCharacterIterator
 import kotlin.math.pow
@@ -188,3 +189,11 @@ fun List<Long>.median(): Double {
     }
 }
 
+fun SecureRandom.nextInt(low: Int, high: Int): Int {
+    var n: Int
+    while(true) {
+        n = nextInt(high + 1)
+        if(n in low..high) break
+    }
+    return n
+}

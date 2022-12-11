@@ -131,6 +131,11 @@ class AssetTransferDetailsFragment : ConfigurableFragment<FragmentAssetTransferD
                     view.setTextColor(context.getColor(R.color.text_grey))
                 }
 
+                AssetTransferStatus.WAITING -> {
+                    view.text = context.getString(R.string.atp_status_waiting)
+                    view.setTextColor(context.getColor(R.color.text_grey))
+                }
+
                 AssetTransferStatus.PARTIALLY_COMPLETED -> {
                     view.text = context.getString(R.string.atp_status_partially_completed)
                     view.setTextColor(context.getColor(R.color.warning_color))

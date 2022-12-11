@@ -19,6 +19,15 @@ class HDExtendedKey(
         }
     )
 
+    constructor(seed: ByteArray, derivationPath: String, purpose: Purpose) : this(
+        HDKeychain(HDKeyDerivation.createRootKey(seed)).getKeyByPath(derivationPath),
+        when (purpose) {
+            Purpose.BIP44 -> HDExtendedKeyVersion.xprv
+            Purpose.BIP49 -> HDExtendedKeyVersion.yprv
+            Purpose.BIP84 -> HDExtendedKeyVersion.zprv
+        }
+    )
+
     val derivedType: DerivedType
         get() = DerivedType.initFrom(key.depth)
 
