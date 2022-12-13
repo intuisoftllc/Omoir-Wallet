@@ -103,7 +103,7 @@ class NameYourWalletFragment : ConfigurableFragment<FragmentNameWalletBinding>(p
                         subtitle = getString(R.string.create_wallet_success_subtitle),
                         positiveText = getString(R.string.create_wallet_success_positive_button),
                         negativeText = getString(R.string.create_wallet_success_negative_button),
-                        positiveDestination = R.id.walletDashboardFragment,
+                        positiveDestination = if(localStoreRepository.isProEnabled()) R.id.walletProDashboardFragment else R.id.walletDashboardFragment,
                         negativeDestination = if(localStoreRepository.isProEnabled()) R.id.proHomescreenFragment else R.id.homescreenFragment,
                         walletUUID = it
                     ),

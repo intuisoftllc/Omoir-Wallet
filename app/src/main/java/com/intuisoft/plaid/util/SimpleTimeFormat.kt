@@ -16,7 +16,7 @@ object SimpleTimeFormat {
 
     fun timeToString(time: Long, suffix: String = "Ago"): String {
         var convTime: String
-        val pasTime: Date = Date(time * 1000)
+        val pasTime: Date = Date(time)
         val nowTime = Date()
         val dateDiff: Long
 
@@ -58,7 +58,7 @@ object SimpleTimeFormat {
         val dateDays = (mills / Constants.Time.MILLS_PER_SEC) / Constants.Time.SECONDS_PER_DAY
         val currentDay = (System.currentTimeMillis() / Constants.Time.MILLS_PER_SEC) / Constants.Time.SECONDS_PER_DAY
 
-        return dateDays == currentDay
+        return ZonedDateTime.ofInstant(Instant.ofEpochMilli(mills), ZoneId.systemDefault()).dayOfMonth == ZonedDateTime.ofInstant(Instant.now(), ZoneId.systemDefault()).dayOfMonth
     }
 
     fun isYesterday(mills: Long) : Boolean {
@@ -69,11 +69,8 @@ object SimpleTimeFormat {
     }
 
     fun isSameYear(mills: Long): Boolean {
-        val z: ZoneId = ZoneId.of(ZoneId.systemDefault().id)
-        val referenceTime: ZonedDateTime = ZonedDateTime.ofInstant(Instant.ofEpochMilli(mills), z)
-        val nowTime: ZonedDateTime = ZonedDateTime.now()
-
-        return referenceTime.year == nowTime.year
+        return ZonedDateTime.ofInstant(Instant.ofEpochMilli(mills), ZoneId.systemDefault()).dayOfMonth ==
+                startOfDay(ZonedDateTime.ofInstant(Instant.now(), ZoneId.systemDefault())).minusDays(1).plusSeconds(1).dayOfMonth
     }
 
     fun startOfDay(date: ZonedDateTime) = date.toLocalDate().atStartOfDay(date.zone)

@@ -45,7 +45,8 @@ class SyncManager(
     private var lastSynced: Long = 0
 
     private fun runInBackground(run: suspend () -> Unit) =
-        CoroutineScope(Dispatchers.IO).launch {
+        @OptIn(DelicateCoroutinesApi::class)
+        GlobalScope.launch {
             run()
         }
 
@@ -107,6 +108,7 @@ class SyncManager(
                 while (true) {
                     autoSyncJob?.ensureActive()
                     delay(Constants.Time.MIN_SYNC_TIME.toLong())
+                    lastSynced = 0
                     syncWallets()
                 }
             }

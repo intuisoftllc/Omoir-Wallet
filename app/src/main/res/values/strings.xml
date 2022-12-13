@@ -153,7 +153,7 @@
     <string name="atp_batch_size_info_title">What is Batch Size?</string>
     <string name="atp_batch_size_info_description">Batch Size is a term that refers to the size or amount of utxos sent per batch.</string>
     <string name="atp_batch_size_info_description_part2">Size penalty</string>
-    <string name="atp_batch_size_info_description_part3">To prevent network congestion, ATP will require there to be at minimum a 1 block gap/batch for every 10 utxos sent.\n\ni.e. Suppose you have a total of 40 utxos you want to send in 2 batches. This would mean a 2 block penalty will be applied per batch (excluding the last one). In other words, ATP will send the first batch, wait for the batch gap + the penalty (if needed) to be satisfied. Then finally send the last batch.\n\nIf you would like to test out the functionality of this protocol, It\'s recommended to test it via a testnet wallet first before using real funds.\n\n**Please note that the penalty does not apply if the batch gap is >= to the penalty**</string>
+    <string name="atp_batch_size_info_description_part3">To prevent network congestion, ATP will require there to be at minimum a 1 block gap/batch for every 10 utxos sent.\n\ni.e. Suppose you have a total of 40 utxos you want to send in 2 batches. This would mean a 2 block penalty will be applied per batch (excluding the last one). In other words, ATP will send the first batch, wait for the batch gap + the penalty (if needed) to be satisfied. Then finally send the last batch.\n\nIf you would like to test out the functionality of this protocol, It\'s recommended to test it via a testnet wallet first before using real funds.\n\n**\nPlease note the following:\n\t1. The penalty does not apply if the batch gap is >= to the penalty\n\n\t2. Asset transfers only execute one at a time per wallet.\n**</string>
     <string name="atp_fee_spread_settings_title">sat/vbyte</string>
     <string name="atp_fee_spread_min">Minimum Fee</string>
     <string name="atp_fee_spread_max">Maximum Fee</string>
@@ -174,6 +174,7 @@
     <string name="atp_confirm_error_not_enough_funds_no_utxo">Not enough funds to complete transfer</string>
     <string name="atp_confirm_skipped_utxos">%1$s (some utxos were skipped)</string>
     <string name="atp_confirm_batch_size_adjusted">%1$s (adjusted)</string>
+    <string name="atp_confirm_batch_size_with_penalty">%1$s (+%2$s penalty)</string>
 <!--    Atp Confirm Strings -->
 
 <!--    Atp Utxo Transfers Strings -->
@@ -208,7 +209,18 @@
     <string name="atp_fee_range_title">Fee Range</string>
     <string name="atp_adjust_to_network_title">Adjust Fees To Network</string>
     <string name="atp_batch_number">Batch #%1$s</string>
+    <string name="atp_blocks_left">Blocks Left: %1$s</string>
 <!--    ATP Configuration Strings End -->
+
+<!--    Pro Wallet Dashboard Strings -->
+    <string name="pro_wallet_dashboard_performance_title_1">Total Sent</string>
+    <string name="pro_wallet_dashboard_performance_title_2">Total Received</string>
+    <string name="pro_wallet_dashboard_performance_title_3">Average Price</string>
+    <string name="pro_wallet_dashboard_performance_title_4">All Time Return</string>
+    <string name="pro_wallet_dashboard_performance_title_5">Highest Balance</string>
+    <string name="pro_wallet_dashboard_performance_title_6">Wallet Age</string>
+    <string name="pro_wallet_dashboard_new_wallet">N/A (New Wallet)</string>
+<!--    Pro Wallet Dashboard Strings End -->
 
 <!--    Backup Seed Phrase Strings -->
     <string name="backup_seed_phrase_title">Backup Your Seed Phrase</string>
@@ -234,6 +246,7 @@
 <!--    Wallet Dashboard Strings -->
     <string name="wallet_dashboard_no_transactions">No Transactions Yet</string>
     <string name="wallet_dashboard_transactions_title">Transactions</string>
+    <string name="wallet_dashboard_info_title">Stats</string>
     <string name="wallet_dashboard_state_testnet">Testnet Wallet</string>
     <string name="wallet_dashboard_state_testnet_read_only">Testnet, Watch-Only</string>
     <string name="wallet_dashboard_state_mainnet_read_only">Watch-Only Wallet</string>
@@ -721,6 +734,7 @@
     <string name="settings_fragment_label">Settings</string>
     <string name="wallet_settings_fragment_label">Wallet Settings</string>
     <string name="swap_fragment_label">Swap</string>
+    <string name="pro_wallet_transactions_fragment_label">Transactions</string>
     <string name="supported_currencies_fragment_label">Supported Currencies</string>
     <string name="market_fragment_label">Market</string>
     <string name="invoice_fragment_label">Invioce</string>

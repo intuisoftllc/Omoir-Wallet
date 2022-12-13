@@ -41,6 +41,11 @@ fun String.numOfCaseLetters(uppercase: Boolean): Int {
     return letterCount
 }
 
+fun Double.ignoreNan(): Double {
+    if(this.isNaN())
+        return 0.0
+    else return this
+}
 
 fun String.numberCount(): Int {
     var numCount = 0

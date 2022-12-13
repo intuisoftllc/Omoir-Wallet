@@ -213,7 +213,7 @@
 
     <fragment
         android:id="@+id/exportWalletFragment"
-        android:name="com.intuisoft.plaid.features.dashboardflow.ui.WalletExportFragment"
+        android:name="com.intuisoft.plaid.features.dashboardflow.shared.ui.WalletExportFragment"
         android:label="@string/wallet_export_fragment_label"
         tools:layout="@layout/fragment_wallet_export">
 
@@ -229,7 +229,7 @@
 
     <fragment
         android:id="@+id/atpInfoFragment"
-        android:name="com.intuisoft.plaid.features.dashboardflow.ui.AtpInfoFragment"
+        android:name="com.intuisoft.plaid.features.dashboardflow.shared.ui.AtpInfoFragment"
         android:label="@string/atp_info_fragment_label"
         tools:layout="@layout/fragment_atp_info">
 
@@ -237,7 +237,7 @@
 
     <fragment
         android:id="@+id/atpHistoryFragment"
-        android:name="com.intuisoft.plaid.features.dashboardflow.ui.AtpHistoryFragment"
+        android:name="com.intuisoft.plaid.features.dashboardflow.shared.ui.AtpHistoryFragment"
         android:label="@string/atp_history_fragment_label"
         tools:layout="@layout/fragment_atp_history">
 
@@ -245,7 +245,7 @@
 
     <fragment
         android:id="@+id/atpDetailsFragment"
-        android:name="com.intuisoft.plaid.features.dashboardflow.ui.AssetTransferDetailsFragment"
+        android:name="com.intuisoft.plaid.features.dashboardflow.shared.ui.AssetTransferDetailsFragment"
         android:label="@string/atp_details_fragment_label"
         tools:layout="@layout/fragment_asset_transfer_details">
 
@@ -269,7 +269,7 @@
 
     <fragment
         android:id="@+id/exchangeDetailsFragment"
-        android:name="com.intuisoft.plaid.features.dashboardflow.ui.ExchangeDetailsFragment"
+        android:name="com.intuisoft.plaid.features.dashboardflow.shared.ui.ExchangeDetailsFragment"
         android:label="@string/swap_details_fragment_label"
         tools:layout="@layout/fragment_exchange_details">
 
@@ -277,7 +277,7 @@
 
     <fragment
         android:id="@+id/atpFragment"
-        android:name="com.intuisoft.plaid.features.dashboardflow.ui.AtpFragment"
+        android:name="com.intuisoft.plaid.features.dashboardflow.shared.ui.AtpFragment"
         android:label="@string/atp_fragment_label"
         tools:layout="@layout/fragment_atp">
 
@@ -285,7 +285,7 @@
 
     <fragment
         android:id="@+id/reportsFragment"
-        android:name="com.intuisoft.plaid.features.dashboardflow.ui.ReportsFragment"
+        android:name="com.intuisoft.plaid.features.dashboardflow.shared.ui.ReportsFragment"
         android:label="@string/reports_fragment_label"
         tools:layout="@layout/fragment_reports">
 
@@ -293,7 +293,7 @@
 
     <fragment
         android:id="@+id/reportDetailsFragment"
-        android:name="com.intuisoft.plaid.features.dashboardflow.ui.ReportDetailsFragment"
+        android:name="com.intuisoft.plaid.features.dashboardflow.shared.ui.ReportDetailsFragment"
         android:label="@string/reports_fragment_label"
         tools:layout="@layout/fragment_report_details">
 
@@ -309,7 +309,7 @@
 
     <fragment
         android:id="@+id/withdrawalTypeFragment"
-        android:name="com.intuisoft.plaid.features.dashboardflow.ui.WithdrawalTypeFragment"
+        android:name="com.intuisoft.plaid.features.dashboardflow.shared.ui.WithdrawalTypeFragment"
         android:label="@string/withdrawal_type_fragment_label"
         tools:layout="@layout/fragment_withdrawal_type">
 
@@ -317,7 +317,7 @@
 
     <fragment
         android:id="@+id/utxoDistroFragment"
-        android:name="com.intuisoft.plaid.features.dashboardflow.ui.UtxoDistributionFragment"
+        android:name="com.intuisoft.plaid.features.dashboardflow.shared.ui.UtxoDistributionFragment"
         android:label="@string/utxo_distro_fragment_label"
         tools:layout="@layout/fragment_utxo_distro_report">
 
@@ -325,7 +325,7 @@
 
     <fragment
         android:id="@+id/exchangeHistoryFragment"
-        android:name="com.intuisoft.plaid.features.dashboardflow.ui.ExchangeHistoryFragment"
+        android:name="com.intuisoft.plaid.features.dashboardflow.shared.ui.ExchangeHistoryFragment"
         android:label="@string/swap_history_fragment_label"
         tools:layout="@layout/fragment_exchange_history">
 
@@ -333,7 +333,7 @@
 
     <fragment
         android:id="@+id/invoiceFragment"
-        android:name="com.intuisoft.plaid.features.dashboardflow.ui.InvoiceFragment"
+        android:name="com.intuisoft.plaid.features.dashboardflow.shared.ui.InvoiceFragment"
         android:label="@string/invoice_fragment_label"
         tools:layout="@layout/fragment_invoice">
 
@@ -365,7 +365,7 @@
 
     <fragment
         android:id="@+id/transactionDetailsFragment"
-        android:name="com.intuisoft.plaid.features.dashboardflow.ui.TransactionDetailsFragment"
+        android:name="com.intuisoft.plaid.features.dashboardflow.shared.ui.TransactionDetailsFragment"
         android:label="@string/transaction_details_fragment_label"
         tools:layout="@layout/fragment_transaction_details">
 
@@ -373,7 +373,7 @@
 
     <fragment
         android:id="@+id/withdrawalFragment"
-        android:name="com.intuisoft.plaid.features.dashboardflow.ui.WithdrawalFragment"
+        android:name="com.intuisoft.plaid.features.dashboardflow.shared.ui.WithdrawalFragment"
         android:label="@string/withdraw_fragment_label"
         tools:layout="@layout/fragment_withdraw">
 
@@ -381,7 +381,7 @@
 
     <fragment
         android:id="@+id/withdrawConfirmtionFragment"
-        android:name="com.intuisoft.plaid.features.dashboardflow.ui.WithdrawConfirmationFragment"
+        android:name="com.intuisoft.plaid.features.dashboardflow.shared.ui.WithdrawConfirmationFragment"
         android:label="@string/withdraw_confirmation_fragment_label"
         tools:layout="@layout/fragment_withdraw_confirmation">
 
@@ -389,7 +389,7 @@
 
     <fragment
         android:id="@+id/walletDashboardFragment"
-        android:name="com.intuisoft.plaid.features.dashboardflow.ui.DashboardFragment"
+        android:name="com.intuisoft.plaid.features.dashboardflow.free.ui.DashboardFragment"
         android:label="@string/wallet_dashboard_fragment_label"
         tools:layout="@layout/fragment_wallet_dashboard">
 
@@ -399,8 +399,19 @@
     </fragment>
 
     <fragment
+        android:id="@+id/walletProDashboardFragment"
+        android:name="com.intuisoft.plaid.features.dashboardflow.pro.ui.ProDashboardFragment"
+        android:label="@string/wallet_dashboard_fragment_label"
+        tools:layout="@layout/fragment_pro_wallet_dashboard">
+
+        <action
+            android:id="@+id/action_DashboardFragment_to_WalletSettingsFragment"
+            app:destination="@+id/walletSettingsFragment" />
+    </fragment>
+
+    <fragment
         android:id="@+id/walletSettingsFragment"
-        android:name="com.intuisoft.plaid.features.dashboardflow.ui.WalletSettingsFragment"
+        android:name="com.intuisoft.plaid.features.dashboardflow.shared.ui.WalletSettingsFragment"
         android:label="@string/wallet_settings_fragment_label"
         tools:layout="@layout/fragment_wallet_settings">
 
@@ -413,14 +424,21 @@
 
     <fragment
         android:id="@+id/exchangeFragment"
-        android:name="com.intuisoft.plaid.features.dashboardflow.ui.ExchangeFragment"
+        android:name="com.intuisoft.plaid.features.dashboardflow.shared.ui.ExchangeFragment"
         android:label="@string/swap_fragment_label"
         tools:layout="@layout/fragment_exchange">
     </fragment>
 
     <fragment
+        android:id="@+id/proWalletTransactionsFragment"
+        android:name="com.intuisoft.plaid.features.dashboardflow.pro.ui.ProWalletTransactionsFragment"
+        android:label="@string/pro_wallet_transactions_fragment_label"
+        tools:layout="@layout/fragment_pro_wallet_trasactions">
+    </fragment>
+
+    <fragment
         android:id="@+id/marketFragment"
-        android:name="com.intuisoft.plaid.features.dashboardflow.ui.MarketFragment"
+        android:name="com.intuisoft.plaid.features.dashboardflow.shared.ui.MarketFragment"
         android:label="@string/market_fragment_label"
         tools:layout="@layout/fragment_market">
     </fragment>

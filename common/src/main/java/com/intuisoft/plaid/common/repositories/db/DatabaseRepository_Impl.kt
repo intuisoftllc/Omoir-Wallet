@@ -46,7 +46,7 @@ class DatabaseRepository_Impl(
     }
 
     override suspend fun setBatchData(data: BatchDataModel) {
-        batchDao.insert(BatchData.consume(data.id, data.transferId, data.batchNumber, data.completionHeight, data.utxos, data.status))
+        batchDao.insert(BatchData.consume(data.id, data.transferId, data.batchNumber, data.completionHeight, data.blocksRemaining, data.utxos, data.status))
         database.onUpdate(batchDao)
     }
 

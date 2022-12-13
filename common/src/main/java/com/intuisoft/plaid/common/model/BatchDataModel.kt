@@ -5,6 +5,7 @@ data class BatchDataModel(
     var transferId: String,
     var batchNumber: Int,
     var completionHeight: Int,
+    var blocksRemaining: Int,
     val utxos: List<UtxoTransfer>,
     var status: AssetTransferStatus
 )

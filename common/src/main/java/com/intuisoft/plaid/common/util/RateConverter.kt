@@ -1,5 +1,7 @@
 package com.intuisoft.plaid.common.util
 
+import com.intuisoft.plaid.common.util.extensions.ignoreNan
+import com.intuisoft.plaid.common.util.extensions.roundTo
 import kotlin.math.roundToLong
 
 class RateConverter(
@@ -33,17 +35,23 @@ class RateConverter(
 
 
     fun setLocalRate(type: RateType, amount: Double): RateConverter {
-        when(type) {
-            RateType.BTC_RATE -> {
-                localBTC = (amount * Constants.Limit.SATS_PER_BTC).roundToLong()
-            }
+        val _amount = amount.ignoreNan()
 
-            RateType.SATOSHI_RATE -> {
-                localBTC = amount.toLong()
-            }
+        if(_amount == 0.0) {
+            localBTC = 0
+        } else {
+            when (type) {
+                RateType.BTC_RATE -> {
+                    localBTC = (_amount.roundTo(8) * Constants.Limit.SATS_PER_BTC).roundToLong()
+                }
 
-            RateType.FIAT_RATE -> {
-                localBTC = ((amount / fiatRate) * Constants.Limit.SATS_PER_BTC).roundToLong()
+                RateType.SATOSHI_RATE -> {
+                    localBTC = _amount.toLong()
+                }
+
+                RateType.FIAT_RATE -> {
+                    localBTC = ((_amount.roundTo(2) / fiatRate) * Constants.Limit.SATS_PER_BTC).roundToLong()
+                }
             }
         }
 

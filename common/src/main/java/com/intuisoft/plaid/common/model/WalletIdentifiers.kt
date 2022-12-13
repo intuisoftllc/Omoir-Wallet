@@ -8,6 +8,7 @@ data class WalletIdentifier(
     val walletHashIds: MutableList<String>?,
     var bip: Int,
     var lastSynced: Long,
+    var createdAt: Long,
     var isTestNet: Boolean,
     var readOnly: Boolean
 )

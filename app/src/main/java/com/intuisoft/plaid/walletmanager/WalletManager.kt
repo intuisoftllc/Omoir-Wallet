@@ -142,7 +142,7 @@ class WalletManager(
         var balance : Long = 0
 
         syncer.getWallets().forEach {
-            balance += (it.walletKit?.balance?.spendable ?: 0L)
+            balance += it.getWhitelistedBalance(localStoreRepository)
         }
 
         return balance
@@ -283,6 +283,7 @@ class WalletManager(
                mutableListOf(),
                bip.ordinal,
                0,
+               System.currentTimeMillis(),
                testnetWallet,
                false
            )
@@ -313,6 +314,7 @@ class WalletManager(
                mutableListOf(),
                HDExtendedKey(pubKey).info.purpose.ordinal,
                0,
+               System.currentTimeMillis(),
                network == BitcoinKit.NetworkType.TestNet,
                true
            )

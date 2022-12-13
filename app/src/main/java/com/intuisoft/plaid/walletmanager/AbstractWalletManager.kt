@@ -21,7 +21,7 @@ abstract class AbstractWalletManager {
     protected val _wallets = MutableLiveData<List<LocalWalletModel>>()
     val wallets: LiveData<List<LocalWalletModel>> = _wallets
 
-    protected val _databaseUpdated = SingleLiveData<Any?>()
+    protected val _databaseUpdated = MutableLiveData<Any?>()
     val databaseUpdated: LiveData<Any?> = _databaseUpdated
 
     abstract fun start()

@@ -13,6 +13,7 @@ data class BatchData(
     @PrimaryKey(autoGenerate = false) @ColumnInfo(name = "id") var id: String,
     @ColumnInfo(name = "batch_number") var batchNumber: Int,
     @ColumnInfo(name = "completion_height") var completionHeight: Int,
+    @ColumnInfo(name = "blocks_remaining") var blocksRemaining: Int,
     @ColumnInfo(name = "transfer_id") var transferId: String,
     @ColumnInfo(name = "utxos") val utxos: List<UtxoTransfer>,
     @ColumnInfo(name = "status") val status: AssetTransferStatus
@@ -23,6 +24,7 @@ data class BatchData(
             transferId = transferId,
             batchNumber = batchNumber,
             completionHeight = completionHeight,
+            blocksRemaining = blocksRemaining,
             utxos = utxos,
             status = status
         )
@@ -34,6 +36,7 @@ data class BatchData(
             transferId: String,
             batchNumber: Int,
             completionHeight: Int,
+            blocksRemaining: Int,
             utxos: List<UtxoTransfer>,
             status: AssetTransferStatus
         ) =
@@ -42,6 +45,7 @@ data class BatchData(
                 transferId = transferId,
                 batchNumber = batchNumber,
                 completionHeight = completionHeight,
+                blocksRemaining = blocksRemaining,
                 utxos = utxos,
                 status = status
             )

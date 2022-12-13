@@ -130,7 +130,7 @@ class ProHomescreenFragment : ConfigurableFragment<FragmentProHomescreenBinding>
 
     fun onWalletSelected(wallet: LocalWalletModel) {
         walletManager.openWallet(wallet)
-        navigate(R.id.walletDashboardFragment, wallet)
+        navigate(R.id.walletProDashboardFragment, wallet)
     }
 
     override fun actionBarVariant(): Int {

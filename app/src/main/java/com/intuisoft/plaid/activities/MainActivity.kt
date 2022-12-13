@@ -46,6 +46,7 @@ class MainActivity : BindingActivity<ActivityMainBinding>(), ActionBarDelegate {
 
         private val TOP_LEVEL_BOTTOM_BAR_DESTINATIONS = setOf(
             R.id.walletDashboardFragment,
+            R.id.walletProDashboardFragment,
             R.id.exchangeFragment,
             R.id.marketFragment,
             R.id.atpFragment,
@@ -166,7 +167,7 @@ class MainActivity : BindingActivity<ActivityMainBinding>(), ActionBarDelegate {
             )
 
             binding.bottomBar.setupDestinations(
-                R.id.walletDashboardFragment,
+                R.id.walletProDashboardFragment,
                 R.id.marketFragment,
                 R.id.exchangeFragment,
                 R.id.atpFragment,

@@ -73,21 +73,26 @@ class AtpManager(
         lastBatch: BatchDataModel?,
         transfer: AssetTransferModel,
         wallet: LocalWalletModel,
-        recipient: LocalWalletModel
+        recipient: LocalWalletModel,
+        job: Job?
     ): Boolean {
         if(!NetworkUtil.hasInternet(application)) return false
 
         if(lastBatch == null ||
-            (lastBatch.status.id in AssetTransferStatus.PARTIALLY_COMPLETED.id..AssetTransferStatus.CANCELLED.id)) {
+            (lastBatch.status.id in AssetTransferStatus.IN_PROGRESS.id..AssetTransferStatus.CANCELLED.id)) {
 
-            if(lastBatch != null && transfer.batchGap > 0
-                        && (wallet.walletKit!!.lastBlockInfo?.height ?: 0) <= (transfer.batchGap + lastBatch.completionHeight)) {
-                batch.status = AssetTransferStatus.WAITING
-                localStoreRepository.setBatchData(batch)
-                return false
+            if(lastBatch != null && transfer.batchGap > 0 && (lastBatch.completionHeight == 0 || ((wallet.walletKit!!.lastBlockInfo?.height ?: 0) < (transfer.batchGap + lastBatch.completionHeight)))) {
+                    if(lastBatch.status.id in AssetTransferStatus.PARTIALLY_COMPLETED.id..AssetTransferStatus.CANCELLED.id) {
+                        batch.status = AssetTransferStatus.WAITING
+                        batch.blocksRemaining = (transfer.batchGap + lastBatch.completionHeight) - (wallet.walletKit!!.lastBlockInfo?.height ?: 0)
+                        localStoreRepository.setBatchData(batch)
+                    }
+
+                    return false
             }
 
             when (batch.status) {
+                AssetTransferStatus.WAITING,
                 AssetTransferStatus.NOT_STARTED -> {
 
                     var utxoSent = false
@@ -98,7 +103,11 @@ class AtpManager(
                         addresses = recipient.walletKit!!.receiveAddresses()
                     }
 
+                    batch.blocksRemaining = 0
+                    transfer.status = AssetTransferStatus.IN_PROGRESS
                     batch.utxos.forEachIndexed { index, utxo ->
+                        job?.ensureActive()
+
                         if(utxo.txId.isEmpty()) {
                             val output = wallet.walletKit!!.getUnspentOutputs()
                                 .find { it.output.address == utxo.address }
@@ -166,6 +175,8 @@ class AtpManager(
                         batch.completionHeight = txs.map { it.blockHeight ?: 0 }.maxOrNull() ?: 0
                     }
 
+                    transfer.status = AssetTransferStatus.IN_PROGRESS
+                    localStoreRepository.saveAssetTransfer(transfer)
                     localStoreRepository.setBatchData(batch)
                     return false
                 }
@@ -175,58 +186,58 @@ class AtpManager(
         return false
     }
 
-    private suspend fun processTransfer(transfer: AssetTransferModel, wallet: LocalWalletModel, findWallet: (String) -> LocalWalletModel?): Boolean {
+    private suspend fun processTransfer(transfer: AssetTransferModel, wallet: LocalWalletModel, findWallet: (String) -> LocalWalletModel?, job: Job?): Boolean {
         if(!NetworkUtil.hasInternet(application)) return false
 
-        if(transfer.status == AssetTransferStatus.IN_PROGRESS || transfer.status == AssetTransferStatus.NOT_STARTED) {
-            val batches = localStoreRepository.getBatchDataForTransfer(transfer.id)
-            var lastBatch: BatchDataModel? = null
-            val recipient = findWallet(transfer.recipientWallet)
-            var utxoSent = false
+        val batches = localStoreRepository.getBatchDataForTransfer(transfer.id)
+        var lastBatch: BatchDataModel? = null
+        val recipient = findWallet(transfer.recipientWallet)
+        var utxoSent = false
 
-            if (recipient != null) {
-                batches.forEach {
-                    if(processBatch(it, lastBatch, transfer, wallet, recipient))
-                        utxoSent = true
-                    lastBatch = it
-                }
-
-                if (transfer.status == AssetTransferStatus.NOT_STARTED) {
-                    transfer.status = AssetTransferStatus.IN_PROGRESS
-                } else {
-                    if (batches.all { it.status == AssetTransferStatus.COMPLETED }) {
-                        transfer.status = AssetTransferStatus.COMPLETED
-                    } else if (batches.all { it.status == AssetTransferStatus.FAILED }) {
-                        transfer.status = AssetTransferStatus.FAILED
-                    } else if (
-                        batches.all {
-                            it.status == AssetTransferStatus.PARTIALLY_COMPLETED
-                                    || it.status == AssetTransferStatus.COMPLETED
-                                    || it.status == AssetTransferStatus.FAILED
-                        }
-                    ) {
-                        transfer.status = AssetTransferStatus.PARTIALLY_COMPLETED
-                    }
-                }
-            } else if(++transfer.retries >= Constants.Limit.ATP_MAX_RETRY_LIMIT) {
-                transfer.retries++
-                transfer.status = AssetTransferStatus.FAILED
+        if (recipient != null) {
+            batches.forEach {
+                job?.ensureActive()
+                if(processBatch(it, lastBatch, transfer, wallet, recipient, job))
+                    utxoSent = true
+                lastBatch = it
             }
 
-            localStoreRepository.saveAssetTransfer(transfer)
-            return utxoSent
+            if (transfer.status == AssetTransferStatus.NOT_STARTED) {
+                transfer.status = AssetTransferStatus.IN_PROGRESS
+            } else {
+                if (batches.all { it.status == AssetTransferStatus.COMPLETED }) {
+                    transfer.status = AssetTransferStatus.COMPLETED
+                } else if (batches.all { it.status == AssetTransferStatus.FAILED }) {
+                    transfer.status = AssetTransferStatus.FAILED
+                } else if (
+                    batches.all {
+                        it.status == AssetTransferStatus.PARTIALLY_COMPLETED
+                                || it.status == AssetTransferStatus.COMPLETED
+                                || it.status == AssetTransferStatus.FAILED
+                    }
+                ) {
+                    transfer.status = AssetTransferStatus.PARTIALLY_COMPLETED
+                }
+            }
+        } else if(++transfer.retries >= Constants.Limit.ATP_MAX_RETRY_LIMIT) {
+            transfer.retries++
+            transfer.status = AssetTransferStatus.FAILED
         }
 
-        return false
+        localStoreRepository.saveAssetTransfer(transfer)
+        return utxoSent
     }
 
     suspend fun updateTransfers(wallet: LocalWalletModel, findWallet: (String) -> LocalWalletModel?, job: Job?): Boolean {
         val transfers = localStoreRepository.getAllAssetTransfers(wallet.uuid)
         var utxoSent = false
 
-        transfers.forEach {
+        transfers.firstOrNull {
+            it.status == AssetTransferStatus.WAITING
+                || it.status == AssetTransferStatus.IN_PROGRESS || it.status == AssetTransferStatus.NOT_STARTED
+        }?.let { // run the most recent executing transfer to prevent "hacking" the protocol by creating many 50 utxo single batch transfers
             job?.ensureActive()
-            if(processTransfer(it, wallet, findWallet))
+            if(processTransfer(it, wallet, findWallet, job))
                 utxoSent = true
         }
 

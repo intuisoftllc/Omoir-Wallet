@@ -7,7 +7,7 @@ class Constants {
 
     object Database {
         const val DB_NAME = "plaid.db"
-        const val DB_VERSION = 27
+        const val DB_VERSION = 28
     }
 
     object Files {
@@ -126,6 +126,7 @@ class Constants {
         const val MAX_BATCH_GAP = 144
         const val MIN_BATCH_SIZE = 1
         const val MAX_BATCH_SIZE = 50
+        const val BATCH_PENALTY_THRESHOLD = 10
         const val MIN_CONFIRMATIONS = 3
         const val MIN_FEE = 1
         const val MAX_FEE = 999

@@ -91,8 +91,11 @@ abstract class ConfigurableFragment<T: ViewBinding>(
         return baseVM!!.currentConfig != null
     }
 
-    fun onNavigateBottomBarSecondaryFragmentBackwards() {
-        findNavController().popBackStack(R.id.walletDashboardFragment, false)
+    fun onNavigateBottomBarSecondaryFragmentBackwards(localStoreRepository: LocalStoreRepository) {
+        if(localStoreRepository.isProEnabled())
+            findNavController().popBackStack(R.id.walletProDashboardFragment, false)
+        else
+            findNavController().popBackStack(R.id.walletDashboardFragment, false)
     }
 
     fun onNavigateBottomBarPrimaryFragmentBackwards(localStoreRepository: LocalStoreRepository) {
