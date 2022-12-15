@@ -37,8 +37,8 @@ class DashboardViewModel(
     protected val _network = SingleLiveData<String>()
     val network: LiveData<String> = _network
 
-    protected val _percentageGain = SingleLiveData<Double>()
-    val percentageGain: LiveData<Double> = _percentageGain
+    protected val _percentageGain = SingleLiveData<Pair<Double, Double>>()
+    val percentageGain: LiveData<Pair<Double, Double>> = _percentageGain
 
     protected val _showChartContent = SingleLiveData<Boolean>()
     val showChartContent: LiveData<Boolean> = _showChartContent
@@ -178,10 +178,9 @@ class DashboardViewModel(
                                     ChartIntervalType.INTERVAL_ALL_TIME,
                                     Instant.ofEpochSecond(balanceHistory.first().second)
                                 )
-                            )
-                                ?.filter {
-                                    (it.time / Constants.Time.MILLS_PER_SEC) >= fullHistory.first().second
-                                }
+                            )?.filter {
+                                (it.time / Constants.Time.MILLS_PER_SEC) >= fullHistory.first().second
+                            }
 
                             val incomingTxs =
                                 walletTransactions.filter { it.type == TransactionType.Incoming }
@@ -314,8 +313,6 @@ class DashboardViewModel(
                             }
                         }
 
-                        _percentageGain.postValue(gain.ignoreNan())
-
                         when (localStoreRepository.getBitcoinDisplayUnit()) {
                             BitcoinDisplayUnit.SATS -> {
                                 _chartData.postValue(
@@ -328,6 +325,9 @@ class DashboardViewModel(
                                 )
                                 
                                 _showChartContent.postValue(true)
+                                val beginValue = history.firstOrNull()?.first ?: 0L
+                                val endValue = history.lastOrNull()?.first ?: 0L
+                                _percentageGain.postValue(gain.ignoreNan() to (endValue - beginValue).toDouble())
                             }
 
                             BitcoinDisplayUnit.BTC -> {
@@ -344,7 +344,11 @@ class DashboardViewModel(
                                         )
                                     }
                                 )
+
                                 _showChartContent.postValue(true)
+                                val beginValue = history.firstOrNull()?.first ?: 0L
+                                val endValue = history.lastOrNull()?.first ?: 0L
+                                _percentageGain.postValue(gain.ignoreNan() to (endValue - beginValue).toDouble())
                             }
 
                             BitcoinDisplayUnit.FIAT -> {
@@ -364,6 +368,9 @@ class DashboardViewModel(
                                     )
 
                                     _showChartContent.postValue(true)
+                                    val beginValue = getBalanceAtTime(data.first().time / Constants.Time.MILLS_PER_SEC) * data.first().value
+                                    val endValue =  getBalanceAtTime(data.last().time / Constants.Time.MILLS_PER_SEC) * data.last().value
+                                    _percentageGain.postValue(gain.ignoreNan() to (endValue - beginValue).toDouble())
                                 } else {
                                     _showChartContent.postValue(false)
                                 }

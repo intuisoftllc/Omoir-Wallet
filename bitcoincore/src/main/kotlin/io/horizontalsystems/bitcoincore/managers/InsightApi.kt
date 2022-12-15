@@ -9,7 +9,7 @@ class InsightApi(host: String) : IInitialSyncApi {
     private val apiManager = ApiManager(host)
     private val logger = Logger.getLogger("InsightApi")
 
-    override fun getTransactions(addresses: List<String>): List<TransactionItem> {
+    override fun getAllTransactions(addresses: List<String>): List<TransactionItem> {
         if(BitcoinCore.loggingEnabled)  logger.info("Request transactions for ${addresses.size} addresses: [${addresses.first()}, ...]")
 
         val transactions = mutableListOf<TransactionItem>()

@@ -313,6 +313,7 @@
                         android:layout_marginTop="@dimen/horizontal_padding_size"
                         android:orientation="horizontal">
                         <LinearLayout
+                            android:id="@+id/average_price_container"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
@@ -342,6 +343,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
+                            android:id="@+id/all_time_return_container"
                             android:orientation="vertical">
                             <TextView
                                 android:layout_width="wrap_content"

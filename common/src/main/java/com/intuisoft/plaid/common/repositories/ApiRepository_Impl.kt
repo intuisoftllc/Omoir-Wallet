@@ -2,11 +2,8 @@ package com.intuisoft.plaid.common.repositories
 
 import com.intuisoft.plaid.common.local.memorycache.MemoryCache
 import com.intuisoft.plaid.common.model.*
+import com.intuisoft.plaid.common.network.blockchair.repository.*
 import com.intuisoft.plaid.common.network.blockstreaminfo.repository.BlockstreamInfoRepository
-import com.intuisoft.plaid.common.network.blockchair.repository.BlockchainInfoRepository
-import com.intuisoft.plaid.common.network.blockchair.repository.CoingeckoRepository
-import com.intuisoft.plaid.common.network.blockchair.repository.BlockchairRepository
-import com.intuisoft.plaid.common.network.blockchair.repository.SimpleSwapRepository
 import com.intuisoft.plaid.common.network.blockchair.response.SupportedCurrencyModel
 import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.common.util.Constants.Strings.BTC_TICKER
@@ -168,16 +165,18 @@ class ApiRepository_Impl(
     }
 
     /* On-Demand Call */ // testnet only!!!
-    override fun getAddressTransactions(address: String): AddressTransactionData? {
+    override fun getAddressTransactions(address: String, testNetWallet: Boolean): List<AddressTransactionData> {
         return runBlocking {
-            return@runBlocking blockstreamInfoTestNetRepository.getAddressTransactions(address).getOrNull()
+            updateAddressTransactionData(address, testNetWallet)
+            return@runBlocking memoryCache.getTransactionsForAddress(address, testNetWallet) ?: listOf()
         }
     }
 
     /* On-Demand Call */ // mainnet only!!!
-    override fun getHashForHeight(height: Int): String? {
+    override fun getHashForHeight(height: Int, testNetWallet: Boolean): String? {
         return runBlocking {
-            return@runBlocking blockstreamInfoRepository.getHashForHeight(height).getOrNull()
+            updateHashForHeightData(height, testNetWallet)
+            return@runBlocking memoryCache.getHashForHeight(height, testNetWallet)
         }
     }
 
@@ -190,6 +189,34 @@ class ApiRepository_Impl(
                 localStoreRepository.setSuggestedFeeRate(mainNetResult.getOrThrow(), false)
                 localStoreRepository.setSuggestedFeeRate(testNetResult.getOrThrow(), true)
                 localStoreRepository.setLastFeeRateUpdate(System.currentTimeMillis())
+            }
+        }
+    }
+
+    private suspend fun updateHashForHeightData(height: Int, testNetWallet: Boolean) {
+        if((System.currentTimeMillis() - (memoryCache.getLastHashForHeightUpdateTime(height, testNetWallet) ?: 0)) > Constants.Time.GENERAL_CACHE_UPDATE_TIME_SHORT) {
+            val result =
+                if(testNetWallet)
+                    blockstreamInfoTestNetRepository.getHashForHeight(height)
+                else
+                    blockstreamInfoRepository.getHashForHeight(height)
+
+            if (result.isSuccess) {
+                memoryCache.setHashForHeight(height, testNetWallet, System.currentTimeMillis(), result.getOrThrow())
+            }
+        }
+    }
+
+    private suspend fun updateAddressTransactionData(address: String, testNetWallet: Boolean) {
+        if((System.currentTimeMillis() - (memoryCache.getLastAddressTransactionsUpdateTime(address, testNetWallet) ?: 0)) > Constants.Time.GENERAL_CACHE_UPDATE_TIME_MED) {
+            val result =
+                if(testNetWallet)
+                    blockstreamInfoTestNetRepository.getAddressTransactions(address)
+                else
+                    blockstreamInfoRepository.getAddressTransactions(address)
+
+            if (result.isSuccess) {
+                memoryCache.setAddressTransactions(address, testNetWallet, System.currentTimeMillis(), result.getOrThrow())
             }
         }
     }

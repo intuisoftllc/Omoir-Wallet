@@ -1,12 +1,17 @@
 package com.intuisoft.plaid.features.dashboardflow.pro.ui
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.activities.MainActivity
 import com.intuisoft.plaid.androidwrappers.*
@@ -18,15 +23,24 @@ import com.intuisoft.plaid.listeners.StateListener
 import com.intuisoft.plaid.model.LocalWalletModel
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.common.util.Constants
+import com.intuisoft.plaid.common.util.RateConverter
 import com.intuisoft.plaid.common.util.SimpleCoinNumberFormat
+import com.intuisoft.plaid.common.util.extensions.toArrayList
 import com.intuisoft.plaid.databinding.FragmentProWalletDashboardBinding
 import com.intuisoft.plaid.features.dashboardflow.shared.adapters.BasicLineChartAdapter
+import com.intuisoft.plaid.features.dashboardflow.shared.ui.UtxoDistributionFragment
 import com.intuisoft.plaid.features.dashboardflow.shared.viewModel.DashboardViewModel
+import com.intuisoft.plaid.features.homescreen.adapters.CoinControlAdapter
 import com.intuisoft.plaid.util.SimpleTimeFormat
 import com.intuisoft.plaid.util.fragmentconfig.ConfigQrDisplayData
 import com.intuisoft.plaid.util.fragmentconfig.BasicConfigData
 import com.intuisoft.plaid.walletmanager.AbstractWalletManager
+import io.horizontalsystems.bitcoincore.models.PublicKey
 import io.horizontalsystems.bitcoincore.models.TransactionInfo
+import io.horizontalsystems.bitcoincore.storage.UnspentOutput
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.*
@@ -102,11 +116,30 @@ class ProDashboardFragment : ConfigurableFragment<FragmentProWalletDashboardBind
             }
         }
 
-        viewModel.percentageGain.observe(viewLifecycleOwner, Observer {
-            binding.percentageGain.text = SimpleCoinNumberFormat.formatCurrency(it) + "%"
+        viewModel.percentageGain.observe(viewLifecycleOwner, Observer { (percentageGain, rawGain) ->
+            val rateConverter = RateConverter(
+                localStoreRepository.getRateFor(localStoreRepository.getLocalCurrency())?.currentPrice ?: 0.0
+            )
 
-            if(it > 0.0) {
+
+            when (localStoreRepository.getBitcoinDisplayUnit()) {
+                BitcoinDisplayUnit.SATS,
+                BitcoinDisplayUnit.BTC -> {
+                    rateConverter.setLocalRate(RateConverter.RateType.SATOSHI_RATE, rawGain)
+                }
+
+                BitcoinDisplayUnit.FIAT -> {
+                    rateConverter.setLocalRate(RateConverter.RateType.FIAT_RATE, rawGain)
+                }
+            }
+
+            binding.percentageGain.text = SimpleCoinNumberFormat.formatCurrency(percentageGain) +
+                    "% (${rateConverter.from(localStoreRepository.getBitcoinDisplayUnit().toRateType(), localStoreRepository.getLocalCurrency()).second})"
+
+            if(percentageGain > 0.0) {
                 binding.percentageGain.setTextColor(resources.getColor(R.color.success_color))
+            }else if(percentageGain == 0.0) {
+                binding.percentageGain.setTextColor(resources.getColor(R.color.text_grey))
             } else {
                 binding.percentageGain.setTextColor(resources.getColor(R.color.alt_error_color))
             }
@@ -246,6 +279,22 @@ class ProDashboardFragment : ConfigurableFragment<FragmentProWalletDashboardBind
             binding.errorMessage.text = getString(R.string.no_data)
         })
 
+        binding.averagePriceContainer.setOnClickListener {
+            showBasicInfoBottomSheet(
+                context = requireContext(),
+                title = getString(R.string.pro_homescreen_average_price_dialog_title),
+                message = getString(R.string.pro_homescreen_average_price_dialog_message)
+            )
+        }
+
+        binding.allTimeReturnContainer.setOnClickListener {
+            showBasicInfoBottomSheet(
+                context = requireContext(),
+                title = getString(R.string.pro_homescreen_all_time_return_dialog_title),
+                message = getString(R.string.pro_homescreen_all_time_return_dialog_message)
+            )
+        }
+
         viewModel.chartData.observe(viewLifecycleOwner, Observer {
             balanceHistoryAdapter.setItems(it)
         })
@@ -293,6 +342,29 @@ class ProDashboardFragment : ConfigurableFragment<FragmentProWalletDashboardBind
                 viewModel.getWalletId(),
                 Constants.Navigation.ANIMATED_SLIDE_UP_OPTION
             )
+        }
+    }
+
+    companion object {
+        fun showBasicInfoBottomSheet(
+            context: Context,
+            title: String,
+            message: String
+        ) {
+            val bottomSheetDialog = BottomSheetDialog(context)
+            bottomSheetDialog.setContentView(R.layout.bottom_sheet_basic_info)
+            val _title = bottomSheetDialog.findViewById<TextView>(R.id.bottom_sheet_title)!!
+            val _message = bottomSheetDialog.findViewById<TextView>(R.id.bottom_sheet_message)!!
+            val close = bottomSheetDialog.findViewById<RoundedButtonView>(R.id.close)!!
+            _title.text = title
+            _message.text = message
+
+            close.onClick {
+                bottomSheetDialog.dismiss()
+            }
+
+            bottomSheetDialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
+            bottomSheetDialog.show()
         }
     }
 

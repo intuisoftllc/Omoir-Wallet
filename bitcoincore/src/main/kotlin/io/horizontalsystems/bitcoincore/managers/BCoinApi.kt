@@ -7,15 +7,15 @@ import io.horizontalsystems.bitcoincore.BitcoinCore
 import io.horizontalsystems.bitcoincore.core.IInitialSyncApi
 import java.util.logging.Logger
 
-class BCoinApi(host: String) : IInitialSyncApi {
+class BCoinApi() : IInitialSyncApi {
     private val logger = Logger.getLogger("BCoinApi")
 
-    override fun getTransactions(addresses: List<String>): List<TransactionItem> {
+    override fun getAllTransactions(addresses: List<String>): List<TransactionItem> {
         val transactions = mutableListOf<TransactionItem>()
 
         addresses.forEach {
             if(BitcoinCore.loggingEnabled)  logger.info("Request transactions for ${addresses.size} addresses: [${addresses.first()}, ...]")
-            val result = CommonService.getApiRepositoryInstance().getAddressTransactions(it)
+            val result = CommonService.getApiRepositoryInstance().getAddressTransactions(it, true)
 
             if(BitcoinCore.loggingEnabled)  {
                 if(result == null)
@@ -24,7 +24,7 @@ class BCoinApi(host: String) : IInitialSyncApi {
                     logger.info("Failed to get transactions for requested address: $it")
             }
 
-            result?.let {
+            result.forEach {
                 val blockHash = it.status.blockHash ?: return@forEach
                 val height = it.status.height ?: return@forEach
 

@@ -1,48 +1,61 @@
 package io.horizontalsystems.bitcoincore.managers
 
+import android.net.ConnectivityManager
+import android.util.Log
 import com.eclipsesource.json.JsonValue
 import com.intuisoft.plaid.common.CommonService
+import com.intuisoft.plaid.common.util.Group
+import com.intuisoft.plaid.common.util.extensions.splitIntoGroupOf
+import io.horizontalsystems.bitcoincore.BitcoinCore
 import io.horizontalsystems.bitcoincore.core.IInitialSyncApi
 import java.lang.Integer.min
 import java.util.concurrent.Callable
 import java.util.concurrent.Executors
 
-class BlockchainComApi(transactionApiUrl: String) : IInitialSyncApi {
-    private val transactionsApiManager = ApiManager(transactionApiUrl)
+class BlockchainComApi() : IInitialSyncApi {
+    private fun getTransactions(addresses: List<String>): List<TransactionResponse> {
+        val transactions = mutableListOf<TransactionResponse>()
 
-    private fun getTransactions(addresses: List<String>, offset: Int = 0): List<TransactionResponse> {
-        val joinedAddresses = addresses.joinToString("|")
-        val json = requestInQueue(transactionsApiManager, "multiaddr?active=$joinedAddresses&n=${paginationLimit}&offset=$offset").asObject()
+        addresses.forEach { address ->
+            if(BitcoinCore.loggingEnabled)  {
+                Log.i(BlockchainComApi::class.java.simpleName,"Request transactions for ${addresses.size} addresses: [${addresses.first()}, ...]")
+            }
 
-        val transactionsArray = json["txs"].asArray()
+            var result = CommonService.getApiRepositoryInstance().getAddressTransactions(address, false)
 
-        return transactionsArray.mapNotNull { transactionJson ->
-            val transaction = transactionJson.asObject()
-            //block_height can be null, when transaction is in mempool
-            if (transaction["block_height"].isNumber) {
-                val outputs = transaction["out"].asArray().map { outputJson ->
-                    val output = outputJson.asObject()
+            if(BitcoinCore.loggingEnabled)  {
+                if(result.isNotEmpty())
+                    Log.i(BlockchainComApi::class.java.simpleName,"Got transactions for requested address: $address")
+                else
+                    Log.e(BlockchainComApi::class.java.simpleName,"Failed to get transactions for requested address: $address")
+            }
 
+            result.forEach {
+                val height = it.status.height ?: return@forEach
+                val outputs = it.outputs.map { output ->
                     TransactionOutputResponse(
-                        output["script"].asString(),
-                        output["addr"]?.asString()
+                        output.script,
+                        output.address
                     )
                 }
-                TransactionResponse(
-                    transaction["block_height"].asInt(),
+                val response = TransactionResponse(
+                    height,
                     outputs
                 )
-            } else {
-                null
+                transactions.add(
+                    response
+                )
             }
         }
+
+        return transactions
     }
 
     private fun blocks(heights: List<Int>): List<BlockResponse> {
         val response = mutableListOf<BlockResponse>()
 
         heights.forEach {
-            val hash = CommonService.getApiRepositoryInstance().getHashForHeight(it)
+            val hash = CommonService.getApiRepositoryInstance().getHashForHeight(it, false)
 
             if(hash != null) {
                 response.add(
@@ -60,8 +73,8 @@ class BlockchainComApi(transactionApiUrl: String) : IInitialSyncApi {
         return response
     }
 
-    private fun getItems(addresses: List<String>, offset: Int): List<TransactionItem> {
-        val transactionResponses = getTransactions(addresses, offset)
+    private fun getItems(addresses: List<String>): List<TransactionItem> {
+        val transactionResponses = getTransactions(addresses)
         if (transactionResponses.isEmpty()) return listOf()
 
         val blockHeights = transactionResponses.map { it.blockHeight }.toSet().toList()
@@ -80,27 +93,20 @@ class BlockchainComApi(transactionApiUrl: String) : IInitialSyncApi {
         }
     }
 
-    private fun getItemsForChunk(addressChunk: List<String>, offset: Int = 0): List<TransactionItem> {
-        val chunkItems = getItems(addressChunk, offset)
+    private fun getAllItems(allAddresses: List<String>): List<TransactionItem> {
+        if(BitcoinCore.loggingEnabled)
+            Log.i(BlockchainComApi::class.java.simpleName, "getting data for: ${allAddresses.size}, chunks: ${allAddresses.splitIntoGroupOf(addressesLimit).size}")
 
-        if (chunkItems.size < paginationLimit) {
-            return chunkItems
+        return allAddresses.splitIntoGroupOf(addressesLimit).flatMapIndexed { index: Int, group: Group<String> ->
+            if(BitcoinCore.loggingEnabled)
+                Log.i(BlockchainComApi::class.java.simpleName, "chunk #$index")
+
+            val addresses = group.items
+            getItems(addresses)
         }
-
-        return chunkItems + getItemsForChunk(addressChunk, offset + paginationLimit)
     }
 
-    private fun getAllItems(allAddresses: List<String>, index: Int = 0): List<TransactionItem> {
-        val startIndex = index * addressesLimit
-        if (startIndex > allAddresses.size) return listOf()
-
-        val endIndex = min(allAddresses.size, (index + 1) * addressesLimit)
-        val chunk = allAddresses.subList(startIndex, endIndex)
-
-        return getItemsForChunk(chunk) + getAllItems(allAddresses, index + 1)
-    }
-
-    override fun getTransactions(addresses: List<String>): List<TransactionItem> {
+    override fun getAllTransactions(addresses: List<String>): List<TransactionItem> {
         return getAllItems(addresses)
     }
 

@@ -1,13 +1,11 @@
 package com.intuisoft.plaid.common.network.blockstreaminfo.repository
 
-import com.intuisoft.plaid.common.model.AddressTransactionData
-import com.intuisoft.plaid.common.model.NetworkFeeRate
-import com.intuisoft.plaid.common.model.TxOutput
-import com.intuisoft.plaid.common.model.TxStatus
+import com.intuisoft.plaid.common.model.*
 import com.intuisoft.plaid.common.network.blockstreaminfo.api.BlockStreamInfoApi
 import com.intuisoft.plaid.common.network.blockstreaminfo.response.FeeEstimatesResponse
 import retrofit2.Call
 import retrofit2.http.Path
+import retrofit2.http.Query
 import kotlin.math.roundToInt
 
 interface BlockstreamInfoRepository {
@@ -15,8 +13,7 @@ interface BlockstreamInfoRepository {
         get() = this.javaClass.simpleName
 
     fun getFeeEstimates(): Result<NetworkFeeRate>
-    fun getAddressTransactions(address: String): Result<AddressTransactionData>
-
+    fun getAddressTransactions(address: String): Result<List<AddressTransactionData>>
     fun getHashForHeight(height: Int): Result<String>
 
     private class Impl(
@@ -35,27 +32,40 @@ interface BlockstreamInfoRepository {
             }
         }
 
-        override fun getAddressTransactions(address: String): Result<AddressTransactionData> {
-            try {
-                val txs = api.getAddressTransactions(address).execute().body()
+        override fun getAddressTransactions(address: String): Result<List<AddressTransactionData>> {
+            val data = mutableListOf<AddressTransactionData>()
+            var lastTxId = ""
 
-                return Result.success(
-                    AddressTransactionData(
-                        status = TxStatus(
-                            height = txs!!.status.block_height,
-                            blockHash = txs!!.status.block_hash
-                        ),
-                        outputs = txs.vout.map {
-                            TxOutput(
-                                script = it.scriptpubkey,
-                                address = it.scriptpubkey_address
+            try {
+                while(true) {
+                    val txs =
+                        if(lastTxId.isEmpty())
+                            api.getAddressTransactions(address).execute().body()
+                        else api.getAddressTransactions(address, lastTxId).execute().body()
+
+                    if(txs!!.isEmpty()) break
+                    lastTxId = txs.last().txid
+
+                    txs.map {
+                        data.add(
+                            AddressTransactionData(
+                                status = TxStatus(
+                                    height = it.status.block_height,
+                                    blockHash = it.status.block_hash
+                                ),
+                                outputs = it.vout.map {
+                                    TxOutput(
+                                        script = it.scriptpubkey,
+                                        address = it.scriptpubkey_address
+                                    )
+                                }
                             )
-                        }
-                    )
-                )
-            } catch (t: Throwable) {
-                return Result.failure(t)
-            }
+                        )
+                    }
+                }
+            } catch (t: Throwable) {}
+
+            return Result.success(data)
         }
 
         override fun getFeeEstimates(): Result<NetworkFeeRate> {

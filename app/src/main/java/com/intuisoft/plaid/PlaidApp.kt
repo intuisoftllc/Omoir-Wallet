@@ -64,12 +64,12 @@ class PlaidApp : Application(), Application.ActivityLifecycleCallbacks, KoinComp
     }
 
     override fun onActivityPaused(p0: Activity) {
-    }
-
-    override fun onActivityStopped(p0: Activity) {
         if(preferences?.pinTimeout == Constants.Time.INSTANT_TIME_OFFSET) {
             preferences?.lastCheckPin = 0
         }
+    }
+
+    override fun onActivityStopped(p0: Activity) {
     }
 
     override fun onActivitySaveInstanceState(p0: Activity, p1: Bundle) {

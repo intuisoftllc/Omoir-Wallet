@@ -8,8 +8,8 @@ import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.model.LocalWalletModel
 import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.common.util.extensions.remove
+import com.intuisoft.plaid.common.util.extensions.splitIntoGroupOf
 import com.intuisoft.plaid.util.entensions.ensureActive
-import com.intuisoft.plaid.util.entensions.splitIntoGroupOf
 import io.horizontalsystems.bitcoincore.network.peer.PeerGroup
 import kotlinx.coroutines.*
 import java.util.concurrent.CopyOnWriteArrayList
@@ -221,19 +221,19 @@ class SyncManager(
                             masterSyncJob?.ensureActive()
                             delay(100)
 
-                            if((System.currentTimeMillis() - startTime) >= Constants.Time.SYNC_TIMEOUT) {
-                                group.items.forEach {
-                                    if (listener?.getLastSyncedTime(it) == 0L && !it.isSynced && it.syncPercentage == 0) { // restart stuck wallets
-                                        it.walletKit!!.restart()
-                                        startTime = System.currentTimeMillis()
-                                        ++restarts
-                                    }
-                                }
-
-                                if(restarts > Constants.Limit.SYNC_RESTART_LIMIT) {
-                                    break
-                                }
-                            }
+//                            if((System.currentTimeMillis() - startTime) >= Constants.Time.SYNC_TIMEOUT) {
+//                                group.items.forEach {
+//                                    if (listener?.getLastSyncedTime(it) == 0L && !it.isSynced && it.syncPercentage == 0) { // restart stuck wallets
+////                                        it.walletKit!!.restart()
+//                                        startTime = System.currentTimeMillis()
+//                                        ++restarts
+//                                    }
+//                                }
+//
+//                                if(restarts > Constants.Limit.SYNC_RESTART_LIMIT) {
+//                                    break
+//                                }
+//                            }
                         }
 
                         group.items.forEach {

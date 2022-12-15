@@ -127,11 +127,11 @@ class BitcoinKit : AbstractKit {
 
         network = when (networkType) {
             NetworkType.MainNet -> {
-                initialSyncApi = BlockchainComApi("https://blockchain.info")
+                initialSyncApi = BlockchainComApi()
                 MainNet()
             }
             NetworkType.TestNet -> {
-                initialSyncApi = BCoinApi("")
+                initialSyncApi = BCoinApi()
                 TestNet()
             }
             NetworkType.RegTest -> {
@@ -164,7 +164,8 @@ class BitcoinKit : AbstractKit {
         bitcoinCore = coreBuilder.setContext(context).setGapLimit(gapLimit).setExtendedKey(extendedKey).setNetwork(network).setPaymentAddressParser(paymentAddressParser)
             .setPeerSize(peerSize).setSyncMode(syncMode).setConfirmationThreshold(confirmationsThreshold).setStorage(storage)
             .setInitialSyncApi(initialSyncApi).setBlockValidator(blockValidatorSet).setHandleAddrMessage(false)
-            .addPlugin(HodlerPlugin(coreBuilder.addressConverter, storage, BlockMedianTimeHelper(storage))).build()
+//            .addPlugin(HodlerPlugin(coreBuilder.addressConverter, storage, BlockMedianTimeHelper(storage)))
+            .build()
 
         //  extending bitcoinCore
 

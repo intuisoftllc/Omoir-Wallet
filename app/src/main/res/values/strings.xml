@@ -19,6 +19,10 @@
 
 <!--    Pro Homescreen Strings -->
     <string name="pro_homescreen_full_balance_title">Total Balance</string>
+    <string name="pro_homescreen_average_price_dialog_title">Average Price</string>
+    <string name="pro_homescreen_average_price_dialog_message">The average price that you acquired this asset at. This is calculated based on the total amount of bitcoin the wallet received and the relative price of the asset at the time it was received.</string>
+    <string name="pro_homescreen_all_time_return_dialog_title">All Time Return</string>
+    <string name="pro_homescreen_all_time_return_dialog_message">The total net value of your holdings. This is calculated by taking the \"cost\" or relative price per transaction of all BTC sent minus the relative price of BTC received.\n\nPlease note this calculation differs from your wallet\'s balance history gains (if-applicable), as returns are only calculated after sending BTC out of the wallet.</string>
 <!--    Pro Homescreen Strings End -->
 
 <!--  Pin Screen Strings -->
@@ -715,6 +719,7 @@
     <string name="memo">Memo</string>
     <string name="today">Today</string>
     <string name="yesterday">Yesterday</string>
+    <string name="close">Close</string>
     <string name="withdraw">Withdraw</string>
     <string name="upgrade_to_pro">Upgrade To Pro</string>
     <string name="transaction_id">Transaction ID</string>

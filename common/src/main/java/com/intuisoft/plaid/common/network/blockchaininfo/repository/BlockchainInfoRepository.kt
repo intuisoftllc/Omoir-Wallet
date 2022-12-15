@@ -1,5 +1,6 @@
 package com.intuisoft.plaid.common.network.blockchair.repository
 
+import android.util.Log
 import com.intuisoft.plaid.common.model.ExtendedNetworkDataModel
 import com.intuisoft.plaid.common.network.blockchair.api.BlockchainInfoApi
 import com.intuisoft.plaid.common.network.blockchair.response.BasicNetworkDataResponse
@@ -16,6 +17,7 @@ interface BlockchainInfoRepository {
     private class Impl(
         private val api: BlockchainInfoApi,
     ) : BlockchainInfoRepository {
+
         override fun getBasicNetworkData(): Result<BasicNetworkDataResponse> {
             try {
                 val supply = api.getCirculatingSupply().execute().body()

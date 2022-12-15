@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:paddingHorizontal="@dimen/margin_20"
+    android:paddingTop="@dimen/margin_28"
+    android:paddingBottom="@dimen/horizontal_padding_size"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <TextView
+        android:id="@+id/bottom_sheet_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/atp_batch_gap_info_title_title"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        style="@style/TextStyle.Semibold.24"
+        android:textStyle="bold"
+        android:textColor="?attr/colorPrimaryVariant"/>
+
+    <TextView
+        android:id="@+id/bottom_sheet_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        style="@style/TextStyle.Medium.12"
+        android:textColor="@color/text_black"
+        android:gravity="center"
+        app:layout_constraintTop_toBottomOf="@id/bottom_sheet_title"
+        android:layout_marginHorizontal="@dimen/margin_24"
+        android:layout_marginTop="@dimen/horizontal_padding_size"
+        android:text="@string/atp_batch_gap_info_description"/>
+
+
+    <com.intuisoft.plaid.androidwrappers.RoundedButtonView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/close"
+        app:btn_text="@string/close"
+        app:text_position="center"
+        app:button_style="outlined"
+        android:layout_marginTop="@dimen/margin_26"
+        android:layout_marginBottom="@dimen/horizontal_padding_size"
+        android:layout_marginHorizontal="35dp"
+        app:layout_constraintTop_toBottomOf="@+id/bottom_sheet_message"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

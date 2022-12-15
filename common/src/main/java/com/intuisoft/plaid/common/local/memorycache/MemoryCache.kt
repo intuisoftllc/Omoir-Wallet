@@ -1,6 +1,7 @@
 package com.intuisoft.plaid.common.local.memorycache
 
 import com.intuisoft.plaid.common.model.*
+import com.intuisoft.plaid.common.util.extensions.remove
 
 /**
  * Memory Cache aims to lower the latency to requesting frequently used data by bypassing both
@@ -18,6 +19,10 @@ class MemoryCache(
     private var storedWalletInfoCache: StoredWalletInfo? = null
     private var blacklistedAddressesCache: List<BlacklistedAddressModel>? = null
     private var blacklistedTransactionsCache: List<BlacklistedTransactionModel>? = null
+    private var blockHashCache: HashMap<Int, Pair<Long, String?>> = hashMapOf()
+    private var testnetBlockHashCache: HashMap<Int, Pair<Long, String?>> = hashMapOf()
+    private var addressTransactionsCache: HashMap<String, Pair<Long, List<AddressTransactionData>>> = hashMapOf()
+    private var testnetAddressTransactionsCache: HashMap<String, Pair<Long, List<AddressTransactionData>>> = hashMapOf()
 
     fun clear() {
         rangeLimitsCache = hashMapOf()
@@ -29,12 +34,44 @@ class MemoryCache(
         storedWalletInfoCache = null
         blacklistedAddressesCache = null
         blacklistedTransactionsCache = null
+        blockHashCache = hashMapOf()
+        testnetBlockHashCache = hashMapOf()
+        addressTransactionsCache = hashMapOf()
+        testnetAddressTransactionsCache = hashMapOf()
     }
 
     fun getStoredWalletInfo() = storedWalletInfoCache
 
     fun setStoredWalletInfo(info: StoredWalletInfo?) {
         storedWalletInfoCache = info
+    }
+
+    fun getHashForHeight(height: Int, testnet: Boolean) =
+        if(testnet) testnetBlockHashCache.get(height)?.second
+        else  blockHashCache.get(height)?.second
+
+    fun setHashForHeight(height: Int, testnet: Boolean, updateTme: Long, hash: String?) {
+        if(testnet)
+            testnetBlockHashCache.put(height, updateTme to hash)
+        else
+            blockHashCache.put(height, updateTme to hash)
+    }
+
+    fun getLastHashForHeightUpdateTime(height: Int, testnet: Boolean) =
+        if(testnet) testnetBlockHashCache.get(height)?.first
+        else blockHashCache.get(height)?.first
+
+    fun getTransactionsForAddress(address: String, testnet: Boolean) =
+        if(testnet) testnetAddressTransactionsCache.get(address)?.second
+        else addressTransactionsCache.get(address)?.second
+
+    fun getLastAddressTransactionsUpdateTime(address: String, testnet: Boolean) =
+        if(testnet) testnetAddressTransactionsCache.get(address)?.first
+        else addressTransactionsCache.get(address)?.first
+
+    fun setAddressTransactions(address: String, testnet: Boolean, updateTime: Long, data: List<AddressTransactionData>) {
+        if(testnet) testnetAddressTransactionsCache.put(address, updateTime to data)
+        else addressTransactionsCache.put(address, updateTime to data)
     }
 
     fun getBlacklistedAddresses() = blacklistedAddressesCache

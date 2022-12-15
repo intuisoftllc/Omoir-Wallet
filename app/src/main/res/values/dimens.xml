@@ -28,6 +28,7 @@
     <dimen name="spark_scrub_line_width">1dp</dimen>
     <dimen name="spark_line_radius">12dp</dimen>
     <dimen name="spark_chart_height">220dp</dimen>
+    <dimen name="pin_number_size">75dp</dimen>
 
     <!--  margin dimens -->
     <dimen name="margin_64">64dp</dimen>

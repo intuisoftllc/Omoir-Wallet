@@ -11,7 +11,10 @@ interface BlockStreamInfoApi {
     fun getFeeEstimates(): Call<FeeEstimatesResponse>
 
     @GET("address/{address}/txs")
-    fun getAddressTransactions(@Path("address") address: String): Call<AddressTransactionsResponse>
+    fun getAddressTransactions(@Path("address") address: String): Call<List<AddressTransactionsResponse>>
+
+    @GET("address/{address}/txs/chain/{lasttxid}")
+    fun getAddressTransactions(@Path("address") address: String, @Path("lasttxid") lastTxId: String): Call<List<AddressTransactionsResponse>>
 
     @GET("block-height/{height}")
     fun getHashForHeight(@Path("height") height: Int): Call<String>

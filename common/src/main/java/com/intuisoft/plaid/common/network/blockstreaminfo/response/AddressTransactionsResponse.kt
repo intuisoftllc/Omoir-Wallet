@@ -7,7 +7,8 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 data class AddressTransactionsResponse(
     val vout: List<TxOutput>,
-    val status: TxStatus
+    val status: TxStatus,
+    val txid: String
 ): Parcelable
 
 @Parcelize

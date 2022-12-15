@@ -832,7 +832,7 @@ class BitcoinCore(
     }
 
     companion object {
-        var loggingEnabled: Boolean = false
+        var loggingEnabled: Boolean = true
     }
 
 }

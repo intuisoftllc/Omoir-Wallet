@@ -134,7 +134,7 @@ interface ITransactionInfoConverter {
 }
 
 interface IInitialSyncApi {
-    fun getTransactions(addresses: List<String>): List<TransactionItem>
+    fun getAllTransactions(addresses: List<String>): List<TransactionItem>
 }
 
 interface IPeerAddressManager {

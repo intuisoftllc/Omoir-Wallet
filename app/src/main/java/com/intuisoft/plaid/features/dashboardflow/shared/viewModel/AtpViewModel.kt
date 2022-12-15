@@ -12,10 +12,10 @@ import com.intuisoft.plaid.common.repositories.ApiRepository
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.common.util.extensions.nextInt
+import com.intuisoft.plaid.common.util.extensions.splitIntoGroupOf
 import com.intuisoft.plaid.model.LocalWalletModel
 import com.intuisoft.plaid.util.NetworkUtil
 import com.intuisoft.plaid.util.Plural
-import com.intuisoft.plaid.util.entensions.splitIntoGroupOf
 import com.intuisoft.plaid.walletmanager.AbstractWalletManager
 import com.intuisoft.plaid.walletmanager.AtpManager
 import io.horizontalsystems.bitcoincore.storage.UnspentOutput
@@ -205,13 +205,13 @@ class AtpViewModel(
                     val batchSize = min(getBatchSize(), selectedUTXOs.size)
                     var penalty = batchSize / Constants.Limit.BATCH_PENALTY_THRESHOLD
                     val randomFees = selectedUTXOs.map { randomNumberGenerator.nextInt(getFeeSpread().first, getFeeSpread().last) }
-                    val batchesNeeded = (selectedUTXOs.size.toDouble() / batchSize).roundToInt()
+                    val batchesNeeded = selectedUTXOs.splitIntoGroupOf(batchSize).size
                     var blocksNeeded =
                         if(batchesNeeded == 1) batchesNeeded
                         else batchesNeeded + (batchGap * (batchesNeeded - 1))
 
                     if(batchesNeeded > 1) {
-                        blocksNeeded += penalty
+                        blocksNeeded += (penalty * ((batchesNeeded - 1)))
                     } else {
                         penalty = 0
                     }
