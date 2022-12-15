@@ -10,11 +10,10 @@ import com.intuisoft.plaid.androidwrappers.BindingViewHolder
 import com.intuisoft.plaid.androidwrappers.ListItem
 import com.intuisoft.plaid.common.model.AssetTransferModel
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
-import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.databinding.ListItemBasicAtpHistoryItemBinding
 import com.intuisoft.plaid.databinding.ListItemSectionInfoBinding
 import com.intuisoft.plaid.features.dashboardflow.shared.adapters.detail.BasicTransferItemDetail
-import com.intuisoft.plaid.features.dashboardflow.shared.adapters.detail.ExchangeDateDetail
+import com.intuisoft.plaid.features.dashboardflow.shared.adapters.detail.BasicDateDetail
 import java.time.Instant
 import java.time.ZoneId
 import java.time.ZonedDateTime
@@ -101,7 +100,7 @@ class AtpHistoryAdapter(
 
             if(date != lastDate) {
                 lastDate = date
-                this.items.add(ExchangeDateDetail(Instant.ofEpochMilli(transfer.createdAt)))
+                this.items.add(BasicDateDetail(Instant.ofEpochMilli(transfer.createdAt)))
             }
 
             this.items.add(BasicTransferItemDetail(transfer, onItemSelected, getWalletName, localStoreRepository))

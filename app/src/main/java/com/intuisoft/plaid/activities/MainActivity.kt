@@ -10,23 +10,28 @@ import android.view.MenuItem
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.DrawableRes
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.appcompat.app.AppCompatDialog
 import androidx.core.view.isVisible
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.*
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.intuisoft.plaid.PlaidApp
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.*
 import com.intuisoft.plaid.common.model.DevicePerformanceLevel
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.common.util.Constants
+import com.intuisoft.plaid.common.util.extensions.remove
+import com.intuisoft.plaid.common.util.extensions.toArrayList
 import com.intuisoft.plaid.databinding.ActivityMainBinding
 import com.intuisoft.plaid.features.splash.ui.SplashFragment
 import com.intuisoft.plaid.listeners.BarcodeResultListener
 import com.intuisoft.plaid.listeners.NetworkStateChangeListener
 import com.intuisoft.plaid.recievers.NetworkChangeReceiver
 import com.intuisoft.plaid.walletmanager.AbstractWalletManager
+import kotlinx.android.synthetic.main.bottom_sheet_warning.*
 import org.koin.android.ext.android.inject
 
 
@@ -35,8 +40,8 @@ class MainActivity : BindingActivity<ActivityMainBinding>(), ActionBarDelegate {
     lateinit var intentFilter: IntentFilter
     protected val localStoreRepository: LocalStoreRepository by inject()
     protected val walletManager: AbstractWalletManager by inject()
-    var configurationSetup = false
-    var ignorePinCheck = false
+    private var configurationSetup = false
+    private val dialogStack = mutableListOf<Pair<AppCompatDialog, (() -> Unit)?>>()
 
     companion object {
         private val TOP_LEVEL_DESTINATIONS = setOf(
@@ -59,7 +64,7 @@ class MainActivity : BindingActivity<ActivityMainBinding>(), ActionBarDelegate {
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
 
             if (result.resultCode == Activity.RESULT_OK) {
-                ignorePinCheck = false
+                (application as PlaidApp).ignorePinCheck = false
                 val bitcoinAddress = result.data?.getStringExtra(Constants.ActivityResult.BARCODE_EXTRA)
                 bitcoinAddress?.let {
                     val listener = supportFragmentManager.currentNavigationFragment as? BarcodeResultListener
@@ -84,6 +89,27 @@ class MainActivity : BindingActivity<ActivityMainBinding>(), ActionBarDelegate {
         }
 
         intentFilter = IntentFilter("android.net.conn.CONNECTIVITY_CHANGE")
+    }
+
+    fun addToStack(dialog: AppCompatDialog, onCancel: (() -> Unit)? = null) {
+        if(dialogStack.find { it === dialog } == null) {
+            dialogStack.add(dialog to onCancel)
+        }
+    }
+
+    fun removeFromStack(dialog: AppCompatDialog) {
+        dialogStack.remove {
+            it == dialog
+        }
+    }
+
+    fun clearStack() {
+        dialogStack.toArrayList()
+            .forEach {
+                it.second?.invoke()
+                it.first.cancel()
+            }
+        dialogStack.clear()
     }
 
     fun activateAnimatedLoading(activate: Boolean, message: String) {
@@ -111,14 +137,6 @@ class MainActivity : BindingActivity<ActivityMainBinding>(), ActionBarDelegate {
             configurationSetup = true
             setupPerformanceLevel()
             setupBottomNavigationBar()
-        }
-    }
-
-    override fun onWindowFocusChanged(hasFocus: Boolean) {
-        super.onWindowFocusChanged(hasFocus)
-        if(hasFocus && !ignorePinCheck) {
-            val protectedFragment = supportFragmentManager.currentNavigationFragment as? PinProtectedFragmentDelegate
-            protectedFragment?.checkPin()
         }
     }
 
@@ -233,13 +251,13 @@ class MainActivity : BindingActivity<ActivityMainBinding>(), ActionBarDelegate {
     }
 
     fun scanBarcode() {
-        ignorePinCheck = true
+        (application as PlaidApp).ignorePinCheck = true
         BarcodeScannerActivity.invoiceMode = false
         barcodeLauncher.launch(Intent(this, BarcodeScannerActivity::class.java))
     }
 
     fun scanInvoice() {
-        ignorePinCheck = true
+        (application as PlaidApp).ignorePinCheck = true
         BarcodeScannerActivity.invoiceMode = true
         barcodeLauncher.launch(Intent(this, BarcodeScannerActivity::class.java))
     }

@@ -18,6 +18,7 @@ class PlaidApp : Application(), Application.ActivityLifecycleCallbacks, KoinComp
     private val preferences: UserData?
         get() = CommonService.getUserData()
     lateinit var devicePerformance: DevicePerformance
+    var ignorePinCheck = false
 
     override fun onCreate() {
         super.onCreate()
@@ -64,7 +65,11 @@ class PlaidApp : Application(), Application.ActivityLifecycleCallbacks, KoinComp
     }
 
     override fun onActivityPaused(p0: Activity) {
-        if(preferences?.pinTimeout == Constants.Time.INSTANT_TIME_OFFSET) {
+        val time = System.currentTimeMillis() / 1000
+
+        if(!ignorePinCheck &&
+            (preferences?.pinTimeout == Constants.Time.INSTANT_TIME_OFFSET
+                    || (time - CommonService.getUserData()!!.lastCheckPin) > CommonService.getUserData()!!.pinTimeout)) {
             preferences?.lastCheckPin = 0
         }
     }

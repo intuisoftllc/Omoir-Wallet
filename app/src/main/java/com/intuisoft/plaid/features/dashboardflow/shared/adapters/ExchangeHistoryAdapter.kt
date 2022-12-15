@@ -9,12 +9,11 @@ import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.BindingViewHolder
 import com.intuisoft.plaid.androidwrappers.ListItem
 import com.intuisoft.plaid.common.model.ExchangeInfoDataModel
-import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.databinding.ListItemBasicExchangeDetailsBinding
 import com.intuisoft.plaid.databinding.ListItemSectionInfoBinding
 import com.intuisoft.plaid.features.dashboardflow.shared.adapters.detail.BasicExchangeDetail
-import com.intuisoft.plaid.features.dashboardflow.shared.adapters.detail.ExchangeDateDetail
+import com.intuisoft.plaid.features.dashboardflow.shared.adapters.detail.BasicDateDetail
 
 
 class ExchangeHistoryAdapter(
@@ -70,7 +69,7 @@ class ExchangeHistoryAdapter(
 
             if(date != lastDate) {
                 lastDate = date
-                exchanges.add(ExchangeDateDetail(exchange.timestamp))
+                exchanges.add(BasicDateDetail(exchange.timestamp))
             }
 
             exchanges.add(BasicExchangeDetail(exchange, onExchangeSelected))

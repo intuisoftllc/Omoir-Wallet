@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatDialog
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
@@ -127,8 +128,7 @@ class UtxoDistributionFragment : ConfigurableFragment<FragmentUtxoDistroReportBi
                         configData = BasicConfigData(
                             payload = it.output.address!!
                         )
-                    ),
-                    Constants.Navigation.WALLET_UUID_BUNDLE_ID to viewModel.getWalletId()
+                    )
                 )
 
                 navigate(
@@ -136,7 +136,9 @@ class UtxoDistributionFragment : ConfigurableFragment<FragmentUtxoDistroReportBi
                     bundle,
                     Constants.Navigation.ANIMATED_ENTER_EXIT_RIGHT_NAV_OPTION
                 )
-            }
+            },
+            addToStack = ::addToStack,
+            removeFromStack = ::removeFromStack
         )
     }
 
@@ -147,9 +149,16 @@ class UtxoDistributionFragment : ConfigurableFragment<FragmentUtxoDistroReportBi
             localStoreRepository: LocalStoreRepository,
             getFullKeyPath: (PublicKey) -> String,
             onSpendCoin: ((UnspentOutput) -> Unit)? = null,
-            onDismiss: (() -> Unit)? = null
+            onDismiss: (() -> Unit)? = null,
+            addToStack: (AppCompatDialog, () -> Unit) -> Unit,
+            removeFromStack: (AppCompatDialog) -> Unit
         ) {
             val bottomSheetDialog = BottomSheetDialog(context)
+            var blockDialogRecreate = false
+            addToStack(bottomSheetDialog) {
+                blockDialogRecreate = true
+            }
+
             bottomSheetDialog.setContentView(R.layout.bottom_sheet_coin_info)
             val spend = bottomSheetDialog.findViewById<RoundedButtonView>(R.id.spend)!!
             val path = bottomSheetDialog.findViewById<TextView>(R.id.info_path)!!
@@ -185,14 +194,18 @@ class UtxoDistributionFragment : ConfigurableFragment<FragmentUtxoDistroReportBi
             }
 
             bottomSheetDialog.setOnCancelListener {
-                onDismiss?.invoke()
+                removeFromStack(bottomSheetDialog)
+
+                if(!blockDialogRecreate) {
+                    onDismiss?.invoke()
+                }
             }
             bottomSheetDialog.show()
         }
     }
 
     override fun onNavigateTo(destination: Int) {
-        navigate(destination, viewModel.getWalletId())
+        navigate(destination)
     }
 
     override fun actionBarVariant(): Int {

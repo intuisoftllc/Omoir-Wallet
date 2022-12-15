@@ -16,7 +16,10 @@ import com.intuisoft.plaid.common.model.BitcoinDisplayUnit
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 
-class BitcoinUnitFragment : ConfigurableFragment<FragmentBitcoinUnitBinding>(pinProtection = true) {
+class BitcoinUnitFragment : ConfigurableFragment<FragmentBitcoinUnitBinding>(
+    pinProtection = true,
+    requiresWallet = false
+) {
     private val viewModel: SettingsViewModel by sharedViewModel()
 
     override fun onCreateView(

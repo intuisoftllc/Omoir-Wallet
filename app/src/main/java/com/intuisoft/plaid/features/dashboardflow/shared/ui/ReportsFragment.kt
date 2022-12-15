@@ -43,8 +43,7 @@ class ReportsFragment : ConfigurableFragment<FragmentReportsBinding>(pinProtecti
                     actionRight = 0,
                     configurationType = FragmentConfigurationType.CONFIGURATION_INFLOW_REPORT,
                     configData = null
-                ),
-                Constants.Navigation.WALLET_UUID_BUNDLE_ID to viewModel.getWalletId()
+                )
             )
 
             navigate(
@@ -63,8 +62,7 @@ class ReportsFragment : ConfigurableFragment<FragmentReportsBinding>(pinProtecti
                     actionRight = 0,
                     configurationType = FragmentConfigurationType.CONFIGURATION_INFLOW_REPORT,
                     configData = null
-                ),
-                Constants.Navigation.WALLET_UUID_BUNDLE_ID to viewModel.getWalletId()
+                )
             )
 
             navigate(
@@ -83,8 +81,7 @@ class ReportsFragment : ConfigurableFragment<FragmentReportsBinding>(pinProtecti
                     actionRight = 0,
                     configurationType = FragmentConfigurationType.CONFIGURATION_OUTFLOW_REPORT,
                     configData = null
-                ),
-                Constants.Navigation.WALLET_UUID_BUNDLE_ID to viewModel.getWalletId()
+                )
             )
 
             navigate(
@@ -103,8 +100,7 @@ class ReportsFragment : ConfigurableFragment<FragmentReportsBinding>(pinProtecti
                     actionRight = 0,
                     configurationType = FragmentConfigurationType.CONFIGURATION_FEE_REPORT,
                     configData = null
-                ),
-                Constants.Navigation.WALLET_UUID_BUNDLE_ID to viewModel.getWalletId()
+                )
             )
 
             navigate(
@@ -121,7 +117,7 @@ class ReportsFragment : ConfigurableFragment<FragmentReportsBinding>(pinProtecti
     }
 
     override fun onNavigateTo(destination: Int) {
-        navigate(destination, viewModel.getWalletId())
+        navigate(destination)
     }
 
     override fun actionBarVariant(): Int {

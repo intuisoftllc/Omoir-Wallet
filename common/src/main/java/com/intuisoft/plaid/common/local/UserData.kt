@@ -50,7 +50,7 @@ class UserData {
             save()
         }
 
-    var lastCheckPin: Int = 0
+    var lastCheckPin: Long = 0
         set(value) {
             field = value
             save()

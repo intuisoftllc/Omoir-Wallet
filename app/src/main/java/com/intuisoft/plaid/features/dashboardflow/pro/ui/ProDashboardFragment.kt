@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatDialog
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
@@ -254,8 +255,7 @@ class ProDashboardFragment : ConfigurableFragment<FragmentProWalletDashboardBind
 
         binding.viewTransactions.onClick {
             navigate(
-                R.id.proWalletTransactionsFragment,
-                viewModel.getWalletId()
+                R.id.proWalletTransactionsFragment
             )
         }
 
@@ -283,7 +283,9 @@ class ProDashboardFragment : ConfigurableFragment<FragmentProWalletDashboardBind
             showBasicInfoBottomSheet(
                 context = requireContext(),
                 title = getString(R.string.pro_homescreen_average_price_dialog_title),
-                message = getString(R.string.pro_homescreen_average_price_dialog_message)
+                message = getString(R.string.pro_homescreen_average_price_dialog_message),
+                ::addToStack,
+                ::removeFromStack
             )
         }
 
@@ -291,7 +293,9 @@ class ProDashboardFragment : ConfigurableFragment<FragmentProWalletDashboardBind
             showBasicInfoBottomSheet(
                 context = requireContext(),
                 title = getString(R.string.pro_homescreen_all_time_return_dialog_title),
-                message = getString(R.string.pro_homescreen_all_time_return_dialog_message)
+                message = getString(R.string.pro_homescreen_all_time_return_dialog_message),
+                ::addToStack,
+                ::removeFromStack
             )
         }
 
@@ -326,8 +330,7 @@ class ProDashboardFragment : ConfigurableFragment<FragmentProWalletDashboardBind
                         qrTitle = "Receive BTC",
                         showClose = true
                     )
-                ),
-                Constants.Navigation.WALLET_UUID_BUNDLE_ID to viewModel.getWalletId()
+                )
             )
 
             navigate(
@@ -339,7 +342,6 @@ class ProDashboardFragment : ConfigurableFragment<FragmentProWalletDashboardBind
         binding.withdraw.onClick {
             navigate(
                 R.id.withdrawalTypeFragment,
-                viewModel.getWalletId(),
                 Constants.Navigation.ANIMATED_SLIDE_UP_OPTION
             )
         }
@@ -349,9 +351,12 @@ class ProDashboardFragment : ConfigurableFragment<FragmentProWalletDashboardBind
         fun showBasicInfoBottomSheet(
             context: Context,
             title: String,
-            message: String
+            message: String,
+            addToStack: (AppCompatDialog) -> Unit,
+            removeFromStack: (AppCompatDialog) -> Unit
         ) {
             val bottomSheetDialog = BottomSheetDialog(context)
+            addToStack(bottomSheetDialog)
             bottomSheetDialog.setContentView(R.layout.bottom_sheet_basic_info)
             val _title = bottomSheetDialog.findViewById<TextView>(R.id.bottom_sheet_title)!!
             val _message = bottomSheetDialog.findViewById<TextView>(R.id.bottom_sheet_message)!!
@@ -363,6 +368,9 @@ class ProDashboardFragment : ConfigurableFragment<FragmentProWalletDashboardBind
                 bottomSheetDialog.dismiss()
             }
 
+            bottomSheetDialog.setOnCancelListener {
+                removeFromStack(bottomSheetDialog)
+            }
             bottomSheetDialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
             bottomSheetDialog.show()
         }
@@ -379,8 +387,7 @@ class ProDashboardFragment : ConfigurableFragment<FragmentProWalletDashboardBind
                 configData = BasicConfigData(
                     payload = CommonService.getGsonInstance().toJson(transaction)
                 )
-            ),
-            Constants.Navigation.WALLET_UUID_BUNDLE_ID to viewModel.getWalletId()
+            )
         )
 
         navigate(
@@ -419,7 +426,7 @@ class ProDashboardFragment : ConfigurableFragment<FragmentProWalletDashboardBind
     }
 
     override fun onNavigateTo(destination: Int) {
-        navigate(destination, viewModel.getWalletId())
+        navigate(destination)
     }
 
     override fun actionBarVariant(): Int {
@@ -444,8 +451,7 @@ class ProDashboardFragment : ConfigurableFragment<FragmentProWalletDashboardBind
 
     override fun onActionRight() {
         navigate(
-            R.id.walletSettingsFragment,
-            viewModel.getWalletId()
+            R.id.walletSettingsFragment
         )
     }
 

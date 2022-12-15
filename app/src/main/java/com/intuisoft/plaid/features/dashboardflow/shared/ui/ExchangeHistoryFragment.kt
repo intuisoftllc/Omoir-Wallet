@@ -103,8 +103,7 @@ class ExchangeHistoryFragment : ConfigurableFragment<FragmentExchangeHistoryBind
                 configData = BasicConfigData(
                     payload = Gson().toJson(exchange, ExchangeInfoDataModel::class.java)
                 )
-            ),
-            Constants.Navigation.WALLET_UUID_BUNDLE_ID to viewModel.getWalletId()
+            )
         )
 
         navigate(

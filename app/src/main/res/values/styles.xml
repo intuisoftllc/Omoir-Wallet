@@ -99,6 +99,8 @@
 
 
     <style name="NumberInPasscode">
+        <item name="android:layout_width">@dimen/pin_number_size</item>
+        <item name="android:layout_height">@dimen/pin_number_size</item>
         <item name="android:background">@drawable/selector_layout_transition</item>
         <item name="android:clickable">true</item>
         <item name="android:gravity">center</item>

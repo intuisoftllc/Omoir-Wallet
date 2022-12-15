@@ -34,7 +34,8 @@ abstract class AbstractWalletManager {
     abstract fun synchronize(wallet: LocalWalletModel)
     abstract fun doesWalletExist(uuid: String): Boolean
     abstract fun getWallets(): List<LocalWalletModel>
-    abstract fun synchronizeAll()
+    abstract fun synchronizeAll(force: Boolean)
+    abstract fun cancelTransfer(id: String)
     abstract suspend fun addWalletSyncListener(listener: StateListener)
     abstract suspend fun removeSyncListener(listener: StateListener)
     abstract fun findLocalWallet(uuid: String): LocalWalletModel?

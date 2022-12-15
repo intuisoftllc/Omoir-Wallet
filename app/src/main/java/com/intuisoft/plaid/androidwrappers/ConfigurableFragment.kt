@@ -11,14 +11,19 @@ import com.intuisoft.plaid.activities.MainActivity
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.features.pin.viewmodel.PinViewModel
+import com.intuisoft.plaid.model.LocalWalletModel
+import com.intuisoft.plaid.walletmanager.WalletManager
+import com.mifmif.common.regex.Main
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 
 abstract class ConfigurableFragment<T: ViewBinding>(
     private val pinProtection: Boolean = false,
     private val secureScreen: Boolean = false,
-    private val requiresWallet: Boolean = false, // todo: impl
-) : BindingFragment<T>(), PinProtectedFragmentDelegate {
+    private val requiresWallet: Boolean = true
+) : BindingFragment<T>() {
     protected var baseVM: BaseViewModel? = null
     private var configTypes = listOf<FragmentConfigurationType>()
     protected val pinViewModel: PinViewModel by sharedViewModel()
@@ -35,6 +40,7 @@ abstract class ConfigurableFragment<T: ViewBinding>(
                 WindowManager.LayoutParams.FLAG_SECURE
             )
         }
+
         onConfiguration(baseVM?.currentConfig)
     }
 
@@ -70,15 +76,31 @@ abstract class ConfigurableFragment<T: ViewBinding>(
             baseVM!!.currentConfig = null
         }
 
-        if(arguments != null && requireArguments().getString(Constants.Navigation.WALLET_UUID_BUNDLE_ID) != null) {
-            walletVM.checkOpenedWallet(this)
+        if(requiresWallet) {
+            requireWallet()
         }
     }
 
-    override fun checkPin() {
+    override fun onResume() {
+        super.onResume()
+        checkPin()
+    }
+
+    private fun requireWallet() {
+        if(baseVM is WalletViewModel) {
+            val wallet = (baseVM!! as WalletViewModel).getWallet()
+            if(wallet == null) {
+                baseVM!!.softRestart(this)
+            }
+        } else {
+            throw IllegalStateException("requireWallet(): base vm != WalletViewModel")
+        }
+    }
+
+    private fun checkPin() {
         if(pinProtection) {
             pinViewModel.checkPinStatus {
-//                if(BuildConfig.FLAVOR == "prod") {
+                (requireActivity() as MainActivity).clearStack()
                 navigate(
                     R.id.pinFragment,
                     Constants.Navigation.ANIMATED_FADE_IN_EXIT_NAV_OPTION

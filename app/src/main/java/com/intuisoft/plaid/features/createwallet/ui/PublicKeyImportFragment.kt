@@ -18,7 +18,10 @@ import kotlinx.android.synthetic.main.fragment_public_key_import.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
-class PublicKeyImportFragment : ConfigurableFragment<FragmentPublicKeyImportBinding>(pinProtection = true), BarcodeResultListener {
+class PublicKeyImportFragment : ConfigurableFragment<FragmentPublicKeyImportBinding>(
+    pinProtection = true,
+    requiresWallet = false
+), BarcodeResultListener {
     protected val viewModel: CreateWalletViewModel by viewModel()
 
     override fun onCreateView(

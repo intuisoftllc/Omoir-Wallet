@@ -162,24 +162,6 @@ fun styledSnackBar(root: View, title: String, showTop: Boolean? = null, onDismis
     snack.show()
 }
 
-fun Fragment.navigate(navId: Int, wallet: LocalWalletModel, options: NavOptions = Constants.Navigation.ANIMATED_FADE_IN_EXIT_NAV_OPTION) {
-    val bundle = bundleOf(Constants.Navigation.WALLET_UUID_BUNDLE_ID to wallet.uuid)
-    findNavController().navigate(
-        navId,
-        bundle,
-        options
-    )
-}
-
-fun Fragment.navigate(navId: Int, uuid: String, options: NavOptions = Constants.Navigation.ANIMATED_FADE_IN_EXIT_NAV_OPTION) {
-    val bundle = bundleOf(Constants.Navigation.WALLET_UUID_BUNDLE_ID to uuid)
-    findNavController().navigate(
-        navId,
-        bundle,
-        options
-    )
-}
-
 fun Fragment.navigate(navId: Int, options: NavOptions = Constants.Navigation.ANIMATED_FADE_IN_EXIT_NAV_OPTION) {
     findNavController().navigate(
         navId,

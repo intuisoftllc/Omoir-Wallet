@@ -179,6 +179,7 @@ class WalletExportFragment : ConfigurableFragment<FragmentWalletExportBinding>(p
 
     fun createInvoice() {
         val bottomSheetDialog = BottomSheetDialog(requireActivity())
+        addToStack(bottomSheetDialog)
         bottomSheetDialog.setContentView(R.layout.bottom_sheet_create_invoice)
         val invoiceAmount = bottomSheetDialog.findViewById<EditText>(R.id.invoice_amount)!!
         val conversionType = bottomSheetDialog.findViewById<TextView>(R.id.conversion_type)!!
@@ -311,6 +312,9 @@ class WalletExportFragment : ConfigurableFragment<FragmentWalletExportBinding>(p
             bottomSheetDialog.cancel()
         }
 
+        bottomSheetDialog.setOnCancelListener {
+            removeFromStack(bottomSheetDialog)
+        }
         bottomSheetDialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
         bottomSheetDialog.show()
     }

@@ -24,7 +24,10 @@ import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
-class ProHomescreenFragment : ConfigurableFragment<FragmentProHomescreenBinding>(pinProtection = true), StateListener {
+class ProHomescreenFragment : ConfigurableFragment<FragmentProHomescreenBinding>(
+    pinProtection = true,
+    requiresWallet = false
+), StateListener {
     protected val viewModel: HomeScreenViewModel by viewModel()
     protected val walletVM: WalletViewModel by viewModel()
     protected val localStoreRepository: LocalStoreRepository by inject()
@@ -60,7 +63,7 @@ class ProHomescreenFragment : ConfigurableFragment<FragmentProHomescreenBinding>
 
         binding.swipeContainer.setOnRefreshListener {
             if(binding.swipeContainer.isRefreshing) {
-                walletManager.synchronizeAll()
+                walletManager.synchronizeAll(false)
             }
         }
 
@@ -107,7 +110,7 @@ class ProHomescreenFragment : ConfigurableFragment<FragmentProHomescreenBinding>
             navigate(R.id.createWalletFragment)
         }
 
-        walletManager.synchronizeAll()
+        walletManager.synchronizeAll(false)
         walletVM.addWalletStateListener(this)
     }
 
@@ -130,7 +133,7 @@ class ProHomescreenFragment : ConfigurableFragment<FragmentProHomescreenBinding>
 
     fun onWalletSelected(wallet: LocalWalletModel) {
         walletManager.openWallet(wallet)
-        navigate(R.id.walletProDashboardFragment, wallet)
+        navigate(R.id.walletProDashboardFragment)
     }
 
     override fun actionBarVariant(): Int {

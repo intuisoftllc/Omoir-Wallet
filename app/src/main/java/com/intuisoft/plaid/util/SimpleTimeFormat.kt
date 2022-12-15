@@ -69,8 +69,8 @@ object SimpleTimeFormat {
     }
 
     fun isSameYear(mills: Long): Boolean {
-        return ZonedDateTime.ofInstant(Instant.ofEpochMilli(mills), ZoneId.systemDefault()).dayOfMonth ==
-                startOfDay(ZonedDateTime.ofInstant(Instant.now(), ZoneId.systemDefault())).minusDays(1).plusSeconds(1).dayOfMonth
+        return ZonedDateTime.ofInstant(Instant.ofEpochMilli(mills), ZoneId.systemDefault()).year ==
+                startOfDay(ZonedDateTime.ofInstant(Instant.now(), ZoneId.systemDefault())).plusSeconds(1).year
     }
 
     fun startOfDay(date: ZonedDateTime) = date.toLocalDate().atStartOfDay(date.zone)

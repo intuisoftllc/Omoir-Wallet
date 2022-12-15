@@ -23,7 +23,10 @@ import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
-class NameYourWalletFragment : ConfigurableFragment<FragmentNameWalletBinding>(pinProtection = true) {
+class NameYourWalletFragment : ConfigurableFragment<FragmentNameWalletBinding>(
+    pinProtection = true,
+    requiresWallet = false
+) {
     protected val viewModel: CreateWalletViewModel by viewModel()
     protected val walletManager: AbstractWalletManager by inject()
     protected val localStoreRepository: LocalStoreRepository by inject()

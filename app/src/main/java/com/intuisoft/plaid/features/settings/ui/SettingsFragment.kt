@@ -12,6 +12,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.appcompat.app.AppCompatDialog
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
@@ -31,7 +32,10 @@ import com.intuisoft.plaid.common.util.SimpleCurrencyFormat
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 
-class SettingsFragment : ConfigurableFragment<FragmentSettingsBinding>(pinProtection = true) {
+class SettingsFragment : ConfigurableFragment<FragmentSettingsBinding>(
+    pinProtection = true,
+    requiresWallet = false
+) {
     private val viewModel: SettingsViewModel by sharedViewModel()
 
     override fun onCreateView(
@@ -134,6 +138,11 @@ class SettingsFragment : ConfigurableFragment<FragmentSettingsBinding>(pinProtec
 
         binding.maxAttempts.onClick {
             val bottomSheetDialog = BottomSheetDialog(requireContext())
+            var blockDialogRecreate = false
+            addToStack(bottomSheetDialog) {
+                blockDialogRecreate = true
+            }
+
             bottomSheetDialog.setContentView(R.layout.bottom_sheet_max_attempts)
             val numberPicker = bottomSheetDialog.findViewById<NumberPicker>(R.id.numberPicker)
             val originalLimit = viewModel.getMaxPinAttempts()
@@ -148,24 +157,32 @@ class SettingsFragment : ConfigurableFragment<FragmentSettingsBinding>(pinProtec
             }
 
             bottomSheetDialog.setOnCancelListener {
-                if(newLimit != originalLimit) {
-                    if (newLimit <= Constants.Limit.MIN_RECOMMENDED_PIN_ATTEMPTS) {
-                        warningDialog(
-                            context = requireContext(),
-                            title = getString(R.string.low_pin_entry_title),
-                            subtitle = getString(R.string.low_pin_entry_subtitle),
-                            positive = getString(R.string.low_pin_entry_positive_button),
-                            negative = getString(R.string.cancel),
-                            positiveTint = 0,
-                            onPositive = {
-                                viewModel.saveMaxPinAttempts(newLimit)
-                            },
-                            onNegative = {
-                                viewModel.saveMaxPinAttempts(originalLimit)
-                            }
-                        )
-                    } else {
-                        viewModel.saveMaxPinAttempts(newLimit)
+                removeFromStack(bottomSheetDialog)
+
+                if(blockDialogRecreate) {
+                    viewModel.saveMaxPinAttempts(newLimit)
+                } else {
+                    if (newLimit != originalLimit) {
+                        if (newLimit <= Constants.Limit.MIN_RECOMMENDED_PIN_ATTEMPTS) {
+                            warningDialog(
+                                context = requireContext(),
+                                title = getString(R.string.low_pin_entry_title),
+                                subtitle = getString(R.string.low_pin_entry_subtitle),
+                                positive = getString(R.string.low_pin_entry_positive_button),
+                                negative = getString(R.string.cancel),
+                                positiveTint = 0,
+                                onPositive = {
+                                    viewModel.saveMaxPinAttempts(newLimit)
+                                },
+                                onNegative = {
+                                    viewModel.saveMaxPinAttempts(originalLimit)
+                                },
+                                addToStack = ::addToStack,
+                                removeFromStack = ::removeFromStack
+                            )
+                        } else {
+                            viewModel.saveMaxPinAttempts(newLimit)
+                        }
                     }
                 }
             }
@@ -175,6 +192,7 @@ class SettingsFragment : ConfigurableFragment<FragmentSettingsBinding>(pinProtec
 
         binding.pinTimeout.onClick {
             val bottomSheetDialog = BottomSheetDialog(requireContext())
+            addToStack(bottomSheetDialog)
             bottomSheetDialog.setContentView(R.layout.bottom_sheet_max_attempts)
             val numberPicker = bottomSheetDialog.findViewById<NumberPicker>(R.id.numberPicker)
             val title = bottomSheetDialog.findViewById<TextView>(R.id.bottom_sheet_title)
@@ -229,6 +247,9 @@ class SettingsFragment : ConfigurableFragment<FragmentSettingsBinding>(pinProtec
                 }
             }
 
+            bottomSheetDialog.setOnCancelListener {
+                removeFromStack(bottomSheetDialog)
+            }
             bottomSheetDialog.show()
         }
 
@@ -311,6 +332,7 @@ class SettingsFragment : ConfigurableFragment<FragmentSettingsBinding>(pinProtec
 
         binding.minimumConfirmations.onClick {
             val bottomSheetDialog = BottomSheetDialog(requireContext())
+            addToStack(bottomSheetDialog)
             bottomSheetDialog.setContentView(R.layout.bottom_sheet_max_attempts)
             val title = bottomSheetDialog.findViewById<TextView>(R.id.bottom_sheet_title)
             val numberPicker = bottomSheetDialog.findViewById<NumberPicker>(R.id.numberPicker)
@@ -326,6 +348,7 @@ class SettingsFragment : ConfigurableFragment<FragmentSettingsBinding>(pinProtec
             }
 
             bottomSheetDialog.setOnCancelListener {
+                removeFromStack(bottomSheetDialog)
                 if(originalConfirmations != viewModel.getMinConfirmations()) {
                     viewModel.appRestartNeeded = true
                 }
@@ -355,7 +378,9 @@ class SettingsFragment : ConfigurableFragment<FragmentSettingsBinding>(pinProtec
                         wipeData()
                     }
                 },
-                onNegative = null
+                onNegative = null,
+                addToStack = ::addToStack,
+                removeFromStack = ::removeFromStack
             )
         }
 
@@ -449,7 +474,9 @@ class SettingsFragment : ConfigurableFragment<FragmentSettingsBinding>(pinProtec
             initialText = viewModel.getName() ?: "",
             onSave = {
                 viewModel.saveName(it)
-            }
+            },
+            addToStack = ::addToStack,
+            removeFromStack = ::removeFromStack
         )
     }
 
@@ -465,7 +492,9 @@ class SettingsFragment : ConfigurableFragment<FragmentSettingsBinding>(pinProtec
                 onPositive = {
                     viewModel.restartApp(this)
                 },
-                onNegative = null
+                onNegative = null,
+                addToStack = ::addToStack,
+                removeFromStack = ::removeFromStack
             )
         } else {
             findNavController().popBackStack()
@@ -512,9 +541,12 @@ class SettingsFragment : ConfigurableFragment<FragmentSettingsBinding>(pinProtec
             fieldHint: String,
             initialText: String,
             onSave: ((String) -> Unit)?,
-            initiallyEnabled: Boolean = true
+            initiallyEnabled: Boolean = true,
+            addToStack: (AppCompatDialog) -> Unit,
+            removeFromStack: (AppCompatDialog) -> Unit
         ) {
             val bottomSheetDialog = BottomSheetDialog(activity)
+            addToStack(bottomSheetDialog)
             bottomSheetDialog.setContentView(R.layout.bottom_sheet_change_name)
             val sheetTitle = bottomSheetDialog.findViewById<TextView>(R.id.bottom_sheet_title)!!
             val textFieldType = bottomSheetDialog.findViewById<TextView>(R.id.text_field_type_name)!!
@@ -558,6 +590,9 @@ class SettingsFragment : ConfigurableFragment<FragmentSettingsBinding>(pinProtec
                 bottomSheetDialog.cancel()
             }
 
+            bottomSheetDialog.setOnCancelListener {
+                removeFromStack(bottomSheetDialog)
+            }
             bottomSheetDialog.show()
         }
 
@@ -570,9 +605,12 @@ class SettingsFragment : ConfigurableFragment<FragmentSettingsBinding>(pinProtec
             positiveTint: Int,
             onPositive: (() -> Unit)?,
             onNegative: (() -> Unit)?,
-            isCancellable: Boolean = false
+            isCancellable: Boolean = false,
+            addToStack: (AppCompatDialog) -> Unit,
+            removeFromStack: (AppCompatDialog) -> Unit
         ) {
             val bottomSheetDialog = BottomSheetDialog(context)
+            addToStack(bottomSheetDialog)
             bottomSheetDialog.setContentView(R.layout.bottom_sheet_warning)
             val sheetTitle = bottomSheetDialog.findViewById<TextView>(R.id.bottom_sheet_title)!!
             val sheetSubtitle =
@@ -599,6 +637,9 @@ class SettingsFragment : ConfigurableFragment<FragmentSettingsBinding>(pinProtec
                 onNegative?.invoke()
             }
 
+            bottomSheetDialog.setOnCancelListener {
+                removeFromStack(bottomSheetDialog)
+            }
             bottomSheetDialog.show()
         }
     }

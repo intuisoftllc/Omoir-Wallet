@@ -12,8 +12,7 @@ class PinViewModel(
 ): BaseViewModel(application, localStoreRepository, walletManager) {
 
     fun checkPinStatus(onShowPinScreen: () -> Unit) {
-        if(localStoreRepository.hasPinTimedOut()) {
-            // TODO: I hate entering passwords, uncomment this for production
+        if(localStoreRepository.getLastCheckedPinTime() == 0L) {
             onShowPinScreen()
         }
     }

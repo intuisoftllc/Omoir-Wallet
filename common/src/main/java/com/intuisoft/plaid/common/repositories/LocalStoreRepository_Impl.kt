@@ -196,18 +196,11 @@ class LocalStoreRepository_Impl(
 
     override fun updatePinCheckedTime() {
         CommonService.getUserData()!!.lastCheckPin =
-            (System.currentTimeMillis() / 1000).toInt()
+            System.currentTimeMillis()
     }
 
     override fun resetPinCheckedTime() {
         CommonService.getUserData()!!.lastCheckPin = 0
-    }
-
-    override fun hasPinTimedOut(): Boolean {
-        val time = System.currentTimeMillis() / 1000
-
-        return CommonService.getUserData()!!.lastCheckPin == 0 ||
-                (time - CommonService.getUserData()!!.lastCheckPin) > CommonService.getUserData()!!.pinTimeout
     }
 
     override fun updatePinTimeout(timeout: Int) {
@@ -256,6 +249,10 @@ class LocalStoreRepository_Impl(
 
     override fun isSendingBTC(): Boolean {
         return CommonService.getUserData()!!.exchangeSendBTC
+    }
+
+    override fun getLastCheckedPinTime(): Long {
+        return CommonService.getUserData()!!.lastCheckPin
     }
 
     override fun setLastExchangeTicker(ticker: String) {

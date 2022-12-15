@@ -17,6 +17,7 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatDialog
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.lifecycle.viewModelScope
@@ -151,6 +152,7 @@ class WithdrawConfirmationFragment : ConfigurableFragment<FragmentWithdrawConfir
         viewModel.createTransaction(fullSpend)?.let { (spend, transaction) ->
 
             val bottomSheetDialog = BottomSheetDialog(requireContext())
+            addToStack(bottomSheetDialog)
             bottomSheetDialog.setContentView(R.layout.bottom_sheet_confirm_withdrawl)
             val rawTransaction = bottomSheetDialog.findViewById<SettingsItemView>(R.id.raw_transaction)!!
             val txId = bottomSheetDialog.findViewById<SettingsItemView>(R.id.transaction_id)!!
@@ -246,6 +248,9 @@ class WithdrawConfirmationFragment : ConfigurableFragment<FragmentWithdrawConfir
                 }
             }
 
+            bottomSheetDialog.setOnCancelListener {
+                removeFromStack(bottomSheetDialog)
+            }
             bottomSheetDialog.behavior.state = STATE_EXPANDED
             bottomSheetDialog.show()
         }
@@ -285,6 +290,7 @@ class WithdrawConfirmationFragment : ConfigurableFragment<FragmentWithdrawConfir
 
     fun showAddressBookBottomSheet() {
         val bottomSheetDialog = BottomSheetDialog(requireContext())
+        addToStack(bottomSheetDialog)
         bottomSheetDialog.setContentView(R.layout.bottom_sheet_address_book)
         val addAddress = bottomSheetDialog.findViewById<RoundedButtonView>(R.id.add_address)!!
         val noAddresses = bottomSheetDialog.findViewById<TextView>(R.id.no_addresses)!!
@@ -324,10 +330,15 @@ class WithdrawConfirmationFragment : ConfigurableFragment<FragmentWithdrawConfir
                         showAddressBookBottomSheet()
                         true
                     }
-                }
+                },
+                addToStack = ::addToStack,
+                removeFromStack = ::removeFromStack
             )
         }
 
+        bottomSheetDialog.setOnCancelListener {
+            removeFromStack(bottomSheetDialog)
+        }
         bottomSheetDialog.show()
     }
 
@@ -338,8 +349,11 @@ class WithdrawConfirmationFragment : ConfigurableFragment<FragmentWithdrawConfir
             canTransferToWallet: (LocalWalletModel) -> Boolean,
             onWalletSelected: (LocalWalletModel) -> Unit,
             getWallets: () -> List<LocalWalletModel>,
+            addToStack: (AppCompatDialog) -> Unit,
+            removeFromStack: (AppCompatDialog) -> Unit
         ) {
             val bottomSheetDialog = BottomSheetDialog(context)
+            addToStack(bottomSheetDialog)
             bottomSheetDialog.setContentView(R.layout.bottom_sheet_wallet_transfer)
             val noWallets = bottomSheetDialog.findViewById<TextView>(R.id.no_wallets)!!
             val wallets = bottomSheetDialog.findViewById<RecyclerView>(R.id.wallets)!!
@@ -360,12 +374,16 @@ class WithdrawConfirmationFragment : ConfigurableFragment<FragmentWithdrawConfir
                 adapter.addWallets(walletsList.toArrayList())
             }
 
+            bottomSheetDialog.setOnCancelListener {
+                removeFromStack(bottomSheetDialog)
+            }
             bottomSheetDialog.show()
         }
     }
 
     private fun showAdvancedOptionsDialog() {
         val bottomSheetDialog = BottomSheetDialog(requireContext())
+        addToStack(bottomSheetDialog)
         bottomSheetDialog.setContentView(R.layout.bottom_sheet_withdraw_advanced_options)
         val low = bottomSheetDialog.findViewById<RoundedButtonView>(R.id.slow)!!
         val med = bottomSheetDialog.findViewById<RoundedButtonView>(R.id.med)!!
@@ -402,7 +420,9 @@ class WithdrawConfirmationFragment : ConfigurableFragment<FragmentWithdrawConfir
                     },
                     getWallets = {
                         viewModel.getWallets()
-                    }
+                    },
+                    addToStack = ::addToStack,
+                    removeFromStack = ::removeFromStack
                 )
             }
         }
@@ -460,6 +480,9 @@ class WithdrawConfirmationFragment : ConfigurableFragment<FragmentWithdrawConfir
         feePerByte.setText("${viewModel.getFeeRate()}")
         addressBook.setSubTitleText(Plural.of("Address", localStoreRepository.getSavedAddresses().size.toLong(), "es"))
 
+        bottomSheetDialog.setOnCancelListener {
+            removeFromStack(bottomSheetDialog)
+        }
         bottomSheetDialog.show()
     }
 

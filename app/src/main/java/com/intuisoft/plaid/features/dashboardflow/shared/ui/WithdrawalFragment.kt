@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatDialog
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
@@ -135,7 +136,9 @@ class WithdrawalFragment : ConfigurableFragment<FragmentWithdrawBinding>(pinProt
                 },
                 addSingleUTXO = {
                     viewModel.addSingleUTXO(it)
-                }
+                },
+                addToStack = ::addToStack,
+                removeFromStack = ::removeFromStack
             )
         }
 
@@ -220,8 +223,7 @@ class WithdrawalFragment : ConfigurableFragment<FragmentWithdrawBinding>(pinProt
                         amountToSend = viewModel.getSatsToSpend(),
                         spendFrom = viewModel.selectedUTXOs.map { it.output.address!! }
                     )
-                ),
-                Constants.Navigation.WALLET_UUID_BUNDLE_ID to viewModel.getWalletId()
+                )
             )
 
             navigate(
@@ -255,9 +257,16 @@ class WithdrawalFragment : ConfigurableFragment<FragmentWithdrawBinding>(pinProt
             updateSelectedUTXOs: (List<UnspentOutput>) -> Unit,
             addSingleUTXO: (UnspentOutput) -> Unit,
             getFullKeyPath: (PublicKey) -> String,
-            localStoreRepository: LocalStoreRepository
+            localStoreRepository: LocalStoreRepository,
+            addToStack: (AppCompatDialog, () -> Unit) -> Unit,
+            removeFromStack: (AppCompatDialog) -> Unit
         ) {
             val bottomSheetDialog = BottomSheetDialog(context)
+            var blockDialogRecreate = false
+            addToStack(bottomSheetDialog) {
+                blockDialogRecreate = true
+            }
+
             bottomSheetDialog.setContentView(R.layout.bottom_sheet_coin_control)
             val selectAll = bottomSheetDialog.findViewById<RoundedButtonView>(R.id.select_all)!!
             val noUTXOs = bottomSheetDialog.findViewById<TextView>(R.id.no_utxos)!!
@@ -297,20 +306,26 @@ class WithdrawalFragment : ConfigurableFragment<FragmentWithdrawBinding>(pinProt
                             localStoreRepository = localStoreRepository,
                             getFullKeyPath = getFullKeyPath,
                             onDismiss = {
-                                showCoinControlBottomSheet(
-                                    context = context,
-                                    showHint = false,
-                                    getUnspentOutputs = getUnspentOutputs,
-                                    getSelectedUTXOs = getSelectedUTXOs,
-                                    updateSelectedUTXOs = updateSelectedUTXOs,
-                                    addSingleUTXO = addSingleUTXO,
-                                    getFullKeyPath = getFullKeyPath,
-                                    localStoreRepository = localStoreRepository
-                                )
+                                if(!blockDialogRecreate) {
+                                    showCoinControlBottomSheet(
+                                        context = context,
+                                        showHint = false,
+                                        getUnspentOutputs = getUnspentOutputs,
+                                        getSelectedUTXOs = getSelectedUTXOs,
+                                        updateSelectedUTXOs = updateSelectedUTXOs,
+                                        addSingleUTXO = addSingleUTXO,
+                                        getFullKeyPath = getFullKeyPath,
+                                        localStoreRepository = localStoreRepository,
+                                        addToStack = addToStack,
+                                        removeFromStack = removeFromStack
+                                    )
+                                }
                             },
                             onSpendCoin = {
                                 addSingleUTXO(it)
-                            }
+                            },
+                            addToStack = addToStack,
+                            removeFromStack = removeFromStack
                         )
                     }
                 )
@@ -323,6 +338,7 @@ class WithdrawalFragment : ConfigurableFragment<FragmentWithdrawBinding>(pinProt
                 }
 
                 bottomSheetDialog.setOnCancelListener {
+                    removeFromStack(bottomSheetDialog)
                     updateSelectedUTXOs(adapter.selectedUTXOs)
                 }
             }

@@ -122,8 +122,7 @@ class ExchangeDetailsFragment : ConfigurableFragment<FragmentExchangeDetailsBind
                         address = data.paymentAddress,
                         memo = "${data.fromShort.lowercase()} -> ${data.toShort.lowercase()} swap"
                     )
-                ),
-                Constants.Navigation.WALLET_UUID_BUNDLE_ID to viewModel.getWalletId()
+                )
             )
 
             navigate(

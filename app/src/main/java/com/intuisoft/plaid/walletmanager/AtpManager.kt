@@ -16,6 +16,7 @@ import io.horizontalsystems.bitcoincore.models.TransactionDataSortType
 import io.horizontalsystems.bitcoincore.models.TransactionStatus
 import io.horizontalsystems.bitcoincore.storage.UnspentOutput
 import kotlinx.coroutines.*
+import kotlinx.coroutines.internal.synchronized
 import java.security.SecureRandom
 
 class AtpManager(
@@ -78,10 +79,10 @@ class AtpManager(
     ): Boolean {
         if(!NetworkUtil.hasInternet(application)) return false
 
-        if(lastBatch == null ||
-            (lastBatch.status.id in AssetTransferStatus.IN_PROGRESS.id..AssetTransferStatus.CANCELLED.id)) {
+        if(transfer.status != AssetTransferStatus.CANCELLED &&
+                (lastBatch == null || (lastBatch.status.id in AssetTransferStatus.IN_PROGRESS.id..AssetTransferStatus.CANCELLED.id))) {
 
-            if(lastBatch != null && transfer.batchGap > 0 && (lastBatch.completionHeight == 0 || ((wallet.walletKit!!.lastBlockInfo?.height ?: 0) < (transfer.batchGap + lastBatch.completionHeight)))) {
+            if(lastBatch != null && (transfer.batchGap > 0 && lastBatch.completionHeight == 0 || ((wallet.walletKit!!.lastBlockInfo?.height ?: 0) < (transfer.batchGap + lastBatch.completionHeight)))) {
                     if(lastBatch.status.id in AssetTransferStatus.PARTIALLY_COMPLETED.id..AssetTransferStatus.CANCELLED.id) {
                         batch.status = AssetTransferStatus.WAITING
                         batch.blocksRemaining = (transfer.batchGap + lastBatch.completionHeight) - (wallet.walletKit!!.lastBlockInfo?.height ?: 0)
@@ -89,6 +90,8 @@ class AtpManager(
                     }
 
                     return false
+            } else if(lastBatch?.status == AssetTransferStatus.IN_PROGRESS) {
+                return false
             }
 
             when (batch.status) {
@@ -131,6 +134,11 @@ class AtpManager(
                                         utxo.feeRate = result.feeRate
                                         transfer.feesPaid += result.fees
                                         transfer.sent += result.amountSent
+
+                                        localStoreRepository.blacklistTransaction(
+                                            BlacklistedTransactionModel(txId = result.txId),
+                                            blacklist = true
+                                        )
                                     } else {
                                         localStoreRepository.blacklistAddress(
                                             BlacklistedAddressModel(address = output.output.address!!),
@@ -160,30 +168,37 @@ class AtpManager(
                 }
 
                 AssetTransferStatus.IN_PROGRESS -> {
-                    val requiredTxs = batch.utxos.filter { it.feeRate > 0 }.map { it.txId }
-                    val txs = wallet.walletKit!!.getAllTransactions().filter { transaction ->
-                        requiredTxs.find { transaction.transactionHash == it } != null
-                    }
-
-                    if(txs.all { it.blockHeight != null }) {
-                        batch.status = AssetTransferStatus.COMPLETED
-                        batch.completionHeight = txs.map { it.blockHeight!! }.maxOrNull() ?: 0
-                    } else if(txs.all { it.status == TransactionStatus.INVALID }) {
-                        batch.status = AssetTransferStatus.FAILED
-                    } else if(txs.all { it.blockHeight != null || it.status == TransactionStatus.INVALID}) {
-                        batch.status = AssetTransferStatus.PARTIALLY_COMPLETED
-                        batch.completionHeight = txs.map { it.blockHeight ?: 0 }.maxOrNull() ?: 0
-                    }
-
+                    processInProgressBatch(batch, wallet)
                     transfer.status = AssetTransferStatus.IN_PROGRESS
                     localStoreRepository.saveAssetTransfer(transfer)
-                    localStoreRepository.setBatchData(batch)
                     return false
                 }
             }
         }
 
         return false
+    }
+
+    private suspend fun processInProgressBatch(
+        batch: BatchDataModel,
+        wallet: LocalWalletModel
+    ) {
+        val requiredTxs = batch.utxos.filter { it.feeRate > 0 }.map { it.txId }
+        val txs = wallet.walletKit!!.getAllTransactions().filter { transaction ->
+            requiredTxs.find { transaction.transactionHash == it } != null
+        }
+
+        if (txs.all { it.blockHeight != null }) {
+            batch.status = AssetTransferStatus.COMPLETED
+            batch.completionHeight = txs.map { it.blockHeight!! }.maxOrNull() ?: 0
+        } else if (txs.all { it.status == TransactionStatus.INVALID }) {
+            batch.status = AssetTransferStatus.FAILED
+        } else if (txs.all { it.blockHeight != null || it.status == TransactionStatus.INVALID }) {
+            batch.status = AssetTransferStatus.PARTIALLY_COMPLETED
+            batch.completionHeight = txs.map { it.blockHeight ?: 0 }.maxOrNull() ?: 0
+        }
+
+        localStoreRepository.setBatchData(batch)
     }
 
     private suspend fun processTransfer(transfer: AssetTransferModel, wallet: LocalWalletModel, findWallet: (String) -> LocalWalletModel?, job: Job?): Boolean {
@@ -204,7 +219,7 @@ class AtpManager(
 
             if (transfer.status == AssetTransferStatus.NOT_STARTED) {
                 transfer.status = AssetTransferStatus.IN_PROGRESS
-            } else {
+            } else if(transfer.status != AssetTransferStatus.CANCELLED){
                 if (batches.all { it.status == AssetTransferStatus.COMPLETED }) {
                     transfer.status = AssetTransferStatus.COMPLETED
                 } else if (batches.all { it.status == AssetTransferStatus.FAILED }) {
@@ -228,20 +243,62 @@ class AtpManager(
         return utxoSent
     }
 
+    private suspend fun cancelTransfer(transfer: AssetTransferModel, wallet: LocalWalletModel) {
+        val batches = localStoreRepository.getBatchDataForTransfer(transfer.id)
+
+        batches.forEach { batch ->
+            if(batch.status.id in AssetTransferStatus.NOT_STARTED.id..AssetTransferStatus.WAITING.id) {
+                batch.status = AssetTransferStatus.CANCELLED
+                localStoreRepository.setBatchData(batch)
+                batch.utxos.forEach {
+                    localStoreRepository.blacklistAddress(address = BlacklistedAddressModel(address = it.address), blacklist = false)
+                }
+            } else if(batch.status == AssetTransferStatus.IN_PROGRESS) {
+                processInProgressBatch(batch, wallet)
+                batch.utxos.forEach {
+                    localStoreRepository.blacklistAddress(address = BlacklistedAddressModel(address = it.address), blacklist = false)
+                }
+            } else if(batch.status != AssetTransferStatus.CANCELLED) {
+                batch.utxos.forEach {
+                    localStoreRepository.blacklistAddress(address = BlacklistedAddressModel(address = it.address), blacklist = false)
+                }
+            }
+        }
+    }
+
     suspend fun updateTransfers(wallet: LocalWalletModel, findWallet: (String) -> LocalWalletModel?, job: Job?): Boolean {
         val transfers = localStoreRepository.getAllAssetTransfers(wallet.uuid)
         var utxoSent = false
 
         transfers.firstOrNull {
             it.status == AssetTransferStatus.WAITING
-                || it.status == AssetTransferStatus.IN_PROGRESS || it.status == AssetTransferStatus.NOT_STARTED
+                    || it.status == AssetTransferStatus.IN_PROGRESS || it.status == AssetTransferStatus.NOT_STARTED
         }?.let { // run the most recent executing transfer to prevent "hacking" the protocol by creating many 50 utxo single batch transfers
             job?.ensureActive()
-            if(processTransfer(it, wallet, findWallet, job))
+            if (processTransfer(it, wallet, findWallet, job))
                 utxoSent = true
         }
 
+        transfers.filter {
+            it.status == AssetTransferStatus.CANCELLED
+        }.forEach {
+            cancelTransfer(it, wallet)
+        }
+
         return utxoSent
+    }
+
+    suspend fun cancelTransfer(transferId: String, wallet: LocalWalletModel) {
+        val transfers = localStoreRepository.getAllAssetTransfers(wallet.uuid)
+
+        transfers.firstOrNull {
+            it.id == transferId
+        }?.let {
+            if(it.status.id in AssetTransferStatus.NOT_STARTED.id..AssetTransferStatus.IN_PROGRESS.id) {
+                it.status = AssetTransferStatus.CANCELLED
+                localStoreRepository.saveAssetTransfer(it)
+            }
+        }
     }
 
     data class UtxoSpendResult(

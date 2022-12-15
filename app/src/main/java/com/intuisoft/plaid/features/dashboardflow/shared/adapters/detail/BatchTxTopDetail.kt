@@ -4,12 +4,15 @@ import android.view.View
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.BindingViewHolder
 import com.intuisoft.plaid.androidwrappers.ListItem
+import com.intuisoft.plaid.common.model.AssetTransferStatus
+import com.intuisoft.plaid.common.model.BatchDataModel
 import com.intuisoft.plaid.common.model.UtxoTransfer
 import kotlinx.android.synthetic.main.list_item_batch_tx_top_item.view.*
 
 
 class BatchTxTopDetail(
     var utxo: UtxoTransfer,
+    var batch: BatchDataModel,
     val onTxClicked: (String) -> Unit
 ) : ListItem {
     override val layoutId: Int
@@ -27,19 +30,25 @@ class BatchTxTopDetail(
                 }
             }
 
-            update(utxo)
+            update(batch, utxo)
         }
     }
 
     private fun isValid() = utxo.txId.isNotBlank() && utxo.feeRate > 0
 
-    fun update(utxo: UtxoTransfer) {
+    fun update(batch: BatchDataModel, utxo: UtxoTransfer) {
         this.utxo = utxo
+        this.batch = batch
 
         view?.apply {
             if(utxo.txId.isNotBlank())
                 batch_tx.text = utxo.txId
-            else batch_tx.text = context.getString(R.string.tbd)
+            else {
+                if(batch.status == AssetTransferStatus.CANCELLED)
+                    batch_tx.text = context.getString(R.string.not_applicable)
+                else
+                    batch_tx.text = context.getString(R.string.tbd)
+            }
 
             if(isValid()) {
                 batch_tx.setTextColor(context.getColor(R.color.brand_color_dark_blue))

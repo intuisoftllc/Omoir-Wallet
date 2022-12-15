@@ -16,7 +16,10 @@ import com.intuisoft.plaid.features.settings.viewmodel.SettingsViewModel
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 
-class CreditsFragment : ConfigurableFragment<FragmentCreditsBinding>(pinProtection = true) {
+class CreditsFragment : ConfigurableFragment<FragmentCreditsBinding>(
+    pinProtection = true,
+    requiresWallet = false
+) {
     private val viewModel: SettingsViewModel by sharedViewModel()
 
     override fun onCreateView(

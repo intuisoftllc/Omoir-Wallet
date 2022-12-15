@@ -114,7 +114,6 @@
         android:layout_height="wrap_content"
         android:paddingStart="48dp"
         android:paddingEnd="48dp"
-        android:paddingTop="48dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"

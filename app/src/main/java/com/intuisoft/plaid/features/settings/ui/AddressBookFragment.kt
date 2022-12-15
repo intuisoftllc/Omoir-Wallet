@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatDialog
 import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
 import androidx.lifecycle.Observer
@@ -23,7 +24,10 @@ import com.intuisoft.plaid.common.util.extensions.toArrayList
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
-class AddressBookFragment : ConfigurableFragment<FragmentAddressBookBinding>(pinProtection = true) {
+class AddressBookFragment : ConfigurableFragment<FragmentAddressBookBinding>(
+    pinProtection = true,
+    requiresWallet = false
+) {
     private val viewModel: AddressBookViewModel by viewModel()
 
     private val adapter = AddressBookAdapter(
@@ -83,9 +87,13 @@ class AddressBookFragment : ConfigurableFragment<FragmentAddressBookBinding>(pin
                     },
                     onNegative = {
                         // do nothin
-                    }
+                    },
+                    addToStack = ::addToStack,
+                    removeFromStack = ::removeFromStack
                 )
-            }
+            },
+            addToStack = ::addToStack,
+            removeFromStack = ::removeFromStack
         )
     }
 
@@ -136,7 +144,9 @@ class AddressBookFragment : ConfigurableFragment<FragmentAddressBookBinding>(pin
                     viewModel.showAddresses()
                     true
                 }
-            }
+            },
+            addToStack = ::addToStack,
+            removeFromStack = ::removeFromStack
         )
     }
 
@@ -155,9 +165,12 @@ class AddressBookFragment : ConfigurableFragment<FragmentAddressBookBinding>(pin
             initialAddressText: String = "",
             isAddressValid: (String) -> Boolean,
             saveAddress: (String, String) -> Boolean,
-            onCancel: (() -> Unit)? = null
+            onCancel: (() -> Unit)? = null,
+            addToStack: (AppCompatDialog) -> Unit,
+            removeFromStack: (AppCompatDialog) -> Unit
         ) {
             val bottomSheetDialog = BottomSheetDialog(context)
+            addToStack(bottomSheetDialog)
             bottomSheetDialog.setContentView(R.layout.bottom_sheet_save_address)
             val title = bottomSheetDialog.findViewById<TextView>(R.id.bottom_sheet_title)!!
             val save = bottomSheetDialog.findViewById<RoundedButtonView>(R.id.save)!!
@@ -201,7 +214,9 @@ class AddressBookFragment : ConfigurableFragment<FragmentAddressBookBinding>(pin
                 onCancel?.invoke()
             }
 
-
+            bottomSheetDialog.setOnCancelListener {
+                removeFromStack(bottomSheetDialog)
+            }
             bottomSheetDialog.behavior.state = STATE_EXPANDED
             bottomSheetDialog.show()
         }

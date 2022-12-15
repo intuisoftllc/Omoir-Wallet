@@ -23,7 +23,8 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class RecoveryPhraseImportFragment : ConfigurableFragment<FragmentRecoveryPhraseImportBinding>(
     pinProtection = true,
-    secureScreen = true
+    secureScreen = true,
+    requiresWallet = false
 ) {
     protected val viewModel: CreateWalletViewModel by viewModel()
 

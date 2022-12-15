@@ -68,8 +68,7 @@ class AtpHistoryFragment : ConfigurableFragment<FragmentAtpHistoryBinding>(pinPr
                 configData = BasicConfigData(
                     payload = transfer.id
                 )
-            ),
-            Constants.Navigation.WALLET_UUID_BUNDLE_ID to viewModel.getWalletId()
+            )
         )
 
         navigate(

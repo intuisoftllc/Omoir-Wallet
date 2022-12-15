@@ -20,7 +20,10 @@ import com.intuisoft.plaid.walletmanager.AbstractWalletManager
 import org.koin.android.ext.android.inject
 
 
-class ViewWalletsFragment : ConfigurableFragment<FragmentManageWalletsBinding>(pinProtection = true) {
+class ViewWalletsFragment : ConfigurableFragment<FragmentManageWalletsBinding>(
+    pinProtection = true,
+    requiresWallet = false
+) {
     protected val localStoreRepository: LocalStoreRepository by inject()
     protected val walletManager: AbstractWalletManager by inject()
 
@@ -53,8 +56,7 @@ class ViewWalletsFragment : ConfigurableFragment<FragmentManageWalletsBinding>(p
 
     fun onWalletSelected(wallet: LocalWalletModel) {
         var bundle = bundleOf(
-            Constants.Navigation.FROM_SETTINGS to true,
-            Constants.Navigation.WALLET_UUID_BUNDLE_ID to wallet.uuid
+            Constants.Navigation.FROM_SETTINGS to true
         )
 
         navigate(

@@ -299,7 +299,7 @@ class MarketFragment : ConfigurableFragment<FragmentMarketBinding>(pinProtection
     }
 
     override fun onNavigateTo(destination: Int) {
-        navigate(destination, viewModel.getWalletId())
+        navigate(destination)
     }
 
     override fun onDestroyView() {

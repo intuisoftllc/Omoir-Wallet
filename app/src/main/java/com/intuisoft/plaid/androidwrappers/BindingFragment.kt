@@ -4,6 +4,7 @@ import android.Manifest
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatDialog
 import androidx.fragment.app.Fragment
 import androidx.viewbinding.ViewBinding
 import com.intuisoft.plaid.R
@@ -25,6 +26,18 @@ abstract class BindingFragment<T: ViewBinding> : Fragment(), FragmentActionBarDe
         (requireActivity() as MainActivity).setActionBarActionLeft(actionBarActionLeft())
         (requireActivity() as MainActivity).setActionBarActionRight(actionBarActionRight())
         activateAnimatedLoading(false, "")
+    }
+
+    fun addToStack(dialog: AppCompatDialog, onCancel: (() -> Unit)? = null) {
+        (requireActivity() as MainActivity).addToStack(dialog, onCancel)
+    }
+
+    fun removeFromStack(dialog: AppCompatDialog) {
+        (requireActivity() as MainActivity).removeFromStack(dialog)
+    }
+
+    fun clearStack() {
+        (requireActivity() as MainActivity).clearStack()
     }
 
     fun scanBarcode() {

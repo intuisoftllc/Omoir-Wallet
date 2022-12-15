@@ -10,12 +10,8 @@ import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.BindingViewHolder
 import com.intuisoft.plaid.androidwrappers.ListItem
 import com.intuisoft.plaid.common.network.blockchair.response.SupportedCurrencyModel
-import com.intuisoft.plaid.common.repositories.LocalStoreRepository
-import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.databinding.ListItemSectionInfoBinding
 import com.intuisoft.plaid.databinding.ListItemSupportedCurrencyDetailsBinding
-import com.intuisoft.plaid.features.dashboardflow.shared.adapters.detail.BasicExchangeDetail
-import com.intuisoft.plaid.features.dashboardflow.shared.adapters.detail.ExchangeDateDetail
 import com.intuisoft.plaid.features.dashboardflow.shared.adapters.detail.ListSectionInfoDetail
 import com.intuisoft.plaid.features.dashboardflow.shared.adapters.detail.SupportedCurrencyDetail
 

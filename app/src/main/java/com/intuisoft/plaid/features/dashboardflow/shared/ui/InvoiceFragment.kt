@@ -92,8 +92,7 @@ class InvoiceFragment : ConfigurableFragment<FragmentInvoiceBinding>(pinProtecti
                         memo = it.description,
                         invoiceSend = true
                     )
-                ),
-                Constants.Navigation.WALLET_UUID_BUNDLE_ID to viewModel.getWalletId()
+                )
             )
 
             navigate(
@@ -122,7 +121,9 @@ class InvoiceFragment : ConfigurableFragment<FragmentInvoiceBinding>(pinProtecti
                 },
                 addSingleUTXO = {
                     viewModel.addSingleUTXO(it)
-                }
+                },
+                addToStack = ::addToStack,
+                removeFromStack = ::removeFromStack
             )
         }
 

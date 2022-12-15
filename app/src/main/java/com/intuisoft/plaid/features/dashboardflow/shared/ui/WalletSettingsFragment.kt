@@ -131,8 +131,7 @@ class WalletSettingsFragment : ConfigurableFragment<FragmentWalletSettingsBindin
                         qrTitle = getString(R.string.export_wallet_title),
                         showClose = false
                     )
-                ),
-                Constants.Navigation.WALLET_UUID_BUNDLE_ID to viewModel.getWalletId()
+                )
             )
 
             navigate(
@@ -151,7 +150,9 @@ class WalletSettingsFragment : ConfigurableFragment<FragmentWalletSettingsBindin
                 onSave = {
                     viewModel.updateWalletName(it)
                     viewModel.updateWalletSettings()
-                }
+                },
+                addToStack = ::addToStack,
+                removeFromStack = ::removeFromStack
             )
         }
 
@@ -176,7 +177,9 @@ class WalletSettingsFragment : ConfigurableFragment<FragmentWalletSettingsBindin
                         wipeData()
                     }
                 },
-                onNegative = null
+                onNegative = null,
+                addToStack = ::addToStack,
+                removeFromStack = ::removeFromStack
             )
         }
     }
@@ -193,7 +196,9 @@ class WalletSettingsFragment : ConfigurableFragment<FragmentWalletSettingsBindin
                 onPositive = {
                     appSettingsViewModel.restartApp(this)
                 },
-                onNegative = null
+                onNegative = null,
+                addToStack = ::addToStack,
+                removeFromStack = ::removeFromStack
             )
         } else {
             findNavController().popBackStack()
@@ -202,6 +207,7 @@ class WalletSettingsFragment : ConfigurableFragment<FragmentWalletSettingsBindin
 
     fun showPassphraseDialog() {
         val bottomSheetDialog = BottomSheetDialog(requireContext())
+        addToStack(bottomSheetDialog)
         bottomSheetDialog.setContentView(R.layout.bottom_sheet_passphrase)
         val save = bottomSheetDialog.findViewById<RoundedButtonView>(R.id.save)!!
         val cancel = bottomSheetDialog.findViewById<RoundedButtonView>(R.id.cancel)!!
@@ -270,7 +276,9 @@ class WalletSettingsFragment : ConfigurableFragment<FragmentWalletSettingsBindin
             bottomSheetDialog.cancel()
         }
 
-
+        bottomSheetDialog.setOnCancelListener {
+            removeFromStack(bottomSheetDialog)
+        }
         bottomSheetDialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
         bottomSheetDialog.show()
     }

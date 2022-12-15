@@ -17,7 +17,10 @@ import com.intuisoft.plaid.common.model.AppTheme
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 
-class AppearanceFragment : ConfigurableFragment<FragmentAppearanceBinding>(pinProtection = true) {
+class AppearanceFragment : ConfigurableFragment<FragmentAppearanceBinding>(
+    pinProtection = true,
+    requiresWallet = false
+) {
     private val viewModel: SettingsViewModel by sharedViewModel()
 
     override fun onCreateView(

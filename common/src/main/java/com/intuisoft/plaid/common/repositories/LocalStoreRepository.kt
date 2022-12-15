@@ -76,11 +76,11 @@ interface LocalStoreRepository {
 
     fun getAppTheme(): AppTheme
 
+    fun getLastCheckedPinTime(): Long
+
     fun updatePinCheckedTime()
 
      fun resetPinCheckedTime()
-
-    fun hasPinTimedOut(): Boolean
 
     fun updatePinTimeout(timeout: Int)
 

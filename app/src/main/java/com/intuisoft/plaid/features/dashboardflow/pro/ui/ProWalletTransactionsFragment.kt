@@ -92,8 +92,7 @@ class ProWalletTransactionsFragment : ConfigurableFragment<FragmentProWalletTras
                 configData = BasicConfigData(
                     payload = CommonService.getGsonInstance().toJson(transaction)
                 )
-            ),
-            Constants.Navigation.WALLET_UUID_BUNDLE_ID to viewModel.getWalletId()
+            )
         )
 
         navigate(
@@ -130,7 +129,7 @@ class ProWalletTransactionsFragment : ConfigurableFragment<FragmentProWalletTras
     }
 
     override fun onNavigateTo(destination: Int) {
-        navigate(destination, viewModel.getWalletId())
+        navigate(destination)
     }
 
     override fun actionBarVariant(): Int {

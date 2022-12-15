@@ -117,8 +117,7 @@ class DashboardFragment : ConfigurableFragment<FragmentWalletDashboardBinding>(p
                         qrTitle = "Receive BTC",
                         showClose = true
                     )
-                ),
-                Constants.Navigation.WALLET_UUID_BUNDLE_ID to viewModel.getWalletId()
+                )
             )
 
             navigate(
@@ -130,7 +129,6 @@ class DashboardFragment : ConfigurableFragment<FragmentWalletDashboardBinding>(p
         binding.withdraw.onClick {
             navigate(
                 R.id.withdrawalTypeFragment,
-                viewModel.getWalletId(),
                 Constants.Navigation.ANIMATED_SLIDE_UP_OPTION
             )
         }
@@ -147,8 +145,7 @@ class DashboardFragment : ConfigurableFragment<FragmentWalletDashboardBinding>(p
                 configData = BasicConfigData(
                     payload = CommonService.getGsonInstance().toJson(transaction)
                 )
-            ),
-            Constants.Navigation.WALLET_UUID_BUNDLE_ID to viewModel.getWalletId()
+            )
         )
 
         navigate(
@@ -183,7 +180,7 @@ class DashboardFragment : ConfigurableFragment<FragmentWalletDashboardBinding>(p
     }
 
     override fun onNavigateTo(destination: Int) {
-        navigate(destination, viewModel.getWalletId())
+        navigate(destination)
     }
 
     override fun actionBarVariant(): Int {
@@ -208,8 +205,7 @@ class DashboardFragment : ConfigurableFragment<FragmentWalletDashboardBinding>(p
 
     override fun onActionRight() {
         navigate(
-            R.id.walletSettingsFragment,
-            viewModel.getWalletId()
+            R.id.walletSettingsFragment
         )
     }
 

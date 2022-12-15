@@ -23,7 +23,10 @@ import io.horizontalsystems.hdwalletkit.Mnemonic
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
-class CreateWalletFragment : ConfigurableFragment<FragmentCreateImportWalletBinding>(pinProtection = true) {
+class CreateWalletFragment : ConfigurableFragment<FragmentCreateImportWalletBinding>(
+    pinProtection = true,
+    requiresWallet = false
+) {
     protected val viewModel: CreateWalletViewModel by viewModel()
 
     override fun onCreateView(
@@ -86,6 +89,7 @@ class CreateWalletFragment : ConfigurableFragment<FragmentCreateImportWalletBind
 
     private fun showAdvancedOptionsDialog() {
         val bottomSheetDialog = BottomSheetDialog(requireContext())
+        addToStack(bottomSheetDialog)
         bottomSheetDialog.setContentView(R.layout.bottom_sheet_advanced_options_create_wallet)
         val mainNet = bottomSheetDialog.findViewById<SettingsItemView>(R.id.mainNetOption)!!
         val testNet = bottomSheetDialog.findViewById<SettingsItemView>(R.id.testNetOption)!!
@@ -118,12 +122,16 @@ class CreateWalletFragment : ConfigurableFragment<FragmentCreateImportWalletBind
             showBipDialog()
         }
 
+        bottomSheetDialog.setOnCancelListener {
+            removeFromStack(bottomSheetDialog)
+        }
         bottomSheetDialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
         bottomSheetDialog.show()
     }
 
     private fun showEntropyStrengthDialog() {
         val bottomSheetDialog = BottomSheetDialog(requireContext())
+        addToStack(bottomSheetDialog)
         bottomSheetDialog.setContentView(R.layout.bottom_sheet_max_attempts)
         val title = bottomSheetDialog.findViewById<TextView>(R.id.bottom_sheet_title)
         val numberPicker = bottomSheetDialog.findViewById<NumberPicker>(R.id.numberPicker)
@@ -178,11 +186,15 @@ class CreateWalletFragment : ConfigurableFragment<FragmentCreateImportWalletBind
             }
         }
 
+        bottomSheetDialog.setOnCancelListener {
+            removeFromStack(bottomSheetDialog)
+        }
         bottomSheetDialog.show()
     }
 
     private fun showBipDialog() {
         val bottomSheetDialog = BottomSheetDialog(requireContext())
+        addToStack(bottomSheetDialog)
         bottomSheetDialog.setContentView(R.layout.bottom_sheet_max_attempts)
         val title = bottomSheetDialog.findViewById<TextView>(R.id.bottom_sheet_title)
         val numberPicker = bottomSheetDialog.findViewById<NumberPicker>(R.id.numberPicker)
@@ -222,6 +234,9 @@ class CreateWalletFragment : ConfigurableFragment<FragmentCreateImportWalletBind
             }
         }
 
+        bottomSheetDialog.setOnCancelListener {
+            removeFromStack(bottomSheetDialog)
+        }
         bottomSheetDialog.show()
     }
 

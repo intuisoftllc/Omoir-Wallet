@@ -12,7 +12,10 @@ import com.intuisoft.plaid.androidwrappers.TopBarView
 import com.intuisoft.plaid.databinding.FragmentEasterEggBinding
 
 
-class MemeFragment : ConfigurableFragment<FragmentEasterEggBinding>(pinProtection = true) {
+class MemeFragment : ConfigurableFragment<FragmentEasterEggBinding>(
+    pinProtection = true,
+    requiresWallet = false
+) {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

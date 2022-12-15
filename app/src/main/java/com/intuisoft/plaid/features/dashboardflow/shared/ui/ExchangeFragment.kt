@@ -186,8 +186,7 @@ class ExchangeFragment : ConfigurableFragment<FragmentExchangeBinding>(pinProtec
                     configData = BasicConfigData(
                         payload = Gson().toJson(it, ExchangeInfoDataModel::class.java)
                     )
-                ),
-                Constants.Navigation.WALLET_UUID_BUNDLE_ID to viewModel.getWalletId()
+                )
             )
 
             navigate(
@@ -250,6 +249,7 @@ class ExchangeFragment : ConfigurableFragment<FragmentExchangeBinding>(pinProtec
         setAddress: (address: String, memo: String) -> Unit
     ) {
         val bottomSheetDialog = BottomSheetDialog(context)
+        addToStack(bottomSheetDialog)
         bottomSheetDialog.setContentView(R.layout.bottom_sheet_swap_deposit_address)
         val sheetTitle = bottomSheetDialog.findViewById<TextView>(R.id.bottom_sheet_title)!!
         val depositAddrTitle =
@@ -321,6 +321,7 @@ class ExchangeFragment : ConfigurableFragment<FragmentExchangeBinding>(pinProtec
         }
 
         bottomSheetDialog.setOnCancelListener {
+            removeFromStack(bottomSheetDialog)
             binding.confirm.enableButton(true)
         }
 
@@ -333,6 +334,7 @@ class ExchangeFragment : ConfigurableFragment<FragmentExchangeBinding>(pinProtec
 
     fun supportedCurrenciesDialog(sending: Boolean) {
         val bottomSheetDialog = BottomSheetDialog(requireContext())
+        addToStack(bottomSheetDialog)
         bottomSheetDialog.setContentView(R.layout.bottom_sheet_supported_currencies)
         val searchResults = bottomSheetDialog.findViewById<RecyclerView>(R.id.searchResults)!!
         val search = bottomSheetDialog.findViewById<EditText>(R.id.search)!!
@@ -359,6 +361,9 @@ class ExchangeFragment : ConfigurableFragment<FragmentExchangeBinding>(pinProtec
             viewModel.updateSearchValue(text?.toString() ?: "", onResult)
         }
 
+        bottomSheetDialog.setOnCancelListener {
+            removeFromStack(bottomSheetDialog)
+        }
         bottomSheetDialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
         bottomSheetDialog.behavior.isFitToContents = false
         bottomSheetDialog.show()
@@ -368,6 +373,7 @@ class ExchangeFragment : ConfigurableFragment<FragmentExchangeBinding>(pinProtec
         info: ExchangeViewModel.ExchangeInfoDisplay
     ) {
         val bottomSheetDialog = BottomSheetDialog(requireContext())
+        addToStack(bottomSheetDialog)
         bottomSheetDialog.setContentView(R.layout.bottom_sheet_confirm_swap)
         val recipient = bottomSheetDialog.findViewById<SettingsItemView>(R.id.recipient)!!
         val sender = bottomSheetDialog.findViewById<SettingsItemView>(R.id.sender)!!
@@ -397,6 +403,9 @@ class ExchangeFragment : ConfigurableFragment<FragmentExchangeBinding>(pinProtec
             viewModel.createExchange()
         }
 
+        bottomSheetDialog.setOnCancelListener {
+            removeFromStack(bottomSheetDialog)
+        }
         bottomSheetDialog.show()
     }
 
@@ -406,7 +415,7 @@ class ExchangeFragment : ConfigurableFragment<FragmentExchangeBinding>(pinProtec
 
 
     override fun onNavigateTo(destination: Int) {
-        navigate(destination, viewModel.getWalletId())
+        navigate(destination)
     }
 
     override fun onDestroyView() {
@@ -428,7 +437,6 @@ class ExchangeFragment : ConfigurableFragment<FragmentExchangeBinding>(pinProtec
 
         navigate(
             R.id.exchangeHistoryFragment,
-            viewModel.getWalletId(),
             Constants.Navigation.ANIMATED_ENTER_EXIT_RIGHT_NAV_OPTION
         )
     }

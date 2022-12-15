@@ -148,6 +148,10 @@ class WalletManager(
         return balance
     }
 
+    override fun cancelTransfer(id: String) {
+        syncer.cancelTransfer(id)
+    }
+
     private fun deleteWalletFromDatabase(localWallet: LocalWalletModel) {
         localWallet.walletKit?.stop()
 
@@ -200,8 +204,8 @@ class WalletManager(
        return syncer.getWallets()
    }
 
-    override fun synchronizeAll() {
-        syncer.syncWallets()
+    override fun synchronizeAll(force: Boolean) {
+        syncer.syncWallets(force)
     }
 
     private suspend fun onWalletStateUpdated(wallet: LocalWalletModel) {
@@ -419,7 +423,7 @@ class WalletManager(
        )
 
        _balanceUpdated.postValue(getTotalBalance())
-       synchronizeAll()
+       synchronizeAll(true)
    }
 
    companion object {

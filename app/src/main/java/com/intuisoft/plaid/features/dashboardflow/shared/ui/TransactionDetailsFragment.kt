@@ -90,7 +90,9 @@ class TransactionDetailsFragment : ConfigurableFragment<FragmentTransactionDetai
                             onSave = {
                                 viewModel.setMemoForTx(transactionMemo.transactionId, it)
                             },
-                            initiallyEnabled = false
+                            initiallyEnabled = false,
+                            addToStack = ::addToStack,
+                            removeFromStack = ::removeFromStack
                         )
                     })
 

@@ -17,7 +17,10 @@ import com.intuisoft.plaid.databinding.FragmentLocalCurrencyBinding
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 
-class LocalCurrencyFragment : ConfigurableFragment<FragmentLocalCurrencyBinding>(pinProtection = true) {
+class LocalCurrencyFragment : ConfigurableFragment<FragmentLocalCurrencyBinding>(
+    pinProtection = true,
+    requiresWallet = false
+) {
     private val viewModel: SettingsViewModel by sharedViewModel()
 
     override fun onCreateView(

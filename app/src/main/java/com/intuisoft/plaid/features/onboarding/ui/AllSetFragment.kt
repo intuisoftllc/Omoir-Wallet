@@ -18,7 +18,10 @@ import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 
-class AllSetFragment : ConfigurableFragment<FragmentOnboardingAllSetBinding>(pinProtection = true) {
+class AllSetFragment : ConfigurableFragment<FragmentOnboardingAllSetBinding>(
+    pinProtection = true,
+    requiresWallet = false
+) {
     private val viewModel: OnboardingViewModel by sharedViewModel()
     private val localStoreRepository: LocalStoreRepository by inject()
 
@@ -52,12 +55,9 @@ class AllSetFragment : ConfigurableFragment<FragmentOnboardingAllSetBinding>(pin
                 binding.negativeButton.setButtonText(data.negativeText)
 
                 binding.positiveButton.onClick {
-                    val bundle = bundleOf(Constants.Navigation.WALLET_UUID_BUNDLE_ID to data.walletUUID)
-
                     findNavController().popBackStack(if(localStoreRepository.isProEnabled()) R.id.proHomescreenFragment else R.id.homescreenFragment, false)
                     navigate(
                         data.positiveDestination,
-                        bundle,
                         navOptions {
                             anim {
                                 enter = android.R.anim.fade_in
@@ -68,12 +68,10 @@ class AllSetFragment : ConfigurableFragment<FragmentOnboardingAllSetBinding>(pin
                 }
 
                 binding.negativeButton.onClick {
-                    val bundle = bundleOf(Constants.Navigation.WALLET_UUID_BUNDLE_ID to data.walletUUID)
 
                     findNavController().popBackStack(if(localStoreRepository.isProEnabled()) R.id.proHomescreenFragment else R.id.homescreenFragment, false)
                     navigate(
                         data.negativeDestination,
-                        bundle,
                         navOptions {
                             anim {
                                 enter = android.R.anim.fade_in

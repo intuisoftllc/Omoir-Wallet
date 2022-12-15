@@ -255,12 +255,6 @@ open class WalletViewModel(
         }
     }
 
-    fun checkOpenedWallet(fragment: Fragment) {
-        if(localWallet == null) {
-            softRestart(fragment)
-        }
-    }
-
     fun getWallet() = localWallet
 
     fun isAddressValid(address: String): Boolean {

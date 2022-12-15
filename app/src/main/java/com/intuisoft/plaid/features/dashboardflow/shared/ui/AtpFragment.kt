@@ -106,6 +106,7 @@ class AtpFragment : ConfigurableFragment<FragmentAtpBinding>(pinProtection = tru
 
         viewModel.transferCreated.observe(viewLifecycleOwner, Observer {
             activateAnimatedLoading(false, "")
+            walletManager.synchronizeAll(false)
 
             var bundle = bundleOf(
                 Constants.Navigation.FRAGMENT_CONFIG to FragmentConfiguration(
@@ -113,8 +114,7 @@ class AtpFragment : ConfigurableFragment<FragmentAtpBinding>(pinProtection = tru
                     configData = BasicConfigData(
                         payload = it
                     )
-                ),
-                Constants.Navigation.WALLET_UUID_BUNDLE_ID to viewModel.getWalletId()
+                )
             )
 
             navigate(
@@ -136,7 +136,9 @@ class AtpFragment : ConfigurableFragment<FragmentAtpBinding>(pinProtection = tru
                 },
                 getWallets = {
                     viewModel.getWallets()
-                }
+                },
+                addToStack = ::addToStack,
+                removeFromStack = ::removeFromStack
             )
         }
 
@@ -159,7 +161,9 @@ class AtpFragment : ConfigurableFragment<FragmentAtpBinding>(pinProtection = tru
                 },
                 addSingleUTXO = {
                     viewModel.addSingleUTXO(it)
-                }
+                },
+                addToStack = ::addToStack,
+                removeFromStack = ::removeFromStack
             )
         }
 
@@ -178,6 +182,10 @@ class AtpFragment : ConfigurableFragment<FragmentAtpBinding>(pinProtection = tru
 
     fun utxoTransfersDialog(items: List<AtpViewModel.UtxoData>, onCancel: ()-> Unit) {
         val bottomSheetDialog = BottomSheetDialog(requireContext())
+        var blockDialogRecreate = false
+        addToStack(bottomSheetDialog) {
+            blockDialogRecreate = true
+        }
         bottomSheetDialog.setContentView(R.layout.bottom_sheet_atp_utxos_transfers)
         val utxos = bottomSheetDialog.findViewById<RecyclerView>(R.id.utxos)!!
 
@@ -186,7 +194,11 @@ class AtpFragment : ConfigurableFragment<FragmentAtpBinding>(pinProtection = tru
         adapter.addUtxos(items.toArrayList())
 
         bottomSheetDialog.setOnCancelListener {
-            onCancel()
+            removeFromStack(bottomSheetDialog)
+
+            if(!blockDialogRecreate) {
+                onCancel()
+            }
         }
 
         bottomSheetDialog.show()
@@ -194,6 +206,7 @@ class AtpFragment : ConfigurableFragment<FragmentAtpBinding>(pinProtection = tru
 
     private fun showConfirmTransactionDialog(data: AtpViewModel.TransferData) {
         val bottomSheetDialog = BottomSheetDialog(requireContext())
+        addToStack(bottomSheetDialog)
         bottomSheetDialog.setContentView(R.layout.bottom_sheet_confirm_asset_transfer)
         val to = bottomSheetDialog.findViewById<SettingsItemView>(R.id.to)
         val batchGap = bottomSheetDialog.findViewById<SettingsItemView>(R.id.batch_gap)
@@ -256,6 +269,9 @@ class AtpFragment : ConfigurableFragment<FragmentAtpBinding>(pinProtection = tru
             bottomSheetDialog.dismiss()
         }
 
+        bottomSheetDialog.setOnCancelListener {
+            removeFromStack(bottomSheetDialog)
+        }
         bottomSheetDialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
         bottomSheetDialog.show()
     }
@@ -309,6 +325,7 @@ class AtpFragment : ConfigurableFragment<FragmentAtpBinding>(pinProtection = tru
         onDisplayInfo: (() -> Unit)? = null
     ) {
         val bottomSheetDialog = BottomSheetDialog(requireContext())
+        addToStack(bottomSheetDialog)
         bottomSheetDialog.setContentView(R.layout.bottom_sheet_atp_batch_settings)
         val sheetTitle = bottomSheetDialog.findViewById<TextView>(R.id.bottom_sheet_title)
         val alert = bottomSheetDialog.findViewById<ImageView>(R.id.alert)
@@ -329,11 +346,19 @@ class AtpFragment : ConfigurableFragment<FragmentAtpBinding>(pinProtection = tru
             onDisplayInfo?.invoke()
         }
 
+        bottomSheetDialog.setOnCancelListener {
+            removeFromStack(bottomSheetDialog)
+        }
         bottomSheetDialog.show()
     }
 
     fun feeSpreadDialog() {
         val bottomSheetDialog = BottomSheetDialog(requireContext())
+        var blockDialogRecreate = false
+        addToStack(bottomSheetDialog) {
+            blockDialogRecreate = true
+        }
+
         bottomSheetDialog.setContentView(R.layout.bottom_sheet_atp_fee_spread)
         val min = bottomSheetDialog.findViewById<SettingsItemView>(R.id.atp_fee_spread_min)
         val max = bottomSheetDialog.findViewById<SettingsItemView>(R.id.atp_fee_spread_max)
@@ -390,10 +415,15 @@ class AtpFragment : ConfigurableFragment<FragmentAtpBinding>(pinProtection = tru
         alert?.setOnClickListener {
             bottomSheetDialog.cancel()
             val dialog = BottomSheetDialog(requireContext())
+            addToStack(bottomSheetDialog)
             dialog.setContentView(R.layout.bottom_sheet_atp_fee_spread_info)
 
             dialog.setOnCancelListener {
-                feeSpreadDialog()
+                removeFromStack(bottomSheetDialog)
+
+                if(!blockDialogRecreate) {
+                    feeSpreadDialog()
+                }
             }
 
             dialog.show()
@@ -404,6 +434,9 @@ class AtpFragment : ConfigurableFragment<FragmentAtpBinding>(pinProtection = tru
             viewModel.updateValues()
         }
 
+        bottomSheetDialog.setOnCancelListener {
+            removeFromStack(bottomSheetDialog)
+        }
         bottomSheetDialog.show()
     }
 
@@ -413,9 +446,17 @@ class AtpFragment : ConfigurableFragment<FragmentAtpBinding>(pinProtection = tru
         onCanceled: () -> Unit
     ) {
         val bottomSheetDialog = BottomSheetDialog(requireContext())
+        var blockDialogRecreate = false
+        addToStack(bottomSheetDialog) {
+            blockDialogRecreate = true
+        }
+
         bottomSheetDialog.setContentView(layoutId)
         bottomSheetDialog.setOnCancelListener {
-            onCanceled()
+            removeFromStack(bottomSheetDialog)
+            if(!blockDialogRecreate) {
+                onCanceled()
+            }
         }
 
         bottomSheetDialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
@@ -423,7 +464,7 @@ class AtpFragment : ConfigurableFragment<FragmentAtpBinding>(pinProtection = tru
     }
 
     override fun onNavigateTo(destination: Int) {
-        navigate(destination, viewModel.getWalletId())
+        navigate(destination)
     }
 
     override fun actionBarVariant(): Int {

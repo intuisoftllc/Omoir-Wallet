@@ -195,11 +195,18 @@ class SyncManager(
         }
     }
 
-    fun syncWallets() {
+    fun cancelTransfer(id: String) {
+        CoroutineScope(Dispatchers.IO).launch {
+            atp.cancelTransfer(id, openedWallet!!)
+            syncWallets(force = true)
+        }
+    }
+
+    fun syncWallets(force: Boolean = false) {
         if(running && !syncing) {
             syncing = true
-            if((System.currentTimeMillis() - lastSynced) <= Constants.Time.MIN_SYNC_TIME
-                || _wallets.isEmpty()) {
+            if(!force &&
+                ((System.currentTimeMillis() - lastSynced) <= Constants.Time.MIN_SYNC_TIME || _wallets.isEmpty())) {
                 syncing = false
                 return
             }
@@ -210,8 +217,6 @@ class SyncManager(
                 _wallets
                     .splitIntoGroupOf(getSyncGrouping())
                     .forEach { group ->
-                        var startTime = System.currentTimeMillis()
-                        var restarts = 0
                         group.items.forEach {
                             syncInternal(it)
                         }
@@ -220,20 +225,6 @@ class SyncManager(
                         while(!group.items.all { it.isSynced }) {
                             masterSyncJob?.ensureActive()
                             delay(100)
-
-//                            if((System.currentTimeMillis() - startTime) >= Constants.Time.SYNC_TIMEOUT) {
-//                                group.items.forEach {
-//                                    if (listener?.getLastSyncedTime(it) == 0L && !it.isSynced && it.syncPercentage == 0) { // restart stuck wallets
-////                                        it.walletKit!!.restart()
-//                                        startTime = System.currentTimeMillis()
-//                                        ++restarts
-//                                    }
-//                                }
-//
-//                                if(restarts > Constants.Limit.SYNC_RESTART_LIMIT) {
-//                                    break
-//                                }
-//                            }
                         }
 
                         group.items.forEach {
@@ -257,11 +248,7 @@ class SyncManager(
 
                 lastSynced = System.currentTimeMillis()
                 syncing = false
-
-                if(resync) {
-                    lastSynced = 0
-                    syncWallets()
-                }
+                syncWallets(force = resync)
             }
         }
     }

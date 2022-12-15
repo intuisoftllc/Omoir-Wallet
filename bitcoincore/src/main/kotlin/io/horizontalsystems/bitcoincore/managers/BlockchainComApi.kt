@@ -12,7 +12,7 @@ import java.lang.Integer.min
 import java.util.concurrent.Callable
 import java.util.concurrent.Executors
 
-class BlockchainComApi() : IInitialSyncApi {
+class BlockchainComApi : IInitialSyncApi {
     private fun getTransactions(addresses: List<String>): List<TransactionResponse> {
         val transactions = mutableListOf<TransactionResponse>()
 

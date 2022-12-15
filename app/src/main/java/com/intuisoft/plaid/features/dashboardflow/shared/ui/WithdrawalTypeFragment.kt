@@ -27,14 +27,12 @@ class WithdrawalTypeFragment : ConfigurableFragment<FragmentWithdrawalTypeBindin
         binding.standardWithdrawal.onClick {
             navigate(
                 R.id.withdrawalFragment,
-                viewModel.getWalletId(),
                 Constants.Navigation.ANIMATED_ENTER_EXIT_RIGHT_NAV_OPTION
             )
         }
         binding.invoice.onClick {
             navigate(
                 R.id.invoiceFragment,
-                viewModel.getWalletId(),
                 Constants.Navigation.ANIMATED_ENTER_EXIT_RIGHT_NAV_OPTION
             )
         }

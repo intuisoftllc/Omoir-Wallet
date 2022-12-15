@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.os.bundleOf
+import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.intuisoft.plaid.R
@@ -46,8 +47,7 @@ class AssetTransferDetailsFragment : ConfigurableFragment<FragmentAssetTransferD
                     configData = BasicConfigData(
                         payload = CommonService.getGsonInstance().toJson(transaction)
                     )
-                ),
-                Constants.Navigation.WALLET_UUID_BUNDLE_ID to viewModel.getWalletId()
+                )
             )
 
             navigate(
@@ -75,8 +75,17 @@ class AssetTransferDetailsFragment : ConfigurableFragment<FragmentAssetTransferD
     override fun onConfiguration(configuration: FragmentConfiguration?) {
         val data = configuration!!.configData as BasicConfigData
         viewModel.setTransferId(data.payload)
-        viewModel.getTransferData()
 
+        walletManager.databaseUpdated.observe(viewLifecycleOwner, Observer {
+            when(it) {
+                is AssetTransferDao,
+                is BatchDao -> {
+                    viewModel.getTransferData(showError = false)
+                }
+            }
+        })
+
+        viewModel.getTransferData()
         binding.batches.adapter = adapter
         viewModel.transfer.observe(viewLifecycleOwner, Observer { transfer ->
             showATPStatus(
@@ -84,6 +93,12 @@ class AssetTransferDetailsFragment : ConfigurableFragment<FragmentAssetTransferD
                 binding.status,
                 transfer.status
             )
+
+            binding.cancel.isVisible = transfer.status.id in AssetTransferStatus.NOT_STARTED.id..AssetTransferStatus.IN_PROGRESS.id
+            binding.cancel.setOnClickListener {
+                walletManager.cancelTransfer(transfer.id)
+                binding.cancel.isVisible = false
+            }
 
             binding.recipient.setSubTitleText(viewModel.getWalletName(transfer.walletId))
             binding.createdAt.setSubTitleText(SimpleTimeFormat.getDateByLocale(transfer.createdAt, Locale.US) ?: getString(R.string.not_applicable))
@@ -107,15 +122,6 @@ class AssetTransferDetailsFragment : ConfigurableFragment<FragmentAssetTransferD
             )
 
             adapter.addOrUpdateItems(localStoreRepository.getBatchDataForTransfer(transfer.id).toArrayList())
-        })
-
-        walletManager.databaseUpdated.observe(viewLifecycleOwner, Observer {
-            when(it) {
-                is AssetTransferDao,
-                is BatchDao -> {
-                    viewModel.getTransferData(showError = false)
-                }
-            }
         })
     }
 

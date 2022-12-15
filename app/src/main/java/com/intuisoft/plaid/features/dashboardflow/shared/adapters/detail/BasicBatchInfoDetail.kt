@@ -45,7 +45,7 @@ class BasicBatchInfoDetail(
     fun onUpdate(batch: BatchDataModel) {
         this.batch = batch
         view?.apply {
-            adapter.addOrUpdateItems(batch.utxos.toArrayList())
+            adapter.addOrUpdateItems(batch)
 
             batch_number.text = context.getString(R.string.atp_batch_number, SimpleCoinNumberFormat.format(batch.batchNumber.toLong() + 1))
 

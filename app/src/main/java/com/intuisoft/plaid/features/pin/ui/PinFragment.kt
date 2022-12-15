@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navOptions
 import com.intuisoft.plaid.R
+import com.intuisoft.plaid.activities.MainActivity
 import com.intuisoft.plaid.androidwrappers.*
 import com.intuisoft.plaid.androidwrappers.PasscodeView.PasscodeViewType.Companion.TYPE_CHECK_PASSCODE
 import com.intuisoft.plaid.androidwrappers.PasscodeView.PasscodeViewType.Companion.TYPE_SET_PASSCODE
@@ -19,7 +20,8 @@ import com.intuisoft.plaid.common.util.Constants
 import org.koin.android.ext.android.inject
 
 class PinFragment: ConfigurableFragment<FragmentPinBinding>(
-    secureScreen = true
+    secureScreen = true,
+    requiresWallet = false
 ) {
     private val localStoreRepository: LocalStoreRepository by inject()
 
@@ -154,6 +156,11 @@ class PinFragment: ConfigurableFragment<FragmentPinBinding>(
 
     override fun navigationId(): Int {
         return R.id.pinFragment
+    }
+
+    override fun onResume() {
+        super.onResume()
+        clearStack()
     }
 
     override fun onDestroyView() {

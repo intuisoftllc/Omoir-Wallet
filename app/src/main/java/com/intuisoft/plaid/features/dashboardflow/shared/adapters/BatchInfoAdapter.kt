@@ -7,18 +7,10 @@ import android.view.animation.AnimationUtils
 import androidx.recyclerview.widget.RecyclerView
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.BindingViewHolder
-import com.intuisoft.plaid.androidwrappers.ListItem
-import com.intuisoft.plaid.common.model.AssetTransferModel
 import com.intuisoft.plaid.common.model.BatchDataModel
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
-import com.intuisoft.plaid.common.util.Constants
-import com.intuisoft.plaid.databinding.ListItemBasicAtpHistoryItemBinding
 import com.intuisoft.plaid.databinding.ListItemBasicBatchInfoItemBinding
-import com.intuisoft.plaid.databinding.ListItemSectionInfoBinding
 import com.intuisoft.plaid.features.dashboardflow.shared.adapters.detail.BasicBatchInfoDetail
-import com.intuisoft.plaid.features.dashboardflow.shared.adapters.detail.BasicTransferItemDetail
-import com.intuisoft.plaid.features.dashboardflow.shared.adapters.detail.ExchangeDateDetail
-import java.time.Instant
 
 
 class BatchInfoAdapter(

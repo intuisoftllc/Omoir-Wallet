@@ -197,8 +197,7 @@ class ReportDetailsFragment : ConfigurableFragment<FragmentReportDetailsBinding>
                 configData = BasicConfigData(
                     payload = CommonService.getGsonInstance().toJson(transaction)
                 )
-            ),
-            Constants.Navigation.WALLET_UUID_BUNDLE_ID to viewModel.getWalletId()
+            )
         )
 
         navigate(
@@ -209,7 +208,7 @@ class ReportDetailsFragment : ConfigurableFragment<FragmentReportDetailsBinding>
     }
 
     override fun onNavigateTo(destination: Int) {
-        navigate(destination, viewModel.getWalletId())
+        navigate(destination)
     }
 
     override fun actionBarVariant(): Int {

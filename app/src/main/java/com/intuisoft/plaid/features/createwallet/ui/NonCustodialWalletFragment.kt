@@ -12,7 +12,10 @@ import com.intuisoft.plaid.features.createwallet.viewmodel.CreateWalletViewModel
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 
-class NonCustodialWalletFragment : ConfigurableFragment<FragmentNonCustodialWalletBinding>(pinProtection = true) {
+class NonCustodialWalletFragment : ConfigurableFragment<FragmentNonCustodialWalletBinding>(
+    pinProtection = true,
+    requiresWallet = false
+) {
     protected val viewModel: CreateWalletViewModel by sharedViewModel()
 
     override fun onCreateView(

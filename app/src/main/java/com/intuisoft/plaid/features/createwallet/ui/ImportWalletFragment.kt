@@ -14,7 +14,10 @@ import com.intuisoft.plaid.util.fragmentconfig.WalletConfigurationData
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
-class ImportWalletFragment : ConfigurableFragment<FragmentImportWalletBinding>(pinProtection = true) {
+class ImportWalletFragment : ConfigurableFragment<FragmentImportWalletBinding>(
+    pinProtection = true,
+    requiresWallet = false
+) {
     protected val viewModel: CreateWalletViewModel by viewModel()
 
     override fun onCreateView(

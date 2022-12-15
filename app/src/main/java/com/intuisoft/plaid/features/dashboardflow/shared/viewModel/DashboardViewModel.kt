@@ -108,8 +108,8 @@ class DashboardViewModel(
 
         return when(localStoreRepository.getBitcoinDisplayUnit()) {
             BitcoinDisplayUnit.SATS -> {
-                rateConverter.setLocalRate(RateConverter.RateType.SATOSHI_RATE, data.value.toDouble())
-                rateConverter.from(RateConverter.RateType.SATOSHI_RATE, localStoreRepository.getLocalCurrency()).second
+                rateConverter.setLocalRate(RateConverter.RateType.BTC_RATE, data.value.toDouble())
+                rateConverter.from(RateConverter.RateType.SATOSHI_RATE, localStoreRepository.getLocalCurrency(), false).second
             }
 
             BitcoinDisplayUnit.BTC -> {
@@ -182,6 +182,8 @@ class DashboardViewModel(
                                 (it.time / Constants.Time.MILLS_PER_SEC) >= fullHistory.first().second
                             }
 
+                            val createdTime =
+                                Math.min(walletManager.findStoredWallet(getWalletId())!!.createdAt, balanceHistory.first().second * Constants.Time.MILLS_PER_SEC)
                             val incomingTxs =
                                 walletTransactions.filter { it.type == TransactionType.Incoming }
                             val outgoingTxs =
@@ -229,7 +231,9 @@ class DashboardViewModel(
                             )
                             _totalSent.postValue(
                                 rate.from(
-                                    localStoreRepository.getBitcoinDisplayUnit().toRateType(),
+                                    if(rate.getRawBtcRate() >= 1.0 && localStoreRepository.getBitcoinDisplayUnit() != BitcoinDisplayUnit.FIAT)
+                                        RateConverter.RateType.BTC_RATE
+                                    else localStoreRepository.getBitcoinDisplayUnit().toRateType(),
                                     localStoreRepository.getLocalCurrency()
                                 ).second!!
                             )
@@ -240,7 +244,9 @@ class DashboardViewModel(
                             )
                             _totalReceived.postValue(
                                 rate.from(
-                                    localStoreRepository.getBitcoinDisplayUnit().toRateType(),
+                                    if(rate.getRawBtcRate() >= 1.0 && localStoreRepository.getBitcoinDisplayUnit() != BitcoinDisplayUnit.FIAT)
+                                        RateConverter.RateType.BTC_RATE
+                                    else localStoreRepository.getBitcoinDisplayUnit().toRateType(),
                                     localStoreRepository.getLocalCurrency()
                                 ).second!!
                             )
@@ -272,15 +278,17 @@ class DashboardViewModel(
                             rate.setLocalRate(RateConverter.RateType.SATOSHI_RATE, highestBalance?.toDouble() ?: 0.0)
                             _highestBalance.postValue(
                                 rate.from(
-                                    localStoreRepository.getBitcoinDisplayUnit().toRateType(),
+                                    if(rate.getRawBtcRate() >= 1.0 && localStoreRepository.getBitcoinDisplayUnit() != BitcoinDisplayUnit.FIAT)
+                                        RateConverter.RateType.BTC_RATE
+                                    else localStoreRepository.getBitcoinDisplayUnit().toRateType(),
                                     localStoreRepository.getLocalCurrency()
                                 ).second!!
                             )
 
                             _walletAge.postValue(
                                 SimpleTimeFormat.timeToString(
-                                    balanceHistory.first().second * Constants.Time.MILLS_PER_SEC,
-                                    "(${SimpleTimeFormat.getDateByLocale(balanceHistory.first().second * Constants.Time.MILLS_PER_SEC, Locale.US)})"
+                                    createdTime,
+                                    "(${SimpleTimeFormat.getDateByLocale(createdTime, Locale.US)})"
                                 )
                             )
                         }
@@ -317,9 +325,14 @@ class DashboardViewModel(
                             BitcoinDisplayUnit.SATS -> {
                                 _chartData.postValue(
                                     history.map {
+                                        rateConverter.setLocalRate(
+                                            RateConverter.RateType.SATOSHI_RATE,
+                                            it.first.toDouble()
+                                        )
+
                                         ChartDataModel(
                                             time = it.second,
-                                            value = it.first.toFloat()
+                                            value = rateConverter.getRawBtcRate().toFloat()
                                         )
                                     }
                                 )

@@ -24,7 +24,8 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SeedPhraseFragment : ConfigurableFragment<FragmentSeedPhraseBinding>(
     pinProtection = true,
-    secureScreen = true
+    secureScreen = true,
+    requiresWallet = false
 ) {
     protected val viewModel: CreateWalletViewModel by viewModel()
 
