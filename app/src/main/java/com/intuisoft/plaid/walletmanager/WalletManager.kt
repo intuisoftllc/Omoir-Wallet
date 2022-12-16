@@ -8,6 +8,8 @@ import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.common.util.extensions.remove
 import com.intuisoft.plaid.listeners.StateListener
 import com.intuisoft.plaid.model.LocalWalletModel
+import com.intuisoft.plaid.util.entensions.sha256
+import com.intuisoft.plaid.walletmanager.errors.ExistingWalletErr
 import io.horizontalsystems.bitcoincore.BitcoinCore
 import io.horizontalsystems.bitcoincore.models.BalanceInfo
 import io.horizontalsystems.bitcoincore.models.BitcoinPaymentData
@@ -191,15 +193,6 @@ class WalletManager(
         }
     }
 
-   override fun doesWalletExist(uuid: String): Boolean {
-       localStoreRepository.getStoredWalletInfo().walletIdentifiers.forEach {
-           if(it.walletUUID == uuid)
-               return true
-       }
-
-       return false
-   }
-
    override fun getWallets(): List<LocalWalletModel> {
        return syncer.getWallets()
    }
@@ -276,7 +269,10 @@ class WalletManager(
        bip: HDWallet.Purpose,
        testnetWallet: Boolean
    ): String {
-       val uuid = UUID.randomUUID().toString()
+       val uuid = seed.joinToString(",").sha256(16)
+       if(findStoredWallet(uuid) != null) {
+           throw ExistingWalletErr("Wallet Already created")
+       }
 
        saveWallet(
            WalletIdentifier(
@@ -300,13 +296,17 @@ class WalletManager(
        name: String,
        pubKey: String
    ): String {
-       val uuid = UUID.randomUUID().toString()
+       val uuid = pubKey.sha256(16)
 
        var network = BitcoinKit.NetworkType.MainNet
        if(pubKey.startsWith(HDExtendedKeyVersion.tpub.base58Prefix)
            || pubKey.startsWith(HDExtendedKeyVersion.upub.base58Prefix)
            || pubKey.startsWith(HDExtendedKeyVersion.vpub.base58Prefix)) {
            network = BitcoinKit.NetworkType.TestNet
+       }
+
+       if(findStoredWallet(uuid) != null) {
+           throw ExistingWalletErr("Wallet Already created")
        }
 
        saveWallet(

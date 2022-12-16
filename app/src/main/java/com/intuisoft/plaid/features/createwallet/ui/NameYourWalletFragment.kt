@@ -87,7 +87,7 @@ class NameYourWalletFragment : ConfigurableFragment<FragmentNameWalletBinding>(
         viewModel.walletCreationError.observe(viewLifecycleOwner, Observer {
             binding.loading.isVisible = false
             binding.confirm.enableButton(true)
-            styledSnackBar(requireView(), getString(R.string.create_wallet_failure_error))
+            styledSnackBar(requireView(), getString(R.string.create_wallet_failure_error), true)
         })
 
         viewModel.walletCreated.observe(viewLifecycleOwner, Observer {

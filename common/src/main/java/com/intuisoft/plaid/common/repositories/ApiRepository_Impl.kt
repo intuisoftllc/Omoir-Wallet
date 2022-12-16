@@ -94,6 +94,12 @@ class ApiRepository_Impl(
     }
 
     /* On-Demand Call */
+    override suspend fun getMarketHistoryData(currencyCode: String, from: Long, to: Long): List<MarketHistoryDataModel>? {
+        updateMarketHistoryData(currencyCode, from, to)
+        return memoryCache.getMarketHistoryForCurrency(currencyCode, from, to)
+    }
+
+    /* On-Demand Call */
     override suspend fun createExchange(
         fixed: Boolean,
         from: String,
@@ -228,6 +234,16 @@ class ApiRepository_Impl(
             if(rates.isSuccess) {
                 localStoreRepository.setRates(rates!!.getOrThrow())
                 localStoreRepository.setLastCurrencyRateUpdate(System.currentTimeMillis())
+            }
+        }
+    }
+
+    private suspend fun updateMarketHistoryData(currencyCode: String, from: Long, to: Long) {
+        if(memoryCache.getMarketHistoryForCurrency(currencyCode, from, to) == null) {
+            val history = coingeckoRepository.getHistoryData(currencyCode, from, to)
+
+            if(history.isSuccess) {
+                memoryCache.setMarketHistoryForCurrency(currencyCode, from, to, history.getOrThrow())
             }
         }
     }

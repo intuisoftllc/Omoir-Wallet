@@ -43,7 +43,7 @@ class WalletSettingsFragment : ConfigurableFragment<FragmentWalletSettingsBindin
         _binding = FragmentWalletSettingsBinding.inflate(inflater, container, false)
         setupConfiguration(viewModel, listOf())
 
-        viewModel.fromSettings = requireArguments().getBoolean(Constants.Navigation.FROM_SETTINGS)
+        viewModel.fromSettings = arguments?.getBoolean(Constants.Navigation.FROM_SETTINGS) ?: false
         return binding.root
     }
 

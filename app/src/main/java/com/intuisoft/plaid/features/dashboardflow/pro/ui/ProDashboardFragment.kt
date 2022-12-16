@@ -10,7 +10,6 @@ import androidx.appcompat.app.AppCompatDialog
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
-import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.intuisoft.plaid.R
@@ -26,22 +25,14 @@ import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.common.util.RateConverter
 import com.intuisoft.plaid.common.util.SimpleCoinNumberFormat
-import com.intuisoft.plaid.common.util.extensions.toArrayList
 import com.intuisoft.plaid.databinding.FragmentProWalletDashboardBinding
 import com.intuisoft.plaid.features.dashboardflow.shared.adapters.BasicLineChartAdapter
-import com.intuisoft.plaid.features.dashboardflow.shared.ui.UtxoDistributionFragment
 import com.intuisoft.plaid.features.dashboardflow.shared.viewModel.DashboardViewModel
-import com.intuisoft.plaid.features.homescreen.adapters.CoinControlAdapter
 import com.intuisoft.plaid.util.SimpleTimeFormat
 import com.intuisoft.plaid.util.fragmentconfig.ConfigQrDisplayData
 import com.intuisoft.plaid.util.fragmentconfig.BasicConfigData
 import com.intuisoft.plaid.walletmanager.AbstractWalletManager
-import io.horizontalsystems.bitcoincore.models.PublicKey
 import io.horizontalsystems.bitcoincore.models.TransactionInfo
-import io.horizontalsystems.bitcoincore.storage.UnspentOutput
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.*
@@ -158,10 +149,6 @@ class ProDashboardFragment : ConfigurableFragment<FragmentProWalletDashboardBind
             binding.averagePrice.text = it
         })
 
-        viewModel.netReturn.observe(viewLifecycleOwner, Observer {
-            binding.allTimeReturn.text = it
-        })
-
         viewModel.highestBalance.observe(viewLifecycleOwner, Observer {
             binding.highestBalance.text = it
         })
@@ -267,14 +254,20 @@ class ProDashboardFragment : ConfigurableFragment<FragmentProWalletDashboardBind
             binding.withdraw.enableButton(false)
         })
 
-        viewModel.showChartContent.observe(viewLifecycleOwner, Observer {
-            binding.sparkview.isVisible = it
-            binding.errorMessage.isVisible = !it
-            binding.errorMessage.text = getString(R.string.no_internet_connection)
+        viewModel.chartDataLoading.observe(viewLifecycleOwner, Observer {
+            binding.chartDataLoading.isVisible = it
+        })
+
+        viewModel.showChartError.observe(viewLifecycleOwner, Observer {
+            binding.sparkview.isVisible = it == null
+            binding.errorMessage.isVisible = it != null
+            if(it != null) binding.chartDataLoading.isVisible = false
+            binding.errorMessage.text = it
         })
 
         viewModel.noChartData.observe(viewLifecycleOwner, Observer {
             binding.sparkview.isVisible = false
+            binding.chartDataLoading.isVisible = false
             binding.errorMessage.isVisible = true
             binding.errorMessage.text = getString(R.string.no_data)
         })
@@ -289,22 +282,12 @@ class ProDashboardFragment : ConfigurableFragment<FragmentProWalletDashboardBind
             )
         }
 
-        binding.allTimeReturnContainer.setOnClickListener {
-            showBasicInfoBottomSheet(
-                context = requireContext(),
-                title = getString(R.string.pro_homescreen_all_time_return_dialog_title),
-                message = getString(R.string.pro_homescreen_all_time_return_dialog_message),
-                ::addToStack,
-                ::removeFromStack
-            )
-        }
-
         viewModel.chartData.observe(viewLifecycleOwner, Observer {
             balanceHistoryAdapter.setItems(it)
         })
 
         viewModel.displayWallet.observe(viewLifecycleOwner, Observer { wallet ->
-            (requireActivity() as MainActivity).setActionBarTitle(wallet.name)
+            (activity as? MainActivity)?.setActionBarTitle(wallet.name)
             onWalletStateUpdated(wallet)
         })
 
@@ -312,7 +295,7 @@ class ProDashboardFragment : ConfigurableFragment<FragmentProWalletDashboardBind
             if(localStoreRepository.isProEnabled()) {
                 binding.price.text = it
             } else {
-                (requireActivity() as MainActivity).setActionBarSubTitle(it)
+                (activity as? MainActivity)?.setActionBarSubTitle(it)
             }
         })
 
@@ -410,7 +393,7 @@ class ProDashboardFragment : ConfigurableFragment<FragmentProWalletDashboardBind
             if(localStoreRepository.isProEnabled()) {
                 binding.price.text = state
             } else {
-                (requireActivity() as MainActivity).setActionBarSubTitle(state)
+                (activity as? MainActivity)?.setActionBarSubTitle(state)
             }
 
             if (wallet.isSynced && wallet.isSynced)

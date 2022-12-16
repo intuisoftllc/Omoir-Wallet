@@ -32,7 +32,6 @@ abstract class AbstractWalletManager {
     abstract fun canSendTransaction(localWallet: LocalWalletModel) : Boolean
     abstract suspend fun deleteWallet(localWallet: LocalWalletModel, onDeleteFinished: suspend () -> Unit)
     abstract fun synchronize(wallet: LocalWalletModel)
-    abstract fun doesWalletExist(uuid: String): Boolean
     abstract fun getWallets(): List<LocalWalletModel>
     abstract fun synchronizeAll(force: Boolean)
     abstract fun cancelTransfer(id: String)

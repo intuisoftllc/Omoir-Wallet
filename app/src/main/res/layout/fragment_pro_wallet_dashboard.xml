@@ -121,6 +121,17 @@
                             android:text="@string/no_internet_connection"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"/>
+
+                        <ProgressBar
+                            android:id="@+id/chart_data_loading"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:visibility="gone"
+                            android:layout_marginBottom="@dimen/parent_top_margin_med"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"/>
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
                     <LinearLayout
@@ -343,23 +354,19 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:id="@+id/all_time_return_container"
                             android:orientation="vertical">
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="@string/pro_wallet_dashboard_performance_title_4"
+                                android:text="@string/pro_wallet_dashboard_performance_title_5"
                                 style="@style/TextStyle.Semibold.14"
-                                android:drawablePadding="@dimen/margin_8"
-                                app:drawableRightCompat="@drawable/ic_alert_red_small"
-                                app:drawableTint="@color/text_grey"
                                 android:textColor="@color/text_grey"/>
 
                             <TextView
-                                android:id="@+id/all_time_return"
+                                android:id="@+id/highest_balance"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                tools:text="$0.00"
+                                tools:text="$288,334.40"
                                 android:layout_marginTop="@dimen/margin_4"
                                 style="@style/TextStyle.Regular.14"
                                 android:textColor="@color/text_grey"/>
@@ -372,28 +379,6 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/horizontal_padding_size"
                     android:orientation="horizontal">
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/pro_wallet_dashboard_performance_title_5"
-                            style="@style/TextStyle.Semibold.14"
-                            android:textColor="@color/text_grey"/>
-
-                        <TextView
-                            android:id="@+id/highest_balance"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            tools:text="$288,334.40"
-                            android:layout_marginTop="@dimen/margin_4"
-                            style="@style/TextStyle.Regular.14"
-                            android:textColor="@color/text_grey"/>
-
-                    </LinearLayout>
 
                     <LinearLayout
                         android:layout_width="0dp"

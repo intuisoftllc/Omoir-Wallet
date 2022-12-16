@@ -69,7 +69,7 @@ class PlaidApp : Application(), Application.ActivityLifecycleCallbacks, KoinComp
 
         if(!ignorePinCheck &&
             (preferences?.pinTimeout == Constants.Time.INSTANT_TIME_OFFSET
-                    || (time - CommonService.getUserData()!!.lastCheckPin) > CommonService.getUserData()!!.pinTimeout)) {
+                    || (CommonService.getUserData() != null && (time - CommonService.getUserData()!!.lastCheckPin) > CommonService.getUserData()!!.pinTimeout))) {
             preferences?.lastCheckPin = 0
         }
     }

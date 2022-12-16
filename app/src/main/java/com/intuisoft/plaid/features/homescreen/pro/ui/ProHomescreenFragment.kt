@@ -53,7 +53,7 @@ class ProHomescreenFragment : ConfigurableFragment<FragmentProHomescreenBinding>
             requireActivity().finish()
         }
 
-        (requireActivity() as MainActivity).performSetup()
+        (activity as? MainActivity)?.performSetup()
         viewModel.updateGreeting()
         walletVM.refreshLocalCache()
 
@@ -94,8 +94,8 @@ class ProHomescreenFragment : ConfigurableFragment<FragmentProHomescreenBinding>
         binding.walletsList.adapter = adapter
         binding.walletsList.layoutManager = GridLayoutManager(requireContext(), 2)
         viewModel.homeScreenGreeting.observe(viewLifecycleOwner, Observer {
-            (requireActivity() as MainActivity).setActionBarTitle(it.second)
-            (requireActivity() as MainActivity).setActionBarSubTitle(it.first + ",")
+            (activity as? MainActivity)?.setActionBarTitle(it.second)
+            (activity as? MainActivity)?.setActionBarSubTitle(it.first + ",")
         })
 
         walletManager.wallets.observe(viewLifecycleOwner, Observer {

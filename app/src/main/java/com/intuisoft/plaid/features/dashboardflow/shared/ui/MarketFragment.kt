@@ -177,6 +177,18 @@ class MarketFragment : ConfigurableFragment<FragmentMarketBinding>(pinProtection
             binding.memPoolSize.text = it
         })
 
+        viewModel.extendedNetworkDataLoading.observe(viewLifecycleOwner, Observer {
+            binding.extendedNetworkDataLoading.isVisible = it
+        })
+
+        viewModel.basicNetworkDataLoading.observe(viewLifecycleOwner, Observer {
+            binding.basicNetworkDataLoading.isVisible = it
+        })
+
+        viewModel.chartDataLoading.observe(viewLifecycleOwner, Observer {
+            binding.chartDataLoading.isVisible = it
+        })
+
         viewModel.txPerSecond.observe(viewLifecycleOwner, Observer {
             binding.txsPerSecond.text = it
         })
@@ -249,6 +261,7 @@ class MarketFragment : ConfigurableFragment<FragmentMarketBinding>(pinProtection
         }
 
         viewModel.couldNotLoadData.observe(viewLifecycleOwner, Observer {
+            binding.chartDataLoading.isVisible = false
             styledSnackBar(requireView(), getString(R.string.market_data_load_error), true)
         })
 

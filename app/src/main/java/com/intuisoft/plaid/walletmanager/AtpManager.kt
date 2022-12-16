@@ -136,7 +136,7 @@ class AtpManager(
                                         transfer.sent += result.amountSent
 
                                         localStoreRepository.blacklistTransaction(
-                                            BlacklistedTransactionModel(txId = result.txId),
+                                            BlacklistedTransactionModel(txId = result.txId, wallet.uuid),
                                             blacklist = true
                                         )
                                     } else {

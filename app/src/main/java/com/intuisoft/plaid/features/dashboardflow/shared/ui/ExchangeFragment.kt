@@ -87,6 +87,11 @@ class ExchangeFragment : ConfigurableFragment<FragmentExchangeBinding>(pinProtec
             styledSnackBar(requireView(), it, true)
         })
 
+        viewModel.disableBtcSeding.observe(viewLifecycleOwner, Observer {
+            binding.swapSendReceive.isEnabled = false
+            binding.swapSendReceive.alpha = 0.5f
+        })
+
         viewModel.confirmButtonEnabled.observe(viewLifecycleOwner, Observer {
             binding.confirm.enableButton(it)
         })

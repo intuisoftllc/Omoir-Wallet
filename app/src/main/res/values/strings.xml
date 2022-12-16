@@ -21,8 +21,6 @@
     <string name="pro_homescreen_full_balance_title">Total Balance</string>
     <string name="pro_homescreen_average_price_dialog_title">Average Price</string>
     <string name="pro_homescreen_average_price_dialog_message">The average price that you acquired this asset at. This is calculated based on the total amount of bitcoin the wallet received and the relative price of the asset at the time it was received.</string>
-    <string name="pro_homescreen_all_time_return_dialog_title">All Time Return</string>
-    <string name="pro_homescreen_all_time_return_dialog_message">The total net value of your holdings. This is calculated by taking the \"cost\" or relative price per transaction of all BTC sent minus the relative price of BTC received.\n\nPlease note this calculation differs from your wallet\'s balance history gains (if-applicable), as returns are only calculated after sending BTC out of the wallet.</string>
 <!--    Pro Homescreen Strings End -->
 
 <!--  Pin Screen Strings -->
@@ -363,7 +361,7 @@
     <string name="create_wallet_success_subtitle">Your bitcoin wallet has been created.\n\nPlease note that it may take some time before your transactions (if any) will appear in the wallet dashboard screen.</string>
     <string name="create_wallet_success_positive_button">Go to Wallet Dashboard</string>
     <string name="create_wallet_success_negative_button">Go to Home Screen</string>
-    <string name="create_wallet_failure_error">Oops, failed to create wallet, please try again.</string>
+    <string name="create_wallet_failure_error">This wallet has already been created.</string>
 <!--    Create Wallet Strings End -->
 
 <!--    Transaction Details Strings -->
@@ -724,6 +722,7 @@
     <string name="upgrade_to_pro">Upgrade To Pro</string>
     <string name="transaction_id">Transaction ID</string>
     <string name="dynamic_network_fee">Dynamic Network Fee</string>
+    <string name="failed_to_load_chart_data">Failed to load chart data</string>
     <string name="sat_per_vbyte">%1$s sat/vbyte</string>
     <string name="no_connection">Lost Connection to Servers…</string>
     <string name="not_connected_to_internet">You are not connected\nto the Internet</string>

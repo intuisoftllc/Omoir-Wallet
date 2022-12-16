@@ -50,7 +50,7 @@ class HomescreenFragment : ConfigurableFragment<FragmentHomescreenBinding>(
             requireActivity().finish()
         }
 
-        (requireActivity() as MainActivity).performSetup()
+        (activity as? MainActivity)?.performSetup()
         viewModel.updateGreeting()
         walletVM.addWalletStateListener(this)
         walletVM.refreshLocalCache()
@@ -67,8 +67,8 @@ class HomescreenFragment : ConfigurableFragment<FragmentHomescreenBinding>(
 
         binding.walletsView.walletsList.adapter = adapter
         viewModel.homeScreenGreeting.observe(viewLifecycleOwner, Observer {
-            (requireActivity() as MainActivity).setActionBarTitle(it.second)
-            (requireActivity() as MainActivity).setActionBarSubTitle(it.first + ",")
+            (activity as? MainActivity)?.setActionBarTitle(it.second)
+            (activity as? MainActivity)?.setActionBarSubTitle(it.first + ",")
         })
 
         walletManager.wallets.observe(viewLifecycleOwner, Observer {

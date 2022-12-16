@@ -40,6 +40,7 @@ class AtpHistoryFragment : ConfigurableFragment<FragmentAtpHistoryBinding>(pinPr
     ): View? {
 
         _binding = FragmentAtpHistoryBinding.inflate(inflater, container, false)
+        setupConfiguration(viewModel, listOf())
         return binding.root
     }
 

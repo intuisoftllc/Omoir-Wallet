@@ -439,13 +439,13 @@ class LocalStoreRepository_Impl(
         }
     }
 
-    override fun getAllBlacklistedTransactions(): List<BlacklistedTransactionModel> {
+    override fun getAllBlacklistedTransactions(walletId: String): List<BlacklistedTransactionModel> {
         return runBlocking {
-            if(memoryCache.getBlacklistedTransactions() == null) {
-                memoryCache.setBlacklistedTransactions(databaseRepository.getAllBlacklistedTransactions())
+            if(memoryCache.getBlacklistedTransactions(walletId) == null) {
+                memoryCache.setBlacklistedTransactions(databaseRepository.getAllBlacklistedTransactions(walletId))
             }
 
-            return@runBlocking memoryCache.getBlacklistedTransactions()!!
+            return@runBlocking memoryCache.getBlacklistedTransactions(walletId)!!
         }
     }
 

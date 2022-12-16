@@ -96,11 +96,32 @@
                         </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-                        <com.robinhood.spark.SparkView
-                            android:id="@+id/sparkview"
+                        <androidx.constraintlayout.widget.ConstraintLayout
                             android:layout_width="match_parent"
-                            android:layout_height="@dimen/spark_chart_height"
-                            android:layout_marginTop="@dimen/parent_top_margin_med"/>
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/parent_top_margin_med"
+                            android:layout_gravity="center">
+                                <com.robinhood.spark.SparkView
+                                    android:id="@+id/sparkview"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="@dimen/spark_chart_height"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent"
+                                    app:layout_constraintBottom_toBottomOf="parent"/>
+
+                            <ProgressBar
+                                android:id="@+id/chart_data_loading"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:visibility="gone"
+                                android:layout_marginBottom="@dimen/parent_top_margin_med"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"
+                                app:layout_constraintBottom_toBottomOf="parent"/>
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -349,13 +370,27 @@
                         android:layout_height="match_parent"
                         android:padding="@dimen/margin_12"
                         android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             style="@style/TextStyle.Semibold.16"
                             android:textStyle="bold"
+                            android:layout_weight="1"
                             android:textColor="@color/text_grey"
                             android:text="@string/market_data_title_2"/>
+
+                        <ProgressBar
+                            android:id="@+id/basic_network_data_loading"
+                            android:layout_width="@dimen/margin_28"
+                            android:layout_height="@dimen/margin_28"
+                            android:visibility="gone"
+                            android:layout_marginRight="@dimen/margin_8"/>
+                    </LinearLayout>
 
                         <View
                             android:layout_width="match_parent"
@@ -536,13 +571,26 @@
                         android:padding="@dimen/margin_12"
                         android:orientation="vertical">
 
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             style="@style/TextStyle.Semibold.16"
                             android:textStyle="bold"
+                            android:layout_weight="1"
                             android:textColor="@color/text_grey"
                             android:text="@string/market_data_extended_data_title"/>
+
+                        <ProgressBar
+                            android:id="@+id/extended_network_data_loading"
+                            android:layout_width="@dimen/margin_28"
+                            android:layout_height="@dimen/margin_28"
+                            android:visibility="gone"
+                            android:layout_marginRight="@dimen/margin_8"/>
+                    </LinearLayout>
 
                         <LinearLayout
                             android:layout_width="match_parent"

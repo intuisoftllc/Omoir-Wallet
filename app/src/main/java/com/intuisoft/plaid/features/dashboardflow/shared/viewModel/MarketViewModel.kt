@@ -95,6 +95,15 @@ class MarketViewModel(
     protected val _showContent = SingleLiveData<Boolean>()
     val showContent: LiveData<Boolean> = _showContent
 
+    protected val _extendedNetworkDataLoading = SingleLiveData<Boolean>()
+    val extendedNetworkDataLoading: LiveData<Boolean> = _extendedNetworkDataLoading
+
+    protected val _basicNetworkDataLoading = SingleLiveData<Boolean>()
+    val basicNetworkDataLoading: LiveData<Boolean> = _basicNetworkDataLoading
+
+    protected val _chartDataLoading = SingleLiveData<Boolean>()
+    val chartDataLoading: LiveData<Boolean> = _chartDataLoading
+
     private var intervalType = ChartIntervalType.INTERVAL_1DAY
 
     fun updateData() {
@@ -138,6 +147,7 @@ class MarketViewModel(
     fun updateBasicMarketData() {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
+                _basicNetworkDataLoading.postValue(true)
                 val data = apiRepository.getBasicTickerData()
 
                 var mktCap = SimpleCurrencyFormat.formatValue(
@@ -162,6 +172,7 @@ class MarketViewModel(
                 _volume24Hr.postValue(vol)
                 _circulatingSupply.postValue(SimpleCoinNumberFormat.format(data.circulatingSupply) + " BTC")
                 _maxSupply.postValue(SimpleCoinNumberFormat.format(data.maxSupply.toLong()) + " BTC")
+                _basicNetworkDataLoading.postValue(false)
             }
         }
     }
@@ -171,7 +182,7 @@ class MarketViewModel(
     }
 
     // for testing purposes only
-    fun printCongestionRatingPoints() {
+    private fun printCongestionRatingPoints() {
         val indicator1Points = listOf(-1, 0, 1, 2)
         val indicator2Points = listOf(2, 1, -1, -2)
         val indicator3Points = listOf(-2, -1, 2, 3)
@@ -197,6 +208,7 @@ class MarketViewModel(
 
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
+                _extendedNetworkDataLoading.postValue(true)
                 if(getWalletNetwork() == BitcoinKit.NetworkType.TestNet) {
                     _network.postValue(getApplication<PlaidApp>().getString(R.string.market_data_extended_item_1_description2))
                 } else {
@@ -322,6 +334,7 @@ class MarketViewModel(
                 } else {
                     _couldNotLoadData.postValue(Unit)
                 }
+                _extendedNetworkDataLoading.postValue(false)
             }
         }
     }
@@ -352,12 +365,18 @@ class MarketViewModel(
     fun updateChartData() {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
+                _chartDataLoading.postValue(true)
+                _chartData.postValue(listOf())
+
                 val data = getChartData()
 
-                if(data != null)
+                if(data != null) {
+                    _chartDataLoading.postValue(false)
                     _chartData.postValue(data!!)
-                else
+                }
+                else {
                     _couldNotLoadData.postValue(Unit)
+                }
             }
         }
     }

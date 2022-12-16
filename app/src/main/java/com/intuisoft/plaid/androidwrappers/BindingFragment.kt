@@ -20,48 +20,48 @@ abstract class BindingFragment<T: ViewBinding> : Fragment(), FragmentActionBarDe
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        (requireActivity() as MainActivity).setActionBarVariant(actionBarVariant())
-        (requireActivity() as MainActivity).setActionBarTitle(if(actionBarTitle() == 0) "" else resources.getString(actionBarTitle()))
-        (requireActivity() as MainActivity).setActionBarSubTitle(if(actionBarSubtitle() == 0) "" else resources.getString(actionBarSubtitle()))
-        (requireActivity() as MainActivity).setActionBarActionLeft(actionBarActionLeft())
-        (requireActivity() as MainActivity).setActionBarActionRight(actionBarActionRight())
+        (activity as? MainActivity)?.setActionBarVariant(actionBarVariant())
+        (activity as? MainActivity)?.setActionBarTitle(if(actionBarTitle() == 0) "" else resources.getString(actionBarTitle()))
+        (activity as? MainActivity)?.setActionBarSubTitle(if(actionBarSubtitle() == 0) "" else resources.getString(actionBarSubtitle()))
+        (activity as? MainActivity)?.setActionBarActionLeft(actionBarActionLeft())
+        (activity as? MainActivity)?.setActionBarActionRight(actionBarActionRight())
         activateAnimatedLoading(false, "")
     }
 
     fun addToStack(dialog: AppCompatDialog, onCancel: (() -> Unit)? = null) {
-        (requireActivity() as MainActivity).addToStack(dialog, onCancel)
+        (activity as? MainActivity)?.addToStack(dialog, onCancel)
     }
 
     fun removeFromStack(dialog: AppCompatDialog) {
-        (requireActivity() as MainActivity).removeFromStack(dialog)
+        (activity as? MainActivity)?.removeFromStack(dialog)
     }
 
     fun clearStack() {
-        (requireActivity() as MainActivity).clearStack()
+        (activity as? MainActivity)?.clearStack()
     }
 
     fun scanBarcode() {
         requireActivity().checkAppPermission(Manifest.permission.CAMERA, 100) {
-            (requireActivity() as MainActivity).scanBarcode()
+            (activity as? MainActivity)?.scanBarcode()
         }
     }
 
     fun scanInvoice() {
         requireActivity().checkAppPermission(Manifest.permission.CAMERA, 100) {
-            (requireActivity() as MainActivity).scanInvoice()
+            (activity as? MainActivity)?.scanInvoice()
         }
     }
 
     fun activateAnimatedLoading(activate: Boolean, message: String) {
-        (requireActivity() as MainActivity).activateAnimatedLoading(activate, message)
+        (activity as? MainActivity)?.activateAnimatedLoading(activate, message)
     }
 
     fun activateNoInternet(activate: Boolean) {
-        (requireActivity() as MainActivity).activateNoInternet(activate)
+        (activity as? MainActivity)?.activateNoInternet(activate)
     }
 
     fun activateContentUnavailable(activate: Boolean, message: String) {
-        (requireActivity() as MainActivity).activateContentUnavailable(activate, message)
+        (activity as? MainActivity)?.activateContentUnavailable(activate, message)
     }
 
     override fun onNetworkStateChanged(hasNetwork: Boolean) {

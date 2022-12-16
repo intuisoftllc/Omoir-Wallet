@@ -1,8 +1,10 @@
 package com.intuisoft.plaid.common.network.blockchair.repository
 
+import android.util.Log
 import com.intuisoft.plaid.common.model.BasicPriceDataModel
 import com.intuisoft.plaid.common.model.ChartDataModel
 import com.intuisoft.plaid.common.model.ChartIntervalType
+import com.intuisoft.plaid.common.model.MarketHistoryDataModel
 import com.intuisoft.plaid.common.network.blockchair.api.CoingeckoApi
 import com.intuisoft.plaid.common.network.blockchair.response.ChartDataResponse
 import com.intuisoft.plaid.common.util.Constants
@@ -15,9 +17,29 @@ interface CoingeckoRepository {
 
     fun getChartData(interval: ChartIntervalType, currencyCode: String): Result<List<ChartDataModel>>
 
+    fun getHistoryData(currencyCode: String, from: Long, to: Long): Result<List<MarketHistoryDataModel>>
+
     private class Impl(
         private val api: CoingeckoApi,
     ) : CoingeckoRepository {
+
+        override fun getHistoryData(currencyCode: String, from: Long, to: Long): Result<List<MarketHistoryDataModel>> {
+            try {
+                val history = api.getHistoryData(currency = currencyCode.lowercase(), from = from, to = to).execute().body()
+
+                return Result.success(
+                    history!!.prices.map {
+                        MarketHistoryDataModel(
+                            time = it[0].toLong(),
+                            price = it[1]
+                        )
+                    }
+                )
+            } catch (t: Throwable) {
+                t.printStackTrace()
+                return Result.failure(t)
+            }
+        }
 
         override fun getBasicPriceData(): Result<List<BasicPriceDataModel>> {
             try {

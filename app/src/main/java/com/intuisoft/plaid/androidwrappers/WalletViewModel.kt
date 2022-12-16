@@ -15,6 +15,7 @@ import com.intuisoft.plaid.model.LocalWalletModel
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.common.util.RateConverter
 import com.intuisoft.plaid.walletmanager.AbstractWalletManager
+import com.intuisoft.plaid.walletmanager.errors.ExistingWalletErr
 import io.horizontalsystems.bitcoincore.managers.SendValueErrors
 import io.horizontalsystems.bitcoincore.models.TransactionInfo
 import io.horizontalsystems.bitcoincore.storage.UnspentOutput
@@ -355,14 +356,13 @@ open class WalletViewModel(
     }
 
     fun getTransactions() {
-        viewModelScope.launch {
-            localWallet!!.walletKit!!.transactions(type = null)
-                .subscribe { txList: List<TransactionInfo> ->
-                    _transactions.postValue(txList)
-                }.let {
+        localWallet!!.walletKit!!.transactions(type = null)
+            .subscribe { txList: List<TransactionInfo> ->
+                val blacklist = localStoreRepository.getAllBlacklistedTransactions(getWalletId())
+                _transactions.postValue(txList.filter { tx -> blacklist.find { tx.transactionHash == it.txId } == null })
+            }.let {
                 disposables.add(it)
             }
-        }
     }
 
     fun syncWallet() {
@@ -378,9 +378,7 @@ open class WalletViewModel(
         testNetWallet: Boolean
     ) {
         CoroutineScope(Dispatchers.IO).launch {
-            if (doesWalletExist(walletName)) {
-                _walletCreationError.postValue(Unit)
-            } else {
+            try{
                 val walletId = walletManager.createWallet(
                     name = walletName,
                     seed = seed!!,
@@ -389,6 +387,8 @@ open class WalletViewModel(
                 )
 
                 _walletCreated.postValue(walletId)
+            } catch(err: ExistingWalletErr) {
+                _walletCreationError.postValue(Unit)
             }
         }
     }
@@ -414,15 +414,15 @@ open class WalletViewModel(
         pubKey: String
     ) {
         CoroutineScope(Dispatchers.IO).launch {
-            if (doesWalletExist(walletName)) {
-                _walletCreationError.postValue(Unit)
-            } else {
+            try {
                 val walletId = walletManager.createWallet(
                     name = walletName,
                     pubKey = pubKey
                 )
 
                 _walletCreated.postValue(walletId)
+            } catch(e: ExistingWalletErr) {
+                _walletCreationError.postValue(Unit)
             }
         }
     }
@@ -441,9 +441,5 @@ open class WalletViewModel(
     override fun onCleared() {
         super.onCleared()
         disposables.dispose()
-    }
-
-    suspend fun doesWalletExist(walletName: String) : Boolean {
-        return walletManager.doesWalletExist(walletName)
     }
 }

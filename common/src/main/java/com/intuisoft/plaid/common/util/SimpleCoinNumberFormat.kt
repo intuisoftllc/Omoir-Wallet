@@ -73,6 +73,18 @@ object SimpleCoinNumberFormat {
             (100_000_000_000_000..999_999_999_999_999).contains(_number) -> {
                 return (if(isNegative) "-" else "") + df.format(_number.toDouble() / 1_000_000_000_000) + " Tril"
             }
+            (1_000_000_000_000_000..9_999_999_999_999_999).contains(_number) -> {
+                return (if(isNegative) "-" else "") + df.format(_number.toDouble() / 1_000_000_000_000_000) + " Quad"
+            }
+            (10_000_000_000_000_000..99_999_999_999_999_999).contains(_number) -> {
+                return (if(isNegative) "-" else "") + df.format(_number.toDouble() / 1_000_000_000_000_000) + " Quad"
+            }
+            (100_000_000_000_000_000..999_999_999_999_999_999).contains(_number) -> {
+                return (if(isNegative) "-" else "") + df.format(_number.toDouble() / 1_000_000_000_000_000) + " Quad"
+            }
+            (1_000_000_000_000_000_000..Long.MAX_VALUE).contains(_number) -> {
+                return (if(isNegative) "-" else "") + df.format(_number.toDouble() / 1_000_000_000_000_000_000) + " Quint+"
+            }
             else -> {
                 return (if(isNegative) "-" else "") + _number
             }

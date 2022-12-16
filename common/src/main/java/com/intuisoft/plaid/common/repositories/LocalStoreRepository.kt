@@ -178,7 +178,7 @@ interface LocalStoreRepository {
 
     suspend fun blacklistTransaction(transaction: BlacklistedTransactionModel, blacklist: Boolean)
 
-    fun getAllBlacklistedTransactions(): List<BlacklistedTransactionModel>
+    fun getAllBlacklistedTransactions(walletId: String): List<BlacklistedTransactionModel>
 
     suspend fun blacklistAddress(address: BlacklistedAddressModel, blacklist: Boolean)
 

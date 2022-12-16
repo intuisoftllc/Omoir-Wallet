@@ -36,6 +36,8 @@ interface DatabaseRepository {
 
     suspend fun blacklistTransaction(transaction: BlacklistedTransactionModel, blacklist: Boolean)
 
+    suspend fun getAllBlacklistedTransactions(walletId: String): List<BlacklistedTransactionModel>
+
     suspend fun getAllBlacklistedTransactions(): List<BlacklistedTransactionModel>
 
     suspend fun blacklistAddress(address: BlacklistedAddressModel, blacklist: Boolean)

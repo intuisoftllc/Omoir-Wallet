@@ -41,7 +41,13 @@ abstract class ConfigurableFragment<T: ViewBinding>(
             )
         }
 
-        onConfiguration(baseVM?.currentConfig)
+        if(requiresWallet) {
+            requireWallet()?.let {
+                onConfiguration(baseVM?.currentConfig)
+            }
+        } else {
+            onConfiguration(baseVM?.currentConfig)
+        }
     }
 
     abstract fun onConfiguration(configuration: FragmentConfiguration?)
@@ -75,10 +81,6 @@ abstract class ConfigurableFragment<T: ViewBinding>(
         } else {
             baseVM!!.currentConfig = null
         }
-
-        if(requiresWallet) {
-            requireWallet()
-        }
     }
 
     override fun onResume() {
@@ -86,12 +88,14 @@ abstract class ConfigurableFragment<T: ViewBinding>(
         checkPin()
     }
 
-    private fun requireWallet() {
+    private fun requireWallet(): LocalWalletModel? {
         if(baseVM is WalletViewModel) {
             val wallet = (baseVM!! as WalletViewModel).getWallet()
             if(wallet == null) {
                 baseVM!!.softRestart(this)
             }
+
+            return wallet
         } else {
             throw IllegalStateException("requireWallet(): base vm != WalletViewModel")
         }
@@ -100,7 +104,7 @@ abstract class ConfigurableFragment<T: ViewBinding>(
     private fun checkPin() {
         if(pinProtection) {
             pinViewModel.checkPinStatus {
-                (requireActivity() as MainActivity).clearStack()
+                (activity as? MainActivity)?.clearStack()
                 navigate(
                     R.id.pinFragment,
                     Constants.Navigation.ANIMATED_FADE_IN_EXIT_NAV_OPTION

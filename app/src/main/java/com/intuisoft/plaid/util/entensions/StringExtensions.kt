@@ -3,9 +3,9 @@ package com.intuisoft.plaid.util.entensions
 import java.math.BigInteger
 import java.security.MessageDigest
 
-fun String.sha256(): String {
+fun String.sha256(length: Int = 32): String {
     val md = MessageDigest.getInstance("SHA-256")
-    return BigInteger(1, md.digest(toByteArray())).toString(16).padStart(32, '0')
+    return BigInteger(1, md.digest(toByteArray())).toString(16).padStart(length, '0')
 }
 
 fun String.charsAfter(ch: Char) : Int {

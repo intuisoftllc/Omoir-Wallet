@@ -246,7 +246,11 @@ class ReportDetailsViewModel(
 
     fun setupSubscriptions() {
         localWallet!!.walletKit!!.transactions(type = null).subscribe { txList: List<TransactionInfo> ->
-            walletTransactions = txList.filter { it.status != TransactionStatus.INVALID }
+            val blacklist = localStoreRepository.getAllBlacklistedTransactions(getWalletId())
+            walletTransactions = txList.filter { tx ->
+                tx.status != TransactionStatus.INVALID
+                        && blacklist.find { tx.transactionHash == it.txId } == null
+            }
             setFilter(filter)
         }.let {
             disposables.add(it)

@@ -13,7 +13,6 @@ import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.common.util.RateConverter
 import com.intuisoft.plaid.common.util.SimpleCurrencyFormat
-import com.intuisoft.plaid.common.util.extensions.ignoreNan
 import com.intuisoft.plaid.util.NetworkUtil
 import com.intuisoft.plaid.util.SimpleTimeFormat
 import com.intuisoft.plaid.walletmanager.AbstractWalletManager
@@ -40,8 +39,11 @@ class DashboardViewModel(
     protected val _percentageGain = SingleLiveData<Pair<Double, Double>>()
     val percentageGain: LiveData<Pair<Double, Double>> = _percentageGain
 
-    protected val _showChartContent = SingleLiveData<Boolean>()
-    val showChartContent: LiveData<Boolean> = _showChartContent
+    protected val _showChartError = SingleLiveData<String?>()
+    val showChartError: LiveData<String?> = _showChartError
+
+    protected val _chartDataLoading = SingleLiveData<Boolean>()
+    val chartDataLoading: LiveData<Boolean> = _chartDataLoading
 
     protected val _noChartData = SingleLiveData<Unit>()
     val noChartData: LiveData<Unit> = _noChartData
@@ -57,9 +59,6 @@ class DashboardViewModel(
 
     protected val _averagePrice = SingleLiveData<String>()
     val averagePrice: LiveData<String> = _averagePrice
-
-    protected val _netReturn = SingleLiveData<String>()
-    val netReturn: LiveData<String> = _netReturn
 
     protected val _highestBalance = SingleLiveData<String>()
     val highestBalance: LiveData<String> = _highestBalance
@@ -89,7 +88,7 @@ class DashboardViewModel(
 
     private fun updateBalanceHistory() {
         if(localStoreRepository.getBitcoinDisplayUnit() != BitcoinDisplayUnit.FIAT || NetworkUtil.hasInternet(getApplication<PlaidApp>())) {
-            _showChartContent.postValue(true)
+            _showChartError.postValue(null)
             updateWalletBalanceHistory()
         } else {
             onNoInternet(false)
@@ -126,15 +125,6 @@ class DashboardViewModel(
         }
     }
 
-    private fun getNetProfit(
-        satsReceived: Long,
-        satsSent: Long,
-        totalReceiveCost: Double,
-        totalSendCost: Double
-    ): Double {
-        return totalSendCost - ((satsSent.toDouble() / satsReceived) * totalReceiveCost)
-    }
-
     private fun updateWalletBalanceHistory() {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
@@ -147,7 +137,6 @@ class DashboardViewModel(
                         _totalSent.postValue(rate.from(RateConverter.RateType.FIAT_RATE, localStoreRepository.getLocalCurrency()).second!!)
                         _totalReceived.postValue(rate.from(RateConverter.RateType.FIAT_RATE, localStoreRepository.getLocalCurrency()).second!!)
                         _averagePrice.postValue(rate.from(RateConverter.RateType.FIAT_RATE, localStoreRepository.getLocalCurrency()).second!!)
-                        _netReturn.postValue(rate.from(RateConverter.RateType.FIAT_RATE, localStoreRepository.getLocalCurrency()).second!!)
                         _highestBalance.postValue(rate.from(RateConverter.RateType.FIAT_RATE, localStoreRepository.getLocalCurrency()).second!!)
 
                         walletManager.findStoredWallet(getWalletId())?.createdAt?.let {
@@ -163,6 +152,8 @@ class DashboardViewModel(
                             }
                         }
                     } else {
+                        _chartDataLoading.postValue(true)
+                        _chartData.postValue(listOf())
                         val history = getBalanceHistoryForInterval(intervalType)
                         val rateConverter = RateConverter(
                             localStoreRepository.getRateFor(localStoreRepository.getLocalCurrency())?.currentPrice
@@ -170,50 +161,33 @@ class DashboardViewModel(
                         )
 
                         if(localStoreRepository.isProEnabled()) {
-                            val fullHistory =
-                                getBalanceHistoryForInterval(ChartIntervalType.INTERVAL_ALL_TIME)
-
-                            val allTimeMarketData = apiRepository.getTickerPriceChartData(
-                                getMaxMarketInterval(
-                                    ChartIntervalType.INTERVAL_ALL_TIME,
-                                    Instant.ofEpochSecond(balanceHistory.first().second)
-                                )
-                            )?.filter {
-                                (it.time / Constants.Time.MILLS_PER_SEC) >= fullHistory.first().second
-                            }
-
+                            val time = getMaxMarketInterval(ChartIntervalType.INTERVAL_ALL_TIME, Instant.ofEpochSecond(balanceHistory.first().second-1))
+                            val allTimeMarketData =
+                                apiRepository.getMarketHistoryData(localStoreRepository.getLocalCurrency(), time.first, time.second)
                             val createdTime =
                                 Math.min(walletManager.findStoredWallet(getWalletId())!!.createdAt, balanceHistory.first().second * Constants.Time.MILLS_PER_SEC)
                             val incomingTxs =
                                 walletTransactions.filter { it.type == TransactionType.Incoming }
                             val outgoingTxs =
-                                walletTransactions.filter { it.type == TransactionType.Outgoing }
-
-                            val totalSent = outgoingTxs
-                                .map { tx ->
-                                    tx.amount + (tx.fee ?: 0)
-                                }.sum()
+                                walletTransactions.filter { it.type == TransactionType.Outgoing || it.type == TransactionType.SentToSelf }
 
                             val totalSentCost = outgoingTxs
                                 .map { tx ->
-                                    (allTimeMarketData?.find { it.time >= tx.timestamp }?.value
-                                        ?: 0f) * ((tx.amount.toFloat() + (tx.fee ?: 0)) / Constants.Limit.SATS_PER_BTC)
-                                }.sum()
-
-                            val totalReceived = incomingTxs
-                                .map { tx ->
-                                    tx.amount
+                                    if(tx.type == TransactionType.Outgoing) {
+                                        (tx.amount.toDouble() + (tx.fee?.toDouble() ?: 0.0)) / Constants.Limit.SATS_PER_BTC
+                                    } else {
+                                        (tx.fee?.toDouble() ?: 0.0) / Constants.Limit.SATS_PER_BTC
+                                    }
                                 }.sum()
 
                             val totalReceivedCost = incomingTxs
                                 .map { tx ->
-                                    (allTimeMarketData?.find { it.time >= tx.timestamp }?.value
-                                        ?: 0f) * (tx.amount.toFloat() / Constants.Limit.SATS_PER_BTC)
+                                    (tx.amount.toDouble()) / Constants.Limit.SATS_PER_BTC
                                 }.sum()
 
                             val averagePrice = incomingTxs
                                 .map { tx ->
-                                    allTimeMarketData?.find { it.time >= tx.timestamp }?.value ?: 0f
+                                    allTimeMarketData?.find { it.time >= tx.timestamp }?.price?.toFloat() ?: 0f
                                 }.average()
 
                             val highestBalance = balanceHistory
@@ -226,8 +200,8 @@ class DashboardViewModel(
                                     ?: 0.0
                             )
                             rate.setLocalRate(
-                                RateConverter.RateType.FIAT_RATE,
-                                totalSentCost.toDouble()
+                                RateConverter.RateType.BTC_RATE,
+                                totalSentCost
                             )
                             _totalSent.postValue(
                                 rate.from(
@@ -239,8 +213,8 @@ class DashboardViewModel(
                             )
 
                             rate.setLocalRate(
-                                RateConverter.RateType.FIAT_RATE,
-                                totalReceivedCost.toDouble()
+                                RateConverter.RateType.BTC_RATE,
+                                totalReceivedCost
                             )
                             _totalReceived.postValue(
                                 rate.from(
@@ -253,22 +227,6 @@ class DashboardViewModel(
 
                             rate.setLocalRate(RateConverter.RateType.FIAT_RATE, averagePrice)
                             _averagePrice.postValue(
-                                rate.from(
-                                    RateConverter.RateType.FIAT_RATE,
-                                    localStoreRepository.getLocalCurrency()
-                                ).second!!
-                            )
-
-                            rate.setLocalRate(
-                                RateConverter.RateType.FIAT_RATE,
-                                getNetProfit(
-                                    satsReceived = totalReceived,
-                                    satsSent = totalSent,
-                                    totalReceiveCost = totalReceivedCost.toDouble(),
-                                    totalSendCost = totalSentCost.toDouble()
-                                )
-                            )
-                            _netReturn.postValue(
                                 rate.from(
                                     RateConverter.RateType.FIAT_RATE,
                                     localStoreRepository.getLocalCurrency()
@@ -293,34 +251,7 @@ class DashboardViewModel(
                             )
                         }
 
-                        var gain: Double
-
-                        if (localStoreRepository.getBitcoinDisplayUnit() != BitcoinDisplayUnit.FIAT) {
-                            val start = history.first().first
-                            val end = history.last().first
-                            gain = 100 * ((end.toDouble() - start) / start.toDouble())
-                        } else {
-                            val data = apiRepository.getTickerPriceChartData(
-                                getMaxMarketInterval(
-                                    intervalType,
-                                    Instant.ofEpochSecond(history.first().second)
-                                )
-                            )
-                                ?.filter {
-                                    (it.time / Constants.Time.MILLS_PER_SEC) >= history.first().second
-                                }
-
-                            if (data != null && data.isNotEmpty()) {
-                                val start =
-                                    getBalanceAtTime(data.first().time / Constants.Time.MILLS_PER_SEC) * data.first().value
-                                val end =
-                                    getBalanceAtTime(data.last().time / Constants.Time.MILLS_PER_SEC) * data.last().value
-                                gain = 100 * ((end.toDouble() - start) / start.toDouble())
-                            } else {
-                                gain = 0.0
-                            }
-                        }
-
+                        _chartDataLoading.postValue(false)
                         when (localStoreRepository.getBitcoinDisplayUnit()) {
                             BitcoinDisplayUnit.SATS -> {
                                 _chartData.postValue(
@@ -337,10 +268,10 @@ class DashboardViewModel(
                                     }
                                 )
                                 
-                                _showChartContent.postValue(true)
-                                val beginValue = history.firstOrNull()?.first ?: 0L
+                                _showChartError.postValue(null)
+                                var beginValue = history.first { it.first > 0 }?.first ?: 0L
                                 val endValue = history.lastOrNull()?.first ?: 0L
-                                _percentageGain.postValue(gain.ignoreNan() to (endValue - beginValue).toDouble())
+                                _percentageGain.postValue(100 * ((endValue.toDouble() - beginValue) / beginValue.toDouble()) to (endValue - beginValue).toDouble())
                             }
 
                             BitcoinDisplayUnit.BTC -> {
@@ -358,34 +289,34 @@ class DashboardViewModel(
                                     }
                                 )
 
-                                _showChartContent.postValue(true)
-                                val beginValue = history.firstOrNull()?.first ?: 0L
+                                _showChartError.postValue(null)
+                                var beginValue = history.first { it.first > 0 }?.first ?: 0L
                                 val endValue = history.lastOrNull()?.first ?: 0L
-                                _percentageGain.postValue(gain.ignoreNan() to (endValue - beginValue).toDouble())
+                                _percentageGain.postValue(100 * ((endValue.toDouble() - beginValue) / beginValue.toDouble()) to (endValue - beginValue).toDouble())
                             }
 
                             BitcoinDisplayUnit.FIAT -> {
-                                val data = apiRepository.getTickerPriceChartData(getMaxMarketInterval(intervalType, Instant.ofEpochSecond(history.first().second)))
-                                    ?.filter {
-                                        (it.time / Constants.Time.MILLS_PER_SEC) >= history.first().second
-                                    }
+                                val max = getMaxMarketInterval(intervalType, Instant.ofEpochSecond(balanceHistory.first().second-1))
+                                val data = apiRepository.getMarketHistoryData(localStoreRepository.getLocalCurrency(), max.first, max.second)
 
                                 if(data != null && data.isNotEmpty()) {
+                                    val cData = data.map {
+                                        ChartDataModel(
+                                            time = it.time / Constants.Time.MILLS_PER_SEC,
+                                            value = getBalanceAtTime(it.time / Constants.Time.MILLS_PER_SEC, balanceHistory) * it.price.toFloat()
+                                        )
+                                    }
+
                                     _chartData.postValue(
-                                        data.map {
-                                            ChartDataModel(
-                                                time = it.time / Constants.Time.MILLS_PER_SEC,
-                                                value = getBalanceAtTime(it.time / Constants.Time.MILLS_PER_SEC) * it.value
-                                            )
-                                        }
+                                        cData
                                     )
 
-                                    _showChartContent.postValue(true)
-                                    val beginValue = getBalanceAtTime(data.first().time / Constants.Time.MILLS_PER_SEC) * data.first().value
-                                    val endValue =  getBalanceAtTime(data.last().time / Constants.Time.MILLS_PER_SEC) * data.last().value
-                                    _percentageGain.postValue(gain.ignoreNan() to (endValue - beginValue).toDouble())
+                                    _showChartError.postValue(null)
+                                    var beginValue = cData.first { it.value > 0 }.value
+                                    val endValue =  cData.last().value
+                                    _percentageGain.postValue(100 * ((endValue.toDouble() - beginValue) / beginValue.toDouble()) to (endValue - beginValue).toDouble())
                                 } else {
-                                    _showChartContent.postValue(false)
+                                    _showChartError.postValue(getApplication<PlaidApp>().getString(R.string.failed_to_load_chart_data))
                                 }
                             }
                         }
@@ -395,45 +326,46 @@ class DashboardViewModel(
         }
     }
 
-    private fun getBalanceAtTime(time: Long): Float {
-        val closestBalance = balanceHistory.reversed().first { it.second <= time }
-        return closestBalance.first.toFloat() / Constants.Limit.SATS_PER_BTC
+    private fun getBalanceAtTime(time: Long, history: List<Pair<Long, Long>>): Float {
+        val closestBalance = history.find { it.second >= time }?.first?.toFloat()
+            ?: history.lastOrNull()?.first?.toFloat()
+        return (closestBalance ?: 0f) / Constants.Limit.SATS_PER_BTC
     }
 
-    private fun getMaxMarketInterval(interval: ChartIntervalType, birthdate: Instant): ChartIntervalType {
+    private fun getMaxMarketInterval(interval: ChartIntervalType, birthdate: Instant): Pair<Long, Long> {
         val nowTime = SimpleTimeFormat.startOfDay(ZonedDateTime.ofInstant(Instant.now(), ZoneId.systemDefault()))
         val startOfBDay  = SimpleTimeFormat.startOfDay(ZonedDateTime.ofInstant(birthdate, ZoneId.systemDefault())).toEpochSecond()
+        var startDay  = 0L
 
         when {
-            interval == ChartIntervalType.INTERVAL_1DAY ||
-                    startOfBDay >= nowTime.minusDays(1).toEpochSecond() -> {
-                return ChartIntervalType.INTERVAL_1DAY
+            interval == ChartIntervalType.INTERVAL_1DAY -> {
+                startDay = nowTime.minusDays(1).toEpochSecond()
             }
-            interval == ChartIntervalType.INTERVAL_1WEEK ||
-                    startOfBDay  >= nowTime.minusWeeks(1).toEpochSecond() -> {
-                return ChartIntervalType.INTERVAL_1WEEK
+            interval == ChartIntervalType.INTERVAL_1WEEK -> {
+                startDay = nowTime.minusWeeks(1).toEpochSecond()
             }
-            interval == ChartIntervalType.INTERVAL_1MONTH ||
-                    startOfBDay >= nowTime.minusMonths(1).toEpochSecond() -> {
-                return ChartIntervalType.INTERVAL_1MONTH
+            interval == ChartIntervalType.INTERVAL_1MONTH -> {
+                startDay = nowTime.minusMonths(1).toEpochSecond()
             }
-            interval == ChartIntervalType.INTERVAL_3MONTHS ||
-                    startOfBDay >= nowTime.minusMonths(3).toEpochSecond() -> {
-                return ChartIntervalType.INTERVAL_3MONTHS
+            interval == ChartIntervalType.INTERVAL_3MONTHS  -> {
+                startDay = nowTime.minusMonths(3).toEpochSecond()
             }
-            interval == ChartIntervalType.INTERVAL_6MONTHS ||
-                    startOfBDay >= nowTime.minusMonths(6).toEpochSecond() -> {
-                return ChartIntervalType.INTERVAL_6MONTHS
+            interval == ChartIntervalType.INTERVAL_6MONTHS -> {
+                startDay = nowTime.minusMonths(6).toEpochSecond()
             }
-            interval == ChartIntervalType.INTERVAL_1YEAR ||
-                    startOfBDay >= nowTime.minusYears(1).toEpochSecond() -> {
-                return ChartIntervalType.INTERVAL_1YEAR
+            interval == ChartIntervalType.INTERVAL_1YEAR -> {
+                startDay = nowTime.minusYears(1).toEpochSecond()
             }
             else -> {
-                return interval
+                startDay = startOfBDay
             }
         }
 
+        if(startOfBDay > startDay) {
+            startDay = startOfBDay
+        }
+
+        return startDay to nowTime.toEpochSecond()
     }
 
     private fun getBalanceHistoryForInterval(interval: ChartIntervalType): List<Pair<Long, Long>> {
@@ -485,7 +417,11 @@ class DashboardViewModel(
             if(it.type == TransactionType.Incoming)
                 incomeFound = true
             incomeFound
-        }.forEach {
+        }.forEachIndexed { index, it ->
+            if(index == 0) {
+                balanceHistory.add(0L to it.timestamp)
+            }
+
             when(it.type) {
                 TransactionType.Incoming -> {
                     balance += it.amount
@@ -513,10 +449,10 @@ class DashboardViewModel(
             val data = apiRepository.getTickerPriceChartData(intervalType)
 
             if(data != null) {
-                _showChartContent.postValue(true)
+                _showChartError.postValue(null)
                 updateWalletBalanceHistory()
             } else {
-                _showChartContent.postValue(hasInternet)
+                _showChartError.postValue(getApplication<PlaidApp>().getString(R.string.no_internet_connection))
 
                 if (hasInternet) {
                     updateWalletBalanceHistory()

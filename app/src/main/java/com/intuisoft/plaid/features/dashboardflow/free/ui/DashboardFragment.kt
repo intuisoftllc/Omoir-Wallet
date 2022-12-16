@@ -84,12 +84,12 @@ class DashboardFragment : ConfigurableFragment<FragmentWalletDashboardBinding>(p
         })
 
         viewModel.displayWallet.observe(viewLifecycleOwner, Observer { wallet ->
-            (requireActivity() as MainActivity).setActionBarTitle(wallet.name)
+            (activity as? MainActivity)?.setActionBarTitle(wallet.name)
             onWalletStateUpdated(wallet)
         })
 
         viewModel.walletBalance.observe(viewLifecycleOwner, Observer {
-            (requireActivity() as MainActivity).setActionBarSubTitle(it)
+            (activity as? MainActivity)?.setActionBarSubTitle(it)
         })
 
         binding.transactions.adapter = adapter
@@ -165,7 +165,7 @@ class DashboardFragment : ConfigurableFragment<FragmentWalletDashboardBinding>(p
                 localStoreRepository
             )
 
-            (requireActivity() as MainActivity).setActionBarSubTitle(state)
+            (activity as? MainActivity)?.setActionBarSubTitle(state)
 
             if (wallet.isSynced && wallet.isSynced)
                 viewModel.getTransactions()

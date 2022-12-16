@@ -12,18 +12,21 @@ import java.time.Instant
 
 @Entity(tableName = "transaction_blacklist")
 data class TransactionBlacklist(
-    @PrimaryKey(autoGenerate = false)  @ColumnInfo(name = "id") var txId: String
+    @PrimaryKey(autoGenerate = false)  @ColumnInfo(name = "id") var txId: String,
+    @ColumnInfo(name = "wallet_id") var walletId: String
 ) {
     fun from() =
         BlacklistedTransactionModel(
-            txId = txId
+            txId = txId,
+            walletId = walletId
         )
 
     companion object {
 
-        fun consume(txId: String) =
+        fun consume(txId: String, walletId: String) =
             TransactionBlacklist(
-                txId = txId
+                txId = txId,
+                walletId = walletId
             )
     }
 }

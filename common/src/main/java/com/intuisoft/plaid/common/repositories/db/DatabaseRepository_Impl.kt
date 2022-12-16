@@ -84,10 +84,13 @@ class DatabaseRepository_Impl(
         blacklist: Boolean
     ) {
         if(blacklist)
-            transactionBlacklistDao.insert(TransactionBlacklist.consume(transaction.txId))
+            transactionBlacklistDao.insert(TransactionBlacklist.consume(transaction.txId, transaction.walletId))
         else transactionBlacklistDao.removeFromBlacklist(transaction.txId)
         database.onUpdate(transactionBlacklistDao)
     }
+
+    override suspend fun getAllBlacklistedTransactions(walletId: String): List<BlacklistedTransactionModel> =
+        transactionBlacklistDao.getBlacklistedTransaction(walletId).map { it.from() }
 
     override suspend fun getAllBlacklistedTransactions(): List<BlacklistedTransactionModel> =
         transactionBlacklistDao.getBlacklistedTransaction().map { it.from() }

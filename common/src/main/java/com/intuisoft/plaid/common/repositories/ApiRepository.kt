@@ -19,6 +19,8 @@ interface ApiRepository {
 
     suspend fun getTickerPriceChartData(intervalType: ChartIntervalType): List<ChartDataModel>?
 
+    suspend fun getMarketHistoryData(currencyCode: String, from: Long, to: Long): List<MarketHistoryDataModel>?
+
     suspend fun createExchange(
         fixed: Boolean, from: String, to: String, receiveAddress: String,
         receiveAddressMemo: String, refundAddress: String, refundAddressMemo: String,

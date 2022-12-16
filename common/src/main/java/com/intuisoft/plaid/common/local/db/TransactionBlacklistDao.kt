@@ -13,6 +13,13 @@ interface TransactionBlacklistDao {
 
     @Query("""
         SELECT * from transaction_blacklist
+         WHERE wallet_id = :walletId
+         ORDER BY id ASC 
+    """)
+    fun getBlacklistedTransaction(walletId: String) : List<TransactionBlacklist>
+
+    @Query("""
+        SELECT * from transaction_blacklist
          ORDER BY id ASC 
     """)
     fun getBlacklistedTransaction() : List<TransactionBlacklist>

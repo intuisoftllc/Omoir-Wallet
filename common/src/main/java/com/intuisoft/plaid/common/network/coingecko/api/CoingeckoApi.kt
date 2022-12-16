@@ -2,6 +2,7 @@ package com.intuisoft.plaid.common.network.blockchair.api
 
 import com.intuisoft.plaid.common.network.blockchair.response.BasicPriceDataResponse
 import com.intuisoft.plaid.common.network.blockchair.response.ChartDataResponse
+import com.intuisoft.plaid.common.network.blockchair.response.MarketHistoryDataResponse
 import retrofit2.Call
 import retrofit2.http.*
 
@@ -63,4 +64,12 @@ interface CoingeckoApi {
         @Query("vs_currency") currencyCode: String,
         @Query("days") days: String = "max"
     ): Call<ChartDataResponse>
+
+    @GET("coins/{id}/market_chart/range")
+    fun getHistoryData(
+        @Path("id") id: String = "bitcoin",
+        @Query("vs_currency") currency: String,
+        @Query("from") from: Long,
+        @Query("to") to: Long
+    ): Call<MarketHistoryDataResponse>
 }

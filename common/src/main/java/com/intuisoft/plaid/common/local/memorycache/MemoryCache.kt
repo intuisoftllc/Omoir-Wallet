@@ -7,9 +7,7 @@ import com.intuisoft.plaid.common.util.extensions.remove
  * Memory Cache aims to lower the latency to requesting frequently used data by bypassing both
  * remote server calls and database queries.
  */
-class MemoryCache(
-
-) {
+class MemoryCache {
     private var rangeLimitsCache: HashMap<String, Pair<Long, CurrencyRangeLimitModel>> = hashMapOf()
     private var chartPriceUpdateTimes: HashMap<Int, Long> = hashMapOf()
     private var wholeCoinConversionFixedCache: MutableList<Pair<WholeCoinConversionModel, Long>> = mutableListOf()
@@ -23,6 +21,7 @@ class MemoryCache(
     private var testnetBlockHashCache: HashMap<Int, Pair<Long, String?>> = hashMapOf()
     private var addressTransactionsCache: HashMap<String, Pair<Long, List<AddressTransactionData>>> = hashMapOf()
     private var testnetAddressTransactionsCache: HashMap<String, Pair<Long, List<AddressTransactionData>>> = hashMapOf()
+    private var marketHistoryCache: MutableList<MarketHistoryCache> = mutableListOf()
 
     fun clear() {
         rangeLimitsCache = hashMapOf()
@@ -38,6 +37,7 @@ class MemoryCache(
         testnetBlockHashCache = hashMapOf()
         addressTransactionsCache = hashMapOf()
         testnetAddressTransactionsCache = hashMapOf()
+        marketHistoryCache = mutableListOf()
     }
 
     fun getStoredWalletInfo() = storedWalletInfoCache
@@ -69,6 +69,15 @@ class MemoryCache(
         if(testnet) testnetAddressTransactionsCache.get(address)?.first
         else addressTransactionsCache.get(address)?.first
 
+    fun setMarketHistoryForCurrency(currency: String, from: Long, to: Long, data: List<MarketHistoryDataModel>) {
+        marketHistoryCache.remove { it.currency == currency && it.from == from && it.to == to }
+        marketHistoryCache.add(MarketHistoryCache(currency, from, to, data))
+    }
+
+    fun getMarketHistoryForCurrency(currency: String, from: Long, to: Long): List<MarketHistoryDataModel>? {
+        return marketHistoryCache.find { it.currency == currency && it.from == from && it.to == to }?.data
+    }
+
     fun setAddressTransactions(address: String, testnet: Boolean, updateTime: Long, data: List<AddressTransactionData>) {
         if(testnet) testnetAddressTransactionsCache.put(address, updateTime to data)
         else addressTransactionsCache.put(address, updateTime to data)
@@ -80,7 +89,7 @@ class MemoryCache(
         blacklistedAddressesCache = addresses
     }
 
-    fun getBlacklistedTransactions() = blacklistedTransactionsCache
+    fun getBlacklistedTransactions(walletId: String) = blacklistedTransactionsCache?.filter { it.walletId == walletId }
 
     fun setBlacklistedTransactions(transactions: List<BlacklistedTransactionModel>) {
         blacklistedTransactionsCache = transactions
@@ -183,4 +192,11 @@ class MemoryCache(
     fun setLastExchangeUpdateTime(id: String, time: Long) {
         exchangeUpdateTimes.put(id, time)
     }
+
+    data class MarketHistoryCache(
+        val currency: String,
+        val from: Long,
+        val to: Long,
+        val data: List<MarketHistoryDataModel>
+    )
 }
