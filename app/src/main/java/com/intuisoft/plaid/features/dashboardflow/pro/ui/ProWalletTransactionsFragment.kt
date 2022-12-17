@@ -22,6 +22,7 @@ import com.intuisoft.plaid.model.LocalWalletModel
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.common.util.SimpleCoinNumberFormat
+import com.intuisoft.plaid.common.util.extensions.safeWalletScope
 import com.intuisoft.plaid.common.util.extensions.toArrayList
 import com.intuisoft.plaid.databinding.FragmentProWalletTrasactionsBinding
 import com.intuisoft.plaid.features.dashboardflow.shared.viewModel.DashboardViewModel
@@ -103,22 +104,23 @@ class ProWalletTransactionsFragment : ConfigurableFragment<FragmentProWalletTras
     }
 
     override fun onWalletStateUpdated(wallet: LocalWalletModel) {
-        if(viewModel.getWallet() != null && wallet.uuid == viewModel.getWalletId()
-            && activity != null && _binding != null) {
-            val state = wallet.onWalletStateChanged(
-                requireContext(),
-                wallet.syncPercentage,
-                false,
-                localStoreRepository
-            )
+        safeWalletScope {
+            if (wallet.uuid == viewModel.getWalletId() && activity != null && _binding != null) {
+                val state = wallet.onWalletStateChanged(
+                    requireContext(),
+                    wallet.syncPercentage,
+                    false,
+                    localStoreRepository
+                )
 
-            if (wallet.isSynced && wallet.isSynced)
-                viewModel.getTransactions()
+                if (wallet.isSynced && wallet.isSynced)
+                    viewModel.getTransactions()
 
-            if(wallet.isSyncing) {
-                (activity as? MainActivity)?.setActionBarSubTitle(state)
-            } else
-                (activity as? MainActivity)?.setActionBarSubTitle(getString(R.string.pro_wallet_transactions_fragment_label))
+                if (wallet.isSyncing) {
+                    (activity as? MainActivity)?.setActionBarSubTitle(state)
+                } else
+                    (activity as? MainActivity)?.setActionBarSubTitle(getString(R.string.pro_wallet_transactions_fragment_label))
+            }
         }
     }
 

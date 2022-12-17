@@ -134,7 +134,7 @@
         app:button_style="rounded"
         android:id="@+id/confirm"
         android:layout_marginTop="@dimen/margin_20"
-        app:layout_constraintTop_toBottomOf="@id/memo_container"
+        app:layout_constraintTop_toBottomOf="@id/validation_error"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@id/cancel"

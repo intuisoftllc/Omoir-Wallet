@@ -12,8 +12,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.navOptions
+import com.intuisoft.plaid.PlaidApp
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
+import com.intuisoft.plaid.util.entensions.ioContext
+import com.intuisoft.plaid.util.entensions.mainContext
 import com.intuisoft.plaid.walletmanager.AbstractWalletManager
 import kotlinx.coroutines.*
 
@@ -40,7 +43,7 @@ open class BaseViewModel(
         viewModelScope.launch {
             var result : Result<T>
 
-            withContext(Dispatchers.IO) {
+            ioContext {
                 try {
                     result = Result.success(call())
                 } catch (e: Throwable) {
@@ -84,6 +87,8 @@ open class BaseViewModel(
     }
 
     fun navigateToFingerprintSettings(activity: Activity) {
+        (activity.application as PlaidApp).ignorePinCheck = true
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             activity.startActivity(Intent(Settings.ACTION_BIOMETRIC_ENROLL));
         }
@@ -99,9 +104,9 @@ open class BaseViewModel(
 
     fun eraseAllData(onWipeFinished: () -> Unit) {
         viewModelScope.launch {
-            withContext(Dispatchers.IO) {
+            ioContext {
                 localStoreRepository.wipeAllData {
-                    withContext(Dispatchers.Main) {
+                    mainContext {
                         onWipeFinished()
                     }
                 }

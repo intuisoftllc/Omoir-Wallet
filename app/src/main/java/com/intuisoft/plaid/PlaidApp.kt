@@ -62,6 +62,7 @@ class PlaidApp : Application(), Application.ActivityLifecycleCallbacks, KoinComp
     }
 
     override fun onActivityResumed(p0: Activity) {
+        ignorePinCheck = false
     }
 
     override fun onActivityPaused(p0: Activity) {

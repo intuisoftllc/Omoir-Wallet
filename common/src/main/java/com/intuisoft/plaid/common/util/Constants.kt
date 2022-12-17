@@ -100,8 +100,8 @@ class Constants {
         const val TEN_MINUTES = 10 * ONE_MINUTE
         const val MIN_SYNC_TIME = ONE_MINUTE * MILLS_PER_SEC
         const val INSTANT = -1
-        const val INSTANT_TIME_OFFSET = ((ONE_MINUTE * 60) * 24) * 10000
-        const val SYNC_TIMEOUT = MILLS_PER_SEC * 10
+        const val INSTANT_TIME_OFFSET = (SECONDS_PER_DAY) * 10000
+        const val SYNC_TIMEOUT = MILLS_PER_SEC * 8
         const val ITEM_COPY_DELAY = 600
         const val ITEM_COPY_DELAY_LONG = 1000
         const val BLOCK_TIME = 10
@@ -138,7 +138,7 @@ class Constants {
         const val ADDRESS_HINT_LENGTH = 16
         const val BITCOIN_SUPPLY_CAP = 21000000
         const val DEFAULT_PIN_TIMEOUT =
-            Time.INSTANT_TIME_OFFSET // check for pin only when user leaves the app by default
+            Time.FIVE_MINUTES // check for pin only when 5 minutes have passed by default
     }
 
     object LocalCurrency {

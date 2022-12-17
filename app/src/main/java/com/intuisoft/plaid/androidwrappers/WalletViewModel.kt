@@ -14,8 +14,11 @@ import com.intuisoft.plaid.listeners.StateListener
 import com.intuisoft.plaid.model.LocalWalletModel
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.common.util.RateConverter
+import com.intuisoft.plaid.common.util.errors.ClosedWalletErr
 import com.intuisoft.plaid.walletmanager.AbstractWalletManager
-import com.intuisoft.plaid.walletmanager.errors.ExistingWalletErr
+import com.intuisoft.plaid.common.util.errors.ExistingWalletErr
+import com.intuisoft.plaid.util.entensions.ioContext
+import com.intuisoft.plaid.util.entensions.mainContext
 import io.horizontalsystems.bitcoincore.managers.SendValueErrors
 import io.horizontalsystems.bitcoincore.models.TransactionInfo
 import io.horizontalsystems.bitcoincore.storage.UnspentOutput
@@ -395,7 +398,7 @@ open class WalletViewModel(
 
     fun addWalletStateListener(listener: StateListener) {
         viewModelScope.launch {
-            withContext(Dispatchers.IO) {
+            ioContext {
                 walletManager.addWalletSyncListener(listener)
             }
         }
@@ -403,7 +406,7 @@ open class WalletViewModel(
 
     fun removeWalletSyncListener(listener: StateListener) {
         viewModelScope.launch {
-            withContext(Dispatchers.IO) {
+            ioContext {
                 walletManager.removeSyncListener(listener)
             }
         }
@@ -431,7 +434,7 @@ open class WalletViewModel(
     fun deleteWallet(onDeleteFinished: () -> Unit) {
         CoroutineScope(Dispatchers.IO).launch {
           walletManager.deleteWallet(localWallet!!) {
-              withContext(Dispatchers.Main) {
+              mainContext {
                   onDeleteFinished()
               }
           }

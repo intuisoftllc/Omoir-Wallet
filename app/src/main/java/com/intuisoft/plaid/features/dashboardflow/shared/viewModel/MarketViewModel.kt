@@ -17,6 +17,7 @@ import com.intuisoft.plaid.common.util.SimpleCoinNumberFormat
 import com.intuisoft.plaid.common.util.SimpleCurrencyFormat
 import com.intuisoft.plaid.common.util.extensions.humanReadableByteCountSI
 import com.intuisoft.plaid.util.NetworkUtil
+import com.intuisoft.plaid.util.entensions.ioContext
 import com.intuisoft.plaid.walletmanager.AbstractWalletManager
 import io.horizontalsystems.bitcoinkit.BitcoinKit
 import kotlinx.coroutines.*
@@ -146,7 +147,7 @@ class MarketViewModel(
 
     fun updateBasicMarketData() {
         viewModelScope.launch {
-            withContext(Dispatchers.IO) {
+            ioContext {
                 _basicNetworkDataLoading.postValue(true)
                 val data = apiRepository.getBasicTickerData()
 
@@ -207,7 +208,7 @@ class MarketViewModel(
         if(!localStoreRepository.isProEnabled()) return
 
         viewModelScope.launch {
-            withContext(Dispatchers.IO) {
+            ioContext {
                 _extendedNetworkDataLoading.postValue(true)
                 if(getWalletNetwork() == BitcoinKit.NetworkType.TestNet) {
                     _network.postValue(getApplication<PlaidApp>().getString(R.string.market_data_extended_item_1_description2))
@@ -341,7 +342,7 @@ class MarketViewModel(
 
     fun setTickerPrice() {
         viewModelScope.launch {
-            withContext(Dispatchers.IO) {
+            ioContext {
                 _tickerPrice.postValue(SimpleCurrencyFormat.formatValue(localStoreRepository.getLocalCurrency(), apiRepository.getBasicTickerData().price))
 
                 getChartData()?.let {
@@ -364,7 +365,7 @@ class MarketViewModel(
 
     fun updateChartData() {
         viewModelScope.launch {
-            withContext(Dispatchers.IO) {
+            ioContext {
                 _chartDataLoading.postValue(true)
                 _chartData.postValue(listOf())
 

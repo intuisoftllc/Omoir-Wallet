@@ -31,6 +31,7 @@ import coil.decode.SvgDecoder
 import coil.request.ImageRequest
 import com.google.android.material.R
 import com.google.android.material.snackbar.Snackbar
+import com.intuisoft.plaid.PlaidApp
 import com.intuisoft.plaid.activities.MainActivity
 import com.intuisoft.plaid.model.LocalWalletModel
 import com.intuisoft.plaid.common.util.Constants
@@ -215,6 +216,7 @@ fun Activity.shareText(subject: String?, message: String) {
     }
 
     txtIntent.putExtra(Intent.EXTRA_TEXT, message)
+    (application as PlaidApp).ignorePinCheck = true
     startActivity(Intent.createChooser(txtIntent, "Share"))
 }
 

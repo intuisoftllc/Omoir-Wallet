@@ -1,4 +1,4 @@
-package com.intuisoft.plaid.walletmanager.errors
+package com.intuisoft.plaid.common.util.errors
 
 class ExistingWalletErr(
     message: String

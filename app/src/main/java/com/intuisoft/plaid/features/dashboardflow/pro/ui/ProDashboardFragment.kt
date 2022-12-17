@@ -25,6 +25,7 @@ import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.common.util.RateConverter
 import com.intuisoft.plaid.common.util.SimpleCoinNumberFormat
+import com.intuisoft.plaid.common.util.extensions.safeWalletScope
 import com.intuisoft.plaid.databinding.FragmentProWalletDashboardBinding
 import com.intuisoft.plaid.features.dashboardflow.shared.adapters.BasicLineChartAdapter
 import com.intuisoft.plaid.features.dashboardflow.shared.viewModel.DashboardViewModel
@@ -381,30 +382,33 @@ class ProDashboardFragment : ConfigurableFragment<FragmentProWalletDashboardBind
     }
 
     override fun onWalletStateUpdated(wallet: LocalWalletModel) {
-        if(viewModel.getWallet() != null && wallet.uuid == viewModel.getWalletId()
-            && activity != null && _binding != null) {
-            val state = wallet.onWalletStateChanged(
-                requireContext(),
-                wallet.syncPercentage,
-                false,
-                localStoreRepository
-            )
+        safeWalletScope {
+            if (wallet.uuid == viewModel.getWalletId() && activity != null && _binding != null) {
+                val state = wallet.onWalletStateChanged(
+                    requireContext(),
+                    wallet.syncPercentage,
+                    false,
+                    localStoreRepository
+                )
 
-            if(localStoreRepository.isProEnabled()) {
-                binding.price.text = state
-            } else {
-                (activity as? MainActivity)?.setActionBarSubTitle(state)
+                if (localStoreRepository.isProEnabled()) {
+                    binding.price.text = state
+                } else {
+                    (activity as? MainActivity)?.setActionBarSubTitle(state)
+                }
+
+                if (wallet.isSynced && wallet.isSynced)
+                    viewModel.getTransactions()
+                binding.swipeContainer.isRefreshing = wallet.isSyncing
             }
-
-            if (wallet.isSynced && wallet.isSynced)
-                viewModel.getTransactions()
-            binding.swipeContainer.isRefreshing = wallet.isSyncing
         }
     }
 
     override fun onWalletAlreadySynced(wallet: LocalWalletModel) {
-        if(viewModel.getWallet() != null && wallet.uuid == viewModel.getWalletId() && activity != null && _binding != null) {
-            binding.swipeContainer.isRefreshing = false
+        safeWalletScope {
+            if (wallet.uuid == viewModel.getWalletId() && activity != null && _binding != null) {
+                binding.swipeContainer.isRefreshing = false
+            }
         }
     }
 

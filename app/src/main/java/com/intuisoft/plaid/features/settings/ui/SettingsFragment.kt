@@ -20,6 +20,7 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navOptions
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.intuisoft.plaid.PlaidApp
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.*
 import com.intuisoft.plaid.common.model.AppMode
@@ -423,9 +424,11 @@ class SettingsFragment : ConfigurableFragment<FragmentSettingsBinding>(
             emailIntent.setType("message/rfc822");
 
             try {
+                (requireActivity().application as PlaidApp).ignorePinCheck = true
                 startActivity(
                     Intent.createChooser(emailIntent, "Send email using..."));
             } catch (ex: ActivityNotFoundException) {
+                (requireActivity().application as PlaidApp).ignorePinCheck = false
                 styledSnackBar(requireView(), "No email clients installed.")
             }
 
@@ -564,22 +567,6 @@ class SettingsFragment : ConfigurableFragment<FragmentSettingsBinding>(
                 textLeft.text = "${text?.length ?: 0}/25"
                 save.enableButton(text?.isNotEmpty() == true && text.isNotBlank())
             }
-
-            name.setOnKeyListener(object : View.OnKeyListener {
-                override fun onKey(v: View?, keyCode: Int, event: KeyEvent): Boolean {
-                    // if the event is a key down event on the enter button
-                    if (event.action == KeyEvent.ACTION_DOWN &&
-                        keyCode == KeyEvent.KEYCODE_ENTER
-                    ) {
-                        activity.hideSoftKeyboard()
-                        name.clearFocus()
-                        name.isCursorVisible = false
-
-                        return true
-                    }
-                    return false
-                }
-            })
 
             save.onClick {
                 onSave?.invoke(name.text.toString())

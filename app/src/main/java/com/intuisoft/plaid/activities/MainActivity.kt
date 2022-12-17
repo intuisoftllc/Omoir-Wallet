@@ -16,7 +16,6 @@ import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.*
-import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.intuisoft.plaid.PlaidApp
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.*
@@ -31,7 +30,6 @@ import com.intuisoft.plaid.listeners.BarcodeResultListener
 import com.intuisoft.plaid.listeners.NetworkStateChangeListener
 import com.intuisoft.plaid.recievers.NetworkChangeReceiver
 import com.intuisoft.plaid.walletmanager.AbstractWalletManager
-import kotlinx.android.synthetic.main.bottom_sheet_warning.*
 import org.koin.android.ext.android.inject
 
 
@@ -64,7 +62,6 @@ class MainActivity : BindingActivity<ActivityMainBinding>(), ActionBarDelegate {
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
 
             if (result.resultCode == Activity.RESULT_OK) {
-                (application as PlaidApp).ignorePinCheck = false
                 val bitcoinAddress = result.data?.getStringExtra(Constants.ActivityResult.BARCODE_EXTRA)
                 bitcoinAddress?.let {
                     val listener = supportFragmentManager.currentNavigationFragment as? BarcodeResultListener
@@ -91,19 +88,19 @@ class MainActivity : BindingActivity<ActivityMainBinding>(), ActionBarDelegate {
         intentFilter = IntentFilter("android.net.conn.CONNECTIVITY_CHANGE")
     }
 
-    fun addToStack(dialog: AppCompatDialog, onCancel: (() -> Unit)? = null) {
+    fun addToDialogStack(dialog: AppCompatDialog, onCancel: (() -> Unit)? = null) {
         if(dialogStack.find { it === dialog } == null) {
             dialogStack.add(dialog to onCancel)
         }
     }
 
-    fun removeFromStack(dialog: AppCompatDialog) {
+    fun removeFromDialogStack(dialog: AppCompatDialog) {
         dialogStack.remove {
             it == dialog
         }
     }
 
-    fun clearStack() {
+    fun clearDialogStack() {
         dialogStack.toArrayList()
             .forEach {
                 it.second?.invoke()

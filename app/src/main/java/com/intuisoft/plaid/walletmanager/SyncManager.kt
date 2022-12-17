@@ -155,7 +155,7 @@ class SyncManager(
     }
 
     fun sync(wallet: LocalWalletModel) : Boolean {
-        if (!wallet.isSyncing &&(System.currentTimeMillis() - (listener?.getLastSyncedTime(wallet) ?: 0) >= Constants.Time.MIN_SYNC_TIME)) {
+        if (!wallet.isSyncing && ((System.currentTimeMillis() - (listener?.getLastSyncedTime(wallet) ?: 0) >= Constants.Time.MIN_SYNC_TIME) || !wallet.walletKit!!.canSendTransaction())) {
             runInBackground {
                 syncInternal(wallet)
             }
@@ -222,9 +222,25 @@ class SyncManager(
                         }
 
                         // wait for this group of wallets to sync
+                        var startTime = System.currentTimeMillis()
+                        var restarts = 0
                         while(!group.items.all { it.isSynced }) {
                             masterSyncJob?.ensureActive()
                             delay(100)
+
+                            if((System.currentTimeMillis() - startTime) >= Constants.Time.SYNC_TIMEOUT) {
+                                group.items.forEach {
+                                    if (listener?.getLastSyncedTime(it) != 0L && !it.isSynced && it.syncPercentage == 0) { // restart stuck wallets
+                                        it.walletKit!!.restart()
+                                        startTime = System.currentTimeMillis()
+                                        ++restarts
+                                    }
+                                }
+
+                                if(restarts > Constants.Limit.SYNC_RESTART_LIMIT) {
+                                    break
+                                }
+                            }
                         }
 
                         group.items.forEach {

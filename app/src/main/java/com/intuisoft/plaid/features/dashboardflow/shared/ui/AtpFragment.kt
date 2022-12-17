@@ -415,11 +415,11 @@ class AtpFragment : ConfigurableFragment<FragmentAtpBinding>(pinProtection = tru
         alert?.setOnClickListener {
             bottomSheetDialog.cancel()
             val dialog = BottomSheetDialog(requireContext())
-            addToStack(bottomSheetDialog)
+            addToStack(dialog)
             dialog.setContentView(R.layout.bottom_sheet_atp_fee_spread_info)
 
             dialog.setOnCancelListener {
-                removeFromStack(bottomSheetDialog)
+                removeFromStack(dialog)
 
                 if(!blockDialogRecreate) {
                     feeSpreadDialog()

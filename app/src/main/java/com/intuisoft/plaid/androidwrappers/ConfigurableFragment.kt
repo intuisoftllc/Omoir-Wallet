@@ -5,17 +5,13 @@ import android.view.View
 import android.view.WindowManager
 import androidx.navigation.fragment.findNavController
 import androidx.viewbinding.ViewBinding
-import com.intuisoft.plaid.BuildConfig
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.activities.MainActivity
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.features.pin.viewmodel.PinViewModel
 import com.intuisoft.plaid.model.LocalWalletModel
-import com.intuisoft.plaid.walletmanager.WalletManager
-import com.mifmif.common.regex.Main
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import com.intuisoft.plaid.common.util.errors.ClosedWalletErr
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 
@@ -29,7 +25,6 @@ abstract class ConfigurableFragment<T: ViewBinding>(
     protected val pinViewModel: PinViewModel by sharedViewModel()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
         if(secureScreen) {
             requireActivity().window.setFlags(
                 WindowManager.LayoutParams.FLAG_SECURE,
@@ -43,9 +38,11 @@ abstract class ConfigurableFragment<T: ViewBinding>(
 
         if(requiresWallet) {
             requireWallet()?.let {
+                super.onViewCreated(view, savedInstanceState)
                 onConfiguration(baseVM?.currentConfig)
             }
         } else {
+            super.onViewCreated(view, savedInstanceState)
             onConfiguration(baseVM?.currentConfig)
         }
     }
@@ -90,12 +87,12 @@ abstract class ConfigurableFragment<T: ViewBinding>(
 
     private fun requireWallet(): LocalWalletModel? {
         if(baseVM is WalletViewModel) {
-            val wallet = (baseVM!! as WalletViewModel).getWallet()
-            if(wallet == null) {
+            try {
+                return (baseVM!! as WalletViewModel).getWallet()
+            } catch(err: ClosedWalletErr) {
                 baseVM!!.softRestart(this)
+                return null
             }
-
-            return wallet
         } else {
             throw IllegalStateException("requireWallet(): base vm != WalletViewModel")
         }
@@ -104,11 +101,18 @@ abstract class ConfigurableFragment<T: ViewBinding>(
     private fun checkPin() {
         if(pinProtection) {
             pinViewModel.checkPinStatus {
-                (activity as? MainActivity)?.clearStack()
-                navigate(
-                    R.id.pinFragment,
-                    Constants.Navigation.ANIMATED_FADE_IN_EXIT_NAV_OPTION
-                )
+                (activity as? MainActivity)?.apply {
+                    val fragment =
+                        supportFragmentManager.currentNavigationFragment as? FragmentBottomBarBarDelegate
+
+                    if(fragment?.navigationId() != R.id.pinFragment) { // do not request pin twice
+                        clearDialogStack()
+                        navigate(
+                            R.id.pinFragment,
+                            Constants.Navigation.ANIMATED_FADE_IN_EXIT_NAV_OPTION
+                        )
+                    }
+                }
             }
         }
     }

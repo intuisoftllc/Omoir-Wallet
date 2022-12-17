@@ -6,6 +6,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import com.intuisoft.plaid.common.util.Group
+import com.intuisoft.plaid.common.util.errors.ClosedWalletErr
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
@@ -22,6 +23,12 @@ import kotlin.math.roundToInt
 @FlowPreview
 public fun <T> (suspend () -> T).asFlow(): Flow<T> = flow {
     emit(invoke())
+}
+
+fun safeWalletScope(block: () -> Unit) {
+    try {
+        block()
+    } catch(_: ClosedWalletErr) {}
 }
 
 fun String.numOfCaseLetters(uppercase: Boolean): Int {

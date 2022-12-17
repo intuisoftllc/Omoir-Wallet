@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.ConfigurableFragment
 import com.intuisoft.plaid.androidwrappers.FragmentConfiguration
+import com.intuisoft.plaid.androidwrappers.WalletViewModel
 import com.intuisoft.plaid.databinding.FragmentHowDoesAtpWorkBinding
 import com.intuisoft.plaid.databinding.FragmentNonCustodialWalletBinding
 import com.intuisoft.plaid.databinding.FragmentYourInFullControlBinding
@@ -15,7 +16,7 @@ import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 
 class YourInFullControlFragment : ConfigurableFragment<FragmentYourInFullControlBinding>(pinProtection = true) {
-    protected val viewModel: CreateWalletViewModel by sharedViewModel()
+    protected val viewModel: WalletViewModel by sharedViewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -23,6 +24,7 @@ class YourInFullControlFragment : ConfigurableFragment<FragmentYourInFullControl
     ): View? {
 
         _binding = FragmentYourInFullControlBinding.inflate(inflater, container, false)
+        setupConfiguration(viewModel, listOf())
         return binding.root
     }
 

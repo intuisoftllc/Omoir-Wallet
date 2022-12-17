@@ -10,7 +10,6 @@ import androidx.viewbinding.ViewBinding
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.activities.MainActivity
 import com.intuisoft.plaid.listeners.NetworkStateChangeListener
-import kotlinx.android.synthetic.main.fragment_invoice.*
 
 abstract class BindingFragment<T: ViewBinding> : Fragment(), FragmentActionBarDelegate, NetworkStateChangeListener, FragmentBottomBarBarDelegate {
 
@@ -29,15 +28,15 @@ abstract class BindingFragment<T: ViewBinding> : Fragment(), FragmentActionBarDe
     }
 
     fun addToStack(dialog: AppCompatDialog, onCancel: (() -> Unit)? = null) {
-        (activity as? MainActivity)?.addToStack(dialog, onCancel)
+        (activity as? MainActivity)?.addToDialogStack(dialog, onCancel)
     }
 
     fun removeFromStack(dialog: AppCompatDialog) {
-        (activity as? MainActivity)?.removeFromStack(dialog)
+        (activity as? MainActivity)?.removeFromDialogStack(dialog)
     }
 
     fun clearStack() {
-        (activity as? MainActivity)?.clearStack()
+        (activity as? MainActivity)?.clearDialogStack()
     }
 
     fun scanBarcode() {

@@ -16,6 +16,7 @@ import com.intuisoft.plaid.common.model.*
 import com.intuisoft.plaid.common.network.blockchair.response.SupportedCurrencyModel
 import com.intuisoft.plaid.common.repositories.db.DatabaseRepository
 import com.intuisoft.plaid.common.util.Constants
+import com.intuisoft.plaid.util.entensions.mainContext
 import kotlinx.coroutines.*
 
 class LocalStoreRepository_Impl(
@@ -501,7 +502,7 @@ class LocalStoreRepository_Impl(
                 }
             }
 
-            withContext(Dispatchers.Main) {
+            mainContext {
                 databaseListener?.onDatabaseUpdated(dao)
             }
         }

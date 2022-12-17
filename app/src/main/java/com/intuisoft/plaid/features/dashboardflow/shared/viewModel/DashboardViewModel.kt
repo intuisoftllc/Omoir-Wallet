@@ -15,6 +15,7 @@ import com.intuisoft.plaid.common.util.RateConverter
 import com.intuisoft.plaid.common.util.SimpleCurrencyFormat
 import com.intuisoft.plaid.util.NetworkUtil
 import com.intuisoft.plaid.util.SimpleTimeFormat
+import com.intuisoft.plaid.util.entensions.ioContext
 import com.intuisoft.plaid.walletmanager.AbstractWalletManager
 import io.horizontalsystems.bitcoincore.models.TransactionInfo
 import io.horizontalsystems.bitcoincore.models.TransactionStatus
@@ -127,7 +128,7 @@ class DashboardViewModel(
 
     private fun updateWalletBalanceHistory() {
         viewModelScope.launch {
-            withContext(Dispatchers.IO) {
+           ioContext {
                 if(localStoreRepository.isProEnabled()) {
                     if (balanceHistory.isEmpty()) {
                         _noChartData.postValue(Unit)
@@ -251,7 +252,6 @@ class DashboardViewModel(
                             )
                         }
 
-                        _chartDataLoading.postValue(false)
                         when (localStoreRepository.getBitcoinDisplayUnit()) {
                             BitcoinDisplayUnit.SATS -> {
                                 _chartData.postValue(
@@ -320,6 +320,8 @@ class DashboardViewModel(
                                 }
                             }
                         }
+
+                        _chartDataLoading.postValue(false)
                     }
                 }
             }
@@ -330,6 +332,12 @@ class DashboardViewModel(
         val closestBalance = history.find { it.second >= time }?.first?.toFloat()
             ?: history.lastOrNull()?.first?.toFloat()
         return (closestBalance ?: 0f) / Constants.Limit.SATS_PER_BTC
+    }
+
+    private fun getBalanceAtTime(time: Long): Pair<Long, Long> {
+        val closestBalance = balanceHistory.find { it.second >= time }
+            ?: balanceHistory.lastOrNull()
+        return closestBalance ?: (0L to time)
     }
 
     private fun getMaxMarketInterval(interval: ChartIntervalType, birthdate: Instant): Pair<Long, Long> {
@@ -370,42 +378,66 @@ class DashboardViewModel(
 
     private fun getBalanceHistoryForInterval(interval: ChartIntervalType): List<Pair<Long, Long>> {
         val txStartTime: Instant
+        val nowTime: ZonedDateTime = ZonedDateTime.now()
+        var splitTime = 0
 
         when(interval) {
             ChartIntervalType.INTERVAL_1DAY -> {
-                txStartTime = ZonedDateTime.now().minusDays(1).toInstant()
+                txStartTime = nowTime.minusDays(1).toInstant()
+                splitTime = 30 * (Constants.Time.ONE_MINUTE * Constants.Time.MILLS_PER_SEC) // 30 minute intervals
             }
             ChartIntervalType.INTERVAL_1WEEK -> {
-                txStartTime = ZonedDateTime.now().minusWeeks(1).toInstant()
+                txStartTime = nowTime.minusWeeks(1).toInstant()
+                splitTime = 60 * (Constants.Time.ONE_MINUTE * Constants.Time.MILLS_PER_SEC) // 60 minute intervals
             }
             ChartIntervalType.INTERVAL_1MONTH -> {
-                txStartTime = ZonedDateTime.now().minusMonths(1).toInstant()
+                txStartTime = nowTime.minusMonths(1).toInstant()
+                splitTime = 60 * (Constants.Time.ONE_MINUTE * Constants.Time.MILLS_PER_SEC) // 60 minute intervals
             }
             ChartIntervalType.INTERVAL_3MONTHS -> {
-                txStartTime = ZonedDateTime.now().minusMonths(3).toInstant()
+                txStartTime = nowTime.minusMonths(3).toInstant()
+                splitTime = (Constants.Time.SECONDS_PER_DAY * Constants.Time.MILLS_PER_SEC) // 1 day intervals
             }
             ChartIntervalType.INTERVAL_6MONTHS -> {
-                txStartTime = ZonedDateTime.now().minusMonths(6).toInstant()
+                txStartTime = nowTime.minusMonths(6).toInstant()
+                splitTime = (Constants.Time.SECONDS_PER_DAY * Constants.Time.MILLS_PER_SEC) // 1 day intervals
             }
             ChartIntervalType.INTERVAL_1YEAR -> {
-                txStartTime = ZonedDateTime.now().minusYears(1).toInstant()
+                txStartTime = nowTime.minusYears(1).toInstant()
+                splitTime = (Constants.Time.SECONDS_PER_DAY * Constants.Time.MILLS_PER_SEC) // 1 day intervals
             }
             ChartIntervalType.INTERVAL_ALL_TIME -> {
                 txStartTime = Instant.ofEpochSecond(balanceHistory.firstOrNull()?.second ?: 0)
+                splitTime = -1 // just show full balance history
             }
         }
 
-        var filtered = balanceHistory.filter {
-            it.second >= txStartTime.epochSecond
+        var history = mutableListOf<Pair<Long, Long>>()
+        if(splitTime == -1) {
+            history = balanceHistory.toMutableList()
+        } else {
+            var currentTime = txStartTime.toEpochMilli()
+            var endTime = nowTime.toInstant().toEpochMilli()
+
+            while(currentTime <= endTime) {
+                history.add(
+                    getBalanceAtTime(currentTime / Constants.Time.MILLS_PER_SEC).first to (currentTime / Constants.Time.MILLS_PER_SEC)
+                )
+
+                currentTime += splitTime
+            }
         }
 
-        if(filtered.size == 1) {
-            filtered = filtered + filtered
-        } else if(filtered.isEmpty() && balanceHistory.isNotEmpty()) {
-            filtered = listOf(balanceHistory.last(), balanceHistory.last())
+        if (history.size == 1) {
+            history += history
+        } else if (history.isEmpty() && balanceHistory.isNotEmpty()) {
+            history = mutableListOf(
+                balanceHistory.last().first to nowTime.toInstant().epochSecond,
+                balanceHistory.last().first to nowTime.toInstant().epochSecond
+            )
         }
 
-        return filtered
+        return history
     }
 
     private fun generateBalanceHistory(): List<Pair<Long, Long>> {

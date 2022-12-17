@@ -47,5 +47,5 @@ abstract class AbstractWalletManager {
     abstract fun openWallet(wallet: LocalWalletModel)
     abstract fun closeWallet()
     abstract fun getFullPublicKeyPath(key: PublicKey): String
-    abstract fun getOpenedWallet(): LocalWalletModel?
+    abstract fun getOpenedWallet(): LocalWalletModel
 }

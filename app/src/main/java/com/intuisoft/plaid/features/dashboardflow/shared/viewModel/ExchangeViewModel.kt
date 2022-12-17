@@ -16,6 +16,8 @@ import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.common.util.Constants.Strings.BTC_TICKER
 import com.intuisoft.plaid.common.util.SimpleCoinNumberFormat
 import com.intuisoft.plaid.util.NetworkUtil
+import com.intuisoft.plaid.util.entensions.ioContext
+import com.intuisoft.plaid.util.entensions.mainContext
 import com.intuisoft.plaid.walletmanager.AbstractWalletManager
 import kotlinx.coroutines.*
 import java.util.*
@@ -106,7 +108,7 @@ class ExchangeViewModel(
 
     private fun performSearch(onResult: (Pair<List<SupportedCurrencyModel>, List<SupportedCurrencyModel>>) -> Unit) {
         viewModelScope.launch {
-            withContext(Dispatchers.IO) {
+            ioContext {
                 val exchangedCurrencies = localStoreRepository.getAllExchanges(getWalletId())
                     .takeLast(20).map {
                         if (it.fromShort.lowercase() == BTC_TICKER)
@@ -132,7 +134,7 @@ class ExchangeViewModel(
                     }
 
                 if (searchValue.isBlank()) {
-                    withContext(Dispatchers.Main) {
+                    mainContext {
                         onResult(sorted to supportedCurrencies)
                     }
                 } else {
@@ -140,7 +142,7 @@ class ExchangeViewModel(
                         it.ticker.contains(searchValue, true) || it.name.contains(searchValue, true)
                     }
 
-                    withContext(Dispatchers.Main) {
+                    mainContext {
                         onResult(sorted to filtered)
                     }
                 }
@@ -150,7 +152,7 @@ class ExchangeViewModel(
 
     fun validateSendAmount(sending: Double?) : Boolean {
         viewModelScope.launch {
-            withContext(Dispatchers.IO) {
+            ioContext {
                 updateWholeCoinConversion(
                     sendTicker,
                     receiveTicker
@@ -182,7 +184,7 @@ class ExchangeViewModel(
 
     fun onNoInternet(hasInternet: Boolean) {
         viewModelScope.launch{
-            withContext(Dispatchers.IO) {
+            ioContext {
                 if(!ignoreNoNetwork) {
                     if (!hasInternet) {
                         _showContent.postValue(false)
@@ -244,7 +246,7 @@ class ExchangeViewModel(
 
     fun createExchange() {
         viewModelScope.launch {
-            withContext(Dispatchers.IO) {
+            ioContext {
                 ignoreNoNetwork = true
                 _creatingExchange.postValue(true)
                 val exchangeData = apiRepository.createExchange(
@@ -316,7 +318,7 @@ class ExchangeViewModel(
 
     private fun modifySendReceive(from: String, to: String) {
         viewModelScope.launch {
-            withContext(Dispatchers.IO) {
+            ioContext {
                 _screenFunctionsEnabled.postValue(false)
                 setSendCurrencyInternal(from).join()
                 setReceiveCurrencyInternal(to).join()
@@ -368,7 +370,7 @@ class ExchangeViewModel(
 
     fun onNext() {
         viewModelScope.launch {
-            withContext(Dispatchers.IO) {
+            ioContext {
                 if (max == null || sendAmount <= (max ?: 0.0)) {
                     val isBitcoin = sendTicker.lowercase() == BTC_TICKER
                     clearAddresses()
@@ -406,7 +408,7 @@ class ExchangeViewModel(
         sendTicker = ticker
 
         return viewModelScope.launch {
-            withContext(Dispatchers.IO) {
+            ioContext {
                 val currency = apiRepository.getSupportedCurrencies(fixed)
                     .filter { it.ticker.lowercase() == ticker.lowercase() }
 
@@ -443,7 +445,7 @@ class ExchangeViewModel(
         receiveTicker = ticker
 
         return viewModelScope.launch {
-            withContext(Dispatchers.IO) {
+            ioContext {
                 val currency = apiRepository.getSupportedCurrencies(fixed)
                     .filter { it.ticker.lowercase() == ticker.lowercase() }
 
@@ -477,7 +479,7 @@ class ExchangeViewModel(
 
     private fun setFixedFloatingRange() : Job {
         return viewModelScope.launch {
-            withContext(Dispatchers.IO) {
+            ioContext {
                 val range = apiRepository.getCurrencyRangeLimit(sendTicker, receiveTicker, fixed)
                 if (range != null) {
                     min = range.min.toDouble()

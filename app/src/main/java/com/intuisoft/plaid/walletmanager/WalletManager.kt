@@ -9,7 +9,8 @@ import com.intuisoft.plaid.common.util.extensions.remove
 import com.intuisoft.plaid.listeners.StateListener
 import com.intuisoft.plaid.model.LocalWalletModel
 import com.intuisoft.plaid.util.entensions.sha256
-import com.intuisoft.plaid.walletmanager.errors.ExistingWalletErr
+import com.intuisoft.plaid.common.util.errors.ClosedWalletErr
+import com.intuisoft.plaid.common.util.errors.ExistingWalletErr
 import io.horizontalsystems.bitcoincore.BitcoinCore
 import io.horizontalsystems.bitcoincore.models.BalanceInfo
 import io.horizontalsystems.bitcoincore.models.BitcoinPaymentData
@@ -21,9 +22,6 @@ import io.horizontalsystems.hdwalletkit.HDExtendedKeyVersion
 import io.horizontalsystems.hdwalletkit.HDWallet
 import io.horizontalsystems.hdwalletkit.Mnemonic
 import kotlinx.coroutines.*
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
-import java.util.*
 
 class WalletManager(
     val application: Application,
@@ -92,8 +90,8 @@ class WalletManager(
         syncer.closeWallet()
     }
 
-    override fun getOpenedWallet(): LocalWalletModel? {
-        return syncer.getOpenedWallet()
+    override fun getOpenedWallet(): LocalWalletModel {
+        return syncer.getOpenedWallet() ?: throw ClosedWalletErr("")
     }
 
     override fun onDatabaseUpdated(dao: Any?) {

@@ -46,7 +46,6 @@ class ExchangeFragment : ConfigurableFragment<FragmentExchangeBinding>(pinProtec
 
         _binding = FragmentExchangeBinding.inflate(inflater, container, false)
         setupConfiguration(viewModel, listOf())
-
         return binding.root
     }
 

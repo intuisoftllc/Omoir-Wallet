@@ -55,6 +55,8 @@ class ViewWalletsFragment : ConfigurableFragment<FragmentManageWalletsBinding>(
 
 
     fun onWalletSelected(wallet: LocalWalletModel) {
+        walletManager.openWallet(wallet)
+
         var bundle = bundleOf(
             Constants.Navigation.FROM_SETTINGS to true
         )
@@ -65,6 +67,11 @@ class ViewWalletsFragment : ConfigurableFragment<FragmentManageWalletsBinding>(
         )
     }
 
+    override fun onResume() {
+        super.onResume()
+        walletManager.closeWallet()
+    }
+    
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

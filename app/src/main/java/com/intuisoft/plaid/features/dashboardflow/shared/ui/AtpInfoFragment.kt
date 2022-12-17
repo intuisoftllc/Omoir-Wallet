@@ -27,7 +27,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
 class AtpInfoFragment : ConfigurableFragment<FragmentAtpInfoBinding>(pinProtection = true) {
-    protected val viewModel: CreateWalletViewModel by viewModel()
+    protected val viewModel: WalletViewModel by viewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -35,6 +35,7 @@ class AtpInfoFragment : ConfigurableFragment<FragmentAtpInfoBinding>(pinProtecti
     ): View? {
 
         _binding = FragmentAtpInfoBinding.inflate(inflater, container, false)
+        setupConfiguration(viewModel, listOf())
         return binding.root
     }
 
