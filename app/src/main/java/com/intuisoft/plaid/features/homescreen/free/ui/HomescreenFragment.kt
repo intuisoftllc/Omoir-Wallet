@@ -15,6 +15,7 @@ import com.intuisoft.plaid.features.homescreen.shared.viewmodel.HomeScreenViewMo
 import com.intuisoft.plaid.listeners.StateListener
 import com.intuisoft.plaid.model.LocalWalletModel
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
+import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.common.util.extensions.toArrayList
 import com.intuisoft.plaid.walletmanager.AbstractWalletManager
 import org.koin.android.ext.android.inject
@@ -79,7 +80,7 @@ class HomescreenFragment : ConfigurableFragment<FragmentHomescreenBinding>(
         })
 
         walletManager.synchronizeAll(false)
-        binding.createWallet.setOnClickListener {
+        binding.createWallet.setOnSingleClickListener(Constants.Time.MIN_CLICK_INTERVAL_MED) {
             // todo: limit to 5 for free version
             navigate(R.id.createWalletFragment)
         }

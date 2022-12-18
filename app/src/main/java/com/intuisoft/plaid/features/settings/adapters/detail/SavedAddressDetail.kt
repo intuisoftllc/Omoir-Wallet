@@ -3,7 +3,9 @@ package com.intuisoft.plaid.features.settings.adapters.detail
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.BindingViewHolder
 import com.intuisoft.plaid.androidwrappers.ListItem
+import com.intuisoft.plaid.androidwrappers.setOnSingleClickListener
 import com.intuisoft.plaid.common.model.SavedAddressModel
+import com.intuisoft.plaid.common.util.Constants
 import kotlinx.android.synthetic.main.list_item_saved_address.view.*
 
 
@@ -17,7 +19,7 @@ class SavedAddressDetail(
 
     override fun bind(holder: BindingViewHolder) {
         holder.itemView.apply {
-            this.setOnClickListener {
+            this.setOnSingleClickListener(Constants.Time.MIN_CLICK_INTERVAL_SHORT) {
                 onClick(savedAddress)
             }
 

@@ -7,21 +7,21 @@ import kotlin.math.roundToLong
 class RateConverter(
     private var fiatRate: Double
 ) {
-    private var localBTC : Long = 0
+    private var localBTC : Double = 0.0 // value represented in sats
 
-    fun getRawRate() = localBTC
+    fun getRawRate() = localBTC.roundToLong()
 
     fun clone(): RateConverter {
         val con = RateConverter(fiatRate)
-        con.setLocalRate(RateType.SATOSHI_RATE, localBTC.toDouble())
+        con.setLocalRate(RateType.SATOSHI_RATE, localBTC)
         return con
     }
 
     fun getRawBtcRate() =
-        localBTC.toDouble() / Constants.Limit.SATS_PER_BTC
+        localBTC / Constants.Limit.SATS_PER_BTC
 
     fun getRawFiatRate() =
-        (localBTC.toDouble() / Constants.Limit.SATS_PER_BTC) * fiatRate
+        (localBTC / Constants.Limit.SATS_PER_BTC) * fiatRate
 
     fun getFiatRate() = fiatRate
 
@@ -38,19 +38,19 @@ class RateConverter(
         val _amount = amount.ignoreNan()
 
         if(_amount == 0.0) {
-            localBTC = 0
+            localBTC = 0.0
         } else {
             when (type) {
                 RateType.BTC_RATE -> {
-                    localBTC = (_amount.roundTo(8) * Constants.Limit.SATS_PER_BTC).roundToLong()
+                    localBTC = (_amount.roundTo(8) * Constants.Limit.SATS_PER_BTC)
                 }
 
                 RateType.SATOSHI_RATE -> {
-                    localBTC = _amount.toLong()
+                    localBTC = _amount
                 }
 
                 RateType.FIAT_RATE -> {
-                    localBTC = ((_amount.roundTo(2) / fiatRate) * Constants.Limit.SATS_PER_BTC).roundToLong()
+                    localBTC = ((_amount.roundTo(2) / fiatRate) * Constants.Limit.SATS_PER_BTC)
                 }
             }
         }
@@ -65,7 +65,7 @@ class RateConverter(
             }
 
             RateType.SATOSHI_RATE -> {
-                return localBTC.toDouble()
+                return localBTC.roundToLong().toDouble()
             }
 
             RateType.FIAT_RATE -> {
@@ -80,13 +80,13 @@ class RateConverter(
                 val postfixed: String
 
                 if(shortenSats) {
-                    basic = SimpleCoinNumberFormat.formatSatsShort(localBTC)
+                    basic = SimpleCoinNumberFormat.formatSatsShort(localBTC.roundToLong())
                     postfixed =
-                        prefixPostfixValue(SimpleCoinNumberFormat.formatSatsShort(localBTC), type)
+                        prefixPostfixValue(SimpleCoinNumberFormat.formatSatsShort(localBTC.roundToLong()), type)
                 } else {
-                    basic = SimpleCoinNumberFormat.format(localBTC)!!
+                    basic = SimpleCoinNumberFormat.format(localBTC.roundToLong())!!
                     postfixed =
-                        prefixPostfixValue(SimpleCoinNumberFormat.format(localBTC)!!, type)
+                        prefixPostfixValue(SimpleCoinNumberFormat.format(localBTC.roundToLong())!!, type)
                 }
 
                 return Pair(basic, postfixed)

@@ -44,7 +44,7 @@ class AtpInfoFragment : ConfigurableFragment<FragmentAtpInfoBinding>(pinProtecti
             requireActivity()
         )
 
-        binding.close.setOnClickListener {
+        binding.close.setOnSingleClickListener(Constants.Time.MIN_CLICK_INTERVAL_SHORT) {
             findNavController().popBackStack()
         }
 

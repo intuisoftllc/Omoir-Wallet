@@ -4,8 +4,10 @@ import android.view.View
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.BindingViewHolder
 import com.intuisoft.plaid.androidwrappers.ListItem
+import com.intuisoft.plaid.androidwrappers.setOnSingleClickListener
 import com.intuisoft.plaid.common.model.ExchangeInfoDataModel
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
+import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.common.util.SimpleCoinNumberFormat
 import com.intuisoft.plaid.model.ExchangeStatus
 import com.intuisoft.plaid.util.SimpleTimeFormat
@@ -28,7 +30,7 @@ class BasicExchangeDetail(
     override fun bind(holder: BindingViewHolder) {
         holder.itemView.apply {
 
-            this.setOnClickListener {
+            this.setOnSingleClickListener(Constants.Time.MIN_CLICK_INTERVAL_SHORT) {
                 onClick(info)
             }
 

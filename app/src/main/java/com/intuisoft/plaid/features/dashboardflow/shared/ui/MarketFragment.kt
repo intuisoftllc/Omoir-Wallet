@@ -12,6 +12,7 @@ import com.intuisoft.plaid.common.model.ChartDataModel
 import com.intuisoft.plaid.common.model.ChartIntervalType
 import com.intuisoft.plaid.common.model.CongestionRating
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
+import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.common.util.SimpleCoinNumberFormat
 import com.intuisoft.plaid.common.util.SimpleCurrencyFormat
 import com.intuisoft.plaid.databinding.FragmentMarketBinding
@@ -66,7 +67,7 @@ class MarketFragment : ConfigurableFragment<FragmentMarketBinding>(pinProtection
             }
         }
 
-        binding.interval1day.setOnClickListener {
+        binding.interval1day.setOnSingleClickListener(Constants.Time.MIN_CLICK_INTERVAL_MED) {
             viewModel.changeChartInterval(ChartIntervalType.INTERVAL_1DAY)
             binding.interval1day.selectTimePeriod(true)
             binding.interval1week.selectTimePeriod(false)
@@ -77,7 +78,7 @@ class MarketFragment : ConfigurableFragment<FragmentMarketBinding>(pinProtection
             binding.intervalMax.selectTimePeriod(false)
         }
 
-        binding.interval1week.setOnClickListener {
+        binding.interval1week.setOnSingleClickListener(Constants.Time.MIN_CLICK_INTERVAL_MED) {
             viewModel.changeChartInterval(ChartIntervalType.INTERVAL_1WEEK)
             binding.interval1day.selectTimePeriod(false)
             binding.interval1week.selectTimePeriod(true)
@@ -88,7 +89,7 @@ class MarketFragment : ConfigurableFragment<FragmentMarketBinding>(pinProtection
             binding.intervalMax.selectTimePeriod(false)
         }
 
-        binding.interval1Month.setOnClickListener {
+        binding.interval1Month.setOnSingleClickListener(Constants.Time.MIN_CLICK_INTERVAL_MED) {
             viewModel.changeChartInterval(ChartIntervalType.INTERVAL_1MONTH)
             binding.interval1day.selectTimePeriod(false)
             binding.interval1week.selectTimePeriod(false)
@@ -99,7 +100,7 @@ class MarketFragment : ConfigurableFragment<FragmentMarketBinding>(pinProtection
             binding.intervalMax.selectTimePeriod(false)
         }
 
-        binding.interval3Month.setOnClickListener {
+        binding.interval3Month.setOnSingleClickListener(Constants.Time.MIN_CLICK_INTERVAL_MED) {
             viewModel.changeChartInterval(ChartIntervalType.INTERVAL_3MONTHS)
             binding.interval1day.selectTimePeriod(false)
             binding.interval1week.selectTimePeriod(false)
@@ -110,7 +111,7 @@ class MarketFragment : ConfigurableFragment<FragmentMarketBinding>(pinProtection
             binding.intervalMax.selectTimePeriod(false)
         }
 
-        binding.interval6Month.setOnClickListener {
+        binding.interval6Month.setOnSingleClickListener(Constants.Time.MIN_CLICK_INTERVAL_MED) {
             viewModel.changeChartInterval(ChartIntervalType.INTERVAL_6MONTHS)
             binding.interval1day.selectTimePeriod(false)
             binding.interval1week.selectTimePeriod(false)
@@ -121,7 +122,7 @@ class MarketFragment : ConfigurableFragment<FragmentMarketBinding>(pinProtection
             binding.intervalMax.selectTimePeriod(false)
         }
 
-        binding.interval1Year.setOnClickListener {
+        binding.interval1Year.setOnSingleClickListener(Constants.Time.MIN_CLICK_INTERVAL_MED) {
             viewModel.changeChartInterval(ChartIntervalType.INTERVAL_1YEAR)
             binding.interval1day.selectTimePeriod(false)
             binding.interval1week.selectTimePeriod(false)
@@ -132,7 +133,7 @@ class MarketFragment : ConfigurableFragment<FragmentMarketBinding>(pinProtection
             binding.intervalMax.selectTimePeriod(false)
         }
 
-        binding.intervalMax.setOnClickListener {
+        binding.intervalMax.setOnSingleClickListener(Constants.Time.MIN_CLICK_INTERVAL_MED) {
             viewModel.changeChartInterval(ChartIntervalType.INTERVAL_ALL_TIME)
             binding.interval1day.selectTimePeriod(false)
             binding.interval1week.selectTimePeriod(false)
@@ -244,19 +245,19 @@ class MarketFragment : ConfigurableFragment<FragmentMarketBinding>(pinProtection
             }
         })
 
-        binding.bitcoinDescription.setOnClickListener {
+        binding.bitcoinDescription.setOnSingleClickListener(Constants.Time.MIN_CLICK_INTERVAL_SHORT) {
             openLink(getString(R.string.market_data_what_is_bitcoin_link))
         }
 
-        binding.bitcoinOrg.setOnClickListener {
+        binding.bitcoinOrg.setOnSingleClickListener(Constants.Time.MIN_CLICK_INTERVAL_SHORT) {
             openLink(getString(R.string.market_data_bitcoin_org_link))
         }
 
-        binding.explorer.setOnClickListener {
+        binding.explorer.setOnSingleClickListener(Constants.Time.MIN_CLICK_INTERVAL_SHORT) {
             openLink(getString(R.string.market_data_bitcoin_explorer_link))
         }
 
-        binding.marketData.setOnClickListener {
+        binding.marketData.setOnSingleClickListener(Constants.Time.MIN_CLICK_INTERVAL_SHORT) {
             openLink(getString(R.string.market_data_bitcoin_market_external_link))
         }
 

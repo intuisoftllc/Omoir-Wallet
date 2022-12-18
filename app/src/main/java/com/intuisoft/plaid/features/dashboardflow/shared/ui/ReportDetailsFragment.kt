@@ -172,7 +172,7 @@ class ReportDetailsFragment : ConfigurableFragment<FragmentReportDetailsBinding>
             }
         })
 
-        binding.totalValue.setOnClickListener {
+        binding.totalValue.setOnSingleClickListener(Constants.Time.MIN_CLICK_INTERVAL_SHORT) {
             viewModel.changeDisplayUnit()
         }
 

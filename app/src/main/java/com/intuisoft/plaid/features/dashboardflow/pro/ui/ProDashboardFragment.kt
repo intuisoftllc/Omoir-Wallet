@@ -88,7 +88,7 @@ class ProDashboardFragment : ConfigurableFragment<FragmentProWalletDashboardBind
             }
         }
 
-        binding.price.setOnClickListener {
+        binding.price.setOnSingleClickListener(Constants.Time.MIN_CLICK_INTERVAL_MED) {
             if(!viewModel.isWalletSyncing()) {
                 when (viewModel.getDisplayUnit()) {
                     BitcoinDisplayUnit.BTC -> {
@@ -164,7 +164,7 @@ class ProDashboardFragment : ConfigurableFragment<FragmentProWalletDashboardBind
             }
         }
 
-        binding.interval1day.setOnClickListener {
+        binding.interval1day.setOnSingleClickListener(Constants.Time.MIN_CLICK_INTERVAL_MED) {
             viewModel.changeChartInterval(ChartIntervalType.INTERVAL_1DAY)
             binding.interval1day.selectTimePeriod(true)
             binding.interval1week.selectTimePeriod(false)
@@ -175,7 +175,7 @@ class ProDashboardFragment : ConfigurableFragment<FragmentProWalletDashboardBind
             binding.intervalMax.selectTimePeriod(false)
         }
 
-        binding.interval1week.setOnClickListener {
+        binding.interval1week.setOnSingleClickListener(Constants.Time.MIN_CLICK_INTERVAL_MED) {
             viewModel.changeChartInterval(ChartIntervalType.INTERVAL_1WEEK)
             binding.interval1day.selectTimePeriod(false)
             binding.interval1week.selectTimePeriod(true)
@@ -186,7 +186,7 @@ class ProDashboardFragment : ConfigurableFragment<FragmentProWalletDashboardBind
             binding.intervalMax.selectTimePeriod(false)
         }
 
-        binding.interval1Month.setOnClickListener {
+        binding.interval1Month.setOnSingleClickListener(Constants.Time.MIN_CLICK_INTERVAL_MED) {
             viewModel.changeChartInterval(ChartIntervalType.INTERVAL_1MONTH)
             binding.interval1day.selectTimePeriod(false)
             binding.interval1week.selectTimePeriod(false)
@@ -197,7 +197,7 @@ class ProDashboardFragment : ConfigurableFragment<FragmentProWalletDashboardBind
             binding.intervalMax.selectTimePeriod(false)
         }
 
-        binding.interval3Month.setOnClickListener {
+        binding.interval3Month.setOnSingleClickListener(Constants.Time.MIN_CLICK_INTERVAL_MED) {
             viewModel.changeChartInterval(ChartIntervalType.INTERVAL_3MONTHS)
             binding.interval1day.selectTimePeriod(false)
             binding.interval1week.selectTimePeriod(false)
@@ -208,7 +208,7 @@ class ProDashboardFragment : ConfigurableFragment<FragmentProWalletDashboardBind
             binding.intervalMax.selectTimePeriod(false)
         }
 
-        binding.interval6Month.setOnClickListener {
+        binding.interval6Month.setOnSingleClickListener(Constants.Time.MIN_CLICK_INTERVAL_MED) {
             viewModel.changeChartInterval(ChartIntervalType.INTERVAL_6MONTHS)
             binding.interval1day.selectTimePeriod(false)
             binding.interval1week.selectTimePeriod(false)
@@ -219,7 +219,7 @@ class ProDashboardFragment : ConfigurableFragment<FragmentProWalletDashboardBind
             binding.intervalMax.selectTimePeriod(false)
         }
 
-        binding.interval1Year.setOnClickListener {
+        binding.interval1Year.setOnSingleClickListener(Constants.Time.MIN_CLICK_INTERVAL_MED) {
             viewModel.changeChartInterval(ChartIntervalType.INTERVAL_1YEAR)
             binding.interval1day.selectTimePeriod(false)
             binding.interval1week.selectTimePeriod(false)
@@ -230,7 +230,7 @@ class ProDashboardFragment : ConfigurableFragment<FragmentProWalletDashboardBind
             binding.intervalMax.selectTimePeriod(false)
         }
 
-        binding.intervalMax.setOnClickListener {
+        binding.intervalMax.setOnSingleClickListener(Constants.Time.MIN_CLICK_INTERVAL_MED) {
             viewModel.changeChartInterval(ChartIntervalType.INTERVAL_ALL_TIME)
             binding.interval1day.selectTimePeriod(false)
             binding.interval1week.selectTimePeriod(false)
@@ -273,7 +273,7 @@ class ProDashboardFragment : ConfigurableFragment<FragmentProWalletDashboardBind
             binding.errorMessage.text = getString(R.string.no_data)
         })
 
-        binding.averagePriceContainer.setOnClickListener {
+        binding.averagePriceContainer.setOnSingleClickListener(Constants.Time.MIN_CLICK_INTERVAL_MED) {
             showBasicInfoBottomSheet(
                 context = requireContext(),
                 title = getString(R.string.pro_homescreen_average_price_dialog_title),
@@ -293,11 +293,7 @@ class ProDashboardFragment : ConfigurableFragment<FragmentProWalletDashboardBind
         })
 
         viewModel.walletBalance.observe(viewLifecycleOwner, Observer {
-            if(localStoreRepository.isProEnabled()) {
-                binding.price.text = it
-            } else {
-                (activity as? MainActivity)?.setActionBarSubTitle(it)
-            }
+            binding.price.text = it
         })
 
         binding.deposit.onClick {

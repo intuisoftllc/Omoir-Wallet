@@ -5,7 +5,9 @@ import androidx.core.view.isVisible
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.BindingViewHolder
 import com.intuisoft.plaid.androidwrappers.ListItem
+import com.intuisoft.plaid.androidwrappers.setOnSingleClickListener
 import com.intuisoft.plaid.common.model.BatchDataModel
+import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.common.util.SimpleCoinNumberFormat
 import com.intuisoft.plaid.common.util.extensions.toArrayList
 import com.intuisoft.plaid.features.dashboardflow.shared.adapters.BatchTxAdapter
@@ -28,7 +30,7 @@ class BasicBatchInfoDetail(
             view = this
 
             transfers.adapter = adapter
-            batch_item_container.setOnClickListener {
+            batch_item_container.setOnSingleClickListener(Constants.Time.MIN_CLICK_INTERVAL_SHORT) {
                 transfers.isVisible = !transfers.isVisible
 
                 if(transfers.isVisible) {

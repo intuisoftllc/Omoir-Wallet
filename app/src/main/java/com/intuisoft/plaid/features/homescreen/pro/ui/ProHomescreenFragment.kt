@@ -15,6 +15,7 @@ import com.intuisoft.plaid.features.homescreen.shared.viewmodel.HomeScreenViewMo
 import com.intuisoft.plaid.listeners.StateListener
 import com.intuisoft.plaid.model.LocalWalletModel
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
+import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.common.util.SimpleCoinNumberFormat
 import com.intuisoft.plaid.common.util.extensions.toArrayList
 import com.intuisoft.plaid.databinding.FragmentProHomescreenBinding
@@ -72,7 +73,7 @@ class ProHomescreenFragment : ConfigurableFragment<FragmentProHomescreenBinding>
             showTotalBalance(it)
         })
 
-        binding.totalBalance.setOnClickListener {
+        binding.totalBalance.setOnSingleClickListener(Constants.Time.MIN_CLICK_INTERVAL_MED) {
             when (walletVM.getDisplayUnit()) {
                 BitcoinDisplayUnit.BTC -> {
                     walletVM.setDisplayUnit(BitcoinDisplayUnit.SATS)
@@ -105,7 +106,7 @@ class ProHomescreenFragment : ConfigurableFragment<FragmentProHomescreenBinding>
             binding.noWalletsContainer.isVisible = it.isEmpty()
         })
 
-        binding.createWallet.setOnClickListener {
+        binding.createWallet.setOnSingleClickListener(Constants.Time.MIN_CLICK_INTERVAL_MED) {
             // todo: limit to 10 for pro version
             navigate(R.id.createWalletFragment)
         }

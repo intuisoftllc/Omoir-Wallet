@@ -95,7 +95,7 @@ class AssetTransferDetailsFragment : ConfigurableFragment<FragmentAssetTransferD
             )
 
             binding.cancel.isVisible = transfer.status.id in AssetTransferStatus.NOT_STARTED.id..AssetTransferStatus.IN_PROGRESS.id
-            binding.cancel.setOnClickListener {
+            binding.cancel.setOnSingleClickListener(Constants.Time.MIN_CLICK_INTERVAL_SHORT) {
                 walletManager.cancelTransfer(transfer.id)
                 binding.cancel.isVisible = false
             }

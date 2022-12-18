@@ -341,7 +341,7 @@ class AtpFragment : ConfigurableFragment<FragmentAtpBinding>(pinProtection = tru
             onValueChanged(newVal)
         }
 
-        alert?.setOnClickListener {
+        alert?.setOnSingleClickListener(Constants.Time.MIN_CLICK_INTERVAL_MED) {
             bottomSheetDialog.cancel()
             onDisplayInfo?.invoke()
         }
@@ -412,7 +412,7 @@ class AtpFragment : ConfigurableFragment<FragmentAtpBinding>(pinProtection = tru
             )
         }
 
-        alert?.setOnClickListener {
+        alert?.setOnSingleClickListener(Constants.Time.MIN_CLICK_INTERVAL_MED) {
             bottomSheetDialog.cancel()
             val dialog = BottomSheetDialog(requireContext())
             addToStack(dialog)

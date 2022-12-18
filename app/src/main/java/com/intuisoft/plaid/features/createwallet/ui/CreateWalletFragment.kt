@@ -44,7 +44,7 @@ class CreateWalletFragment : ConfigurableFragment<FragmentCreateImportWalletBind
     }
 
     override fun onConfiguration(configuration: FragmentConfiguration?) {
-        binding.advancedOptions.setOnClickListener {
+        binding.advancedOptions.setOnSingleClickListener(Constants.Time.MIN_CLICK_INTERVAL_MED) {
             showAdvancedOptionsDialog()
         }
 

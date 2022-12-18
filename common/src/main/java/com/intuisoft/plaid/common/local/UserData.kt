@@ -181,7 +181,7 @@ class UserData {
 
     companion object {
         private const val FILE_NAME = "plaid_wallet_usr_data"
-        private const val SECONDARY_FILE_NAME = "plaid_wallet_data"
+        private const val SECONDARY_FILE_NAME = "plaid_wallet_data" // possible use for a "plausable-deniability" feature in the future
 
         fun load(pin: String): UserData? {
             synchronized(this::class.java) {
@@ -207,9 +207,11 @@ class UserData {
         }
 
         fun wipeData() {
-            val dir: File = CommonService.getApplication().filesDir
-            val file = File(dir, FILE_NAME)
-            file.delete()
+            synchronized(this::class.java) {
+                val dir: File = CommonService.getApplication().filesDir
+                val file = File(dir, FILE_NAME)
+                file.delete()
+            }
         }
     }
 }

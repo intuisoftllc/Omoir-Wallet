@@ -26,6 +26,7 @@ import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.common.util.Constants.Navigation.ANIMATED_ENTER_EXIT_RIGHT_NAV_OPTION
 import com.intuisoft.plaid.common.util.SimpleCurrencyFormat
+import com.intuisoft.plaid.common.util.extensions.safeWalletScope
 import com.intuisoft.plaid.common.util.extensions.toArrayList
 import com.intuisoft.plaid.util.fragmentconfig.BasicConfigData
 import com.intuisoft.plaid.util.fragmentconfig.SendFundsData
@@ -239,8 +240,10 @@ class WithdrawalFragment : ConfigurableFragment<FragmentWithdrawBinding>(pinProt
     }
 
     override fun onWalletStateUpdated(wallet: LocalWalletModel) {
-        if(viewModel.getWallet() != null && wallet.uuid == viewModel.getWalletId()) {
-            viewModel.showWalletDisplayUnit()
+        safeWalletScope {
+            if (wallet.uuid == viewModel.getWalletId()) {
+                viewModel.showWalletDisplayUnit()
+            }
         }
     }
 

@@ -334,16 +334,10 @@ class DashboardViewModel(
         return (closestBalance ?: 0f) / Constants.Limit.SATS_PER_BTC
     }
 
-    private fun getBalanceAtTime(time: Long): Pair<Long, Long> {
-        val closestBalance = balanceHistory.find { it.second >= time }
-            ?: balanceHistory.lastOrNull()
-        return closestBalance ?: (0L to time)
-    }
-
     private fun getMaxMarketInterval(interval: ChartIntervalType, birthdate: Instant): Pair<Long, Long> {
-        val nowTime = SimpleTimeFormat.startOfDay(ZonedDateTime.ofInstant(Instant.now(), ZoneId.systemDefault()))
-        val startOfBDay  = SimpleTimeFormat.startOfDay(ZonedDateTime.ofInstant(birthdate, ZoneId.systemDefault())).toEpochSecond()
-        var startDay  = 0L
+        val nowTime = SimpleTimeFormat.endOfDay(ZonedDateTime.ofInstant(Instant.now(), ZoneId.systemDefault()))
+        val startOfBDay  = SimpleTimeFormat.endOfDay(ZonedDateTime.ofInstant(birthdate, ZoneId.systemDefault())).toEpochSecond()
+        var startDay: Long
 
         when {
             interval == ChartIntervalType.INTERVAL_1DAY -> {
@@ -369,10 +363,6 @@ class DashboardViewModel(
             }
         }
 
-        if(startOfBDay > startDay) {
-            startDay = startOfBDay
-        }
-
         return startDay to nowTime.toEpochSecond()
     }
 
@@ -388,7 +378,7 @@ class DashboardViewModel(
             }
             ChartIntervalType.INTERVAL_1WEEK -> {
                 txStartTime = nowTime.minusWeeks(1).toInstant()
-                splitTime = 60 * (Constants.Time.ONE_MINUTE * Constants.Time.MILLS_PER_SEC) // 60 minute intervals
+                splitTime = 30 * (Constants.Time.ONE_MINUTE * Constants.Time.MILLS_PER_SEC) // 30 minute intervals
             }
             ChartIntervalType.INTERVAL_1MONTH -> {
                 txStartTime = nowTime.minusMonths(1).toInstant()
@@ -421,7 +411,8 @@ class DashboardViewModel(
 
             while(currentTime <= endTime) {
                 history.add(
-                    getBalanceAtTime(currentTime / Constants.Time.MILLS_PER_SEC).first to (currentTime / Constants.Time.MILLS_PER_SEC)
+                    (getBalanceAtTime(currentTime / Constants.Time.MILLS_PER_SEC, balanceHistory) * Constants.Limit.SATS_PER_BTC).toLong()
+                            to (currentTime / Constants.Time.MILLS_PER_SEC)
                 )
 
                 currentTime += splitTime

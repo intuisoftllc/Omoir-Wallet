@@ -7,7 +7,7 @@ class Constants {
 
     object Database {
         const val DB_NAME = "plaid.db"
-        const val DB_VERSION = 29
+        const val DB_VERSION = 30
     }
 
     object Files {
@@ -105,6 +105,9 @@ class Constants {
         const val ITEM_COPY_DELAY = 600
         const val ITEM_COPY_DELAY_LONG = 1000
         const val BLOCK_TIME = 10
+        const val MIN_CLICK_INTERVAL_SHORT = 200
+        const val MIN_CLICK_INTERVAL_MED = 400
+        const val MIN_CLICK_INTERVAL_LONG = 600
         const val GENERAL_CACHE_UPDATE_TIME: Long = (MILLS_PER_SEC * TEN_MINUTES).toLong()
         const val GENERAL_CACHE_UPDATE_TIME_MED: Long = (MILLS_PER_SEC * FIVE_MINUTES).toLong()
         const val GENERAL_CACHE_UPDATE_TIME_SHORT: Long = (MILLS_PER_SEC * TWO_MINUTES).toLong()
@@ -143,8 +146,22 @@ class Constants {
 
     object LocalCurrency {
         const val USD = "USD"
-        const val EURO = "EUR"
         const val CANADA = "CAD"
+        const val EURO = "EUR"
+        const val AED = "AED"
+        const val ARS = "ARS"
+        const val AUD = "AUD"
+        const val BDT = "BDT"
+        const val BHD = "BHD"
+        const val CHF = "CHF"
+        const val CNY = "CNY"
+        const val CZK = "CZK"
+        const val GBP = "GBP"
+        const val KRW = "KRW"
+        const val RUB = "RUB"
+        const val PHP = "PHP"
+        const val PKR = "PKR"
+        const val CLP = "CLP"
     }
 
     object CongestionRating {

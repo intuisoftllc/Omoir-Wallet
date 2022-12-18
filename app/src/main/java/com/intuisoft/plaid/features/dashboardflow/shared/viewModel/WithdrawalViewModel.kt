@@ -323,16 +323,17 @@ class WithdrawalViewModel(
     }
 
     private fun isSpendOverBalance(converter: RateConverter) : Boolean {
-        if(converter.getRawRate() <= getMaxSpend().getRawRate()) {
-            return false
-        } else {
-            if(internalAmountString.isNotEmpty()) {
-                internalAmountString = internalAmountString.dropLast(1)
-                if(decimalPlace > 0) decimalPlace--
-            }
-            overBalanceError()
-            return true
-        }
+//        if(converter.getRawRate() <= getMaxSpend().getRawRate()) {
+//            return false
+//        } else {
+//            if(internalAmountString.isNotEmpty()) {
+//                internalAmountString = internalAmountString.dropLast(1)
+//                if(decimalPlace > 0) decimalPlace--
+//            }
+//            overBalanceError()
+//            return true
+//        }
+        return false
     }
 
     fun onNextStep() {

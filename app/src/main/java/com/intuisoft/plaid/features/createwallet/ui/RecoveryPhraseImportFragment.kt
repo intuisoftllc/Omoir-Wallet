@@ -48,7 +48,7 @@ class RecoveryPhraseImportFragment : ConfigurableFragment<FragmentRecoveryPhrase
         binding.importWallet.enableButton(false)
         binding.seedPhrase.resetView()
 
-        binding.removeLastWord.setOnClickListener {
+        binding.removeLastWord.setOnSingleClickListener(Constants.Time.MIN_CLICK_INTERVAL_SHORT) {
             viewModel.removeLastWord()
         }
 
@@ -105,19 +105,19 @@ class RecoveryPhraseImportFragment : ConfigurableFragment<FragmentRecoveryPhrase
             binding.seedPhrase.removeLastWord()
         })
 
-        binding.wordSuggestion1.setOnClickListener {
+        binding.wordSuggestion1.setOnSingleClickListener(Constants.Time.MIN_CLICK_INTERVAL_SHORT) {
             viewModel.addWordToList(binding.wordSuggestion1.text.toString())
         }
 
-        binding.wordSuggestion2.setOnClickListener {
+        binding.wordSuggestion2.setOnSingleClickListener(Constants.Time.MIN_CLICK_INTERVAL_SHORT) {
             viewModel.addWordToList(binding.wordSuggestion2.text.toString())
         }
 
-        binding.wordSuggestion3.setOnClickListener {
+        binding.wordSuggestion3.setOnSingleClickListener(Constants.Time.MIN_CLICK_INTERVAL_SHORT) {
             viewModel.addWordToList(binding.wordSuggestion3.text.toString())
         }
 
-        binding.wordSuggestion4.setOnClickListener {
+        binding.wordSuggestion4.setOnSingleClickListener(Constants.Time.MIN_CLICK_INTERVAL_SHORT) {
             viewModel.addWordToList(binding.wordSuggestion4.text.toString())
         }
 

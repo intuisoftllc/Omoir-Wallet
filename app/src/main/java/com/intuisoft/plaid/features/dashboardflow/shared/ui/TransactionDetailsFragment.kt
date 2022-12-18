@@ -134,7 +134,7 @@ class TransactionDetailsFragment : ConfigurableFragment<FragmentTransactionDetai
                         }
                     }
 
-                    binding.close.setOnClickListener {
+                    binding.close.setOnSingleClickListener(Constants.Time.MIN_CLICK_INTERVAL_SHORT) {
                         findNavController().popBackStack()
                     }
 

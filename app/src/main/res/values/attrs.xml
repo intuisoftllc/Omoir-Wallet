@@ -55,6 +55,7 @@
         <attr name="subtitle_icon" format="reference"/>
         <attr name="show_switch" format="boolean"/>
         <attr name="show_copy" format="boolean"/>
+        <attr name="toggleable" format="boolean"/>
         <attr name="show_check" format="boolean"/>
         <attr name="show_chevron" format="boolean"/>
         <attr name="show_radio" format="boolean"/>

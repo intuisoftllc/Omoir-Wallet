@@ -1,38 +1,28 @@
 package com.intuisoft.plaid.features.dashboardflow.shared.adapters.detail
 
-import android.view.View
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.BindingViewHolder
 import com.intuisoft.plaid.androidwrappers.ListItem
 import com.intuisoft.plaid.androidwrappers.loadUrl
-import com.intuisoft.plaid.common.local.db.SupportedCurrency
-import com.intuisoft.plaid.common.model.ExchangeInfoDataModel
+import com.intuisoft.plaid.androidwrappers.setOnSingleClickListener
 import com.intuisoft.plaid.common.network.blockchair.response.SupportedCurrencyModel
-import com.intuisoft.plaid.common.repositories.LocalStoreRepository
-import com.intuisoft.plaid.common.util.SimpleCoinNumberFormat
-import com.intuisoft.plaid.model.ExchangeStatus
-import com.intuisoft.plaid.util.SimpleTimeFormat
-import io.horizontalsystems.bitcoincore.models.TransactionInfo
-import io.horizontalsystems.bitcoincore.models.TransactionStatus
-import io.horizontalsystems.bitcoincore.models.TransactionType
+import com.intuisoft.plaid.common.util.Constants
 import kotlinx.android.synthetic.main.list_item_basic_exchange_details.view.*
 import kotlinx.android.synthetic.main.list_item_basic_transaction_detail.view.*
-import kotlinx.android.synthetic.main.list_item_supported_currency_details.view.*
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import kotlinx.android.synthetic.main.list_item_supported_crypto_currency.view.*
 
 
-class SupportedCurrencyDetail(
+class SupportedCryptoCurrencyDetail(
     val currency: SupportedCurrencyModel,
     val onClick: (SupportedCurrencyModel) -> Unit
 ) : ListItem {
     override val layoutId: Int
-        get() = R.layout.list_item_supported_currency_details
+        get() = R.layout.list_item_supported_crypto_currency
 
     override fun bind(holder: BindingViewHolder) {
         holder.itemView.apply {
 
-            this.setOnClickListener {
+            this.setOnSingleClickListener(Constants.Time.MIN_CLICK_INTERVAL_SHORT) {
                 onClick(currency)
             }
 

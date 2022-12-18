@@ -26,7 +26,7 @@ import com.intuisoft.plaid.common.util.extensions.containsNumbers
 import com.intuisoft.plaid.common.util.extensions.toArrayList
 import com.intuisoft.plaid.databinding.FragmentExchangeBinding
 import com.intuisoft.plaid.features.dashboardflow.shared.viewModel.ExchangeViewModel
-import com.intuisoft.plaid.features.homescreen.adapters.SupportedCurrenciesAdapter
+import com.intuisoft.plaid.features.homescreen.adapters.SupportedCryptoCurrenciesAdapter
 import com.intuisoft.plaid.util.NetworkUtil
 import com.intuisoft.plaid.util.fragmentconfig.BasicConfigData
 import com.mifmif.common.regex.Generex
@@ -78,7 +78,7 @@ class ExchangeFragment : ConfigurableFragment<FragmentExchangeBinding>(pinProtec
             binding.swapPairSend.setValue(it.receiveValue)
         })
 
-        binding.swapSendReceive.setOnClickListener {
+        binding.swapSendReceive.setOnSingleClickListener {
             viewModel.swapSendReceive()
         }
 
@@ -343,7 +343,7 @@ class ExchangeFragment : ConfigurableFragment<FragmentExchangeBinding>(pinProtec
         val searchResults = bottomSheetDialog.findViewById<RecyclerView>(R.id.searchResults)!!
         val search = bottomSheetDialog.findViewById<EditText>(R.id.search)!!
 
-        val adapter = SupportedCurrenciesAdapter(
+        val adapter = SupportedCryptoCurrenciesAdapter(
             onCurrencySelected = {
                 bottomSheetDialog.cancel()
                 binding.swapPairSend.setValue(0.0)

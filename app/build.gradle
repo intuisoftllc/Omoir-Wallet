@@ -73,7 +73,7 @@ android {
              * Even if they somehow manage to gain access to the user's pin. They will still be unable to un-encrypt the file
              * because they would also need to know the wallet secret as well.
              */
-            buildConfigField("String", "WALLET_SECRET", "\"${properties['WALLET_SECRET']}\"") // For added security in the event an attacker gains access to a users wallet file
+            buildConfigField("String", "WALLET_SECRET", "\"${properties['WALLET_SECRET']}\"")
         }
 
         prod {
@@ -88,6 +88,7 @@ android {
             buildConfigField("String", "BLOCKSTREAM_INFO_TEST_NET_SERVER_URL", "\"https://blockstream.info/testnet/api/\"")
             buildConfigField("String", "BLOCKCHAIR_CLIENT_SECRET", "\"${properties['BLOCKCHAIR_CLIENT_SECRET']}\"")
             buildConfigField("String", "SIMPLE_SWAP_CLIENT_SECRET", "\"${properties['SIMPLE_SWAP_CLIENT_SECRET']}\"")
+            buildConfigField("String", "WALLET_SECRET", "\"${properties['WALLET_SECRET']}\"")
         }
     }
     compileOptions {

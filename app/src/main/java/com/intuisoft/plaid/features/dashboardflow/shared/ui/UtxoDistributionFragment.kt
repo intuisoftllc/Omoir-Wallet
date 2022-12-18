@@ -179,7 +179,7 @@ class UtxoDistributionFragment : ConfigurableFragment<FragmentUtxoDistroReportBi
             balance.text = rateConverter.from(RateConverter.RateType.SATOSHI_RATE, "", false).second
             fiat.text = rateConverter.from(RateConverter.RateType.FIAT_RATE, localStoreRepository.getLocalCurrency()).second
 
-            addressContainer.setOnClickListener {
+            addressContainer.setOnSingleClickListener {
                 MainScope().launch {
                     addressCopyIcon?.setImageResource(R.drawable.ic_check)
                     context.copyToClipboard(coin.output.address!!, context.getString(R.string.address))

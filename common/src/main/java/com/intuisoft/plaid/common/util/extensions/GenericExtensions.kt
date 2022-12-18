@@ -131,6 +131,11 @@ fun <T> List<T>.toArrayList() : ArrayList<T> {
     return list
 }
 
+fun  <T> MutableList<T>.prepend(item: T) : MutableList<T> {
+    this.add(0, item)
+    return this
+}
+
 fun <T> MutableList<T>.remove(predicate: (T) -> Boolean) {
     val newList: MutableList<T> = ArrayList()
     filter { predicate(it) }.forEach { newList.add(it) }
@@ -216,7 +221,7 @@ fun File.readFromFile(context: Context): String? {
 
 fun Double.roundTo(numFractionDigits: Int): Double {
     val factor = 10.0.pow(numFractionDigits.toDouble())
-    return (this * factor).roundToInt() / factor
+    return (this * factor) / factor
 }
 
 fun List<Long>.median(): Double {

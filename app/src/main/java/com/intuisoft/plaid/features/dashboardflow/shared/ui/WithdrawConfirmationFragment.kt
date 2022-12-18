@@ -107,13 +107,13 @@ class WithdrawConfirmationFragment : ConfigurableFragment<FragmentWithdrawConfir
             }
         })
 
-        binding.addMemo.setOnClickListener {
+        binding.addMemo.setOnSingleClickListener(Constants.Time.MIN_CLICK_INTERVAL_SHORT) {
             binding.addMemo.isVisible = false
             binding.memoContainer.isVisible = true
             binding.memoFieldTitle.isVisible = true
         }
 
-        binding.advancedOptions.setOnClickListener {
+        binding.advancedOptions.setOnSingleClickListener(Constants.Time.MIN_CLICK_INTERVAL_MED) {
             showAdvancedOptionsDialog()
         }
 

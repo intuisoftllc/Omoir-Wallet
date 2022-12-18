@@ -11,7 +11,7 @@ interface CoingeckoApi {
     @GET("simple/price")
     fun getBasicPriceData(
         @Query("ids") id: String = "bitcoin",
-        @Query("vs_currencies") currencies: String = "usd,eur,cad",
+        @Query("vs_currencies") currencies: String = "usd,eur,cad,aed,ars,aud,bdt,bhd,chf,cny,czk,gbp,krw,rub,php,pkr,clp",
         @Query("include_market_cap") includeMarketCap: Boolean = true,
         @Query("include_24hr_vol") include24hrVol: Boolean = true
     ): Call<BasicPriceDataResponse>

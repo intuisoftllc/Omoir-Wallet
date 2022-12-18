@@ -66,6 +66,19 @@ fun Fragment.shortToast(message: String) =
 val FragmentManager.currentNavigationFragment: Fragment?
     get() = primaryNavigationFragment?.childFragmentManager?.fragments?.first()
 
+inline fun View.setOnSingleClickListener(
+    minClickInterval: Int = Constants.Time.MIN_CLICK_INTERVAL_LONG,
+    crossinline onClick: () -> Unit
+) {
+    setOnClickListener(
+        object: SingleClickListener(minClickInterval) {
+            override fun onSingleClick(v: View?) {
+                onClick()
+            }
+        }
+    )
+}
+
 // extension function to hide soft keyboard programmatically
 fun Activity.hideSoftKeyboard(){
     (getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).apply {

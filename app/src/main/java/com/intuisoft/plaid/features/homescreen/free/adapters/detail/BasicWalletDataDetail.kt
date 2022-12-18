@@ -5,8 +5,10 @@ import androidx.lifecycle.LifecycleOwner
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.BindingViewHolder
 import com.intuisoft.plaid.androidwrappers.ListItem
+import com.intuisoft.plaid.androidwrappers.setOnSingleClickListener
 import com.intuisoft.plaid.model.LocalWalletModel
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
+import com.intuisoft.plaid.common.util.Constants
 import kotlinx.android.synthetic.main.list_item_basic_wallet_detail.view.*
 
 
@@ -23,7 +25,7 @@ class BasicWalletDataDetail(
         holder.itemView.apply {
             view = this
 
-            this.setOnClickListener {
+            this.setOnSingleClickListener(Constants.Time.MIN_CLICK_INTERVAL_SHORT) {
                 onClick(wallet)
             }
 

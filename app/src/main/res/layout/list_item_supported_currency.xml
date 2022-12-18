@@ -1,23 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:paddingHorizontal="16dp"
-    android:paddingTop="16dp"
+    android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/supported_currencies"
+    <com.intuisoft.plaid.androidwrappers.SettingsItemView
+        android:id="@+id/currency"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:settings_variant="radio"
+        android:layout_marginHorizontal="@dimen/margin_2"
+        android:layout_marginBottom="@dimen/horizontal_padding_size"
+        android:layout_marginTop="@dimen/margin_2"
+        app:toggleable="false"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        tools:itemCount="15"
-        app:layout_constraintVertical_bias="0"
-        tools:listitem="@layout/list_item_supported_currency" />
+        app:show_radio="true"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

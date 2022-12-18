@@ -5,6 +5,7 @@ import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.BindingViewHolder
 import com.intuisoft.plaid.androidwrappers.ListItem
 import com.intuisoft.plaid.androidwrappers.copyToClipboard
+import com.intuisoft.plaid.androidwrappers.setOnSingleClickListener
 import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.common.util.RateConverter
 import com.intuisoft.plaid.features.dashboardflow.shared.viewModel.AtpViewModel
@@ -49,7 +50,7 @@ class UxtoTransferDetail(
                 )
             }
 
-            this.setOnClickListener {
+            this.setOnSingleClickListener {
                 MainScope().launch {
                     utxo_data?.showCheck(true)
                     utxo_data?.showCopy(false)

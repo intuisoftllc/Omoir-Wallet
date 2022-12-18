@@ -64,6 +64,90 @@ interface CoingeckoRepository {
                             volume24Hr = prices!!.bitcoin.cad_24h_vol,
                             currentPrice = prices!!.bitcoin.cad,
                             currencyCode = Constants.LocalCurrency.CANADA
+                        ),
+                        BasicPriceDataModel(
+                            marketCap = prices!!.bitcoin.aed_market_cap,
+                            volume24Hr = prices!!.bitcoin.aed_24h_vol,
+                            currentPrice = prices!!.bitcoin.aed,
+                            currencyCode = Constants.LocalCurrency.AED
+                        ),
+                        BasicPriceDataModel(
+                            marketCap = prices!!.bitcoin.ars_market_cap,
+                            volume24Hr = prices!!.bitcoin.ars_24h_vol,
+                            currentPrice = prices!!.bitcoin.ars,
+                            currencyCode = Constants.LocalCurrency.ARS
+                        ),
+                        BasicPriceDataModel(
+                            marketCap = prices!!.bitcoin.aud_market_cap,
+                            volume24Hr = prices!!.bitcoin.aud_24h_vol,
+                            currentPrice = prices!!.bitcoin.aud,
+                            currencyCode = Constants.LocalCurrency.AUD
+                        ),
+                        BasicPriceDataModel(
+                            marketCap = prices!!.bitcoin.bdt_market_cap,
+                            volume24Hr = prices!!.bitcoin.bdt_24h_vol,
+                            currentPrice = prices!!.bitcoin.bdt,
+                            currencyCode = Constants.LocalCurrency.BDT
+                        ),
+                        BasicPriceDataModel(
+                            marketCap = prices!!.bitcoin.bhd_market_cap,
+                            volume24Hr = prices!!.bitcoin.bhd_24h_vol,
+                            currentPrice = prices!!.bitcoin.bhd,
+                            currencyCode = Constants.LocalCurrency.BHD
+                        ),
+                        BasicPriceDataModel(
+                            marketCap = prices!!.bitcoin.chf_market_cap,
+                            volume24Hr = prices!!.bitcoin.chf_24h_vol,
+                            currentPrice = prices!!.bitcoin.chf,
+                            currencyCode = Constants.LocalCurrency.CHF
+                        ),
+                        BasicPriceDataModel(
+                            marketCap = prices!!.bitcoin.cny_market_cap,
+                            volume24Hr = prices!!.bitcoin.cny_24h_vol,
+                            currentPrice = prices!!.bitcoin.cny,
+                            currencyCode = Constants.LocalCurrency.CNY
+                        ),
+                        BasicPriceDataModel(
+                            marketCap = prices!!.bitcoin.czk_market_cap,
+                            volume24Hr = prices!!.bitcoin.czk_24h_vol,
+                            currentPrice = prices!!.bitcoin.czk,
+                            currencyCode = Constants.LocalCurrency.CZK
+                        ),
+                        BasicPriceDataModel(
+                            marketCap = prices!!.bitcoin.gbp_market_cap,
+                            volume24Hr = prices!!.bitcoin.gbp_24h_vol,
+                            currentPrice = prices!!.bitcoin.gbp,
+                            currencyCode = Constants.LocalCurrency.GBP
+                        ),
+                        BasicPriceDataModel(
+                            marketCap = prices!!.bitcoin.krw_market_cap,
+                            volume24Hr = prices!!.bitcoin.krw_24h_vol,
+                            currentPrice = prices!!.bitcoin.krw,
+                            currencyCode = Constants.LocalCurrency.KRW
+                        ),
+                        BasicPriceDataModel(
+                            marketCap = prices!!.bitcoin.rub_market_cap,
+                            volume24Hr = prices!!.bitcoin.rub_24h_vol,
+                            currentPrice = prices!!.bitcoin.rub,
+                            currencyCode = Constants.LocalCurrency.RUB
+                        ),
+                        BasicPriceDataModel(
+                            marketCap = prices!!.bitcoin.php_market_cap,
+                            volume24Hr = prices!!.bitcoin.php_24h_vol,
+                            currentPrice = prices!!.bitcoin.php,
+                            currencyCode = Constants.LocalCurrency.PHP
+                        ),
+                        BasicPriceDataModel(
+                            marketCap = prices!!.bitcoin.pkr_market_cap,
+                            volume24Hr = prices!!.bitcoin.pkr_24h_vol,
+                            currentPrice = prices!!.bitcoin.pkr,
+                            currencyCode = Constants.LocalCurrency.PKR
+                        ),
+                        BasicPriceDataModel(
+                            marketCap = prices!!.bitcoin.clp_market_cap,
+                            volume24Hr = prices!!.bitcoin.clp_24h_vol,
+                            currentPrice = prices!!.bitcoin.clp,
+                            currencyCode = Constants.LocalCurrency.CLP
                         )
                     )
                 )

@@ -4,9 +4,11 @@ import android.view.View
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.BindingViewHolder
 import com.intuisoft.plaid.androidwrappers.ListItem
+import com.intuisoft.plaid.androidwrappers.setOnSingleClickListener
 import com.intuisoft.plaid.common.model.AssetTransferStatus
 import com.intuisoft.plaid.common.model.BatchDataModel
 import com.intuisoft.plaid.common.model.UtxoTransfer
+import com.intuisoft.plaid.common.util.Constants
 import kotlinx.android.synthetic.main.list_item_batch_tx_bottom_item.view.batch_tx
 import kotlinx.android.synthetic.main.list_item_batch_tx_top_item.view.*
 
@@ -25,7 +27,7 @@ class BatchTxBottomDetail(
         holder.itemView.apply {
             view = this
 
-            batch_tx.setOnClickListener {
+            batch_tx.setOnSingleClickListener(Constants.Time.MIN_CLICK_INTERVAL_SHORT) {
                 if(isValid()) {
                     onTxClicked(utxo.txId)
                 }

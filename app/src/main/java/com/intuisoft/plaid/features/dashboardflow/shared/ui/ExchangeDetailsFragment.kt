@@ -60,22 +60,22 @@ class ExchangeDetailsFragment : ConfigurableFragment<FragmentExchangeDetailsBind
         binding.fiatConversionContainer.isVisible = data.toShort.lowercase() == Constants.Strings.BTC_TICKER
         binding.sendAmount2.text = "${SimpleCoinNumberFormat.formatCrypto(data.sendAmount)} ${data.fromShort}"
         binding.paymentAddress.text = data.paymentAddress
-        binding.paymentAddressContainer.setOnClickListener {
+        binding.paymentAddressContainer.setOnSingleClickListener {
             viewModel.copyDataItemClicked(
                 binding.copyPaymentAddress, data.paymentAddress
             )
         }
-        binding.viewFullDetails.setOnClickListener {
+        binding.viewFullDetails.setOnSingleClickListener {
             openLink(getString(R.string.swap_view_full_details_link, data.id))
         }
-        binding.transactionIdContainer.setOnClickListener {
+        binding.transactionIdContainer.setOnSingleClickListener {
             if(data.paymentTxId?.isNotEmpty() == true) {
                 viewModel.copyDataItemClicked(
                     binding.copyTransactionId, data.paymentTxId!!
                 )
             }
         }
-        binding.sendAmountContainer.setOnClickListener {
+        binding.sendAmountContainer.setOnSingleClickListener {
             viewModel.copyDataItemClicked(
                 binding.copyPaymentAmount, SimpleCoinNumberFormat.formatCrypto(data.sendAmount) ?: ""
             )

@@ -5,6 +5,7 @@ import android.graphics.drawable.ShapeDrawable
 import android.util.AttributeSet
 import android.view.Gravity
 import android.view.MotionEvent
+import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.Button
@@ -163,7 +164,7 @@ class SwapPairItemView(context: Context, attrs: AttributeSet?) : LinearLayout(co
 
     fun onTickerClicked(onClick: () -> Unit) {
         tickerClicked = onClick
-        swap_pair_ticker_container?.setOnClickListener {
+        swap_pair_ticker_container?.setOnSingleClickListener {
             onClick()
         }
     }

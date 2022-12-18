@@ -4,8 +4,10 @@ import android.view.View
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.BindingViewHolder
 import com.intuisoft.plaid.androidwrappers.ListItem
+import com.intuisoft.plaid.androidwrappers.setOnSingleClickListener
 import com.intuisoft.plaid.common.model.AssetTransferModel
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
+import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.common.util.SimpleCoinNumberFormat
 import com.intuisoft.plaid.features.dashboardflow.shared.ui.AssetTransferDetailsFragment
 import kotlinx.android.synthetic.main.list_item_basic_atp_history_item.view.*
@@ -41,7 +43,7 @@ class BasicTransferItemDetail(
                 transfer.status
             )
 
-            history_item_container.setOnClickListener {
+            history_item_container.setOnSingleClickListener(Constants.Time.MIN_CLICK_INTERVAL_SHORT) {
                 onClick(transfer)
             }
         }

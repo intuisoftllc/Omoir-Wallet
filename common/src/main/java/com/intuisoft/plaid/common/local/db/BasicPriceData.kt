@@ -5,6 +5,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.intuisoft.plaid.common.model.BasicPriceDataModel
 import com.intuisoft.plaid.common.util.Constants
+import com.intuisoft.plaid.common.util.SimpleCurrencyFormat
 
 @Entity(tableName = "basic_price_data")
 data class BasicPriceData(
@@ -25,18 +26,7 @@ data class BasicPriceData(
     companion object {
 
         fun consume(marketCap: Double, volume24Hr: Double, currencyCode: String, rate: Double): BasicPriceData {
-            var id = 0
-            when(currencyCode) {
-                Constants.LocalCurrency.USD -> {
-                    id = 0
-                }
-                Constants.LocalCurrency.CANADA -> {
-                    id = 1
-                }
-                Constants.LocalCurrency.EURO -> {
-                    id = 2
-                }
-            }
+            var id = SimpleCurrencyFormat.getCurrencyCodeId(currencyCode)
 
             return BasicPriceData(
                 id = id,

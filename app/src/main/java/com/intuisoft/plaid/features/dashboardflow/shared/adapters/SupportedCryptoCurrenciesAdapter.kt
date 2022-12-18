@@ -11,12 +11,12 @@ import com.intuisoft.plaid.androidwrappers.BindingViewHolder
 import com.intuisoft.plaid.androidwrappers.ListItem
 import com.intuisoft.plaid.common.network.blockchair.response.SupportedCurrencyModel
 import com.intuisoft.plaid.databinding.ListItemSectionInfoBinding
-import com.intuisoft.plaid.databinding.ListItemSupportedCurrencyDetailsBinding
+import com.intuisoft.plaid.databinding.ListItemSupportedCryptoCurrencyBinding
 import com.intuisoft.plaid.features.dashboardflow.shared.adapters.detail.ListSectionInfoDetail
-import com.intuisoft.plaid.features.dashboardflow.shared.adapters.detail.SupportedCurrencyDetail
+import com.intuisoft.plaid.features.dashboardflow.shared.adapters.detail.SupportedCryptoCurrencyDetail
 
 
-class SupportedCurrenciesAdapter(
+class SupportedCryptoCurrenciesAdapter(
     private val onCurrencySelected: (SupportedCurrencyModel) -> Unit
 ) : RecyclerView.Adapter<BindingViewHolder>() {
 
@@ -28,8 +28,8 @@ class SupportedCurrenciesAdapter(
         viewType: Int
     ): BindingViewHolder {
         return when (viewType) {
-            R.layout.list_item_supported_currency_details -> {
-                BindingViewHolder.create(parent, ListItemSupportedCurrencyDetailsBinding::inflate)
+            R.layout.list_item_supported_crypto_currency -> {
+                BindingViewHolder.create(parent, ListItemSupportedCryptoCurrencyBinding::inflate)
             }
             R.layout.list_item_section_info -> {
                 BindingViewHolder.create(parent, ListItemSectionInfoBinding::inflate)
@@ -67,14 +67,14 @@ class SupportedCurrenciesAdapter(
             currencies.add(ListSectionInfoDetail(context.getString(R.string.search_currencies_info_title_1)))
 
             mostUsed.forEach {
-                currencies.add(SupportedCurrencyDetail(it, onCurrencySelected))
+                currencies.add(SupportedCryptoCurrencyDetail(it, onCurrencySelected))
             }
         }
 
         currencies.add(ListSectionInfoDetail(context.getString(R.string.search_currencies_info_title_2)))
 
         items.forEach {
-            currencies.add(SupportedCurrencyDetail(it, onCurrencySelected))
+            currencies.add(SupportedCryptoCurrencyDetail(it, onCurrencySelected))
         }
 
         notifyDataSetChanged()

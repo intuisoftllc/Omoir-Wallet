@@ -12,6 +12,7 @@ import android.widget.Switch
 import android.widget.TextView
 import androidx.core.view.isVisible
 import com.intuisoft.plaid.R
+import com.intuisoft.plaid.common.util.Constants
 
 class SettingsItemView(context: Context, attrs: AttributeSet?) : LinearLayout(context, attrs) {
 
@@ -31,6 +32,7 @@ class SettingsItemView(context: Context, attrs: AttributeSet?) : LinearLayout(co
     private var showCopy: Boolean = false
     private var ellipsizeSubtitle: Boolean = false
     private var showRadio: Boolean = false
+    private var toggleable: Boolean = true
     private var subtitleMaxLines: Int = 0
     private var subtitleIcon: Int = 0
     private var titleColor: Int = 0
@@ -60,6 +62,7 @@ class SettingsItemView(context: Context, attrs: AttributeSet?) : LinearLayout(co
             showCopy = getBoolean(R.styleable.SettingsItemView_show_copy, false)
             ellipsizeSubtitle = getBoolean(R.styleable.SettingsItemView_elipsize_subtitle, false)
             showRadio = getBoolean(R.styleable.SettingsItemView_show_radio, false)
+            toggleable = getBoolean(R.styleable.SettingsItemView_toggleable, false)
             subtitleMaxLines = getInteger(R.styleable.SettingsItemView_max_lines_subtitle, -1)
             titleColor = getColor(R.styleable.SettingsItemView_title_text_color, 0)
             subtitleColor = getColor(R.styleable.SettingsItemView_subtitle_text_color, 0)
@@ -118,6 +121,10 @@ class SettingsItemView(context: Context, attrs: AttributeSet?) : LinearLayout(co
 
         container?.isVisible = true
         setupView()
+    }
+
+    fun setToggleable(toggleable: Boolean) {
+        this.toggleable = toggleable
     }
 
     fun setTitleText(value: String) {
@@ -238,11 +245,12 @@ class SettingsItemView(context: Context, attrs: AttributeSet?) : LinearLayout(co
         showChevron(showChevron)
         showCopy(showCopy)
         showRadio(showRadio)
+        setToggleable(toggleable)
     }
 
     fun onRadioClicked(click: (SettingsItemView, Boolean) -> Unit) {
-        this.setOnClickListener {
-            radio?.isChecked = !(radio?.isChecked ?: false)
+        this.setOnSingleClickListener(Constants.Time.MIN_CLICK_INTERVAL_MED) {
+            if(radio?.isChecked == false || toggleable) radio?.isChecked = !(radio?.isChecked ?: false)
         }
 
         radio?.setOnCheckedChangeListener { compoundButton, checked ->
@@ -251,7 +259,7 @@ class SettingsItemView(context: Context, attrs: AttributeSet?) : LinearLayout(co
     }
 
     fun onClick(click: (SettingsItemView) -> Unit) {
-        this.setOnClickListener {
+        this.setOnSingleClickListener(Constants.Time.MIN_CLICK_INTERVAL_MED) {
             click(this)
         }
     }
@@ -270,7 +278,7 @@ class SettingsItemView(context: Context, attrs: AttributeSet?) : LinearLayout(co
     }
 
     fun onCopyClicked(click: () -> Unit) {
-        copy?.setOnClickListener {
+        copy?.setOnSingleClickListener(Constants.Time.MIN_CLICK_INTERVAL_MED) {
             click()
         }
     }

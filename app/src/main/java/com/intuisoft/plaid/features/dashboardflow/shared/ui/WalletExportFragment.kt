@@ -85,7 +85,7 @@ class WalletExportFragment : ConfigurableFragment<FragmentWalletExportBinding>(p
                 binding.pubAddress.text = it
             })
 
-            binding.invoice.setOnClickListener {
+            binding.invoice.setOnSingleClickListener(Constants.Time.MIN_CLICK_INTERVAL_SHORT) {
                 createInvoice()
             }
 
@@ -109,7 +109,7 @@ class WalletExportFragment : ConfigurableFragment<FragmentWalletExportBinding>(p
                 }
             })
 
-            binding.pubAddress.setOnClickListener {
+            binding.pubAddress.setOnSingleClickListener {
                 viewModel.copyXpubToClipboard(binding.pubAddress.text.toString())
             }
 
@@ -117,7 +117,7 @@ class WalletExportFragment : ConfigurableFragment<FragmentWalletExportBinding>(p
                 requireActivity().shareText(null, binding.pubAddress.text.toString())
             }
 
-            binding.close.setOnClickListener {
+            binding.close.setOnSingleClickListener(Constants.Time.MIN_CLICK_INTERVAL_SHORT) {
                 findNavController().popBackStack()
             }
         }
@@ -258,7 +258,7 @@ class WalletExportFragment : ConfigurableFragment<FragmentWalletExportBinding>(p
             save.enableButton(rateConverter.getRawRate() > 0)
         }
 
-        conversionType.setOnClickListener {
+        conversionType.setOnSingleClickListener(Constants.Time.MIN_CLICK_INTERVAL_SHORT) {
             when(localStoreRepository.getBitcoinDisplayUnit()) {
                 BitcoinDisplayUnit.BTC -> {
                     localStoreRepository.updateBitcoinDisplayUnit(BitcoinDisplayUnit.SATS)

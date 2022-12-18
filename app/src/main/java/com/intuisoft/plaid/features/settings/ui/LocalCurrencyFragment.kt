@@ -10,10 +10,17 @@ import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.ConfigurableFragment
 import com.intuisoft.plaid.androidwrappers.FragmentConfiguration
 import com.intuisoft.plaid.androidwrappers.TopBarView
+import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.features.settings.viewmodel.SettingsViewModel
 import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.common.util.SimpleCurrencyFormat
+import com.intuisoft.plaid.common.util.extensions.prepend
+import com.intuisoft.plaid.common.util.extensions.toArrayList
 import com.intuisoft.plaid.databinding.FragmentLocalCurrencyBinding
+import com.intuisoft.plaid.features.homescreen.adapters.SupportedCryptoCurrenciesAdapter
+import com.intuisoft.plaid.features.settings.adapters.SupportedCurrenciesAdapter
+import kotlinx.android.synthetic.main.list_item_supported_currency.*
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 
@@ -22,6 +29,11 @@ class LocalCurrencyFragment : ConfigurableFragment<FragmentLocalCurrencyBinding>
     requiresWallet = false
 ) {
     private val viewModel: SettingsViewModel by sharedViewModel()
+    private val localStoreRepository: LocalStoreRepository by inject()
+
+    private val adapter = SupportedCurrenciesAdapter(
+        currencySelected = ::onCurrencySelected
+    )
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -34,38 +46,37 @@ class LocalCurrencyFragment : ConfigurableFragment<FragmentLocalCurrencyBinding>
     }
 
     override fun onConfiguration(configuration: FragmentConfiguration?) {
-        viewModel.updateLocalCurrencySetting()
-
-        binding.usd.setTitleText(SimpleCurrencyFormat.formatTypeBasic(Constants.LocalCurrency.USD))
-        binding.cad.setTitleText(SimpleCurrencyFormat.formatTypeBasic(Constants.LocalCurrency.CANADA))
-        binding.euro.setTitleText(SimpleCurrencyFormat.formatTypeBasic(Constants.LocalCurrency.EURO))
-
-
-        viewModel.localCurrencySetting.observe(viewLifecycleOwner, Observer {
-            binding.usd.checkRadio(it == Constants.LocalCurrency.USD)
-            binding.cad.checkRadio(it == Constants.LocalCurrency.CANADA)
-            binding.euro.checkRadio(it == Constants.LocalCurrency.EURO)
-        })
-
-        binding.usd.onRadioClicked { settingsItemView, checked ->
-            if(checked) {
-                viewModel.saveLocalCurrency(Constants.LocalCurrency.USD)
-            }
-        }
-
-        binding.cad.onRadioClicked { settingsItemView, checked ->
-            if(checked) {
-                viewModel.saveLocalCurrency(Constants.LocalCurrency.CANADA)
-            }
-        }
-
-        binding.euro.onRadioClicked { settingsItemView, checked ->
-            if(checked) {
-                viewModel.saveLocalCurrency(Constants.LocalCurrency.EURO)
-            }
-        }
+        binding.supportedCurrencies.adapter = adapter
+        adapter.addCurrencies(
+            items = listOf(
+                Constants.LocalCurrency.CANADA,
+                Constants.LocalCurrency.EURO,
+                Constants.LocalCurrency.AED,
+                Constants.LocalCurrency.ARS,
+                Constants.LocalCurrency.AUD,
+                Constants.LocalCurrency.BDT,
+                Constants.LocalCurrency.BHD,
+                Constants.LocalCurrency.CHF,
+                Constants.LocalCurrency.CNY,
+                Constants.LocalCurrency.CZK,
+                Constants.LocalCurrency.GBP,
+                Constants.LocalCurrency.KRW,
+                Constants.LocalCurrency.RUB,
+                Constants.LocalCurrency.PHP,
+                Constants.LocalCurrency.PKR,
+                Constants.LocalCurrency.CLP,
+            )
+                .sorted()
+                .toMutableList()
+                .prepend(Constants.LocalCurrency.USD)
+                .toArrayList(),
+            initialCurrency = localStoreRepository.getLocalCurrency()
+        )
     }
 
+    private fun onCurrencySelected(currencyCode: String) {
+        viewModel.saveLocalCurrency(currencyCode)
+    }
 
     override fun onDestroyView() {
         super.onDestroyView()
@@ -77,7 +88,7 @@ class LocalCurrencyFragment : ConfigurableFragment<FragmentLocalCurrencyBinding>
     }
 
     override fun actionBarTitle(): Int {
-        return R.string.appearance_fragment_label
+        return R.string.local_currency_fragment_label
     }
 
     override fun actionBarActionLeft(): Int {
@@ -89,6 +100,6 @@ class LocalCurrencyFragment : ConfigurableFragment<FragmentLocalCurrencyBinding>
     }
 
     override fun navigationId(): Int {
-        return R.id.appearanceFragment
+        return R.id.localCurrencyFragment
     }
 }
