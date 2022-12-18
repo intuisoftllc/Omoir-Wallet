@@ -15,8 +15,7 @@ import androidx.navigation.navOptions
 import com.intuisoft.plaid.PlaidApp
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
-import com.intuisoft.plaid.util.entensions.ioContext
-import com.intuisoft.plaid.util.entensions.mainContext
+import com.intuisoft.plaid.common.util.extensions.safeWalletScope
 import com.intuisoft.plaid.walletmanager.AbstractWalletManager
 import kotlinx.coroutines.*
 
@@ -36,25 +35,6 @@ open class BaseViewModel(
 
     fun hasConfiguration(fragmentConfiguration: FragmentConfigurationType): Boolean {
         return currentConfig != null && currentConfig!!.configurationType == fragmentConfiguration
-    }
-
-    fun <T> execute(call: suspend () -> T,  onFinish: suspend (Result<T>) -> Unit) {
-        _loading.postValue(true)
-        viewModelScope.launch {
-            var result : Result<T>
-
-            ioContext {
-                try {
-                    result = Result.success(call())
-                } catch (e: Throwable) {
-                    result = Result.failure(e)
-                }
-
-                _loading.postValue(false)
-
-                onFinish(result)
-            }
-        }
     }
 
     fun isFingerprintEnabled() = localStoreRepository.isFingerprintEnabled()
@@ -104,10 +84,12 @@ open class BaseViewModel(
 
     fun eraseAllData(onWipeFinished: () -> Unit) {
         viewModelScope.launch {
-            ioContext {
+            withContext(Dispatchers.IO) {
                 localStoreRepository.wipeAllData {
-                    mainContext {
-                        onWipeFinished()
+                    withContext(Dispatchers.IO) {
+                        safeWalletScope {
+                            onWipeFinished()
+                        }
                     }
                 }
             }

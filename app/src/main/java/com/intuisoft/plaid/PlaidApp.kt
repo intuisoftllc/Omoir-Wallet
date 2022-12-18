@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.Application
 import android.os.Bundle
 import androidx.core.performance.DevicePerformance
+import com.intuisoft.plaid.activities.MainActivity
 import com.intuisoft.plaid.common.CommonService
 import com.intuisoft.plaid.common.local.UserData
 import com.intuisoft.plaid.common.util.Constants
@@ -62,16 +63,20 @@ class PlaidApp : Application(), Application.ActivityLifecycleCallbacks, KoinComp
     }
 
     override fun onActivityResumed(p0: Activity) {
-        ignorePinCheck = false
+        if(p0 is MainActivity) {
+            ignorePinCheck = false
+        }
     }
 
     override fun onActivityPaused(p0: Activity) {
-        val time = System.currentTimeMillis() / 1000
+        if(p0 is MainActivity) {
+            val time = System.currentTimeMillis() / 1000
 
-        if(!ignorePinCheck &&
-            (preferences?.pinTimeout == Constants.Time.INSTANT_TIME_OFFSET
-                    || (CommonService.getUserData() != null && (time - CommonService.getUserData()!!.lastCheckPin) > CommonService.getUserData()!!.pinTimeout))) {
-            preferences?.lastCheckPin = 0
+            if(!ignorePinCheck &&
+                (preferences?.pinTimeout == Constants.Time.INSTANT_TIME_OFFSET
+                        || (CommonService.getUserData() != null && (time - CommonService.getUserData()!!.lastCheckPin) > CommonService.getUserData()!!.pinTimeout))) {
+                preferences?.lastCheckPin = 0
+            }
         }
     }
 

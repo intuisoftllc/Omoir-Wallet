@@ -390,7 +390,7 @@ class SettingsFragment : ConfigurableFragment<FragmentSettingsBinding>(
         })
 
         viewModel.showEasterEgg.observe(viewLifecycleOwner, Observer {
-            styledSnackBar(requireView(), "You have unleashed the memes!") {
+            styledSnackBar(requireView(), getString(R.string.settings_meme_message)) {
                 navigate(
                     R.id.memeFragment,
                     Constants.Navigation.ANIMATED_ENTER_EXIT_RIGHT_NAV_OPTION
@@ -426,10 +426,10 @@ class SettingsFragment : ConfigurableFragment<FragmentSettingsBinding>(
             try {
                 (requireActivity().application as PlaidApp).ignorePinCheck = true
                 startActivity(
-                    Intent.createChooser(emailIntent, "Send email using..."));
+                    Intent.createChooser(emailIntent, getString(R.string.settings_send_email_help_message)));
             } catch (ex: ActivityNotFoundException) {
                 (requireActivity().application as PlaidApp).ignorePinCheck = false
-                styledSnackBar(requireView(), "No email clients installed.")
+                styledSnackBar(requireView(), getString(R.string.settings_send_email_error))
             }
 
         }

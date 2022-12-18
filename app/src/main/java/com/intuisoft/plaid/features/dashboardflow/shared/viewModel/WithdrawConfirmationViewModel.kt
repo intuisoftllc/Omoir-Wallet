@@ -13,7 +13,7 @@ import com.intuisoft.plaid.common.repositories.ApiRepository
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.util.NetworkUtil
 import com.intuisoft.plaid.common.util.RateConverter
-import com.intuisoft.plaid.util.entensions.ioContext
+import com.intuisoft.plaid.common.util.extensions.safeWalletScope
 import com.intuisoft.plaid.walletmanager.AbstractWalletManager
 import io.horizontalsystems.bitcoincore.models.TransactionDataSortType
 import io.horizontalsystems.bitcoincore.storage.FullTransaction
@@ -72,16 +72,18 @@ class WithdrawConfirmationViewModel(
 
     fun setNetworkFeeRate() {
         viewModelScope.launch {
-            ioContext {
-                val suggestedRates = getSuggestedFees(
-                    this@WithdrawConfirmationViewModel.getWalletNetwork() == BitcoinKit.NetworkType.TestNet
-                )
+            withContext(Dispatchers.IO) {
+                safeWalletScope {
+                    val suggestedRates = getSuggestedFees(
+                        this@WithdrawConfirmationViewModel.getWalletNetwork() == BitcoinKit.NetworkType.TestNet
+                    )
 
-                suggestedRates?.let {
-                    this@WithdrawConfirmationViewModel.networkFeeRate = it
+                    suggestedRates?.let {
+                        this@WithdrawConfirmationViewModel.networkFeeRate = it
+                    }
+
+                    setDefaultFeeRate()
                 }
-
-                setDefaultFeeRate()
             }
         }
     }

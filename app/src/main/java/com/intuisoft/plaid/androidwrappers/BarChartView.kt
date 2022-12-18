@@ -82,7 +82,7 @@ class BarChartView @JvmOverloads constructor(
             animate(field)
         }
 
-    private val onBarSelected: (index: Int, x: Float, y: Float) -> Unit= { index, x, y ->
+    private val onBarSelected: (index: Int, x: Float, y: Float) -> Unit= { index, _, _ ->
         if(data[index].second != 0.0f) {
             if (index == lastSelectedBar) {
                 lastSelectedBar = -1

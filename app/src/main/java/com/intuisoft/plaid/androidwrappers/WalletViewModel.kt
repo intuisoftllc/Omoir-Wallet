@@ -17,8 +17,7 @@ import com.intuisoft.plaid.common.util.RateConverter
 import com.intuisoft.plaid.common.util.errors.ClosedWalletErr
 import com.intuisoft.plaid.walletmanager.AbstractWalletManager
 import com.intuisoft.plaid.common.util.errors.ExistingWalletErr
-import com.intuisoft.plaid.util.entensions.ioContext
-import com.intuisoft.plaid.util.entensions.mainContext
+import com.intuisoft.plaid.common.util.extensions.safeWalletScope
 import io.horizontalsystems.bitcoincore.managers.SendValueErrors
 import io.horizontalsystems.bitcoincore.models.TransactionInfo
 import io.horizontalsystems.bitcoincore.storage.UnspentOutput
@@ -39,9 +38,6 @@ open class WalletViewModel(
 
     protected val _seedPhraseGenerated = SingleLiveData<List<String>>()
     val seedPhraseGenerated: LiveData<List<String>> = _seedPhraseGenerated
-
-    protected val _userPassphrase = SingleLiveData<String>()
-    val userPassphrase: LiveData<String> = _userPassphrase
 
     protected val _walletCreationError = SingleLiveData<Unit>()
     val walletCreationError: LiveData<Unit> = _walletCreationError
@@ -237,10 +233,6 @@ open class WalletViewModel(
         _walletBip.postValue(getWalletBip())
     }
 
-    fun showWalletPassphrase() {
-        _userPassphrase.postValue(getWalletPassphrase())
-    }
-
     fun checkReadOnlyStatus() {
         if(isReadOnly()) _readOnlyWallet.postValue(Unit)
     }
@@ -398,16 +390,20 @@ open class WalletViewModel(
 
     fun addWalletStateListener(listener: StateListener) {
         viewModelScope.launch {
-            ioContext {
-                walletManager.addWalletSyncListener(listener)
+            withContext(Dispatchers.IO) {
+                safeWalletScope {
+                    walletManager.addWalletSyncListener(listener)
+                }
             }
         }
     }
 
     fun removeWalletSyncListener(listener: StateListener) {
         viewModelScope.launch {
-            ioContext {
-                walletManager.removeSyncListener(listener)
+            withContext(Dispatchers.IO) {
+                safeWalletScope {
+                    walletManager.removeSyncListener(listener)
+                }
             }
         }
     }
@@ -434,8 +430,10 @@ open class WalletViewModel(
     fun deleteWallet(onDeleteFinished: () -> Unit) {
         CoroutineScope(Dispatchers.IO).launch {
           walletManager.deleteWallet(localWallet!!) {
-              mainContext {
-                  onDeleteFinished()
+              withContext(Dispatchers.Main) {
+                  safeWalletScope {
+                      onDeleteFinished()
+                  }
               }
           }
         }

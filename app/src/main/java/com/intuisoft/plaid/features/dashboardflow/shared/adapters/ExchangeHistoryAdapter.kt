@@ -14,6 +14,9 @@ import com.intuisoft.plaid.databinding.ListItemBasicExchangeDetailsBinding
 import com.intuisoft.plaid.databinding.ListItemSectionInfoBinding
 import com.intuisoft.plaid.features.dashboardflow.shared.adapters.detail.BasicExchangeDetail
 import com.intuisoft.plaid.features.dashboardflow.shared.adapters.detail.BasicDateDetail
+import java.time.Instant
+import java.time.ZoneId
+import java.time.ZonedDateTime
 
 
 class ExchangeHistoryAdapter(
@@ -62,10 +65,10 @@ class ExchangeHistoryAdapter(
 
     fun addExchanges(items: ArrayList<ExchangeInfoDataModel>) {
         exchanges.clear()
-        var lastDate: Long = 0
+        var lastDate = 0
 
         items.forEach { exchange ->
-            val date = exchange.timestamp.epochSecond / Constants.Time.SECONDS_PER_DAY
+            val date = ZonedDateTime.ofInstant(exchange.timestamp, ZoneId.systemDefault()).dayOfMonth
 
             if(date != lastDate) {
                 lastDate = date

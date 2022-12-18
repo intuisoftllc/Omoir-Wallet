@@ -128,8 +128,4 @@ class SeedPhraseView(context: Context, attrs: AttributeSet?) : LinearLayout(cont
             }
         }
     }
-
-    interface RecoveryPhraseUpdatedListener {
-        fun onUpdate()
-    }
 }

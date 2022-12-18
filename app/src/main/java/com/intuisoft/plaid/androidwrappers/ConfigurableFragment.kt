@@ -63,6 +63,9 @@ abstract class ConfigurableFragment<T: ViewBinding>(
         }
     }
 
+    /**
+     * Call in onCreateView()
+     */
     fun setupConfiguration(walletVM: WalletViewModel, configTypes: List<FragmentConfigurationType> = listOf()) {
         this.baseVM = walletVM
         this.configTypes = configTypes

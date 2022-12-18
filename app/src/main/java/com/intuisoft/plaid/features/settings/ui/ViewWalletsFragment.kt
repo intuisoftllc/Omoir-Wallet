@@ -103,6 +103,6 @@ class ViewWalletsFragment : ConfigurableFragment<FragmentManageWalletsBinding>(
     }
 
     override fun navigationId(): Int {
-        return R.id.appearanceFragment
+        return R.id.viewWalletsFragment
     }
 }

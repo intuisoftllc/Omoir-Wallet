@@ -30,6 +30,8 @@ import com.intuisoft.plaid.util.fragmentconfig.ConfigQrDisplayData
 import com.intuisoft.plaid.util.fragmentconfig.BasicConfigData
 import com.intuisoft.plaid.walletmanager.AbstractWalletManager
 import io.horizontalsystems.bitcoincore.models.TransactionInfo
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.*
@@ -115,7 +117,7 @@ class DashboardFragment : ConfigurableFragment<FragmentWalletDashboardBinding>(p
                     configurationType = FragmentConfigurationType.CONFIGURATION_DISPLAY_SHAREABLE_QR,
                     configData = ConfigQrDisplayData(
                         payload = viewModel.getRecieveAddress(),
-                        qrTitle = "Receive BTC",
+                        qrTitle = getString(R.string.export_wallet_receive_btc_title),
                         showClose = true
                     )
                 )
@@ -157,28 +159,32 @@ class DashboardFragment : ConfigurableFragment<FragmentWalletDashboardBinding>(p
     }
 
     override fun onWalletStateUpdated(wallet: LocalWalletModel) {
-        safeWalletScope {
-            if (wallet.uuid == viewModel.getWalletId() && activity != null && _binding != null) {
-                val state = wallet.onWalletStateChanged(
-                    requireContext(),
-                    wallet.syncPercentage,
-                    false,
-                    localStoreRepository
-                )
+        MainScope().launch {
+            safeWalletScope {
+                if (wallet.uuid == viewModel.getWalletId() && activity != null && _binding != null) {
+                    val state = wallet.onWalletStateChanged(
+                        requireContext(),
+                        wallet.syncPercentage,
+                        false,
+                        localStoreRepository
+                    )
 
-                (activity as? MainActivity)?.setActionBarSubTitle(state)
+                    (activity as? MainActivity)?.setActionBarSubTitle(state)
 
-                if (wallet.isSynced && wallet.isSynced)
-                    viewModel.getTransactions()
-                binding.swipeContainer.isRefreshing = wallet.isSyncing
+                    if (wallet.isSynced && wallet.isSynced)
+                        viewModel.getTransactions()
+                    binding.swipeContainer.isRefreshing = wallet.isSyncing
+                }
             }
         }
     }
 
     override fun onWalletAlreadySynced(wallet: LocalWalletModel) {
-        safeWalletScope {
-            if (wallet.uuid == viewModel.getWalletId() && activity != null && _binding != null) {
-                binding.swipeContainer.isRefreshing = false
+        MainScope().launch {
+            safeWalletScope {
+                if (wallet.uuid == viewModel.getWalletId() && activity != null && _binding != null) {
+                    binding.swipeContainer.isRefreshing = false
+                }
             }
         }
     }

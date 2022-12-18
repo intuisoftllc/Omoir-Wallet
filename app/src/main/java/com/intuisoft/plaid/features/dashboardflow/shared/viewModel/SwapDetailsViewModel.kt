@@ -12,7 +12,7 @@ import com.intuisoft.plaid.common.repositories.ApiRepository
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.common.util.RateConverter
-import com.intuisoft.plaid.util.entensions.ioContext
+import com.intuisoft.plaid.common.util.extensions.safeWalletScope
 import com.intuisoft.plaid.walletmanager.AbstractWalletManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -35,16 +35,23 @@ class SwapDetailsViewModel(
 
     fun updatePriceConversion(receiveValue: Double) {
         viewModelScope.launch {
-            ioContext {
-                val rate = apiRepository.getRateFor(localStoreRepository.getLocalCurrency())
-                val rateConverter = RateConverter(rate.currentPrice)
-                rateConverter.setLocalRate(RateConverter.RateType.BTC_RATE, receiveValue)
+            withContext(Dispatchers.IO) {
+                safeWalletScope {
+                    val rate = apiRepository.getRateFor(localStoreRepository.getLocalCurrency())
+                    val rateConverter = RateConverter(rate.currentPrice)
+                    rateConverter.setLocalRate(RateConverter.RateType.BTC_RATE, receiveValue)
 
 
-                if(rate.currentPrice != 0.0) {
-                    _priceConversion.postValue(rateConverter.from(RateConverter.RateType.FIAT_RATE, localStoreRepository.getLocalCurrency()).second!!)
-                } else {
-                    _priceConversion.postValue(getApplication<PlaidApp>().getString(R.string.not_applicable))
+                    if (rate.currentPrice != 0.0) {
+                        _priceConversion.postValue(
+                            rateConverter.from(
+                                RateConverter.RateType.FIAT_RATE,
+                                localStoreRepository.getLocalCurrency()
+                            ).second!!
+                        )
+                    } else {
+                        _priceConversion.postValue(getApplication<PlaidApp>().getString(R.string.not_applicable))
+                    }
                 }
             }
         }

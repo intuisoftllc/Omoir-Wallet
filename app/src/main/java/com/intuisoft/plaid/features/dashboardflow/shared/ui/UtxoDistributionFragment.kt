@@ -213,7 +213,7 @@ class UtxoDistributionFragment : ConfigurableFragment<FragmentUtxoDistroReportBi
     }
 
     override fun navigationId(): Int {
-        return R.id.reportDetailsFragment
+        return R.id.utxoDistroFragment
     }
 
     override fun actionBarActionLeft(): Int {

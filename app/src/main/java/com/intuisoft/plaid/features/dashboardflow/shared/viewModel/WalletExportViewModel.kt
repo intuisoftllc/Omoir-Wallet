@@ -3,6 +3,8 @@ package com.intuisoft.plaid.features.dashboardflow.shared.viewModel
 import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
+import com.intuisoft.plaid.PlaidApp
+import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.SingleLiveData
 import com.intuisoft.plaid.androidwrappers.WalletViewModel
 import com.intuisoft.plaid.common.repositories.ApiRepository
@@ -37,7 +39,7 @@ class WalletExportViewModel(
     fun copyXpubToClipboard(xpub: String) {
         viewModelScope.launch {
             _xpubClickable.postValue(false)
-            _xpubData.postValue("Copied To Clipboard!")
+            _xpubData.postValue(getApplication<PlaidApp>().getString(R.string.export_wallet_copied_to_clipboard))
             _copyXpub.postValue(true)
 
             delay(Constants.Time.ITEM_COPY_DELAY_LONG.toLong())

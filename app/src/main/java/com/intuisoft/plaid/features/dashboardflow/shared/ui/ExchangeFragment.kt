@@ -52,7 +52,7 @@ class ExchangeFragment : ConfigurableFragment<FragmentExchangeBinding>(pinProtec
 
     override fun onConfiguration(configuration: FragmentConfiguration?) {
 
-        onBackPressedCallback { // todo: prevent user from creatig an exchange in watch only wallets when they must send btc
+        onBackPressedCallback {
             onNavigateBottomBarSecondaryFragmentBackwards(localStore)
         }
 
@@ -66,7 +66,7 @@ class ExchangeFragment : ConfigurableFragment<FragmentExchangeBinding>(pinProtec
         }
 
         viewModel.sendPairInfo.observe(viewLifecycleOwner, Observer {
-            if(it.ticker.lowercase() == "btc") {
+            if(it.ticker.lowercase() == Constants.Strings.BTC_TICKER) {
                 binding.swapPairSend.setTickerSymbol(R.drawable.ic_bitcoin)
             } else if(it.symbol != null)
                 binding.swapPairSend.setTickerSymbol(it.symbol)
@@ -101,7 +101,7 @@ class ExchangeFragment : ConfigurableFragment<FragmentExchangeBinding>(pinProtec
         }
 
         viewModel.recievePairInfo.observe(viewLifecycleOwner, Observer {
-            if(it.ticker.lowercase() == "btc") {
+            if(it.ticker.lowercase() == Constants.Strings.BTC_TICKER) {
                 binding.swapPairReceive.setTickerSymbol(R.drawable.ic_bitcoin)
             } else if(it.symbol != null)
                 binding.swapPairReceive.setTickerSymbol(it.symbol)

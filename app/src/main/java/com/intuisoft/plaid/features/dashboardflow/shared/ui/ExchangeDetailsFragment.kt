@@ -120,7 +120,7 @@ class ExchangeDetailsFragment : ConfigurableFragment<FragmentExchangeDetailsBind
                     configData = ConfigInvoiceData(
                         amountToSend = data.sendAmount,
                         address = data.paymentAddress,
-                        memo = "${data.fromShort.lowercase()} -> ${data.toShort.lowercase()} swap"
+                        memo = getString(R.string.exchange_assets_invoice_description, data.fromShort.lowercase(), data.toShort.lowercase())
                     )
                 )
             )

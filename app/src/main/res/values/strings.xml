@@ -19,6 +19,10 @@
 
 <!--    Pro Homescreen Strings -->
     <string name="pro_homescreen_full_balance_title">Total Balance</string>
+    <string name="homescreen_greeting_1">Good Morning</string>
+    <string name="homescreen_greeting_2">Good Afternoon</string>
+    <string name="homescreen_greeting_3">Good Evening</string>
+    <string name="homescreen_greeting_4">Hello</string>
     <string name="pro_homescreen_average_price_dialog_title">Average Price</string>
     <string name="pro_homescreen_average_price_dialog_message">The average price that you acquired this asset at. This is calculated based on the total amount of bitcoin the wallet received and the relative price of the asset at the time it was received.</string>
 <!--    Pro Homescreen Strings End -->
@@ -87,6 +91,9 @@
     <string name="settings_option_app_restart_subtitle">The changes recently made within the app requires a soft restart for them to fully take affect.</string>
     <string name="settings_option_app_restart_positive_text">Restart Now</string>
     <string name="settings_option_app_restart_negative_text">Restart Later</string>
+    <string name="settings_meme_message">You have unleashed the memes!</string>
+    <string name="settings_send_email_help_message">Send email using…</string>
+    <string name="settings_send_email_error">No email clients installed.</string>
 <!--    Settings Strings End -->
 
 <!--    Bitcoin Unit Strings -->
@@ -142,6 +149,7 @@
 <!--    Exchange Assets Strings -->
     <string name="exchange_assets_title">Exchange Assets</string>
     <string name="exchange_assets_description">Effortlessly top your bitcoin wallet\nfrom other cryptocurrencies, without\nleaving the app.</string>
+    <string name="exchange_assets_invoice_description">%1$s -> %2$s swap</string>
 <!--    Exchange Assets Strings End -->
 
 <!--    ATP Strings -->
@@ -256,6 +264,8 @@
 
 <!--    Export Wallet Strings -->
     <string name="export_wallet_title">Your Public Key</string>
+    <string name="export_wallet_receive_btc_title">Receive BTC</string>
+    <string name="export_wallet_copied_to_clipboard">Copied To Clipboard!</string>
 <!--    Export Wallet Strings End -->
 
 <!--    Withdraw Strings -->
@@ -718,7 +728,7 @@
     <string name="today">Today</string>
     <string name="yesterday">Yesterday</string>
     <string name="close">Close</string>
-    <string name="withdraw">Withdraw</string>
+    <string name="unknown">Unknown</string>
     <string name="upgrade_to_pro">Upgrade To Pro</string>
     <string name="transaction_id">Transaction ID</string>
     <string name="dynamic_network_fee">Dynamic Network Fee</string>

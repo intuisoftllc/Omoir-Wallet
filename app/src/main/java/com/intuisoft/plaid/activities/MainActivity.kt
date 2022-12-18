@@ -55,7 +55,6 @@ class MainActivity : BindingActivity<ActivityMainBinding>(), ActionBarDelegate {
             R.id.atpFragment,
             R.id.reportsFragment
         )
-
     }
 
     private val barcodeLauncher =
@@ -77,7 +76,7 @@ class MainActivity : BindingActivity<ActivityMainBinding>(), ActionBarDelegate {
         setContentView(binding.root)
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
 
-        receiver = NetworkChangeReceiver() {
+        receiver = NetworkChangeReceiver {
             val listener = supportFragmentManager.currentNavigationFragment as? NetworkStateChangeListener
 
             if(supportFragmentManager.currentNavigationFragment !is SplashFragment) {

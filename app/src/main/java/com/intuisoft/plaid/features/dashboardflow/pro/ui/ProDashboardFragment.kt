@@ -34,6 +34,8 @@ import com.intuisoft.plaid.util.fragmentconfig.ConfigQrDisplayData
 import com.intuisoft.plaid.util.fragmentconfig.BasicConfigData
 import com.intuisoft.plaid.walletmanager.AbstractWalletManager
 import io.horizontalsystems.bitcoincore.models.TransactionInfo
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.*
@@ -307,7 +309,7 @@ class ProDashboardFragment : ConfigurableFragment<FragmentProWalletDashboardBind
                     configurationType = FragmentConfigurationType.CONFIGURATION_DISPLAY_SHAREABLE_QR,
                     configData = ConfigQrDisplayData(
                         payload = viewModel.getRecieveAddress(),
-                        qrTitle = "Receive BTC",
+                        qrTitle = getString(R.string.export_wallet_receive_btc_title),
                         showClose = true
                     )
                 )
@@ -356,54 +358,37 @@ class ProDashboardFragment : ConfigurableFragment<FragmentProWalletDashboardBind
         }
     }
 
-    fun getConfirmationsForTransaction(transaction: TransactionInfo) : Int {
-        return viewModel.getConfirmations(transaction)
-    }
-
-    fun onTransactionSelected(transaction: TransactionInfo) {
-        var bundle = bundleOf(
-            Constants.Navigation.FRAGMENT_CONFIG to FragmentConfiguration(
-                configurationType = FragmentConfigurationType.CONFIGURATION_TRANSACTION_DATA,
-                configData = BasicConfigData(
-                    payload = CommonService.getGsonInstance().toJson(transaction)
-                )
-            )
-        )
-
-        navigate(
-            R.id.transactionDetailsFragment,
-            bundle,
-            Constants.Navigation.ANIMATED_FADE_IN_NAV_OPTION
-        )
-    }
-
     override fun onWalletStateUpdated(wallet: LocalWalletModel) {
-        safeWalletScope {
-            if (wallet.uuid == viewModel.getWalletId() && activity != null && _binding != null) {
-                val state = wallet.onWalletStateChanged(
-                    requireContext(),
-                    wallet.syncPercentage,
-                    false,
-                    localStoreRepository
-                )
+        MainScope().launch {
+            safeWalletScope {
+                if (wallet.uuid == viewModel.getWalletId() && activity != null && _binding != null) {
+                    val state = wallet.onWalletStateChanged(
+                        requireContext(),
+                        wallet.syncPercentage,
+                        false,
+                        localStoreRepository
+                    )
 
-                if (localStoreRepository.isProEnabled()) {
-                    binding.price.text = state
-                } else {
-                    (activity as? MainActivity)?.setActionBarSubTitle(state)
+                    if (localStoreRepository.isProEnabled()) {
+                        binding.price.text = state
+                    } else {
+                        (activity as? MainActivity)?.setActionBarSubTitle(state)
+                    }
+
+                    if (wallet.isSynced && wallet.isSynced)
+                        viewModel.getTransactions()
+                    binding.swipeContainer.isRefreshing = wallet.isSyncing
                 }
-
-                if (wallet.isSynced && wallet.isSynced)
-                    viewModel.getTransactions()
-                binding.swipeContainer.isRefreshing = wallet.isSyncing
             }
         }
     }
 
     override fun onWalletAlreadySynced(wallet: LocalWalletModel) {
-        safeWalletScope {
-            if (wallet.uuid == viewModel.getWalletId() && activity != null && _binding != null) {
-                binding.swipeContainer.isRefreshing = false
+        MainScope().launch {
+            safeWalletScope {
+                if (wallet.uuid == viewModel.getWalletId() && activity != null && _binding != null) {
+                    binding.swipeContainer.isRefreshing = false
+                }
             }
         }
     }

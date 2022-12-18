@@ -320,6 +320,6 @@ class WalletSettingsFragment : ConfigurableFragment<FragmentWalletSettingsBindin
     }
 
     override fun navigationId(): Int {
-        return R.id.settingsFragment
+        return R.id.walletSettingsFragment
     }
 }

@@ -297,7 +297,7 @@ class CreateWalletViewModel(
                 return context.getString(R.string.create_wallet_advanced_options_entropy_strength_5)
             }
             else -> {
-                return "unknown"
+                return context.getString(R.string.unknown)
             }
         }
     }

@@ -141,7 +141,7 @@ class InvoiceFragment : ConfigurableFragment<FragmentInvoiceBinding>(pinProtecti
     }
 
     override fun navigationId(): Int {
-        return R.id.withdrawalTypeFragment
+        return R.id.invoiceFragment
     }
 
     override fun actionBarSubtitle(): Int {

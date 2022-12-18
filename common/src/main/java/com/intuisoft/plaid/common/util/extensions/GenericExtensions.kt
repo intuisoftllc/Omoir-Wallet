@@ -25,7 +25,7 @@ public fun <T> (suspend () -> T).asFlow(): Flow<T> = flow {
     emit(invoke())
 }
 
-fun safeWalletScope(block: () -> Unit) {
+suspend fun safeWalletScope(block: suspend () -> Unit) {
     try {
         block()
     } catch(_: ClosedWalletErr) {}

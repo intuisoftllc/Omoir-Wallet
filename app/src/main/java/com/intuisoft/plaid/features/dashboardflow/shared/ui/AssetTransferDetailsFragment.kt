@@ -39,7 +39,6 @@ class AssetTransferDetailsFragment : ConfigurableFragment<FragmentAssetTransferD
     val adapter = BatchInfoAdapter(
         localStoreRepository = localStoreRepository
     ) {
-        // todo: navigate to transaction screen
         viewModel.getTransaction(it)?.let { transaction ->
             var bundle = bundleOf(
                 Constants.Navigation.FRAGMENT_CONFIG to FragmentConfiguration(

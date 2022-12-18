@@ -20,8 +20,6 @@ import org.koin.core.component.KoinComponent
 
 
 class BarcodeScannerActivity : BindingActivity<ActivityScanBarcodeBinding>(), KoinComponent {
-
-
     private lateinit var barcodeDetector: BarcodeDetector
     private lateinit var cameraSource: CameraSource
     private val walletManager: AbstractWalletManager by inject()

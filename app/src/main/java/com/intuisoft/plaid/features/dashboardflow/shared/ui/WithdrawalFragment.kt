@@ -240,9 +240,11 @@ class WithdrawalFragment : ConfigurableFragment<FragmentWithdrawBinding>(pinProt
     }
 
     override fun onWalletStateUpdated(wallet: LocalWalletModel) {
-        safeWalletScope {
-            if (wallet.uuid == viewModel.getWalletId()) {
-                viewModel.showWalletDisplayUnit()
+        MainScope().launch {
+            safeWalletScope {
+                if (wallet.uuid == viewModel.getWalletId()) {
+                    viewModel.showWalletDisplayUnit()
+                }
             }
         }
     }
