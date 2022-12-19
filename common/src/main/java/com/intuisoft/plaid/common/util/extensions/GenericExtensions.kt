@@ -78,11 +78,13 @@ fun Editable.toStringOrNull() : String? {
 }
 
 fun <T> List<T>.splitIntoGroupOf(size: Int) : List<Group<T>> {
-    if(size <= 0) throw java.lang.IllegalStateException("Size <= 0")
+    if(size < 0) throw java.lang.IllegalStateException("Size < 0")
     val list = mutableListOf<Group<T>>()
     val limiter = size - 1
 
-    if(size == 1) {
+    if(size == 0 || isEmpty()) {
+        return listOf()
+    } else if(size == 1) {
         return this.map { Group(mutableListOf(it)) }
     } else if(this.size < size) {
         list.add(Group(this.toMutableList()))

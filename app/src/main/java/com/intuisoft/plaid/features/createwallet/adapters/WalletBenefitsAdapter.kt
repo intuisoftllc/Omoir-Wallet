@@ -2,10 +2,8 @@ package com.intuisoft.plaid.features.createwallet.adapters
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
-import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentPagerAdapter
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.intuisoft.plaid.features.createwallet.ui.EscapePodProtocolIntroFragment
+import com.intuisoft.plaid.features.createwallet.ui.AssetTransferProtocolIntroFragment
 import com.intuisoft.plaid.features.createwallet.ui.NonCustodialWalletFragment
 import com.intuisoft.plaid.features.createwallet.ui.PrivateAndSecureWalletFragment
 import com.intuisoft.plaid.features.createwallet.ui.SwapCurrenciesWalletFragment
@@ -18,7 +16,7 @@ class WalletBenefitsAdapter(fa: FragmentActivity) : FragmentStateAdapter(fa) {
         return when (position) {
             0 -> NonCustodialWalletFragment()
             1 -> PrivateAndSecureWalletFragment()
-            2 -> EscapePodProtocolIntroFragment()
+            2 -> AssetTransferProtocolIntroFragment()
             3 -> SwapCurrenciesWalletFragment()
             else -> SwapCurrenciesWalletFragment()
         }

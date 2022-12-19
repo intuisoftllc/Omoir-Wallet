@@ -141,10 +141,10 @@
     <string name="private_secure_wallet_description">Your wallet is protected via a pin code\nand fingerprint if enabled. Your wallet\ndata stored on the device is also AES\nencrypted.</string>
 <!--    Private & Secure Wallet Strings End -->
 
-<!--    Escape Pod Protocol Intro Strings -->
-    <string name="escape_pod_protocol_intro_title">Escape Pod Protocol</string>
-    <string name="escape_pod_protocol_intro_description">Have concerns someone may have\ngained access to  your seed phrase?\nUse Escape pod  protocol (EPP) to send\nall your funds to a new wallet without\nsacrificing privacy.</string>
-<!--    Escape Pod Protocol Intro Strings End -->
+<!--    Asset Transfer Protocol Intro Strings -->
+    <string name="asset_transfer_protocol_intro_title">Asset Transfer Protocol</string>
+    <string name="asset_transfer_protocol_intro_description">Need to move a large amount of funds or change wallets anonymously?\n\nUse Asset Transfer  Protocol (ATP) to send\nall your funds to a new location without\nsacrificing privacy.</string>
+<!--    Asset Transfer Protocol Intro Strings End -->
 
 <!--    Exchange Assets Strings -->
     <string name="exchange_assets_title">Exchange Assets</string>
@@ -768,6 +768,7 @@
     <string name="atp_fragment_label">ATP</string>
     <string name="reports_fragment_label">Reports</string>
     <string name="withdraw_fragment_label">Send BTC</string>
+    <string name="withdraw">Withdraw</string>
     <string name="withdraw_confirmation_fragment_label">Withdraw</string>
     <string name="transaction_details_fragment_label">Transaction Details</string>
     <string name="meme_fragment_label">You Have Unleashed The Memes!</string>

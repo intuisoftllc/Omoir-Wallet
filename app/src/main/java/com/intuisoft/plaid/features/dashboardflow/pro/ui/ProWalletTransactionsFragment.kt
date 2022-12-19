@@ -129,8 +129,12 @@ class ProWalletTransactionsFragment : ConfigurableFragment<FragmentProWalletTras
     }
 
     override fun onWalletAlreadySynced(wallet: LocalWalletModel) {
-        if(viewModel.getWallet() != null && wallet.uuid == viewModel.getWalletId() && activity != null && _binding != null) {
-            (activity as? MainActivity)?.setActionBarSubTitle(getString(R.string.pro_wallet_transactions_fragment_label))
+        MainScope().launch {
+            safeWalletScope {
+                if (viewModel.getWallet() != null && wallet.uuid == viewModel.getWalletId() && activity != null && _binding != null) {
+                    (activity as? MainActivity)?.setActionBarSubTitle(getString(R.string.pro_wallet_transactions_fragment_label))
+                }
+            }
         }
     }
 

@@ -1,261 +1,263 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:paddingHorizontal="@dimen/horizontal_padding_size"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:paddingHorizontal="@dimen/horizontal_padding_size">
 
-
-
-    <com.intuisoft.plaid.androidwrappers.RoundedButtonView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:text_position="center"
-        app:btn_text="@string/report_details_time_period_1"
-        app:button_style="outlined"
-        app:right_icon="@drawable/ic_filter"
-        android:layout_marginTop="@dimen/margin_26"
-        android:id="@+id/timePeriod"
-        android:layout_weight="1"
-        app:layout_constraintHorizontal_bias="0"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
-
-    <TextView
-        android:id="@+id/no_data"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/chart"
-        app:layout_constraintBottom_toBottomOf="@+id/chart"
-        style="@style/TextStyle.Medium.14"
-        android:visibility="gone"
-        android:text="@string/no_data"/>
-
-    <ProgressBar
-        android:id="@+id/loading"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/chart"
-        app:layout_constraintBottom_toBottomOf="@+id/chart"
-        style="@style/TextStyle.Medium.14"
-        android:text="@string/no_data"/>
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
         android:gravity="center_vertical"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="@id/timePeriod"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/timePeriod"
-        app:layout_constraintBottom_toBottomOf="@id/timePeriod">
+        app:layout_constraintTop_toTopOf="@id/timePeriod">
 
-            <TextView
-                android:id="@+id/timePeriodStart"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                style="@style/TextStyle.Regular.12"
-                android:textColor="@color/text_grey"
-                tools:text="Nov-7-12"/>
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/margin_4"
+            android:src="@drawable/ic_arrow_right" />
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/margin_4"
-                android:src="@drawable/ic_arrow_right"/>
+        <TextView
+            android:id="@+id/timePeriodStart"
+            style="@style/TextStyle.Regular.12"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/text_grey"
+            tools:text="Nov-7-12" />
 
-            <TextView
-                android:id="@+id/timePeriodEnd"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                style="@style/TextStyle.Regular.12"
-                android:textColor="@color/text_grey"
-                tools:text="Cec-7-12"/>
+        <TextView
+            android:id="@+id/timePeriodEnd"
+            style="@style/TextStyle.Regular.12"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/text_grey"
+            tools:text="Cec-7-12" />
     </LinearLayout>
-
-
-    <com.intuisoft.plaid.androidwrappers.BarChartView
-        android:id="@+id/chart"
-        android:layout_width="0dp"
-        android:layout_height="200dp"
-        app:chart_axis="x"
-        android:layout_weight="1"
-        app:chart_labelsSize="12sp"
-        app:chart_barsColor="@color/brand_color_accent_3"
-        app:chart_barsBackgroundColor="@color/background_color"
-        app:chart_barsRadius="24dp"
-        app:chart_emptyDataLabelColor="@android:color/darker_gray"
-        app:chart_labelsColor="@color/text_grey"
-        app:chart_barSelectedColor="@color/brand_color_dark_blue"
-        android:layout_marginTop="@dimen/horizontal_padding_size"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/timePeriod" />
-
-    <androidx.cardview.widget.CardView
-        android:id="@+id/inflow_time_period_container"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/chart"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/transactions_container"
-        app:cardCornerRadius="4dp"
-        android:layout_marginHorizontal="2dp"
-        android:layout_marginTop="@dimen/parent_top_margin_small"
-        app:layout_constraintHorizontal_bias="0">
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingHorizontal="@dimen/margin_24"
-                android:paddingVertical="14dp"
-                android:background="?android:selectableItemBackground"
-                android:orientation="horizontal" >
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="0dp"
-                        android:layout_gravity="center_horizontal"
-                        android:gravity="center_horizontal"
-                        android:layout_weight="1"
-                        app:layout_constraintVertical_bias="0.0"
-                        android:layout_marginEnd="@dimen/margin_20"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintEnd_toStartOf="@+id/divider"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:id="@+id/total_title"
-                                android:text="@string/report_details_report_type_inflow_title"
-                                android:layout_marginBottom="@dimen/horizontal_padding_size"
-                                android:textColor="@color/text_grey"
-                                style="@style/TextStyle.Medium.12"/>
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:id="@+id/total_value"
-                            tools:text="3.54 Mil Sats"
-                            android:textStyle="bold"
-                            android:gravity="center"
-                            android:layout_gravity="center"
-                            android:textColor="?attr/colorPrimaryVariant"
-                            style="@style/TextStyle.Semibold.16"/>
-                    </LinearLayout>
-
-                <View
-                    android:id="@+id/divider"
-                    android:layout_width="1dp"
-                    android:layout_height="0dp"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    android:background="@color/color_disabled"/>
-
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center"
-                    android:gravity="center_horizontal"
-                    android:layout_weight="1"
-                    app:layout_constraintVertical_bias="0.0"
-                    android:layout_marginStart="@dimen/margin_20"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/divider"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/time_period_title"
-                        android:text="@string/report_details_time_period_title"
-                        android:layout_marginBottom="@dimen/horizontal_padding_size"
-                        android:textColor="@color/text_grey"
-                        style="@style/TextStyle.Medium.12"/>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/time_period_value"
-                        tools:text="5 Transactions"
-                        android:gravity="center"
-                        android:textStyle="bold"
-                        android:textColor="?attr/colorPrimaryVariant"
-                        style="@style/TextStyle.Semibold.16"/>
-                </LinearLayout>
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.cardview.widget.CardView>
 
     <LinearLayout
         android:id="@+id/transactions_container"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintTop_toBottomOf="@id/inflow_time_period_container"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:orientation="vertical">
-            <TextView
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/inflow_time_period_container">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/noTransactionsIcon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:gravity="center_horizontal"
-                style="@style/TextStyle.Semibold.24"
-                android:textStyle="bold"
-                android:textColor="?attr/colorPrimaryVariant"
-                android:text="@string/wallet_dashboard_transactions_title"
-                android:paddingHorizontal="20dp"
-                android:layout_marginTop="@dimen/horizontal_padding_size_large"/>
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/horizontal_padding_size_large"
+                android:alpha=".9"
+                android:src="@drawable/ic_no_transactions"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/noTransactionsMessage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/horizontal_padding_size"
+                android:gravity="center"
+                android:text="@string/wallet_dashboard_no_transactions"
+                android:visibility="gone" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/transactions"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/horizontal_padding_size"
+                android:paddingHorizontal="@dimen/horizontal_padding_size"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                tools:itemCount="12"
+                tools:listitem="@layout/list_item_basic_transaction_detail" />
+        </LinearLayout>
+
+        <TextView
+            style="@style/TextStyle.Semibold.24"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/horizontal_padding_size_large"
+            android:gravity="center_horizontal"
+            android:paddingHorizontal="20dp"
+            android:text="@string/wallet_dashboard_transactions_title"
+            android:textColor="?attr/colorPrimaryVariant"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/loading"
+        style="@style/TextStyle.Medium.14"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/no_data"
+        app:layout_constraintBottom_toBottomOf="@+id/chart"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/chart" />
+
+    <TextView
+        android:id="@+id/no_data"
+        style="@style/TextStyle.Medium.14"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/no_data"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/chart"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/chart" />
+
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/inflow_time_period_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="2dp"
+        android:layout_marginTop="@dimen/parent_top_margin_small"
+        app:cardCornerRadius="4dp"
+        app:layout_constraintBottom_toTopOf="@id/transactions_container"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/chart">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?android:selectableItemBackground"
+            android:orientation="horizontal"
+            android:paddingHorizontal="@dimen/margin_24"
+            android:paddingVertical="14dp">
 
             <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginEnd="@dimen/margin_20"
+                android:layout_weight="1"
+                android:gravity="center_horizontal"
+                android:orientation="vertical"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/divider"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.0">
 
-                <ImageView
+                <TextView
+                    android:id="@+id/total_title"
+                    style="@style/TextStyle.Medium.12"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:alpha=".9"
-                    android:visibility="gone"
-                    android:layout_marginTop="@dimen/horizontal_padding_size_large"
-                    android:id="@+id/noTransactionsIcon"
-                    android:src="@drawable/ic_no_transactions"
-                    android:layout_gravity="center"/>
+                    android:layout_marginBottom="@dimen/horizontal_padding_size"
+                    android:text="@string/report_details_report_type_inflow_title"
+                    android:textColor="@color/text_grey" />
+
                 <TextView
+                    android:id="@+id/total_value"
+                    style="@style/TextStyle.Semibold.16"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:textColor="?attr/colorPrimaryVariant"
+                    android:textStyle="bold"
+                    tools:text="3.54 Mil Sats" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_marginStart="@dimen/margin_20"
+                android:layout_weight="1"
+                android:gravity="center_horizontal"
+                android:orientation="vertical"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/divider"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.0">
+
+                <TextView
+                    android:id="@+id/time_period_title"
+                    style="@style/TextStyle.Medium.12"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/horizontal_padding_size"
+                    android:text="@string/report_details_time_period_title"
+                    android:textColor="@color/text_grey" />
+
+                <TextView
+                    android:id="@+id/time_period_value"
+                    style="@style/TextStyle.Semibold.16"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:visibility="gone"
-                    android:layout_marginTop="@dimen/horizontal_padding_size"
-                    android:id="@+id/noTransactionsMessage"
-                    android:layout_gravity="center"
-                    android:text="@string/wallet_dashboard_no_transactions"/>
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/transactions"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                    tools:itemCount="12"
-                    android:layout_marginTop="@dimen/horizontal_padding_size"
-                    android:paddingHorizontal="@dimen/horizontal_padding_size"
-                    tools:listitem="@layout/list_item_basic_transaction_detail" />
+                    android:textColor="?attr/colorPrimaryVariant"
+                    android:textStyle="bold"
+                    tools:text="5 Transactions" />
             </LinearLayout>
-    </LinearLayout>
+
+
+            <View
+                android:id="@+id/divider"
+                android:layout_width="1dp"
+                android:layout_height="0dp"
+                android:background="@color/color_disabled"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
+
+    <com.intuisoft.plaid.androidwrappers.BarChartView
+        android:id="@+id/chart"
+        android:layout_width="0dp"
+        android:layout_height="200dp"
+        android:layout_marginTop="@dimen/horizontal_padding_size"
+        android:layout_weight="1"
+        app:chart_axis="x"
+        app:chart_barSelectedColor="@color/brand_color_dark_blue"
+        app:chart_barsBackgroundColor="@color/background_color"
+        app:chart_barsColor="@color/brand_color_accent_3"
+        app:chart_barsRadius="24dp"
+        app:chart_emptyDataLabelColor="@android:color/darker_gray"
+        app:chart_labelsColor="@color/text_grey"
+        app:chart_labelsSize="12sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/timePeriod" />
+
+    <com.intuisoft.plaid.androidwrappers.RoundedButtonView
+        android:id="@+id/timePeriod"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_26"
+        android:layout_weight="1"
+        app:btn_text="@string/report_details_time_period_1"
+        app:button_style="outlined"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:right_icon="@drawable/ic_filter"
+        app:text_position="center" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -236,6 +236,7 @@ fun Activity.shareText(subject: String?, message: String) {
 fun Activity.checkAppPermission(permission: String, requestCode: Int, onAlreadyGranted: () -> Unit) {
     if (ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_DENIED) {
         // Requesting the permission
+        (application as PlaidApp).ignorePinCheck = true
         requestPermissions(arrayOf(permission), requestCode)
     } else {
         onAlreadyGranted()

@@ -31,6 +31,7 @@
     <dimen name="pin_number_size">72dp</dimen>
 
     <!--  margin dimens -->
+    <dimen name="margin_72">72dp</dimen>
     <dimen name="margin_64">64dp</dimen>
     <dimen name="margin_56">56dp</dimen>
     <dimen name="margin_52">52dp</dimen>

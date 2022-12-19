@@ -4,15 +4,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.ConfigurableFragment
 import com.intuisoft.plaid.androidwrappers.FragmentConfiguration
-import com.intuisoft.plaid.databinding.FragmentEscapePodProtocolIntroBinding
+import com.intuisoft.plaid.databinding.FragmentAssetTransferProtocolIntroBinding
 import com.intuisoft.plaid.features.createwallet.viewmodel.CreateWalletViewModel
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 
-class EscapePodProtocolIntroFragment : ConfigurableFragment<FragmentEscapePodProtocolIntroBinding>(
+class AssetTransferProtocolIntroFragment : ConfigurableFragment<FragmentAssetTransferProtocolIntroBinding>(
     pinProtection = true,
     requiresWallet = false
 ) {
@@ -23,7 +22,7 @@ class EscapePodProtocolIntroFragment : ConfigurableFragment<FragmentEscapePodPro
         savedInstanceState: Bundle?
     ): View? {
 
-        _binding = FragmentEscapePodProtocolIntroBinding.inflate(inflater, container, false)
+        _binding = FragmentAssetTransferProtocolIntroBinding.inflate(inflater, container, false)
         return binding.root
     }
 

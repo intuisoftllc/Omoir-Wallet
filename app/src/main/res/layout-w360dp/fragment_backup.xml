@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+
+    <ImageView
+        android:id="@+id/illustration_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_backup_seed_seedphrase"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.05" />
+
+    <TextView
+        android:id="@+id/illustration_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/backup_seed_phrase_title"
+        app:layout_constraintTop_toBottomOf="@+id/illustration_icon"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="@dimen/margin_28"
+        style="@style/TextStyle.Semibold.24"
+        android:textStyle="bold"
+        android:textColor="?attr/colorPrimaryVariant"/>
+
+    <TextView
+        android:id="@+id/seed_phrase_backup_subtitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_10"
+        android:gravity="center_horizontal"
+        style="@style/TextStyle.Regular.16"
+        android:textColor="@color/text_grey"
+        android:paddingHorizontal="@dimen/margin_4"
+        tools:text="@string/backup_seed_phrase_description"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/illustration_title"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <RadioButton
+        android:id="@+id/backup_acknowledgement_1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@+id/continue_button"
+        app:layout_constraintEnd_toEndOf="@+id/continue_button"
+        app:layout_constraintBottom_toTopOf="@+id/backup_acknowledgement_2"
+        android:paddingStart="@dimen/horizontal_padding_size"
+        android:layout_marginBottom="@dimen/horizontal_padding_size"
+        android:gravity="top"
+        android:text="@string/backup_seed_phrase_acknowledgement_1"/>
+
+    <RadioButton
+        android:id="@+id/backup_acknowledgement_2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@+id/continue_button"
+        app:layout_constraintEnd_toEndOf="@+id/continue_button"
+        app:layout_constraintBottom_toTopOf="@+id/backup_acknowledgement_3"
+        android:paddingStart="@dimen/horizontal_padding_size"
+        android:layout_marginBottom="@dimen/horizontal_padding_size"
+        android:gravity="top"
+        android:text="@string/backup_seed_phrase_acknowledgement_2"/>
+
+    <RadioButton
+        android:id="@+id/backup_acknowledgement_3"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@+id/continue_button"
+        app:layout_constraintEnd_toEndOf="@+id/continue_button"
+        app:layout_constraintBottom_toTopOf="@+id/continue_button"
+        android:paddingStart="@dimen/horizontal_padding_size"
+        android:layout_marginBottom="@dimen/margin_18"
+        android:gravity="top"
+        android:text="@string/backup_seed_phrase_acknowledgement_3"/>
+
+
+    <com.intuisoft.plaid.androidwrappers.RoundedButtonView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:button_style="rounded"
+        android:id="@+id/continue_button"
+        android:layout_marginTop="@dimen/horizontal_padding_size"
+        android:layout_marginBottom="@dimen/horizontal_padding_size"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginHorizontal="@dimen/horizontal_padding_size_large"
+        app:btn_text="@string/continue_button"
+        app:text_position="center"/>
+</androidx.constraintlayout.widget.ConstraintLayout>

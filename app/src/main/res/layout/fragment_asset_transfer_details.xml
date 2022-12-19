@@ -8,6 +8,7 @@
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:scrollbars="none"
         android:layout_marginTop="@dimen/parent_top_margin_small"
         android:paddingHorizontal="@dimen/horizontal_padding_size"
         app:layout_constraintStart_toStartOf="parent"

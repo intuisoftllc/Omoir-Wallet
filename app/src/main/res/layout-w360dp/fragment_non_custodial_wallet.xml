@@ -8,18 +8,18 @@
         android:id="@+id/illustration_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_asset_transfer_protocol_intro"
+        android:src="@drawable/ic_non_custodial_wallet"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.2" />
+        app:layout_constraintVertical_bias="0.10" />
 
     <TextView
         android:id="@+id/illustration_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/escape_pod_protocol_intro_title"
+        android:text="@string/non_custodial_wallet_title"
         app:layout_constraintTop_toBottomOf="@+id/illustration_icon"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -31,12 +31,11 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_24"
+        android:layout_marginTop="@dimen/margin_10"
         android:gravity="center_horizontal"
-        android:paddingHorizontal="20dp"
         style="@style/TextStyle.Regular.16"
         android:textColor="@color/text_grey"
-        android:text="@string/escape_pod_protocol_intro_description"
+        android:text="@string/non_custodial_wallet_description"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

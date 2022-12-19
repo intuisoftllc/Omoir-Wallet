@@ -32,6 +32,7 @@ import io.horizontalsystems.bitcoincore.storage.UnspentOutput
 import kotlinx.coroutines.*
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import java.security.SecureRandom
 import java.util.Locale
 
 class UtxoDistributionFragment : ConfigurableFragment<FragmentUtxoDistroReportBinding>(pinProtection = true) {
@@ -70,7 +71,7 @@ class UtxoDistributionFragment : ConfigurableFragment<FragmentUtxoDistroReportBi
             if(it != null) {
                 binding.chart.data =
                     it.items.map { item ->
-                        item.barName to item.utxos.size.toFloat()
+                        item.barName to SecureRandom().nextInt(10393).toFloat()
                     }.toArrayList()
             } else {
                 binding.chart.data = listOf()

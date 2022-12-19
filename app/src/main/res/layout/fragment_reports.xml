@@ -1,60 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<ScrollView
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:paddingHorizontal="@dimen/horizontal_padding_size"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_height="wrap_content"
+    android:scrollbars="none"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingHorizontal="@dimen/horizontal_padding_size">
 
-    <com.intuisoft.plaid.androidwrappers.SettingsItemView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:item_title="@string/report_type_inflow_title"
-        app:item_subtitle="@string/report_type_inflow_subtitle"
-        app:settings_variant="card"
-        app:show_chevron="true"
-        android:layout_marginTop="@dimen/parent_top_margin_med"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:id="@+id/inflow"/>
+            <com.intuisoft.plaid.androidwrappers.SettingsItemView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:item_title="@string/report_type_inflow_title"
+                app:item_subtitle="@string/report_type_inflow_subtitle"
+                app:settings_variant="card"
+                app:show_chevron="true"
+                android:layout_marginTop="@dimen/parent_top_margin_med"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:id="@+id/inflow"/>
 
-    <com.intuisoft.plaid.androidwrappers.SettingsItemView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:item_title="@string/report_type_outflow_title"
-        app:item_subtitle="@string/report_type_outflow_subtitle"
-        app:settings_variant="card"
-        app:show_chevron="true"
-        android:layout_marginTop="@dimen/horizontal_padding_size"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/inflow"
-        android:id="@+id/outflow"/>
+            <com.intuisoft.plaid.androidwrappers.SettingsItemView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:item_title="@string/report_type_outflow_title"
+                app:item_subtitle="@string/report_type_outflow_subtitle"
+                app:settings_variant="card"
+                app:show_chevron="true"
+                android:layout_marginTop="@dimen/horizontal_padding_size"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/inflow"
+                android:id="@+id/outflow"/>
 
-    <com.intuisoft.plaid.androidwrappers.SettingsItemView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:item_title="@string/report_type_fees_title"
-        app:item_subtitle="@string/report_type_fees_subtitle"
-        app:settings_variant="card"
-        app:show_chevron="true"
-        android:layout_marginTop="@dimen/horizontal_padding_size"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/outflow"
-        android:id="@+id/fees"/>
+            <com.intuisoft.plaid.androidwrappers.SettingsItemView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:item_title="@string/report_type_fees_title"
+                app:item_subtitle="@string/report_type_fees_subtitle"
+                app:settings_variant="card"
+                app:show_chevron="true"
+                android:layout_marginTop="@dimen/horizontal_padding_size"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/outflow"
+                android:id="@+id/fees"/>
 
-    <com.intuisoft.plaid.androidwrappers.SettingsItemView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:item_title="@string/report_type_utx_distro_title"
-        app:item_subtitle="@string/report_type_utx_distro_subtitle"
-        app:settings_variant="card"
-        app:show_chevron="true"
-        android:layout_marginTop="@dimen/horizontal_padding_size"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/fees"
-        android:id="@+id/utx_distro"/>
+            <com.intuisoft.plaid.androidwrappers.SettingsItemView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:item_title="@string/report_type_utx_distro_title"
+                app:item_subtitle="@string/report_type_utx_distro_subtitle"
+                app:settings_variant="card"
+                app:show_chevron="true"
+                android:layout_marginTop="@dimen/horizontal_padding_size"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/fees"
+                android:id="@+id/utx_distro"/>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

@@ -140,7 +140,7 @@ class UserData {
             save()
         }
 
-    var batchSize: Int = 0
+    var batchSize: Int = 1
         set(value) {
             field = value
             save()

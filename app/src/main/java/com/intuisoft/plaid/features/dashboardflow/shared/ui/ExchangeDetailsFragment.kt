@@ -56,7 +56,7 @@ class ExchangeDetailsFragment : ConfigurableFragment<FragmentExchangeDetailsBind
         binding.from.text = data.from
         binding.to.text = data.to
         binding.sendAmount.text = "${SimpleCoinNumberFormat.formatCrypto(data.sendAmount)} ${data.fromShort}"
-        binding.receiveAmount.text = "${SimpleCoinNumberFormat.formatCrypto(data.receiveAmount)} ${data.toShort}"
+        binding.receiveAmount.text = "~${SimpleCoinNumberFormat.formatCrypto(data.receiveAmount)} ${data.toShort}"
         binding.fiatConversionContainer.isVisible = data.toShort.lowercase() == Constants.Strings.BTC_TICKER
         binding.sendAmount2.text = "${SimpleCoinNumberFormat.formatCrypto(data.sendAmount)} ${data.fromShort}"
         binding.paymentAddress.text = data.paymentAddress
@@ -69,7 +69,11 @@ class ExchangeDetailsFragment : ConfigurableFragment<FragmentExchangeDetailsBind
             openLink(getString(R.string.swap_view_full_details_link, data.id))
         }
         binding.transactionIdContainer.setOnSingleClickListener {
-            if(data.paymentTxId?.isNotEmpty() == true) {
+            if(data.receiveTxId?.isNotEmpty() == true) {
+                viewModel.copyDataItemClicked(
+                    binding.copyTransactionId, data.receiveTxId!!
+                )
+            } else if(data.paymentTxId?.isNotEmpty() == true) {
                 viewModel.copyDataItemClicked(
                     binding.copyTransactionId, data.paymentTxId!!
                 )
@@ -95,7 +99,9 @@ class ExchangeDetailsFragment : ConfigurableFragment<FragmentExchangeDetailsBind
             binding.fiatConversion.text = it
         })
 
-        if(data.paymentTxId?.isNotEmpty() == true) {
+        if(data.receiveTxId?.isNotEmpty() == true) {
+            binding.transactionId.text = data.receiveTxId
+        } else if(data.paymentTxId?.isNotEmpty() == true) {
             binding.transactionId.text = data.paymentTxId
         } else {
             binding.transactionId.text = getString(R.string.not_applicable)

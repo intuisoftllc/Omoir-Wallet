@@ -13,7 +13,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.2" />
+        app:layout_constraintVertical_bias="0.1" />
 
     <TextView
         android:id="@+id/illustration_title"
@@ -31,9 +31,8 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_24"
+        android:layout_marginTop="@dimen/margin_10"
         android:gravity="center_horizontal"
-        android:paddingHorizontal="20dp"
         style="@style/TextStyle.Regular.16"
         android:textColor="@color/text_grey"
         android:text="@string/exchange_assets_description"

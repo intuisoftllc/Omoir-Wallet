@@ -46,23 +46,26 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="@dimen/horizontal_padding_size_large"
+                android:layout_gravity="center"
+                android:gravity="center"
                 android:background="?android:selectableItemBackground"
                 android:orientation="vertical" >
 
-                    <TextView
-                        android:id="@+id/pubKeyTitle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        tools:text="@string/export_wallet_title"
-                        style="@style/TextStyle.Semibold.24"
-                        android:textStyle="bold"
-                        android:layout_gravity="center_horizontal"
-                        app:layout_constraintBottom_toTopOf="@+id/qrCode"
-                        android:textColor="?attr/colorPrimaryVariant"/>
+                <TextView
+                    android:id="@+id/pubKeyTitle"
+                    style="@style/TextStyle.Semibold.24"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:layout_gravity="center_horizontal"
+                    android:textColor="?attr/colorPrimaryVariant"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toTopOf="@+id/qrCode"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    tools:text="@string/export_wallet_title" />
 
-                    <TextView
+                <TextView
                         android:id="@+id/invoice_description"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"

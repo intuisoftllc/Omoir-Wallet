@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/screen_contents"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:paddingHorizontal="@dimen/margin_10"
+        android:layout_marginTop="@dimen/margin_8">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingHorizontal="@dimen/margin_10">
+
+            <com.intuisoft.plaid.androidwrappers.RoundedButtonView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:btn_text="@string/swap_type_fixed"
+                android:id="@+id/fixed"
+                app:text_position="center"
+                app:button_style="rounded"
+                android:layout_weight="1"
+                android:paddingHorizontal="@dimen/margin_6"/>
+
+            <com.intuisoft.plaid.androidwrappers.RoundedButtonView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:btn_text="@string/swap_type_floating"
+                android:id="@+id/floating"
+                app:text_position="center"
+                android:layout_weight="1"
+                app:button_style="outlined"
+                android:paddingHorizontal="@dimen/margin_6"/>
+        </LinearLayout>
+
+        <com.intuisoft.plaid.androidwrappers.SwapPairItemView
+            android:id="@+id/swap_pair_send"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_18"
+            app:preview_item="true"
+            app:pair_preview="enter_value_variant_1"/>
+
+        <LinearLayout
+            android:layout_marginTop="@dimen/margin_18"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:layout_marginHorizontal="@dimen/horizontal_padding_size"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="5dp"
+                android:layout_weight="1"
+                android:layout_marginRight="@dimen/horizontal_padding_size"
+                android:src="@drawable/shape_dashed_line"/>
+
+            <ImageView
+                android:id="@+id/swap_send_receive"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/margin_8"
+                android:background="?android:selectableItemBackground"
+                android:src="@drawable/ic_swap_crypto"/>
+
+            <ProgressBar
+                android:id="@+id/loading"
+                android:visibility="gone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+
+        <com.intuisoft.plaid.androidwrappers.SwapPairItemView
+            android:id="@+id/swap_pair_receive"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_18"
+            app:preview_item="true"
+            app:pair_preview="show_value_variant_1"/>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/min_max_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Min/Max"
+                android:gravity="center_vertical"
+                android:visibility="gone"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toTopOf="@+id/min_max_container"
+                android:textColor="@color/text_grey"
+                android:layout_marginBottom="@dimen/margin_6"
+                style="@style/TextStyle.Semibold.12"/>
+
+            <LinearLayout
+                android:id="@+id/min_max_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginBottom="@dimen/horizontal_padding_size"
+                android:gravity="center"
+                android:visibility="gone"
+                android:layout_marginHorizontal="@dimen/horizontal_padding_size"
+                android:orientation="horizontal"
+                app:layout_constraintBottom_toTopOf="@+id/confirm">
+
+                <TextView
+                    android:id="@+id/min"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/text_grey"
+                    android:textStyle="bold"
+                    style="@style/TextStyle.Medium.16"/>
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_arrow_right"
+                    android:layout_marginHorizontal="@dimen/horizontal_padding_size_small"/>
+
+                <TextView
+                    android:id="@+id/max"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/text_grey"
+                    android:textStyle="bold"
+                    style="@style/TextStyle.Medium.16"/>
+            </LinearLayout>
+
+
+            <com.intuisoft.plaid.androidwrappers.RoundedButtonView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:text_position="center"
+                app:button_style="rounded"
+                android:gravity="bottom"
+                android:layout_gravity="bottom"
+                app:btn_text="@string/next"
+                android:id="@+id/confirm"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginBottom="@dimen/horizontal_padding_size"
+                android:layout_marginHorizontal="@dimen/horizontal_padding_size_large"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
+</LinearLayout>

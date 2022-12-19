@@ -7,7 +7,7 @@ class Constants {
 
     object Database {
         const val DB_NAME = "plaid.db"
-        const val DB_VERSION = 30
+        const val DB_VERSION = 31
     }
 
     object Files {

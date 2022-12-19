@@ -43,13 +43,19 @@ class PinFragment: ConfigurableFragment<FragmentPinBinding>(
     override fun onConfiguration(configuration: FragmentConfiguration?) {
         binding.passcodeView.setPasscodeType(TYPE_CHECK_PASSCODE)
 
+
         if(setupPin) {
             binding.passcodeView.setFirstInputTip(getString(R.string.enter_pin_to_reset_message))
             binding.passcodeView.resetView()
             binding.passcodeView.disableFingerprint()
         } else {
-            binding.passcodeView.setFirstInputTip(getString(R.string.create_pin_tip_message))
+            binding.passcodeView.setFirstInputTip(getString(R.string.enter_pin_to_unlock_message))
+            binding.passcodeView.resetView()
             ignoreOnBackPressed()
+        }
+
+        if(CommonService.getUserPin().isEmpty() || homePassthrough) {
+            binding.passcodeView.disableFingerprint()
         }
 
         binding.passcodeView.setListener(object: PasscodeView.PasscodeViewListener {
