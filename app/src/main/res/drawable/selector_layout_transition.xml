@@ -3,15 +3,15 @@
     android:enterFadeDuration="100"
     android:exitFadeDuration="100">
     <item android:state_pressed="true">
-        <color android:color="#11000000"/>
+        <color android:color="@color/transparent_state_pressed_color"/>
     </item>
     <item android:state_selected="true">
-        <color android:color="#11000000"/>
+        <color android:color="@color/transparent_state_pressed_color"/>
     </item>
     <item android:state_checked="true">
-        <color android:color="#11000000"/>
+        <color android:color="@color/transparent_state_pressed_color"/>
     </item>
     <item>
-        <color android:color="#00ffffff"/>
+        <color android:color="@color/transparent_state_unpressed_color"/>
     </item>
 </selector>

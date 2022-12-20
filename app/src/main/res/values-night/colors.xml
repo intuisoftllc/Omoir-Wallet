@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+<!--   Success/error Colors -->
+    <color name="success_color">#84BF68</color>
+    <color name="viridian">#1d874c</color>
+    <color name="error_color">#EA4159</color>
+    <color name="soft_error_color">#F6B0BA</color>
+    <color name="alt_error_color">#D53E56</color>
+    <color name="warning_color">#FFB800</color>
+<!--   Success/error Colors End -->
+
+<!--    Hard Colors [Do Not Use Directly!] -->
+    <color name="black">#FF000000</color>
+    <color name="alt_black">#222222</color>
+    <color name="blue_black">#2B2D2F</color>
+    <color name="transparent_white">#0FFFFFFF</color>
+    <color name="transparent">#00FFFFFF</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="grey_white">#F1F0F0</color>
+    <color name="white_blue_grey">#D4D4D8</color>
+    <color name="blue_grey">#A8AFBF</color>
+    <color name="alt_blue_grey">#A1A1AA</color>
+    <color name="grey">#CACACA</color>
+    <color name="dark_grey">#555759</color>
+    <color name="navy_blue">#101338</color>
+    <color name="alt_navy_blue">#161833</color>
+    <color name="deep_blue">#0A0C24</color>
+    <color name="purple">#2D2F51</color>
+    <color name="orange">#F7931A</color>
+<!--    Hard Colors End -->
+
+<!--    Component Colors -->
+    <color name="background_color">@color/deep_blue</color>
+    <color name="error_text_color">@color/alt_error_color</color>
+    <color name="subtitle_text_color">@color/alt_blue_grey</color>
+    <color name="title_text_color">@color/white_blue_grey</color>
+    <color name="icon_contrast_color">@color/white</color>
+    <color name="alt_icon_contrast_color">@color/brand_color_dark_blue</color>
+    <color name="card_background_color">@color/alt_navy_blue</color>
+    <color name="card_divider_color">@color/purple</color>
+    <color name="description_text_color">@color/dark_grey</color>
+    <color name="transparent_state_pressed_color">@color/transparent_white</color>
+    <color name="transparent_state_unpressed_color">@color/transparent</color>
+    <color name="bottom_bar_background_color">@color/navy_blue</color>
+    <color name="batch_line_color">@color/alt_icon_contrast_color</color>
+    <color name="bottom_bar_swap_unselected_background_color">@color/deep_blue</color>
+    <color name="settings_category_text_color">@color/grey</color>
+    <color name="line_chart_card_background_color">@color/brand_color_dark_blue</color>
+    <color name="time_period_indicator_color">@color/white</color>
+<!--    Component Colors End -->
+
+
+    <!--    Brand Colors    -->
+    <color name="brand_color_blue">#145FB9</color>
+    <color name="brand_color_dark_blue">#104485</color>
+    <color name="brand_color_accent_1">#dce4ed</color>
+    <color name="brand_color_accent_2">#bacadc</color>
+    <color name="brand_color_accent_3">#98afcb</color>
+    <!--    Brand Colors End    -->
+
+
+</resources>

@@ -26,11 +26,12 @@
             android:layout_height="wrap_content"
             android:background="@color/white"
             android:hint="@string/withdraw_confirmation_address_suggestion"
+            android:backgroundTint="@color/card_background_color"
             android:maxLines="1"
             android:padding="@dimen/horizontal_padding_size"
             android:inputType="text"
             android:imeOptions="actionDone"
-            android:textColorHint="@color/color_disabled"
+            android:textColorHint="@color/grey"
             android:textSize="14sp" />
     </androidx.cardview.widget.CardView>
 
@@ -46,7 +47,6 @@
 
 
     <androidx.cardview.widget.CardView
-        android:visibility="gone"
         android:id="@+id/memo_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -55,6 +55,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="@dimen/margin_64"
         app:cardCornerRadius="@dimen/card_corner_radius"
+        android:visibility="gone"
         android:layout_marginHorizontal="@dimen/margin_20"
         app:layout_constraintVertical_bias="@dimen/vertical_bias_40">
 
@@ -64,12 +65,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/white"
+            android:backgroundTint="@color/card_background_color"
             android:hint="@string/withdraw_confirmation_memo_text_box_hint"
             android:maxLines="1"
             android:padding="@dimen/horizontal_padding_size"
             android:inputType="text"
             android:imeOptions="actionDone"
-            android:textColorHint="@color/color_disabled"
+            android:textColorHint="@color/grey"
             android:textSize="14sp" />
     </androidx.cardview.widget.CardView>
 

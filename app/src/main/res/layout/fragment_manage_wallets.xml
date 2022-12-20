@@ -44,7 +44,7 @@
             android:layout_height="wrap_content"
             android:text="@string/view_wallets_no_wallets_created"
             android:layout_marginTop="@dimen/horizontal_padding_size"
-            android:textColor="@color/text_grey"
+            android:textColor="@color/description_text_color"
             style="@style/TextStyle.Regular.16"
             android:gravity="center"/>
     </LinearLayout>

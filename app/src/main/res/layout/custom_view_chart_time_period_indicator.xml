@@ -13,6 +13,7 @@
             android:layout_height="wrap_content"
             android:text="1D"
             android:textStyle="bold"
+            android:textColor="@color/title_text_color"
             style="@style/TextStyle.Regular.12"
             android:layout_weight="1"
             android:layout_gravity="center"

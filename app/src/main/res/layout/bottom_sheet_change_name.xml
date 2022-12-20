@@ -42,12 +42,13 @@
             android:layout_height="wrap_content"
             android:background="@color/white"
             android:hint="@string/welcome_alias_suggestion"
+            android:backgroundTint="@color/card_background_color"
             android:maxLength="25"
             android:maxLines="1"
             android:padding="@dimen/horizontal_padding_size"
             android:inputType="text"
             android:imeOptions="actionDone"
-            android:textColorHint="@color/color_disabled"
+            android:textColorHint="@color/grey"
             android:textSize="14sp"
             tools:ignore="TextContrastCheck,TouchTargetSizeCheck" />
     </androidx.cardview.widget.CardView>

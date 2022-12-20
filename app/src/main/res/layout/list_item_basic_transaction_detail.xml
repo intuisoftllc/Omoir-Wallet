@@ -18,6 +18,7 @@
         android:layout_marginHorizontal="@dimen/card_view_elevation"
         android:layout_marginBottom="@dimen/horizontal_padding_size"
         android:layout_marginTop="@dimen/margin_2"
+        android:backgroundTint="@color/card_background_color"
         app:layout_constraintHorizontal_bias="0">
         <LinearLayout
             android:layout_width="match_parent"
@@ -40,7 +41,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 style="@style/TextStyle.Medium.14"
-                android:textColor="@color/text_black"
+                android:textColor="@color/title_text_color"
                 android:layout_weight="3"
                 android:ellipsize="end"
                 android:maxLines="1"
@@ -53,7 +54,7 @@
                 android:layout_gravity="center_vertical|end"
                 android:gravity="end"
                 style="@style/TextStyle.Regular.16"
-                android:textColor="@color/text_grey"
+                android:textColor="@color/subtitle_text_color"
                 android:layout_marginStart="@dimen/margin_10"
                 tools:text="128.64 Bil Sats"
                 android:layout_weight="2"/>

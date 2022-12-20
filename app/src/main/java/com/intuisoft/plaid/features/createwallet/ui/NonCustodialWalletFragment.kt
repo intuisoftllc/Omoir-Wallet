@@ -13,7 +13,7 @@ import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 
 class NonCustodialWalletFragment : ConfigurableFragment<FragmentNonCustodialWalletBinding>(
-    pinProtection = true,
+    pinProtection = false,
     requiresWallet = false
 ) {
     protected val viewModel: CreateWalletViewModel by sharedViewModel()

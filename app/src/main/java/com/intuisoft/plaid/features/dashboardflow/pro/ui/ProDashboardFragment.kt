@@ -15,7 +15,6 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.activities.MainActivity
 import com.intuisoft.plaid.androidwrappers.*
-import com.intuisoft.plaid.common.CommonService
 import com.intuisoft.plaid.common.model.BitcoinDisplayUnit
 import com.intuisoft.plaid.common.model.ChartDataModel
 import com.intuisoft.plaid.common.model.ChartIntervalType
@@ -31,9 +30,7 @@ import com.intuisoft.plaid.features.dashboardflow.shared.adapters.BasicLineChart
 import com.intuisoft.plaid.features.dashboardflow.shared.viewModel.DashboardViewModel
 import com.intuisoft.plaid.util.SimpleTimeFormat
 import com.intuisoft.plaid.util.fragmentconfig.ConfigQrDisplayData
-import com.intuisoft.plaid.util.fragmentconfig.BasicConfigData
 import com.intuisoft.plaid.walletmanager.AbstractWalletManager
-import io.horizontalsystems.bitcoincore.models.TransactionInfo
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
@@ -134,7 +131,7 @@ class ProDashboardFragment : ConfigurableFragment<FragmentProWalletDashboardBind
             if(percentageGain > 0.0) {
                 binding.percentageGain.setTextColor(resources.getColor(R.color.success_color))
             }else if(percentageGain == 0.0) {
-                binding.percentageGain.setTextColor(resources.getColor(R.color.text_grey))
+                binding.percentageGain.setTextColor(resources.getColor(R.color.description_text_color))
             } else {
                 binding.percentageGain.setTextColor(resources.getColor(R.color.alt_error_color))
             }

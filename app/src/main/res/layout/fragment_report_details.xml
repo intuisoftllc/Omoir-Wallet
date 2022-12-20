@@ -16,27 +16,28 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/timePeriod">
 
+        <TextView
+            android:id="@+id/timePeriodStart"
+            style="@style/TextStyle.Regular.12"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/title_text_color"
+            tools:text="Nov-7-12" />
+
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/margin_4"
             android:src="@drawable/ic_arrow_right" />
 
-        <TextView
-            android:id="@+id/timePeriodStart"
-            style="@style/TextStyle.Regular.12"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/text_grey"
-            tools:text="Nov-7-12" />
 
         <TextView
             android:id="@+id/timePeriodEnd"
             style="@style/TextStyle.Regular.12"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/text_grey"
-            tools:text="Cec-7-12" />
+            android:textColor="@color/title_text_color"
+            tools:text="Dec-7-12" />
     </LinearLayout>
 
     <LinearLayout
@@ -129,6 +130,7 @@
         android:layout_marginHorizontal="2dp"
         android:layout_marginTop="@dimen/parent_top_margin_small"
         app:cardCornerRadius="4dp"
+        android:backgroundTint="@color/card_background_color"
         app:layout_constraintBottom_toTopOf="@id/transactions_container"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0"
@@ -164,7 +166,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/horizontal_padding_size"
                     android:text="@string/report_details_report_type_inflow_title"
-                    android:textColor="@color/text_grey" />
+                    android:textColor="@color/title_text_color" />
 
                 <TextView
                     android:id="@+id/total_value"
@@ -199,7 +201,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/horizontal_padding_size"
                     android:text="@string/report_details_time_period_title"
-                    android:textColor="@color/text_grey" />
+                    android:textColor="@color/title_text_color" />
 
                 <TextView
                     android:id="@+id/time_period_value"
@@ -217,7 +219,7 @@
                 android:id="@+id/divider"
                 android:layout_width="1dp"
                 android:layout_height="0dp"
-                android:background="@color/color_disabled"
+                android:background="@color/grey"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -238,7 +240,7 @@
         app:chart_barsColor="@color/brand_color_accent_3"
         app:chart_barsRadius="24dp"
         app:chart_emptyDataLabelColor="@android:color/darker_gray"
-        app:chart_labelsColor="@color/text_grey"
+        app:chart_labelsColor="@color/subtitle_text_color"
         app:chart_labelsSize="12sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

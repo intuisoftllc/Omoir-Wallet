@@ -1,23 +1,14 @@
 package com.intuisoft.plaid.features.dashboardflow.shared.adapters.detail
 
-import android.view.View
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.BindingViewHolder
 import com.intuisoft.plaid.androidwrappers.ListItem
 import com.intuisoft.plaid.androidwrappers.setOnSingleClickListener
 import com.intuisoft.plaid.common.model.ExchangeInfoDataModel
-import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.common.util.SimpleCoinNumberFormat
 import com.intuisoft.plaid.model.ExchangeStatus
-import com.intuisoft.plaid.util.SimpleTimeFormat
-import io.horizontalsystems.bitcoincore.models.TransactionInfo
-import io.horizontalsystems.bitcoincore.models.TransactionStatus
-import io.horizontalsystems.bitcoincore.models.TransactionType
 import kotlinx.android.synthetic.main.list_item_basic_exchange_details.view.*
-import kotlinx.android.synthetic.main.list_item_basic_transaction_detail.view.*
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 
 
 class BasicExchangeDetail(
@@ -38,7 +29,7 @@ class BasicExchangeDetail(
             to.text = formatValue(info.receiveAmount, info.toShort)
             exchange.text = context.getString(R.string.exchange_history_id, info.id)
             status.text = info.status
-            status.setTextColor(context.getColor(ExchangeStatus.values().find { it.type == info.status }?.color ?: R.color.text_grey))
+            status.setTextColor(context.getColor(ExchangeStatus.values().find { it.type == info.status }?.color ?: R.color.description_text_color))
         }
     }
 

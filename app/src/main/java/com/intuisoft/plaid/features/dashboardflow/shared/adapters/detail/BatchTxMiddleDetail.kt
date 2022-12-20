@@ -10,7 +10,6 @@ import com.intuisoft.plaid.common.model.BatchDataModel
 import com.intuisoft.plaid.common.model.UtxoTransfer
 import com.intuisoft.plaid.common.util.Constants
 import kotlinx.android.synthetic.main.list_item_batch_tx_middle_item.view.batch_tx
-import kotlinx.android.synthetic.main.list_item_batch_tx_top_item.view.*
 
 
 class BatchTxMiddleDetail(
@@ -55,7 +54,7 @@ class BatchTxMiddleDetail(
             if(isValid()) {
                 batch_tx.setTextColor(context.getColor(R.color.brand_color_dark_blue))
             } else {
-                batch_tx.setTextColor(context.getColor(R.color.text_grey))
+                batch_tx.setTextColor(context.getColor(R.color.description_text_color))
             }
         }
     }

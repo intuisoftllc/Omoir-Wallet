@@ -5,5 +5,5 @@
     android:viewportHeight="2">
   <path
       android:pathData="M0,2C0,0.895 0.895,0 2,0H14C15.105,0 16,0.895 16,2H0Z"
-      android:fillColor="#0D396E"/>
+      android:fillColor="@color/time_period_indicator_color"/>
 </vector>

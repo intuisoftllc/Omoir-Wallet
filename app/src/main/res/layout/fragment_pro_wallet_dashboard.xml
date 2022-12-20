@@ -34,6 +34,7 @@
                 android:layout_marginHorizontal="@dimen/horizontal_padding_size"
                 app:layout_constraintStart_toStartOf="parent"
                 app:cardCornerRadius="@dimen/card_corner_radius"
+                android:backgroundTint="@color/line_chart_card_background_color"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
@@ -47,7 +48,7 @@
                         android:layout_marginTop="@dimen/parent_top_margin_small"
                         android:layout_gravity="center"
                         style="@style/TextStyle.Medium.14"
-                        android:textColor="@color/text_grey"
+                        android:textColor="?attr/colorOnPrimaryContainer"
                         android:text="@string/market_bitcoin_ticker_title"/>
 
                     <TextView
@@ -57,7 +58,7 @@
                         android:layout_marginTop="@dimen/margin_8"
                         android:layout_gravity="center"
                         style="@style/TextStyle.Bold.24"
-                        android:textColor="?attr/colorPrimaryVariant"
+                        android:textColor="?attr/colorOnPrimaryContainer"
                         android:text="$0"/>
 
                     <androidx.constraintlayout.widget.ConstraintLayout
@@ -89,13 +90,13 @@
                             android:textStyle="bold"
                             android:visibility="invisible"
                             android:background="@drawable/shape_rounded_button_unselected"
-                            android:backgroundTint="?attr/colorOnSecondary"
+                            android:backgroundTint="?attr/colorSecondaryVariant"
                             android:paddingVertical="@dimen/margin_4"
                             android:paddingHorizontal="@dimen/margin_8"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
-                            android:textColor="?attr/colorSecondary"
+                            android:textColor="@color/bottom_bar_background_color"
                             android:text=""/>
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -282,7 +283,7 @@
                                         android:layout_height="wrap_content"
                                         android:text="@string/pro_wallet_dashboard_performance_title_1"
                                         style="@style/TextStyle.Semibold.14"
-                                        android:textColor="@color/text_grey"/>
+                                        android:textColor="@color/title_text_color"/>
 
                                     <TextView
                                         android:id="@+id/total_sent"
@@ -291,7 +292,7 @@
                                         tools:text="$0.00"
                                         android:layout_marginTop="@dimen/margin_4"
                                         style="@style/TextStyle.Regular.14"
-                                        android:textColor="@color/text_grey"/>
+                                        android:textColor="@color/subtitle_text_color"/>
 
                             </LinearLayout>
 
@@ -305,7 +306,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="@string/pro_wallet_dashboard_performance_title_2"
                                 style="@style/TextStyle.Semibold.14"
-                                android:textColor="@color/text_grey"/>
+                                android:textColor="@color/title_text_color"/>
 
                             <TextView
                                 android:id="@+id/total_receive"
@@ -314,7 +315,7 @@
                                 tools:text="$0.00"
                                 android:layout_marginTop="@dimen/margin_4"
                                 style="@style/TextStyle.Regular.14"
-                                android:textColor="@color/text_grey"/>
+                                android:textColor="@color/subtitle_text_color"/>
 
                         </LinearLayout>
                     </LinearLayout>
@@ -336,9 +337,9 @@
                                 android:text="@string/pro_wallet_dashboard_performance_title_3"
                                 android:drawablePadding="@dimen/margin_8"
                                 app:drawableRightCompat="@drawable/ic_alert_red_small"
-                                app:drawableTint="@color/text_grey"
+                                app:drawableTint="@color/icon_contrast_color"
                                 style="@style/TextStyle.Semibold.14"
-                                android:textColor="@color/text_grey" />
+                                android:textColor="@color/title_text_color" />
 
                             <TextView
                                 android:id="@+id/average_price"
@@ -347,7 +348,7 @@
                                 tools:text="$0.00"
                                 android:layout_marginTop="@dimen/margin_4"
                                 style="@style/TextStyle.Regular.14"
-                                android:textColor="@color/text_grey"/>
+                                android:textColor="@color/subtitle_text_color"/>
 
                         </LinearLayout>
 
@@ -361,7 +362,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="@string/pro_wallet_dashboard_performance_title_5"
                                 style="@style/TextStyle.Semibold.14"
-                                android:textColor="@color/text_grey"/>
+                                android:textColor="@color/title_text_color"/>
 
                             <TextView
                                 android:id="@+id/highest_balance"
@@ -370,7 +371,7 @@
                                 tools:text="$288,334.40"
                                 android:layout_marginTop="@dimen/margin_4"
                                 style="@style/TextStyle.Regular.14"
-                                android:textColor="@color/text_grey"/>
+                                android:textColor="@color/subtitle_text_color"/>
 
                         </LinearLayout>
                     </LinearLayout>
@@ -391,7 +392,7 @@
                             android:layout_height="wrap_content"
                             android:text="@string/pro_wallet_dashboard_performance_title_6"
                             style="@style/TextStyle.Semibold.14"
-                            android:textColor="@color/text_grey"/>
+                            android:textColor="@color/title_text_color"/>
 
                         <TextView
                             android:id="@+id/age"
@@ -400,7 +401,7 @@
                             tools:text="5 years"
                             android:layout_marginTop="@dimen/margin_4"
                             style="@style/TextStyle.Regular.14"
-                            android:textColor="@color/text_grey"/>
+                            android:textColor="@color/subtitle_text_color"/>
 
                     </LinearLayout>
                 </LinearLayout>

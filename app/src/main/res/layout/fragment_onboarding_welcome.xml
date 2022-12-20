@@ -45,7 +45,7 @@
         android:text="@string/welcome_setup_message"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:textColor="@color/text_grey"
+        android:textColor="@color/subtitle_text_color"
         style="@style/TextStyle.Regular.16"
         android:gravity="center"
         app:layout_constraintTop_toBottomOf="@id/welcome"
@@ -69,12 +69,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/white"
+            android:backgroundTint="@color/card_background_color"
             android:hint="@string/welcome_alias_suggestion"
             android:maxLength="25"
             android:maxLines="1"
             android:padding="@dimen/horizontal_padding_size"
             android:inputType="text"
-            android:textColorHint="@color/color_disabled"
+            android:textColorHint="@color/grey"
             android:textSize="14sp"
             tools:ignore="TextContrastCheck,TouchTargetSizeCheck" />
     </androidx.cardview.widget.CardView>

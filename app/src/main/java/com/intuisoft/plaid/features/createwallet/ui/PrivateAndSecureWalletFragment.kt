@@ -13,7 +13,7 @@ import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 
 class PrivateAndSecureWalletFragment : ConfigurableFragment<FragmentPrivateAndSecureBinding>(
-    pinProtection = true,
+    pinProtection = false,
     requiresWallet = false
 ) {
     protected val viewModel: CreateWalletViewModel by sharedViewModel()

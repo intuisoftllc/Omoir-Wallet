@@ -34,7 +34,7 @@
                                 android:text="@string/status"
                                 android:layout_marginRight="@dimen/margin_8"
                                 style="@style/TextStyle.Regular.14"
-                                android:textColor="@color/text_grey"/>
+                                android:textColor="@color/subtitle_text_color"/>
 
                             <TextView
                                 android:id="@+id/status"
@@ -43,6 +43,7 @@
                                 style="@style/TextStyle.Medium.14"
                                 android:textStyle="bold"
                                 android:layout_weight="1"
+                                android:textColor="@color/subtitle_text_color"
                                 tools:text="In Progress"/>
 
                             <TextView
@@ -68,6 +69,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     android:layout_marginBottom="@dimen/margin_2"
                     app:cardCornerRadius="4dp"
+                    android:backgroundTint="@color/card_background_color"
                     android:layout_marginHorizontal="@dimen/margin_2"
                     app:layout_constraintHorizontal_bias="0">
 
@@ -178,7 +180,7 @@
                     android:text="@string/batches"
                     android:layout_marginTop="@dimen/parent_top_margin_small"
                     style="@style/TextStyle.Semibold.12"
-                    android:textColor="@color/text_grey"/>
+                    android:textColor="@color/subtitle_text_color"/>
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/batches"

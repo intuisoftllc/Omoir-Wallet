@@ -38,7 +38,7 @@
         app:layout_constraintTop_toBottomOf="@id/import_wallet_title"
         android:layout_marginTop="@dimen/margin_24"
         style="@style/TextStyle.Regular.16"
-        android:textColor="@color/text_grey"
+        android:textColor="@color/subtitle_text_color"
         android:textStyle="bold"/>
 
 

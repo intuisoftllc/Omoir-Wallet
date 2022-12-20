@@ -40,10 +40,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/white"
+            android:backgroundTint="@color/card_background_color"
             android:maxLines="1"
             android:padding="@dimen/horizontal_padding_size"
             android:inputType="text"
-            android:textColorHint="@color/color_disabled"
+            android:textColorHint="@color/grey"
             android:textSize="14sp"
             tools:ignore="TextContrastCheck,TouchTargetSizeCheck" />
     </androidx.cardview.widget.CardView>
@@ -64,7 +65,7 @@
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/confirm"
-        app:layout_constraintTop_toBottomOf="@id/address_container"
+        app:layout_constraintTop_toBottomOf="@id/validation_error"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="@dimen/margin_64"
         android:layout_marginBottom="@dimen/horizontal_padding_size_large"
@@ -78,10 +79,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/white"
+            android:backgroundTint="@color/card_background_color"
             android:maxLines="1"
             android:padding="@dimen/horizontal_padding_size"
             android:inputType="text"
-            android:textColorHint="@color/color_disabled"
+            android:textColorHint="@color/grey"
             android:textSize="14sp"
             tools:ignore="TextContrastCheck,TouchTargetSizeCheck" />
     </androidx.cardview.widget.CardView>
@@ -100,15 +102,15 @@
         android:id="@+id/validation_error"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         tools:text="@string/save_address_validation_error_already_exists"
         android:gravity="center"
-        android:visibility="gone"
         style="@style/TextStyle.Regular.14"
         app:layout_constraintTop_toBottomOf="@id/address_container"
         android:layout_marginTop="@dimen/margin_8"
-        android:textColor="@color/text_red"/>
+        android:textColor="@color/error_text_color"/>
 
 
     <com.intuisoft.plaid.androidwrappers.RoundedButtonView
@@ -134,7 +136,7 @@
         app:button_style="rounded"
         android:id="@+id/confirm"
         android:layout_marginTop="@dimen/margin_20"
-        app:layout_constraintTop_toBottomOf="@id/validation_error"
+        app:layout_constraintTop_toBottomOf="@id/memo_container"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@id/cancel"

@@ -44,6 +44,7 @@
                 android:layout_marginBottom="@dimen/horizontal_padding_size"
                 android:layout_marginHorizontal="@dimen/horizontal_padding_size"
                 app:cardCornerRadius="4dp"
+                android:backgroundTint="@color/card_background_color"
                 android:layout_marginTop="10dp"
                 app:layout_constraintHorizontal_bias="0">
 

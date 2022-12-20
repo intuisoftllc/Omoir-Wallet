@@ -35,7 +35,7 @@
         android:gravity="center_horizontal"
         android:paddingHorizontal="20dp"
         style="@style/TextStyle.Regular.16"
-        android:textColor="@color/text_grey"
+        android:textColor="@color/subtitle_text_color"
         android:text="@string/private_secure_wallet_description"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

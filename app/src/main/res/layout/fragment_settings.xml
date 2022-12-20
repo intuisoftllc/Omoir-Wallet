@@ -27,6 +27,7 @@
                 android:layout_marginBottom="@dimen/horizontal_padding_size"
                 app:cardCornerRadius="4dp"
                 android:layout_margin="10dp"
+                android:backgroundTint="@color/card_background_color"
                 app:layout_constraintHorizontal_bias="0">
 
                 <LinearLayout
@@ -94,6 +95,7 @@
                 android:layout_marginBottom="@dimen/horizontal_padding_size"
                 app:cardCornerRadius="4dp"
                 android:layout_margin="10dp"
+                android:backgroundTint="@color/card_background_color"
                 app:layout_constraintHorizontal_bias="0">
 
                 <LinearLayout
@@ -162,6 +164,7 @@
                 android:layout_marginBottom="@dimen/horizontal_padding_size"
                 app:cardCornerRadius="4dp"
                 android:layout_margin="10dp"
+                android:backgroundTint="@color/card_background_color"
                 app:layout_constraintHorizontal_bias="0">
 
                 <LinearLayout
@@ -201,6 +204,7 @@
                 android:layout_marginBottom="@dimen/horizontal_padding_size"
                 app:cardCornerRadius="4dp"
                 android:layout_margin="10dp"
+                android:backgroundTint="@color/card_background_color"
                 app:layout_constraintHorizontal_bias="0">
 
                 <LinearLayout
@@ -257,6 +261,7 @@
                 android:layout_marginBottom="@dimen/horizontal_padding_size"
                 app:cardCornerRadius="4dp"
                 android:layout_margin="10dp"
+                android:backgroundTint="@color/card_background_color"
                 app:layout_constraintHorizontal_bias="0">
 
                 <LinearLayout
@@ -313,6 +318,7 @@
                 android:layout_marginBottom="@dimen/horizontal_padding_size"
                 app:cardCornerRadius="4dp"
                 android:layout_margin="10dp"
+                android:backgroundTint="@color/card_background_color"
                 app:layout_constraintHorizontal_bias="0">
 
                 <LinearLayout
@@ -342,6 +348,7 @@
                 app:cardCornerRadius="4dp"
                 android:layout_margin="10dp"
                 app:layout_goneMarginBottom="@dimen/horizontal_padding_size"
+                android:backgroundTint="@color/card_background_color"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintHorizontal_bias="0">
 

@@ -40,7 +40,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     style="@style/TextStyle.Regular.14"
                     android:gravity="center"
-                    android:textColor="@color/brand_color_dark_blue"
+                    android:textColor="@color/subtitle_text_color"
                     android:layout_marginTop="@dimen/horizontal_padding_size"
                     android:layout_marginHorizontal="@dimen/horizontal_padding_size"
                     app:layout_constraintTop_toBottomOf="@id/bottom_sheet_title"
@@ -55,6 +55,7 @@
                     app:layout_constraintBottom_toTopOf="@+id/save"
                     app:layout_constraintTop_toBottomOf="@id/bottom_sheet_subtitle"
                     app:layout_constraintEnd_toEndOf="parent"
+                    android:backgroundTint="@color/card_background_color"
                     android:layout_marginTop="@dimen/margin_64"
                     android:layout_marginBottom="@dimen/horizontal_padding_size_large"
                     app:cardCornerRadius="@dimen/card_corner_radius"
@@ -71,6 +72,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:background="@color/white"
+                            android:backgroundTint="@color/card_background_color"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintEnd_toStartOf="@+id/showHide"
                             android:layout_marginRight="@dimen/margin_8"
@@ -82,7 +84,7 @@
                             android:padding="@dimen/horizontal_padding_size"
                             android:inputType="text"
                             android:imeOptions="actionNext"
-                            android:textColorHint="@color/color_disabled"
+                            android:textColorHint="@color/grey"
                             android:textSize="14sp"
                             tools:ignore="TextContrastCheck,TouchTargetSizeCheck" />
 
@@ -140,13 +142,14 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@color/white"
+                        android:backgroundTint="@color/card_background_color"
                         android:hint="@string/wallet_settings_passphrase_hint"
                         android:maxLength="50"
                         android:maxLines="1"
                         android:padding="@dimen/horizontal_padding_size"
                         android:inputType="text"
                         android:imeOptions="actionDone"
-                        android:textColorHint="@color/color_disabled"
+                        android:textColorHint="@color/grey"
                         android:textSize="14sp"
                         tools:ignore="TextContrastCheck,TouchTargetSizeCheck" />
                 </androidx.cardview.widget.CardView>
@@ -172,7 +175,7 @@
                     style="@style/TextStyle.Regular.14"
                     app:layout_constraintTop_toBottomOf="@id/confirm_passphrase_container"
                     android:layout_marginTop="@dimen/margin_8"
-                    android:textColor="@color/text_red"/>
+                    android:textColor="@color/error_text_color"/>
 
 
                 <com.intuisoft.plaid.androidwrappers.RoundedButtonView

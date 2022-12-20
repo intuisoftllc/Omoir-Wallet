@@ -6,6 +6,7 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.content.res.Configuration
 import android.content.res.Resources
 import android.graphics.PorterDuff
 import android.net.Uri
@@ -111,6 +112,26 @@ fun Fragment.onBackPressedCallback(onBackPressed: () -> Unit) {
     )
 }
 
+fun Context.doOnUiMode(
+    onNightMode: (() -> Unit)? = null,
+    onDayMode: (() -> Unit)? = null,
+    onAutoMode: (() -> Unit)? = null
+) {
+    when (resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK)) {
+        Configuration.UI_MODE_NIGHT_YES -> {
+            onNightMode?.invoke()
+        }
+        Configuration.UI_MODE_NIGHT_NO -> {
+            onDayMode?.invoke()
+        }
+        Configuration.UI_MODE_NIGHT_UNDEFINED -> {
+            onAutoMode?.invoke()
+        }
+        else -> {
+            onAutoMode?.invoke()
+        }
+    }
+}
 
 fun Fragment.validateFingerprint(
     title: String = Constants.Strings.USE_BIOMETRIC_AUTH,

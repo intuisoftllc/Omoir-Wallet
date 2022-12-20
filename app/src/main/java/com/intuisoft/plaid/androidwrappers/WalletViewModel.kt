@@ -254,9 +254,9 @@ open class WalletViewModel(
     fun getWallet() = localWallet
 
     fun isAddressValid(address: String): Boolean {
-        if(localWallet != null) {
+        try {
             return localWallet!!.walletKit!!.isAddressValid(address)
-        } else {
+        } catch(err: ClosedWalletErr) {
             return walletManager.validAddress(address)
         }
     }

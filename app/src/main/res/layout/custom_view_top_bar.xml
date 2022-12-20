@@ -158,7 +158,7 @@
             android:layout_marginTop="@dimen/margin_4"
             style="@style/TextStyle.Regular.20"
             android:textStyle="bold"
-            android:textColor="@color/text_grey"/>
+            android:textColor="@color/description_text_color"/>
 
         <ImageView
             android:id="@+id/white_center_variant_action_right"

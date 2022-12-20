@@ -33,7 +33,7 @@
         app:layout_constraintTop_toBottomOf="@id/import_wallet_title"
         android:layout_marginTop="@dimen/margin_24"
         style="@style/TextStyle.Regular.16"
-        android:textColor="@color/text_grey"
+        android:textColor="@color/subtitle_text_color"
         android:textStyle="bold"/>
 
 
@@ -67,6 +67,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginBottom="@dimen/horizontal_padding_size_large"
             app:cardCornerRadius="@dimen/card_corner_radius"
+            android:backgroundTint="@color/card_background_color"
             android:layout_marginHorizontal="@dimen/margin_20"
             app:layout_constraintVertical_bias="@dimen/vertical_bias_15">
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -88,7 +89,8 @@
                     android:imeOptions="actionDone"
                     android:padding="@dimen/horizontal_padding_size"
                     android:inputType="text"
-                    android:textColorHint="@color/color_disabled"
+                    android:backgroundTint="@color/card_background_color"
+                    android:textColorHint="@color/grey"
                     android:textSize="14sp"
                     tools:ignore="TextContrastCheck,TouchTargetSizeCheck" />
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -102,7 +104,7 @@
             style="@style/TextStyle.Semibold.12"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:textColor="@color/text_grey"
+            android:textColor="@color/subtitle_text_color"
             android:textStyle="bold"
             android:background="?android:selectableItemBackground"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -196,7 +198,7 @@
                 android:src="@drawable/ic_more_words"
                 style="@style/TextStyle.Semibold.12"
                 android:layout_gravity="center"
-                android:textColor="@color/text_grey"
+                android:textColor="@color/description_text_color"
                 android:visibility="invisible"
                 android:textStyle="bold"
                 android:layout_weight="1"

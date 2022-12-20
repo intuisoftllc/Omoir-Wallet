@@ -43,7 +43,7 @@
         app:chart_spacing="22dp"
         app:chart_isHorizontal="true"
         app:chart_emptyDataLabelColor="@android:color/darker_gray"
-        app:chart_labelsColor="@color/text_grey"
+        app:chart_labelsColor="@color/description_text_color"
         app:chart_barSelectedColor="@color/brand_color_dark_blue"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -84,7 +84,7 @@
                                 android:gravity="center"
                                 android:text="@string/report_details_report_type_median_utxo_title"
                                 android:layout_marginBottom="@dimen/horizontal_padding_size"
-                                android:textColor="@color/text_grey"
+                                android:textColor="@color/description_text_color"
                                 style="@style/TextStyle.Medium.12"/>
 
                         <TextView
@@ -102,7 +102,7 @@
                     android:layout_width="1dp"
                     android:layout_height="match_parent"
                     android:layout_marginHorizontal="@dimen/margin_20"
-                    android:background="@color/color_disabled"/>
+                    android:background="@color/grey"/>
 
 
                 <LinearLayout
@@ -121,7 +121,7 @@
                         android:layout_gravity="center"
                         android:gravity="center"
                         android:layout_marginBottom="@dimen/horizontal_padding_size"
-                        android:textColor="@color/text_grey"
+                        android:textColor="@color/description_text_color"
                         style="@style/TextStyle.Medium.12"/>
 
                     <TextView

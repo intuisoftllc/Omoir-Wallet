@@ -44,7 +44,7 @@
             android:layout_height="wrap_content"
             android:text="@string/address_book_no_addresses"
             android:layout_marginTop="@dimen/horizontal_padding_size"
-            android:textColor="@color/text_grey"
+            android:textColor="@color/subtitle_text_color"
             style="@style/TextStyle.Regular.16"
             android:gravity="center"/>
     </LinearLayout>

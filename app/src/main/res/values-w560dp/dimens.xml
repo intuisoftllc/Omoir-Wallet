@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <dimen name="parent_top_margin">25dp</dimen>
-    <dimen name="pin_number_size">52dp</dimen>
-    <dimen name="parent_bottom_margin">22dp</dimen>
-    <dimen name="horizontal_padding_size">40dp</dimen>
-    <dimen name="horizontal_padding_size_large">80dp</dimen>
-</resources>

@@ -132,17 +132,17 @@ class AssetTransferDetailsFragment : ConfigurableFragment<FragmentAssetTransferD
             when(status) {
                 AssetTransferStatus.NOT_STARTED -> {
                     view.text = context.getString(R.string.atp_status_not_started)
-                    view.setTextColor(context.getColor(R.color.text_grey))
+                    view.setTextColor(context.getColor(R.color.description_text_color))
                 }
 
                 AssetTransferStatus.IN_PROGRESS -> {
                     view.text = context.getString(R.string.atp_status_in_progress)
-                    view.setTextColor(context.getColor(R.color.text_grey))
+                    view.setTextColor(context.getColor(R.color.description_text_color))
                 }
 
                 AssetTransferStatus.WAITING -> {
                     view.text = context.getString(R.string.atp_status_waiting)
-                    view.setTextColor(context.getColor(R.color.text_grey))
+                    view.setTextColor(context.getColor(R.color.description_text_color))
                 }
 
                 AssetTransferStatus.PARTIALLY_COMPLETED -> {

@@ -101,7 +101,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toTopOf="@+id/min_max_container"
-                android:textColor="@color/text_grey"
+                android:textColor="@color/description_text_color"
                 android:layout_marginBottom="@dimen/margin_6"
                 style="@style/TextStyle.Semibold.12"/>
 
@@ -122,7 +122,7 @@
                     android:id="@+id/min"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/text_grey"
+                    android:textColor="@color/description_text_color"
                     android:textStyle="bold"
                     style="@style/TextStyle.Medium.16"/>
 
@@ -136,7 +136,7 @@
                     android:id="@+id/max"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/text_grey"
+                    android:textColor="@color/description_text_color"
                     android:textStyle="bold"
                     style="@style/TextStyle.Medium.16"/>
             </LinearLayout>

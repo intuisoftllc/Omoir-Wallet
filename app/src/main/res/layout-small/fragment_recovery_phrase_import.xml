@@ -34,7 +34,7 @@
         app:layout_constraintTop_toBottomOf="@id/import_wallet_title"
         android:layout_marginTop="@dimen/margin_10"
         style="@style/TextStyle.Regular.16"
-        android:textColor="@color/text_grey"
+        android:textColor="@color/description_text_color"
         android:textStyle="bold"/>
 
 
@@ -89,7 +89,7 @@
                     android:imeOptions="actionDone"
                     android:padding="@dimen/horizontal_padding_size"
                     android:inputType="text"
-                    android:textColorHint="@color/color_disabled"
+                    android:textColorHint="@color/grey"
                     android:textSize="14sp"
                     tools:ignore="TextContrastCheck,TouchTargetSizeCheck" />
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -103,7 +103,7 @@
             style="@style/TextStyle.Semibold.12"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:textColor="@color/text_grey"
+            android:textColor="@color/description_text_color"
             android:textStyle="bold"
             android:background="?android:selectableItemBackground"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -197,7 +197,7 @@
                 android:src="@drawable/ic_more_words"
                 style="@style/TextStyle.Semibold.12"
                 android:layout_gravity="center"
-                android:textColor="@color/text_grey"
+                android:textColor="@color/description_text_color"
                 android:visibility="invisible"
                 android:textStyle="bold"
                 android:layout_weight="1"

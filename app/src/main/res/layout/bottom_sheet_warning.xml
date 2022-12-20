@@ -18,7 +18,7 @@
         app:layout_constraintTop_toTopOf="parent"
         style="@style/TextStyle.Medium.16"
         android:textStyle="bold"
-        android:textColor="@color/text_black"/>
+        android:textColor="@color/title_text_color"/>
 
 
     <TextView
@@ -29,7 +29,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         style="@style/TextStyle.Regular.14"
         android:gravity="center"
-        android:textColor="@color/text_grey"
+        android:textColor="@color/subtitle_text_color"
         android:layout_marginTop="@dimen/horizontal_padding_size"
         android:layout_marginHorizontal="@dimen/horizontal_padding_size"
         app:layout_constraintTop_toBottomOf="@id/bottom_sheet_title"
@@ -55,7 +55,7 @@
         android:layout_height="wrap_content"
         app:text_position="center"
         app:btn_text="@string/save"
-        app:button_tint="@color/text_red"
+        app:button_tint="@color/error_text_color"
         app:button_style="rounded"
         android:id="@+id/save"
         android:layout_marginTop="@dimen/horizontal_padding_size_large"

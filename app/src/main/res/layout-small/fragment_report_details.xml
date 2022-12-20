@@ -59,7 +59,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 style="@style/TextStyle.Regular.12"
-                android:textColor="@color/text_grey"
+                android:textColor="@color/description_text_color"
                 tools:text="Nov-7-12"/>
 
             <ImageView
@@ -73,7 +73,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 style="@style/TextStyle.Regular.12"
-                android:textColor="@color/text_grey"
+                android:textColor="@color/description_text_color"
                 tools:text="Cec-7-12"/>
     </LinearLayout>
 
@@ -89,7 +89,7 @@
         app:chart_barsBackgroundColor="@color/background_color"
         app:chart_barsRadius="24dp"
         app:chart_emptyDataLabelColor="@android:color/darker_gray"
-        app:chart_labelsColor="@color/text_grey"
+        app:chart_labelsColor="@color/description_text_color"
         app:chart_barSelectedColor="@color/brand_color_dark_blue"
         android:layout_marginTop="@dimen/horizontal_padding_size"
         app:layout_constraintStart_toStartOf="parent"
@@ -136,7 +136,7 @@
                                 android:id="@+id/total_title"
                                 android:text="@string/report_details_report_type_inflow_title"
                                 android:layout_marginBottom="@dimen/horizontal_padding_size"
-                                android:textColor="@color/text_grey"
+                                android:textColor="@color/description_text_color"
                                 style="@style/TextStyle.Medium.12"/>
 
                         <TextView
@@ -159,7 +159,7 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    android:background="@color/color_disabled"/>
+                    android:background="@color/grey"/>
 
 
                 <LinearLayout
@@ -182,7 +182,7 @@
                         android:id="@+id/time_period_title"
                         android:text="@string/report_details_time_period_title"
                         android:layout_marginBottom="@dimen/horizontal_padding_size"
-                        android:textColor="@color/text_grey"
+                        android:textColor="@color/description_text_color"
                         style="@style/TextStyle.Medium.12"/>
 
                     <TextView

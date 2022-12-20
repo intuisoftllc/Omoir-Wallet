@@ -17,13 +17,13 @@
         android:layout_marginHorizontal="@dimen/horizontal_padding_size"
         android:layout_marginBottom="@dimen/horizontal_padding_size"
         android:layout_marginTop="@dimen/parent_top_margin_med"
+        android:backgroundTint="@color/card_background_color"
         app:layout_constraintHorizontal_bias="0">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:padding="@dimen/margin_8"
-            android:background="?android:selectableItemBackground">
+            android:padding="@dimen/margin_8">
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -45,7 +45,7 @@
                     android:gravity="center"
                     android:layout_gravity="center"
                     style="@style/TextStyle.Medium.14"
-                    android:textColor="@color/text_black"
+                    android:textColor="@color/title_text_color"
                     android:text="@string/pro_homescreen_full_balance_title"/>
 
                 <TextView
@@ -75,7 +75,7 @@
         style="@style/TextStyle.Semibold.18"
         android:textStyle="bold"
         android:layout_marginTop="@dimen/margin_26"
-        android:textColor="@color/text_grey"
+        android:textColor="@color/title_text_color"
         android:text="@string/wallets"/>
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -131,7 +131,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/view_wallets_no_wallets_created"
                     android:layout_marginTop="@dimen/horizontal_padding_size"
-                    android:textColor="@color/text_grey"
+                    android:textColor="@color/description_text_color"
                     style="@style/TextStyle.Regular.16"
                     android:gravity="center"/>
             </LinearLayout>
@@ -147,6 +147,7 @@
         android:elevation="@dimen/card_view_elevation"
         app:layout_constraintEnd_toEndOf="parent"
         android:src="@drawable/ic_add"
+        app:borderWidth="0dp"
         android:backgroundTint="?attr/colorPrimary"
         app:layout_constraintBottom_toBottomOf="parent"
         android:layout_marginRight="@dimen/margin_24"

@@ -46,7 +46,8 @@
             android:maxLines="1"
             android:padding="@dimen/horizontal_padding_size"
             android:inputType="text"
-            android:textColorHint="@color/color_disabled"
+            android:backgroundTint="@color/card_background_color"
+            android:textColorHint="@color/grey"
             android:textSize="14sp"
             tools:ignore="TextContrastCheck,TouchTargetSizeCheck" />
     </androidx.cardview.widget.CardView>
@@ -95,7 +96,8 @@
             android:maxLines="1"
             android:padding="@dimen/horizontal_padding_size"
             android:inputType="text"
-            android:textColorHint="@color/color_disabled"
+            android:backgroundTint="@color/card_background_color"
+            android:textColorHint="@color/grey"
             android:textSize="14sp"
             tools:ignore="TextContrastCheck,TouchTargetSizeCheck" />
     </androidx.cardview.widget.CardView>
@@ -121,7 +123,7 @@
         style="@style/TextStyle.Regular.14"
         app:layout_constraintTop_toBottomOf="@id/address_container"
         android:layout_marginTop="@dimen/margin_8"
-        android:textColor="@color/text_red"/>
+        android:textColor="@color/error_text_color"/>
 
 
     <com.intuisoft.plaid.androidwrappers.RoundedButtonView

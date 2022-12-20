@@ -83,7 +83,7 @@ class UnspentOutputSelector(private val calculator: TransactionSizeCalculator, p
             recipientValue = if (senderPay) value else value - fee
             sentValue = if (senderPay) value + fee else value
 
-            if(totalValue >= recipientValue) {
+            if(totalValue >= sentValue) {
                 if(recipientValue < dust) {
                     // Here senderPay is false, because otherwise "dust" exception would throw far above.
                     // Adding more UTXOs will make fee even greater, making recipientValue even less and dust anyway

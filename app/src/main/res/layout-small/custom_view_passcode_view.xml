@@ -50,7 +50,7 @@
             android:id="@+id/cursor"
             android:layout_width="2dp"
             android:layout_height="match_parent"
-            android:background="#fff"
+            android:background="@color/subtitle_text_color"
             android:visibility="invisible"/>
 
         <LinearLayout
@@ -70,7 +70,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
+        android:background="@color/background_color"
         android:orientation="vertical"
         android:paddingStart="18dp"
         android:paddingEnd="18dp"
@@ -89,7 +89,7 @@
                     android:layout_height="@dimen/pin_number_size"
                     android:id="@+id/number1"
                     android:layout_weight="1"
-                    android:padding="@dimen/margin_10"
+                    android:padding="@dimen/margin_4"
                     style="@style/NumberInPasscode"
                     android:layout_alignParentLeft="true"
                     android:text="1"/>
@@ -105,7 +105,7 @@
                     android:id="@+id/number2"
                     style="@style/NumberInPasscode"
                     android:layout_weight="1"
-                    android:padding="@dimen/margin_10"
+                    android:padding="@dimen/margin_4"
                     android:layout_centerHorizontal="true"
                     android:text="2"/>
 
@@ -120,7 +120,7 @@
                     android:id="@+id/number3"
                     style="@style/NumberInPasscode"
                     android:layout_weight="1"
-                    android:padding="@dimen/margin_10"
+                    android:padding="@dimen/margin_4"
                     android:layout_alignParentRight="true"
                     android:text="3"/>
             </LinearLayout>
@@ -139,7 +139,7 @@
                     android:id="@+id/number4"
                     style="@style/NumberInPasscode"
                     android:layout_weight="1"
-                    android:padding="@dimen/margin_10"
+                    android:padding="@dimen/margin_4"
                     android:layout_alignParentLeft="true"
                     android:layout_below="@id/number1"
                     android:text="4"
@@ -156,7 +156,7 @@
                     android:id="@+id/number5"
                     style="@style/NumberInPasscode"
                     android:layout_weight="1"
-                    android:padding="@dimen/margin_10"
+                    android:padding="@dimen/margin_4"
                     android:layout_below="@id/number1"
                     android:layout_centerHorizontal="true"
                     android:text="5"/>
@@ -172,7 +172,7 @@
                     android:id="@+id/number6"
                     style="@style/NumberInPasscode"
                     android:layout_weight="1"
-                    android:padding="@dimen/margin_10"
+                    android:padding="@dimen/margin_4"
                     android:layout_alignParentRight="true"
                     android:layout_below="@id/number1"
                     android:text="6"/>
@@ -192,7 +192,7 @@
                     android:id="@+id/number7"
                     style="@style/NumberInPasscode"
                     android:layout_weight="1"
-                    android:padding="@dimen/margin_10"
+                    android:padding="@dimen/margin_4"
                     android:layout_alignParentLeft="true"
                     android:layout_below="@id/number4"
                     android:text="7"/>
@@ -208,7 +208,7 @@
                     android:id="@+id/number8"
                     style="@style/NumberInPasscode"
                     android:layout_weight="1"
-                    android:padding="@dimen/margin_10"
+                    android:padding="@dimen/margin_4"
                     android:layout_below="@id/number4"
                     android:layout_centerHorizontal="true"
                     android:text="8"/>
@@ -224,7 +224,7 @@
                     android:id="@+id/number9"
                     style="@style/NumberInPasscode"
                     android:layout_weight="1"
-                    android:padding="@dimen/margin_10"
+                    android:padding="@dimen/margin_4"
                     android:layout_alignParentRight="true"
                     android:layout_below="@id/number4"
                     android:text="9"/>
@@ -247,7 +247,7 @@
                     android:layout_alignParentRight="true"
                     android:scaleType="centerInside"
                     android:layout_weight="1"
-                    android:padding="@dimen/margin_10"
+                    android:padding="@dimen/margin_4"
                     app:srcCompat="@drawable/ic_arrow_left"
                     app:tint="#FF8A8A8A" />
 
@@ -262,7 +262,7 @@
                     android:id="@+id/number0"
                     style="@style/NumberInPasscode"
                     android:layout_weight="1"
-                    android:padding="@dimen/margin_10"
+                    android:padding="@dimen/margin_4"
                     android:layout_below="@id/number7"
                     android:layout_centerHorizontal="true"
                     android:text="0" />
@@ -280,7 +280,7 @@
                     android:layout_below="@id/number7"
                     android:layout_alignParentLeft="true"
                     android:layout_weight="1"
-                    android:padding="@dimen/margin_10"
+                    android:padding="@dimen/margin_4"
                     android:scaleType="centerInside"
                     app:srcCompat="@drawable/ic_check"
                     app:tint="#FF8A8A8A" />

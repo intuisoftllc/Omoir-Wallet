@@ -18,13 +18,14 @@
         android:layout_marginHorizontal="@dimen/margin_10"
         android:layout_marginBottom="@dimen/horizontal_padding_size"
         android:layout_marginTop="@dimen/card_view_elevation"
+        android:backgroundTint="@color/card_background_color"
         app:layout_constraintHorizontal_bias="0">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:padding="@dimen/horizontal_padding_size"
-            android:background="?android:selectableItemBackground">
+            android:background="@drawable/selector_layout_transition">
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -43,7 +44,7 @@
                     android:ellipsize="end"
                     android:maxLines="1"
                     style="@style/TextStyle.Medium.14"
-                    android:textColor="@color/text_black"
+                    android:textColor="@color/title_text_color"
                     tools:text="@string/welcome_alias_suggestion"/>
 
                 <TextView

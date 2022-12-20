@@ -55,7 +55,7 @@ class BatchTxTopDetail(
             if(isValid()) {
                 batch_tx.setTextColor(context.getColor(R.color.brand_color_dark_blue))
             } else {
-                batch_tx.setTextColor(context.getColor(R.color.text_grey))
+                batch_tx.setTextColor(context.getColor(R.color.description_text_color))
             }
         }
     }

@@ -34,8 +34,8 @@
         app:correctStateColor="@color/success_color"
         app:wrongStateColor="@color/error_color"
         app:normalStateColor="?attr/colorPrimary"
-        app:numberTextColor="@color/alt_black"
-        app:tipTextColor="@color/black"
+        app:numberTextColor="@color/subtitle_text_color"
+        app:tipTextColor="@color/subtitle_text_color"
         app:passcodeLength="8"
         app:passcodeViewType="set_passcode"/>
 

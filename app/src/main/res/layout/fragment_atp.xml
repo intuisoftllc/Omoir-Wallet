@@ -18,7 +18,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/atp_setting_1_title"
-            android:textColor="@color/text_black"
+            android:textColor="@color/subtitle_text_color"
             style="@style/TextStyle.Semibold.12"/>
 
         <com.intuisoft.plaid.androidwrappers.SettingsItemView
@@ -38,7 +38,7 @@
             android:layout_height="wrap_content"
             android:text="@string/atp_setting_2_title"
             android:layout_marginTop="@dimen/margin_24"
-            android:textColor="@color/text_black"
+            android:textColor="@color/subtitle_text_color"
             style="@style/TextStyle.Semibold.12"/>
 
         <com.intuisoft.plaid.androidwrappers.SettingsItemView
@@ -64,6 +64,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginBottom="@dimen/margin_2"
             app:cardCornerRadius="4dp"
+            android:backgroundTint="@color/card_background_color"
             android:layout_marginTop="@dimen/margin_26"
             android:layout_marginHorizontal="@dimen/margin_2"
             app:layout_constraintHorizontal_bias="0">

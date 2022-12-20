@@ -177,7 +177,7 @@ class MainActivity : BindingActivity<ActivityMainBinding>(), ActionBarDelegate {
                 R.drawable.ic_reports_selected,
                 R.drawable.ic_reports_unselected,
                 R.color.brand_color_dark_blue,
-                R.color.text_grey
+                R.color.subtitle_text_color
             )
 
             binding.bottomBar.setupDestinations(
@@ -204,7 +204,7 @@ class MainActivity : BindingActivity<ActivityMainBinding>(), ActionBarDelegate {
                 0,
                 0,
                 R.color.brand_color_dark_blue,
-                R.color.text_grey
+                R.color.subtitle_text_color
             )
 
             binding.bottomBar.setupDestinations(
@@ -234,6 +234,10 @@ class MainActivity : BindingActivity<ActivityMainBinding>(), ActionBarDelegate {
             binding.bottomBar.onDestinationChanged(destination.id)
             binding.bottomBar.isVisible = TOP_LEVEL_BOTTOM_BAR_DESTINATIONS.contains(destination.id)
         }
+    }
+
+    fun onDestinationResumed(id: Int) {
+        binding.bottomBar.isVisible = TOP_LEVEL_BOTTOM_BAR_DESTINATIONS.contains(id)
     }
 
     override fun onResume() {
@@ -287,6 +291,12 @@ class MainActivity : BindingActivity<ActivityMainBinding>(), ActionBarDelegate {
             isLightStatusBar = false
             statusBarColor = getColor(R.color.brand_color_dark_blue)
         }
+
+        baseContext.doOnUiMode(
+            onNightMode = {
+                isLightStatusBar = false
+            }
+        )
 
         binding.toolbar.setOnActionLeftClick {
             if(supportFragmentManager.currentNavigationFragment is FragmentActionBarDelegate) {

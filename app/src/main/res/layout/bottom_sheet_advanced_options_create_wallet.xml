@@ -87,7 +87,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/create_wallet_advanced_options_disclaimer"
                 android:layout_marginTop="@dimen/margin_24"
-                android:textColor="@color/light_grey"
+                android:textColor="@color/blue_grey"
                 android:layout_gravity="center_horizontal"
                 android:gravity="center_horizontal"/>
 

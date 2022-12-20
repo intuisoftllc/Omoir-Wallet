@@ -219,7 +219,7 @@ class MarketFragment : ConfigurableFragment<FragmentMarketBinding>(pinProtection
         viewModel.congestionRating.observe(viewLifecycleOwner, Observer {
             when(it) {
                 CongestionRating.NA -> {
-                    binding.congestionRating.setTextColor(resources.getColor(R.color.text_grey))
+                    binding.congestionRating.setTextColor(resources.getColor(R.color.subtitle_text_color))
                     binding.congestionRating.text = getString(R.string.market_data_congestion_rating_6)
                 }
                 CongestionRating.LIGHT -> {
@@ -227,7 +227,7 @@ class MarketFragment : ConfigurableFragment<FragmentMarketBinding>(pinProtection
                     binding.congestionRating.text = getString(R.string.market_data_congestion_rating_1)
                 }
                 CongestionRating.NORMAL -> {
-                    binding.congestionRating.setTextColor(resources.getColor(R.color.text_grey))
+                    binding.congestionRating.setTextColor(resources.getColor(R.color.subtitle_text_color))
                     binding.congestionRating.text = getString(R.string.market_data_congestion_rating_2)
                 }
                 CongestionRating.MED -> {

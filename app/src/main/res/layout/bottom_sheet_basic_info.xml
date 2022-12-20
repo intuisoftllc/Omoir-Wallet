@@ -27,7 +27,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         style="@style/TextStyle.Medium.12"
-        android:textColor="@color/text_black"
+        android:textColor="@color/subtitle_text_color"
         android:gravity="center"
         app:layout_constraintTop_toBottomOf="@id/bottom_sheet_title"
         android:layout_marginHorizontal="@dimen/margin_24"

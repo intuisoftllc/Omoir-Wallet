@@ -30,6 +30,7 @@
                     android:layout_marginHorizontal="@dimen/horizontal_padding_size"
                     app:layout_constraintStart_toStartOf="parent"
                     app:cardCornerRadius="@dimen/card_corner_radius"
+                    android:backgroundTint="@color/line_chart_card_background_color"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
 
@@ -43,7 +44,7 @@
                             android:layout_marginTop="@dimen/parent_top_margin_small"
                             android:layout_gravity="center"
                             style="@style/TextStyle.Medium.14"
-                            android:textColor="@color/text_grey"
+                            android:textColor="?attr/colorOnPrimaryContainer"
                             android:text="@string/market_bitcoin_ticker_title"/>
 
                         <TextView
@@ -53,7 +54,7 @@
                             android:layout_marginTop="@dimen/margin_8"
                             android:layout_gravity="center"
                             style="@style/TextStyle.Bold.24"
-                            android:textColor="?attr/colorPrimaryVariant"
+                            android:textColor="?attr/colorOnPrimaryContainer"
                             android:text="$0"/>
 
                         <androidx.constraintlayout.widget.ConstraintLayout
@@ -85,14 +86,14 @@
                                 android:textStyle="bold"
                                 android:visibility="invisible"
                                 android:background="@drawable/shape_rounded_button_unselected"
-                                android:backgroundTint="?attr/colorOnSecondary"
+                                android:backgroundTint="?attr/colorSecondaryVariant"
                                 android:paddingVertical="@dimen/margin_4"
                                 android:paddingHorizontal="@dimen/margin_8"
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintTop_toTopOf="parent"
-                                android:textColor="?attr/colorSecondary"
-                                android:text=""/>
+                                android:textColor="@color/bottom_bar_background_color"
+                                android:text="Nov 7, 2021 5:34pm"/>
 
                         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -222,6 +223,7 @@
                     android:layout_marginHorizontal="@dimen/horizontal_padding_size"
                     app:layout_constraintStart_toStartOf="parent"
                     app:cardCornerRadius="@dimen/card_corner_radius"
+                    android:backgroundTint="@color/card_background_color"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/chart_container">
 
@@ -236,14 +238,14 @@
                             android:layout_height="wrap_content"
                             style="@style/TextStyle.Semibold.16"
                             android:textStyle="bold"
-                            android:textColor="@color/text_grey"
+                            android:textColor="@color/subtitle_text_color"
                             android:text="@string/market_data_title_1"/>
 
                         <View
                             android:layout_width="match_parent"
                             android:layout_height="1dp"
                             android:layout_marginVertical="@dimen/margin_12"
-                            android:background="@color/alt_color_disabled"/>
+                            android:background="@color/card_divider_color"/>
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -271,7 +273,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="1dp"
                             android:layout_marginVertical="@dimen/margin_12"
-                            android:background="@color/alt_color_disabled"/>
+                            android:background="@color/card_divider_color"/>
 
 
                         <LinearLayout
@@ -284,7 +286,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 style="@style/TextStyle.Medium.14"
-                                android:textColor="@color/text_black"
+                                android:textColor="@color/title_text_color"
                                 android:textStyle="bold"
                                 android:layout_gravity="center_vertical"
                                 android:text="@string/website"/>
@@ -313,7 +315,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="1dp"
                             android:layout_marginVertical="@dimen/margin_12"
-                            android:background="@color/alt_color_disabled"/>
+                            android:background="@color/card_divider_color"/>
 
 
                         <LinearLayout
@@ -326,7 +328,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 style="@style/TextStyle.Medium.14"
-                                android:textColor="@color/text_black"
+                                android:textColor="@color/title_text_color"
                                 android:textStyle="bold"
                                 android:layout_gravity="center_vertical"
                                 android:text="@string/explorer"/>
@@ -362,6 +364,7 @@
                     android:layout_marginHorizontal="@dimen/horizontal_padding_size"
                     app:layout_constraintStart_toStartOf="parent"
                     app:cardCornerRadius="@dimen/card_corner_radius"
+                    android:backgroundTint="@color/card_background_color"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/chart_container">
 
@@ -382,7 +385,7 @@
                             style="@style/TextStyle.Semibold.16"
                             android:textStyle="bold"
                             android:layout_weight="1"
-                            android:textColor="@color/text_grey"
+                            android:textColor="@color/subtitle_text_color"
                             android:text="@string/market_data_title_2"/>
 
                         <ProgressBar
@@ -397,7 +400,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="1dp"
                             android:layout_marginVertical="@dimen/margin_12"
-                            android:background="@color/alt_color_disabled"/>
+                            android:background="@color/card_divider_color"/>
 
 
                         <LinearLayout
@@ -410,7 +413,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 style="@style/TextStyle.Medium.14"
-                                android:textColor="@color/text_black"
+                                android:textColor="@color/title_text_color"
                                 android:layout_gravity="center_vertical"
                                 android:text="@string/market_data_item_1_title"/>
 
@@ -421,6 +424,7 @@
                                 android:layout_weight="1.5"
                                 android:layout_gravity="center_vertical"
                                 android:gravity="end"
+                                android:textColor="@color/subtitle_text_color"
                                 android:layout_marginRight="@dimen/margin_10"/>
                         </LinearLayout>
 
@@ -429,7 +433,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="1dp"
                             android:layout_marginVertical="@dimen/margin_12"
-                            android:background="@color/alt_color_disabled"/>
+                            android:background="@color/card_divider_color"/>
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -441,7 +445,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 style="@style/TextStyle.Medium.14"
-                                android:textColor="@color/text_black"
+                                android:textColor="@color/title_text_color"
                                 android:layout_gravity="center_vertical"
                                 android:text="@string/market_data_item_4_title"/>
 
@@ -452,6 +456,7 @@
                                 android:layout_weight="1.5"
                                 android:layout_gravity="center_vertical"
                                 android:gravity="end"
+                                android:textColor="@color/subtitle_text_color"
                                 android:layout_marginRight="@dimen/margin_10"/>
                         </LinearLayout>
 
@@ -460,7 +465,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="1dp"
                             android:layout_marginVertical="@dimen/margin_12"
-                            android:background="@color/alt_color_disabled"/>
+                            android:background="@color/card_divider_color"/>
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -472,7 +477,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 style="@style/TextStyle.Medium.14"
-                                android:textColor="@color/text_black"
+                                android:textColor="@color/title_text_color"
                                 android:layout_gravity="center_vertical"
                                 android:text="@string/market_data_item_2_title"/>
 
@@ -483,6 +488,7 @@
                                 android:layout_weight="1.5"
                                 android:layout_gravity="center_vertical"
                                 android:gravity="end"
+                                android:textColor="@color/subtitle_text_color"
                                 android:layout_marginRight="@dimen/margin_10"/>
                         </LinearLayout>
 
@@ -491,7 +497,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="1dp"
                             android:layout_marginVertical="@dimen/margin_12"
-                            android:background="@color/alt_color_disabled"/>
+                            android:background="@color/card_divider_color"/>
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -503,7 +509,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 style="@style/TextStyle.Medium.14"
-                                android:textColor="@color/text_black"
+                                android:textColor="@color/title_text_color"
                                 android:layout_gravity="center_vertical"
                                 android:text="@string/market_data_item_3_title"/>
 
@@ -514,6 +520,7 @@
                                 android:layout_weight="1.5"
                                 android:layout_gravity="center_vertical"
                                 android:gravity="end"
+                                android:textColor="@color/subtitle_text_color"
                                 android:layout_marginRight="@dimen/margin_10"/>
                         </LinearLayout>
 
@@ -522,7 +529,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="1dp"
                             android:layout_marginVertical="@dimen/margin_12"
-                            android:background="@color/alt_color_disabled"/>
+                            android:background="@color/card_divider_color"/>
 
 
                         <LinearLayout
@@ -536,7 +543,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 style="@style/TextStyle.Medium.14"
-                                android:textColor="@color/text_black"
+                                android:textColor="@color/title_text_color"
                                 android:textStyle="bold"
                                 android:paddingVertical="@dimen/margin_4"
                                 android:layout_gravity="center_vertical"
@@ -562,6 +569,7 @@
                     android:layout_marginHorizontal="@dimen/horizontal_padding_size"
                     app:layout_constraintStart_toStartOf="parent"
                     app:cardCornerRadius="@dimen/card_corner_radius"
+                    android:backgroundTint="@color/card_background_color"
                     app:layout_constraintEnd_toEndOf="parent"
                     android:layout_marginBottom="@dimen/parent_top_margin_small"
                     app:layout_constraintTop_toBottomOf="@id/chart_container">
@@ -582,7 +590,7 @@
                             style="@style/TextStyle.Semibold.16"
                             android:textStyle="bold"
                             android:layout_weight="1"
-                            android:textColor="@color/text_grey"
+                            android:textColor="@color/subtitle_text_color"
                             android:text="@string/market_data_extended_data_title"/>
 
                         <ProgressBar
@@ -610,7 +618,7 @@
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         style="@style/TextStyle.Regular.14"
-                                        android:textColor="@color/text_black"
+                                        android:textColor="@color/title_text_color"
                                         android:text="@string/market_data_extended_item_1_title"/>
 
                                     <TextView
@@ -618,7 +626,7 @@
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         style="@style/TextStyle.Medium.16"
-                                        android:textColor="@color/text_grey"
+                                        android:textColor="@color/subtitle_text_color"
                                         android:layout_marginTop="@dimen/margin_8"
                                         android:textStyle="bold"
                                         android:text="@string/market_data_extended_item_1_description"/>
@@ -634,7 +642,7 @@
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         style="@style/TextStyle.Regular.14"
-                                        android:textColor="@color/text_black"
+                                        android:textColor="@color/title_text_color"
                                         android:text="@string/market_data_extended_item_2_title"/>
 
                                     <TextView
@@ -642,7 +650,7 @@
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         style="@style/TextStyle.Medium.16"
-                                        android:textColor="@color/text_grey"
+                                        android:textColor="@color/subtitle_text_color"
                                         android:layout_marginTop="@dimen/margin_8"
                                         android:textStyle="bold"
                                         android:text="746,574"/>
@@ -668,7 +676,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     style="@style/TextStyle.Regular.14"
-                                    android:textColor="@color/text_black"
+                                    android:textColor="@color/title_text_color"
                                     android:text="@string/market_data_extended_item_3_title"/>
 
                                 <TextView
@@ -676,7 +684,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     style="@style/TextStyle.Medium.16"
-                                    android:textColor="@color/text_grey"
+                                    android:textColor="@color/subtitle_text_color"
                                     android:layout_marginTop="@dimen/margin_8"
                                     android:textStyle="bold"
                                     android:text="47,364,473,483"/>
@@ -692,7 +700,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     style="@style/TextStyle.Regular.14"
-                                    android:textColor="@color/text_black"
+                                    android:textColor="@color/title_text_color"
                                     android:text="@string/market_data_extended_item_4_title"/>
 
                                 <TextView
@@ -700,7 +708,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     style="@style/TextStyle.Medium.16"
-                                    android:textColor="@color/text_grey"
+                                    android:textColor="@color/subtitle_text_color"
                                     android:layout_marginTop="@dimen/margin_8"
                                     android:textStyle="bold"
                                     android:text="498 Gb"/>
@@ -724,7 +732,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     style="@style/TextStyle.Regular.14"
-                                    android:textColor="@color/text_black"
+                                    android:textColor="@color/title_text_color"
                                     android:text="@string/market_data_extended_item_5_title"/>
 
                                 <TextView
@@ -732,7 +740,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     style="@style/TextStyle.Medium.16"
-                                    android:textColor="@color/text_grey"
+                                    android:textColor="@color/subtitle_text_color"
                                     android:layout_marginTop="@dimen/margin_8"
                                     android:textStyle="bold"
                                     android:text="7044 nodes"/>
@@ -748,7 +756,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     style="@style/TextStyle.Regular.14"
-                                    android:textColor="@color/text_black"
+                                    android:textColor="@color/title_text_color"
                                     android:text="@string/market_data_extended_item_6_title"/>
 
                                 <TextView
@@ -756,7 +764,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     style="@style/TextStyle.Medium.16"
-                                    android:textColor="@color/text_grey"
+                                    android:textColor="@color/subtitle_text_color"
                                     android:layout_marginTop="@dimen/margin_8"
                                     android:textStyle="bold"
                                     android:text="20 Mb"/>
@@ -780,7 +788,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     style="@style/TextStyle.Regular.14"
-                                    android:textColor="@color/text_black"
+                                    android:textColor="@color/title_text_color"
                                     android:text="@string/market_data_extended_item_11_title"/>
 
                                 <TextView
@@ -788,7 +796,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     style="@style/TextStyle.Medium.16"
-                                    android:textColor="@color/text_grey"
+                                    android:textColor="@color/subtitle_text_color"
                                     android:layout_marginTop="@dimen/margin_8"
                                     android:textStyle="bold"
                                     android:text="4 txs"/>
@@ -804,7 +812,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     style="@style/TextStyle.Regular.14"
-                                    android:textColor="@color/text_black"
+                                    android:textColor="@color/title_text_color"
                                     android:text="@string/market_data_extended_item_12_title"/>
 
                                 <TextView
@@ -812,7 +820,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     style="@style/TextStyle.Medium.16"
-                                    android:textColor="@color/text_grey"
+                                    android:textColor="@color/subtitle_text_color"
                                     android:layout_marginTop="@dimen/margin_8"
                                     android:textStyle="bold"
                                     android:text="38,392,492 addresses"/>
@@ -836,7 +844,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     style="@style/TextStyle.Regular.14"
-                                    android:textColor="@color/text_black"
+                                    android:textColor="@color/title_text_color"
                                     android:text="@string/market_data_extended_item_8_title"/>
 
                                 <TextView
@@ -844,7 +852,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     style="@style/TextStyle.Medium.16"
-                                    android:textColor="@color/text_grey"
+                                    android:textColor="@color/subtitle_text_color"
                                     android:layout_marginTop="@dimen/margin_8"
                                     android:textStyle="bold"
                                     android:text="2,573"/>
@@ -860,7 +868,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     style="@style/TextStyle.Regular.14"
-                                    android:textColor="@color/text_black"
+                                    android:textColor="@color/title_text_color"
                                     android:text="@string/market_data_extended_item_9_title"/>
 
                                 <TextView
@@ -868,7 +876,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     style="@style/TextStyle.Medium.16"
-                                    android:textColor="@color/text_grey"
+                                    android:textColor="@color/subtitle_text_color"
                                     android:layout_marginTop="@dimen/margin_8"
                                     android:textStyle="bold"
                                     android:text="8.36 Min"/>
@@ -893,7 +901,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     style="@style/TextStyle.Regular.14"
-                                    android:textColor="@color/text_black"
+                                    android:textColor="@color/title_text_color"
                                     android:text="@string/market_data_extended_item_10_title"/>
 
                                 <TextView
@@ -901,7 +909,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     style="@style/TextStyle.Medium.16"
-                                    android:textColor="@color/text_grey"
+                                    android:textColor="@color/subtitle_text_color"
                                     android:layout_marginTop="@dimen/margin_8"
                                     android:textStyle="bold"
                                     android:text="normal"/>
@@ -915,8 +923,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:padding="@dimen/margin_12"
-                        android:visibility="gone"
-                        android:background="@color/color_disabled_overlay"
+                        android:background="@color/grey"
                         android:orientation="vertical">
 
 

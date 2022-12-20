@@ -48,6 +48,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginBottom="@dimen/horizontal_padding_size"
         app:cardCornerRadius="24dp"
+        android:backgroundTint="@color/card_background_color"
         android:layout_marginTop="@dimen/margin_24"
         android:layout_marginHorizontal="@dimen/margin_20"
         app:layout_constraintHorizontal_bias="0">

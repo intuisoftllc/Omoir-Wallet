@@ -27,7 +27,7 @@
         android:gravity="center_horizontal"
         android:paddingHorizontal="20dp"
         style="@style/TextStyle.Regular.16"
-        android:textColor="@color/text_grey"
+        android:textColor="@color/subtitle_text_color"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/name_wallet_title"
@@ -54,11 +54,12 @@
             android:layout_height="wrap_content"
             android:background="@color/white"
             android:hint="@string/name_wallet_hint"
+            android:backgroundTint="@color/card_background_color"
             android:maxLength="50"
             android:maxLines="1"
             android:padding="@dimen/horizontal_padding_size"
             android:inputType="text"
-            android:textColorHint="@color/color_disabled"
+            android:textColorHint="@color/grey"
             android:textSize="14sp"
             tools:ignore="TextContrastCheck,TouchTargetSizeCheck" />
     </androidx.cardview.widget.CardView>

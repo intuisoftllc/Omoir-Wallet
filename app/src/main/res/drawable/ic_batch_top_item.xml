@@ -7,10 +7,10 @@
       android:strokeWidth="1"
       android:pathData="M2.5,1L2.5,33"
       android:fillColor="#00000000"
-      android:strokeColor="#555759"/>
+      android:strokeColor="@color/batch_line_color"/>
   <path
       android:strokeWidth="1"
       android:pathData="M3,16.5L15,16.5"
       android:fillColor="#00000000"
-      android:strokeColor="#555759"/>
+      android:strokeColor="@color/batch_line_color"/>
 </vector>

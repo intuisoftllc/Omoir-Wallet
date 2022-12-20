@@ -270,7 +270,7 @@ class DashboardViewModel(
                                     )
 
                                     _showChartError.postValue(null)
-                                    var beginValue = history.first { it.first > 0 }?.first ?: 0L
+                                    var beginValue = history.firstOrNull { it.first > 0 }?.first ?: 0L
                                     val endValue = history.lastOrNull()?.first ?: 0L
                                     _percentageGain.postValue(100 * ((endValue.toDouble() - beginValue) / beginValue.toDouble()) to (endValue - beginValue).toDouble())
                                 }
@@ -291,7 +291,7 @@ class DashboardViewModel(
                                     )
 
                                     _showChartError.postValue(null)
-                                    var beginValue = history.first { it.first > 0 }?.first ?: 0L
+                                    var beginValue = history.firstOrNull { it.first > 0 }?.first ?: 0L
                                     val endValue = history.lastOrNull()?.first ?: 0L
                                     _percentageGain.postValue(100 * ((endValue.toDouble() - beginValue) / beginValue.toDouble()) to (endValue - beginValue).toDouble())
                                 }
@@ -313,7 +313,7 @@ class DashboardViewModel(
                                         )
 
                                         _showChartError.postValue(null)
-                                        var beginValue = cData.first { it.value > 0 }.value
+                                        var beginValue = cData.firstOrNull { it.value > 0 }?.value ?: 0f
                                         val endValue =  cData.last().value
                                         _percentageGain.postValue(100 * ((endValue.toDouble() - beginValue) / beginValue.toDouble()) to (endValue - beginValue).toDouble())
                                     } else {

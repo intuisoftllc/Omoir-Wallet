@@ -184,14 +184,14 @@ class SettingsItemView(context: Context, attrs: AttributeSet?) : LinearLayout(co
 
         if(disable) {
             chevron?.background = context.getDrawable(R.drawable.ic_chevron_right_disabled)
-            check?.tint(context.getColor(R.color.light_grey))
-            titleTv?.setTextColor(context.getColor(R.color.color_disabled))
-            subtitleTv?.setTextColor(context.getColor(R.color.color_disabled))
+            check?.tint(context.getColor(R.color.blue_grey))
+            titleTv?.setTextColor(context.getColor(R.color.grey))
+            subtitleTv?.setTextColor(context.getColor(R.color.grey))
         } else {
             check?.tint(context.getColor(R.color.black))
             chevron?.background = context.getDrawable(R.drawable.ic_chevron_right)
-            titleTv?.setTextColor(context.getColor(if(titleColor != 0) titleColor else R.color.black))
-            subtitleTv?.setTextColor(context.getColor(R.color.alt_black))
+            titleTv?.setTextColor(context.getColor(if(titleColor != 0) titleColor else R.color.title_text_color))
+            subtitleTv?.setTextColor(context.getColor(R.color.subtitle_text_color))
         }
     }
 

@@ -1,41 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="purple_200">#FFBB86FC</color>
-    <color name="purple_500">#FF6200EE</color>
-    <color name="purple_700">#FF3700B3</color>
-    <color name="teal_200">#FF03DAC5</color>
-    <color name="teal_700">#FF018786</color>
-
-    <color name="empty">#ffc1c1</color>
-    <color name="progress">#8c9eff</color>
-    <color name="progress_click">#bbdefb</color>
-    <color name="pin_background">#2c2c65</color>
-    <color name="pin_text">#8c8c8c</color>
-    <color name="bar_title_color">#000000</color>
-    <color name="bar_title_txt_selected_color">#eaa</color>
-    <color name="progress_disable">@android:color/darker_gray</color>
-
+<!--   Success/error Colors -->
     <color name="success_color">#84BF68</color>
     <color name="viridian">#1d874c</color>
     <color name="error_color">#EA4159</color>
     <color name="soft_error_color">#F6B0BA</color>
     <color name="alt_error_color">#A33242</color>
     <color name="warning_color">#FFB800</color>
+<!--   Success/error Colors End -->
+
+<!--    Hard Colors [Do Not Use Directly!] -->
     <color name="black">#FF000000</color>
     <color name="alt_black">#222222</color>
+    <color name="blue_black">#2B2D2F</color>
+    <color name="transparent_white">#11000000</color>
+    <color name="transparent">#00FFFFFF</color>
     <color name="grey_white">#F1F0F0</color>
-    <color name="color_disabled">#CACACA</color>
-    <color name="color_disabled_overlay">#DAF1F0F0</color>
-    <color name="alt_color_disabled">#F4F4F5</color>
-    <color name="grey">#A8AFBF</color>
-    <color name="light_grey">#A8AFBF</color>
+    <color name="grey">#CACACA</color>
+    <color name="blue_purple_grey">#71717A</color>
+    <color name="dark_grey">#555759</color>
+    <color name="blue_grey">#A8AFBF</color>
+    <color name="alt_blue_grey">#FCFEFF</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="bitcoin_color">#F7931A</color>
-    <color name="background_color">#FCFEFF</color>
-    <color name="text_black">#2B2D2F</color>
-    <color name="text_grey">#555759</color>
-    <color name="text_red">#D53E56</color>
-    <color name="settings_category_text_color">#6E7073</color>
+    <color name="orange">#F7931A</color>
+<!--    Hard Colors End -->
+
+<!--    Component Colors -->
+    <color name="background_color">@color/alt_blue_grey</color>
+    <color name="error_text_color">@color/alt_error_color</color>
+    <color name="subtitle_text_color">@color/black</color>
+    <color name="title_text_color">@color/blue_black</color>
+    <color name="icon_contrast_color">@color/black</color>
+    <color name="alt_icon_contrast_color">@color/blue_purple_grey</color>
+    <color name="card_background_color">@color/white</color>
+    <color name="card_divider_color">@color/grey_white</color>
+    <color name="description_text_color">@color/dark_grey</color>
+    <color name="transparent_state_pressed_color">@color/transparent_white</color>
+    <color name="transparent_state_unpressed_color">@color/transparent</color>
+    <color name="bottom_bar_background_color">@color/white</color>
+    <color name="batch_line_color">@color/description_text_color</color>
+    <color name="bottom_bar_swap_unselected_background_color">@color/blue_black</color>
+    <color name="settings_category_text_color">@color/dark_grey</color>
+    <color name="line_chart_card_background_color">@color/white</color>
+    <color name="time_period_indicator_color">@color/brand_color_blue</color>
+<!--    Component Colors End -->
+
 
     <!--    Brand Colors    -->
     <color name="brand_color_blue">#104686</color>

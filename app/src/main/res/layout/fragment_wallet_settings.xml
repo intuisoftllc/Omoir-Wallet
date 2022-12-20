@@ -27,6 +27,7 @@
                 android:layout_marginBottom="@dimen/horizontal_padding_size"
                 app:cardCornerRadius="4dp"
                 android:layout_margin="10dp"
+                android:backgroundTint="@color/card_background_color"
                 app:layout_constraintHorizontal_bias="0">
 
                 <LinearLayout
@@ -65,6 +66,7 @@
                 android:layout_marginBottom="@dimen/horizontal_padding_size"
                 app:cardCornerRadius="4dp"
                 android:layout_margin="10dp"
+                android:backgroundTint="@color/card_background_color"
                 app:layout_constraintHorizontal_bias="0">
 
                     <LinearLayout
@@ -139,6 +141,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 android:layout_marginBottom="@dimen/horizontal_padding_size"
                 app:cardCornerRadius="4dp"
+                android:backgroundTint="@color/card_background_color"
                 android:layout_margin="10dp"
                 app:layout_constraintHorizontal_bias="0">
 

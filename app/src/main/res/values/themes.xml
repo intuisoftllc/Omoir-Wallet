@@ -6,6 +6,7 @@
         <item name="colorPrimaryVariant">@color/brand_color_dark_blue</item>
         <item name="colorOnPrimary">@color/white</item>
         <item name="colorOnPrimarySurface">@color/grey_white</item>
+        <item name="colorOnPrimaryContainer">?attr/colorPrimaryVariant</item>
         <item name="android:windowBackground">@color/background_color</item>
         <item name="bottomSheetDialogTheme">@style/ThemeOverlay.Plaid.BottomSheetDialog</item>
         <item name="spark_SparkViewStyle">@style/SparkViewStyle</item>

@@ -7,15 +7,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/grey_white"/>
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
+            android:background="@color/bottom_bar_background_color"
             android:gravity="center_vertical">
 
 
@@ -42,6 +38,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Wallet"
+                    android:textColor="@color/subtitle_text_color"
                     style="@style/TextStyle.Medium.12"/>
             </LinearLayout>
 
@@ -68,6 +65,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Market"
+                    android:textColor="@color/subtitle_text_color"
                     style="@style/TextStyle.Medium.12"/>
             </LinearLayout>
 
@@ -111,6 +109,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="ATP"
+                    android:textColor="@color/subtitle_text_color"
                     style="@style/TextStyle.Medium.12"/>
             </LinearLayout>
 
@@ -137,6 +136,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Reports"
+                    android:textColor="@color/subtitle_text_color"
                     style="@style/TextStyle.Medium.12"/>
             </LinearLayout>
 

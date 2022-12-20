@@ -50,7 +50,7 @@ class ExchangeDetailsFragment : ConfigurableFragment<FragmentExchangeDetailsBind
         binding.status.text = data.status
         binding.status.setTextColor(
             resources.getColor(
-            ExchangeStatus.values().find { it.type == data.status }?.color ?: R.color.text_grey
+            ExchangeStatus.values().find { it.type == data.status }?.color ?: R.color.description_text_color
             )
         )
         binding.from.text = data.from

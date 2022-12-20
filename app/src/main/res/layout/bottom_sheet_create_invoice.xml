@@ -41,13 +41,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/white"
+            android:backgroundTint="@color/card_background_color"
             android:hint="@string/deposit_create_invoice_dialog_field_amount_hint"
             android:maxLines="1"
             android:inputType="numberDecimal"
             android:digits="1234567890.,"
             android:padding="@dimen/horizontal_padding_size"
             android:imeOptions="actionNext"
-            android:textColorHint="@color/color_disabled"
+            android:textColorHint="@color/grey"
             android:textSize="14sp"
             tools:ignore="TextContrastCheck,TouchTargetSizeCheck" />
     </androidx.cardview.widget.CardView>
@@ -99,13 +100,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/white"
+            android:backgroundTint="@color/card_background_color"
             android:hint="@string/deposit_create_invoice_dialog_field_description_hint"
             android:maxLines="1"
             android:maxLength="25"
             android:padding="@dimen/horizontal_padding_size"
             android:inputType="text"
             android:imeOptions="actionDone"
-            android:textColorHint="@color/color_disabled"
+            android:textColorHint="@color/grey"
             android:textSize="14sp"
             tools:ignore="TextContrastCheck,TouchTargetSizeCheck" />
     </androidx.cardview.widget.CardView>
@@ -131,7 +133,7 @@
         style="@style/TextStyle.Regular.14"
         app:layout_constraintTop_toBottomOf="@id/address_container"
         android:layout_marginTop="@dimen/margin_8"
-        android:textColor="@color/text_red"/>
+        android:textColor="@color/error_text_color"/>
 
 
     <com.intuisoft.plaid.androidwrappers.RoundedButtonView

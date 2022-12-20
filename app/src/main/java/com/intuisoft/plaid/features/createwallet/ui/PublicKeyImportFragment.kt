@@ -19,7 +19,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
 class PublicKeyImportFragment : ConfigurableFragment<FragmentPublicKeyImportBinding>(
-    pinProtection = true,
+    pinProtection = false,
     requiresWallet = false
 ), BarcodeResultListener {
     protected val viewModel: CreateWalletViewModel by viewModel()

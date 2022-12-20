@@ -46,7 +46,7 @@
         android:visibility="gone"
         android:paddingVertical="@dimen/margin_64"
         style="@style/TextStyle.Semibold.16"
-        android:textColor="@color/text_grey"/>
+        android:textColor="@color/description_text_color"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/addresses"

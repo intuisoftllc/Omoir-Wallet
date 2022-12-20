@@ -342,7 +342,7 @@ class WithdrawalViewModel(
             if(selectedUTXOs.isNotEmpty()) {
                 result = calculateFee(selectedUTXOs, amountToSpend.getRawRate(), 1, null, true)
             } else {
-                result = calculateFee(amountToSpend.getRawRate(), 1, null, true)
+                result = calculateFee(getUnspentOutputs(), amountToSpend.getRawRate(), 1, null, true)
             }
 
             when(result) {
