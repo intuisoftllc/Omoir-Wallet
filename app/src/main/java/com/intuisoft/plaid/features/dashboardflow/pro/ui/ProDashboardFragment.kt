@@ -128,10 +128,8 @@ class ProDashboardFragment : ConfigurableFragment<FragmentProWalletDashboardBind
             binding.percentageGain.text = SimpleCoinNumberFormat.formatCurrency(percentageGain) +
                     "% (${rateConverter.from(localStoreRepository.getBitcoinDisplayUnit().toRateType(), localStoreRepository.getLocalCurrency()).second})"
 
-            if(percentageGain > 0.0) {
+            if(percentageGain >= 0.0) {
                 binding.percentageGain.setTextColor(resources.getColor(R.color.success_color))
-            }else if(percentageGain == 0.0) {
-                binding.percentageGain.setTextColor(resources.getColor(R.color.description_text_color))
             } else {
                 binding.percentageGain.setTextColor(resources.getColor(R.color.alt_error_color))
             }

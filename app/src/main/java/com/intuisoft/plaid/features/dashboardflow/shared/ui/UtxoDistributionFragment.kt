@@ -71,7 +71,7 @@ class UtxoDistributionFragment : ConfigurableFragment<FragmentUtxoDistroReportBi
             if(it != null) {
                 binding.chart.data =
                     it.items.map { item ->
-                        item.barName to SecureRandom().nextInt(10393).toFloat()
+                        item.barName to item.utxos.size.toFloat()
                     }.toArrayList()
             } else {
                 binding.chart.data = listOf()

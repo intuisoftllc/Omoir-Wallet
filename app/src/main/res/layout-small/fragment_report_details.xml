@@ -85,7 +85,7 @@
         app:chart_axis="x"
         android:layout_weight="1"
         app:chart_labelsSize="12sp"
-        app:chart_barsColor="@color/brand_color_accent_3"
+        app:chart_barsColor="@color/bar_chart_color"
         app:chart_barsBackgroundColor="@color/background_color"
         app:chart_barsRadius="24dp"
         app:chart_emptyDataLabelColor="@android:color/darker_gray"

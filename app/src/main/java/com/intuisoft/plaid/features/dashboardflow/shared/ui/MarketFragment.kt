@@ -147,7 +147,7 @@ class MarketFragment : ConfigurableFragment<FragmentMarketBinding>(pinProtection
         viewModel.percentageGain.observe(viewLifecycleOwner, Observer {
             binding.percentageGain.text = SimpleCoinNumberFormat.formatCurrency(it) + "%"
 
-            if(it > 0.0) {
+            if(it >= 0.0) {
                 binding.percentageGain.setTextColor(resources.getColor(R.color.success_color))
             } else {
                 binding.percentageGain.setTextColor(resources.getColor(R.color.alt_error_color))

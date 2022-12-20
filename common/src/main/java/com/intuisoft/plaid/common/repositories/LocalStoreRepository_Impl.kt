@@ -188,11 +188,11 @@ class LocalStoreRepository_Impl(
     }
 
     override fun updateAppTheme(theme: AppTheme) {
-        CommonService.getUserData()!!.appTheme = theme
+        CommonService.getAppPrefs().appTheme = theme
     }
 
     override fun getAppTheme(): AppTheme {
-        return CommonService.getUserData()!!.appTheme
+        return CommonService.getAppPrefs().appTheme
     }
 
     override fun updatePinCheckedTime() {

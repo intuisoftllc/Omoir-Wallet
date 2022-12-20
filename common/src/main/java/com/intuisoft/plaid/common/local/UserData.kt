@@ -44,12 +44,6 @@ class UserData {
             save()
         }
 
-    var appTheme: AppTheme = AppTheme.AUTO
-        set(value) {
-            field = value
-            save()
-        }
-
     var lastCheckPin: Long = 0
         set(value) {
             field = value

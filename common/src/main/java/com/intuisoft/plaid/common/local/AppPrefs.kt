@@ -17,6 +17,7 @@ class AppPrefs(
         const val FINGERPRINT_SECURITY_KEY = "FINGERPRINT_SECURITY_KEY"
         const val PIN_ATTEMPTS_KEY = "PIN_ATTEMPTS_KEY"
         const val ALIAS_KEY = "ALIAS_KEY"
+        const val APP_THEME = "APP_THEME"
     }
 
     var onboardingFinished: Boolean
@@ -33,6 +34,15 @@ class AppPrefs(
         }
         set(attempts) {
             putInt(MAX_PIN_ATTEMPTS_KEY, attempts)
+        }
+
+    var appTheme: AppTheme
+        get() {
+            val theme = getInt(APP_THEME, AppTheme.AUTO.typeId)
+            return AppTheme.values().find { it.typeId == theme } ?: AppTheme.AUTO
+        }
+        set(theme) {
+            putInt(APP_THEME, theme.typeId)
         }
 
     var fingerprintSecurity: Boolean

@@ -19,6 +19,8 @@ import androidx.navigation.ui.*
 import com.intuisoft.plaid.PlaidApp
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.*
+import com.intuisoft.plaid.common.CommonService
+import com.intuisoft.plaid.common.model.AppTheme
 import com.intuisoft.plaid.common.model.DevicePerformanceLevel
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.common.util.Constants
@@ -85,6 +87,25 @@ class MainActivity : BindingActivity<ActivityMainBinding>(), ActionBarDelegate {
         }
 
         intentFilter = IntentFilter("android.net.conn.CONNECTIVITY_CHANGE")
+        setAppTheme()
+    }
+
+    fun setAppTheme() {
+        CommonService.getAppPrefs().let {
+            when (it.appTheme) {
+                AppTheme.AUTO -> {
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+                }
+
+                AppTheme.LIGHT -> {
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                }
+
+                AppTheme.DARK -> {
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                }
+            }
+        }
     }
 
     fun addToDialogStack(dialog: AppCompatDialog, onCancel: (() -> Unit)? = null) {
