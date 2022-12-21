@@ -1,4 +1,4 @@
-package com.intuisoft.plaid.features.dashboardflow.shared.adapters.detail
+package com.intuisoft.plaid.features.dashboardflow.pro.adapters.detail
 
 import android.view.View
 import com.intuisoft.plaid.R
@@ -9,7 +9,7 @@ import com.intuisoft.plaid.common.model.AssetTransferModel
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.common.util.SimpleCoinNumberFormat
-import com.intuisoft.plaid.features.dashboardflow.shared.ui.AssetTransferDetailsFragment
+import com.intuisoft.plaid.features.dashboardflow.pro.ui.AssetTransferDetailsFragment
 import kotlinx.android.synthetic.main.list_item_basic_atp_history_item.view.*
 
 

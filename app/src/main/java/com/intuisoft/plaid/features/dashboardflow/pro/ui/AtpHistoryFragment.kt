@@ -1,4 +1,4 @@
-package com.intuisoft.plaid.features.dashboardflow.shared.ui
+package com.intuisoft.plaid.features.dashboardflow.pro.ui
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -15,8 +15,8 @@ import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.common.util.extensions.toArrayList
 import com.intuisoft.plaid.databinding.FragmentAtpHistoryBinding
-import com.intuisoft.plaid.features.dashboardflow.shared.adapters.AtpHistoryAdapter
-import com.intuisoft.plaid.features.dashboardflow.shared.viewModel.AtpHistoryViewModel
+import com.intuisoft.plaid.features.dashboardflow.pro.adapters.AtpHistoryAdapter
+import com.intuisoft.plaid.features.dashboardflow.pro.viewmodel.AtpHistoryViewModel
 import com.intuisoft.plaid.util.fragmentconfig.BasicConfigData
 import com.intuisoft.plaid.walletmanager.AbstractWalletManager
 import org.koin.android.ext.android.inject

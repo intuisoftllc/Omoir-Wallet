@@ -1,4 +1,4 @@
-package com.intuisoft.plaid.features.dashboardflow.shared.adapters.detail
+package com.intuisoft.plaid.features.dashboardflow.pro.adapters.detail
 
 import android.view.View
 import com.intuisoft.plaid.R
@@ -9,16 +9,16 @@ import com.intuisoft.plaid.common.model.AssetTransferStatus
 import com.intuisoft.plaid.common.model.BatchDataModel
 import com.intuisoft.plaid.common.model.UtxoTransfer
 import com.intuisoft.plaid.common.util.Constants
-import kotlinx.android.synthetic.main.list_item_batch_tx_middle_item.view.batch_tx
+import kotlinx.android.synthetic.main.list_item_batch_tx_bottom_item.view.batch_tx
 
 
-class BatchTxMiddleDetail(
+class BatchTxBottomDetail(
     var utxo: UtxoTransfer,
     var batch: BatchDataModel,
     val onTxClicked: (String) -> Unit
 ) : ListItem {
     override val layoutId: Int
-        get() = R.layout.list_item_batch_tx_middle_item
+        get() = R.layout.list_item_batch_tx_bottom_item
 
     private var view: View? = null
 

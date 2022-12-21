@@ -31,6 +31,9 @@ open class BaseViewModel(
     protected val _loading = MutableLiveData<Boolean>()
     val loading: LiveData<Boolean> = _loading
 
+    protected val _upgradeToPro = SingleLiveData<Boolean>()
+    val upgradeToPro: LiveData<Boolean> = _upgradeToPro
+
     var currentConfig: FragmentConfiguration? = null
 
     fun hasConfiguration(fragmentConfiguration: FragmentConfigurationType): Boolean {
@@ -92,6 +95,10 @@ open class BaseViewModel(
                 }
             }
         }
+    }
+
+    fun checkProStatus() {
+        _upgradeToPro.postValue(!localStoreRepository.isProEnabled())
     }
 
     fun softRestart(fragment: Fragment) {

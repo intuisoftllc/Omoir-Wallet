@@ -1,11 +1,11 @@
-package com.intuisoft.plaid.features.dashboardflow.shared.adapters
+package com.intuisoft.plaid.features.dashboardflow.pro.adapters
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.intuisoft.plaid.features.dashboardflow.shared.ui.HowDoesAtpWorkFragment
-import com.intuisoft.plaid.features.dashboardflow.shared.ui.WhatIsAtpFragment
-import com.intuisoft.plaid.features.dashboardflow.shared.ui.YourInFullControlFragment
+import com.intuisoft.plaid.features.dashboardflow.pro.ui.HowDoesAtpWorkFragment
+import com.intuisoft.plaid.features.dashboardflow.pro.ui.WhatIsAtpFragment
+import com.intuisoft.plaid.features.dashboardflow.pro.ui.YourInFullControlFragment
 
 class AtpInfoAdapter(fa: FragmentActivity) : FragmentStateAdapter(fa) {
     // Returns total number of pages

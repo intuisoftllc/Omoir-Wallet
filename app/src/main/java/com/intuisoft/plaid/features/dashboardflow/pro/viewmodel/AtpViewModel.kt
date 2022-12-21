@@ -1,4 +1,4 @@
-package com.intuisoft.plaid.features.dashboardflow.shared.viewModel
+package com.intuisoft.plaid.features.dashboardflow.pro.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.LiveData
@@ -23,7 +23,6 @@ import kotlinx.coroutines.launch
 import java.security.SecureRandom
 import java.util.*
 import kotlin.math.min
-import kotlin.math.roundToInt
 
 
 class AtpViewModel(

@@ -18,7 +18,6 @@ import java.security.SecureRandom
 import java.text.CharacterIterator
 import java.text.StringCharacterIterator
 import kotlin.math.pow
-import kotlin.math.roundToInt
 
 @FlowPreview
 public fun <T> (suspend () -> T).asFlow(): Flow<T> = flow {
@@ -185,10 +184,23 @@ fun String.containsNumbers(): Boolean {
     return this.find { Character.isDigit(it) } != null
 }
 
-fun File.writeToFile(data: String, context: Context): Boolean {
+fun File.writeToPrivateFile(data: String, context: Context): Boolean {
     return try {
         val outputStreamWriter =
             OutputStreamWriter(context.openFileOutput(name, Context.MODE_PRIVATE))
+        outputStreamWriter.write(data)
+        outputStreamWriter.close()
+        true
+    } catch (e: IOException) {
+        Log.e("FileWriter", "File write failed: " + e.toString())
+        false
+    }
+}
+
+fun File.writeToFile(data: String, context: Context): Boolean {
+    return try {
+        val outputStreamWriter =
+            OutputStreamWriter(outputStream())
         outputStreamWriter.write(data)
         outputStreamWriter.close()
         true

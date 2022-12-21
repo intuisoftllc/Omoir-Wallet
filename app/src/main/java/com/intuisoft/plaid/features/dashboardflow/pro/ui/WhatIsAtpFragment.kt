@@ -1,4 +1,4 @@
-package com.intuisoft.plaid.features.dashboardflow.shared.ui
+package com.intuisoft.plaid.features.dashboardflow.pro.ui
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,13 +8,13 @@ import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.ConfigurableFragment
 import com.intuisoft.plaid.androidwrappers.FragmentConfiguration
 import com.intuisoft.plaid.androidwrappers.WalletViewModel
-import com.intuisoft.plaid.databinding.FragmentHowDoesAtpWorkBinding
 import com.intuisoft.plaid.databinding.FragmentNonCustodialWalletBinding
+import com.intuisoft.plaid.databinding.FragmentWhatIsAtpBinding
 import com.intuisoft.plaid.features.createwallet.viewmodel.CreateWalletViewModel
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 
-class HowDoesAtpWorkFragment : ConfigurableFragment<FragmentHowDoesAtpWorkBinding>(
+class WhatIsAtpFragment : ConfigurableFragment<FragmentWhatIsAtpBinding>(
     pinProtection = true,
     requiresWallet = false
 ) {
@@ -25,7 +25,7 @@ class HowDoesAtpWorkFragment : ConfigurableFragment<FragmentHowDoesAtpWorkBindin
         savedInstanceState: Bundle?
     ): View? {
 
-        _binding = FragmentHowDoesAtpWorkBinding.inflate(inflater, container, false)
+        _binding = FragmentWhatIsAtpBinding.inflate(inflater, container, false)
         setupConfiguration(viewModel, listOf())
         return binding.root
     }

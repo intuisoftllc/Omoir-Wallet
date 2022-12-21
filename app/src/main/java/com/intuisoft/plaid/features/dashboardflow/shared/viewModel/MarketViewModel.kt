@@ -90,9 +90,6 @@ class MarketViewModel(
     protected val _percentageGain = SingleLiveData<Double>()
     val percentageGain: LiveData<Double> = _percentageGain
 
-    protected val _upgradeToPro = SingleLiveData<Boolean>()
-    val upgradeToPro: LiveData<Boolean> = _upgradeToPro
-
     protected val _showContent = SingleLiveData<Boolean>()
     val showContent: LiveData<Boolean> = _showContent
 
@@ -178,10 +175,6 @@ class MarketViewModel(
                 }
             }
         }
-    }
-
-    fun checkProStatus() {
-        _upgradeToPro.postValue(!localStoreRepository.isProEnabled())
     }
 
     // for testing purposes only

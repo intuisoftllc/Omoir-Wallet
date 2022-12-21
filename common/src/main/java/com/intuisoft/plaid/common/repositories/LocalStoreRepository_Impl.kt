@@ -116,7 +116,7 @@ class LocalStoreRepository_Impl(
     }
 
     override fun isProEnabled(): Boolean {
-        return false//CommonService.getUserData()!!.isProEnabled
+        return true//CommonService.getUserData()!!.isProEnabled
     }
 
     override fun setProEnabled(enable: Boolean) {

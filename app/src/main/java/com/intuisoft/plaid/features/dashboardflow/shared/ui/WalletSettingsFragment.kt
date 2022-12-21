@@ -53,6 +53,7 @@ class WalletSettingsFragment : ConfigurableFragment<FragmentWalletSettingsBindin
         viewModel.updateWalletSettings()
         viewModel.checkReadOnlyStatus()
         viewModel.showHiddenWalletsCount()
+        viewModel.checkProStatus()
         viewModel.walletName.observe(viewLifecycleOwner, Observer {
             binding.renameWallet.setSubTitleText(it)
         })
@@ -70,6 +71,15 @@ class WalletSettingsFragment : ConfigurableFragment<FragmentWalletSettingsBindin
             onNavigateBack()
         }
 
+        viewModel.upgradeToPro.observe(viewLifecycleOwner, Observer {
+            if(it) {
+                binding.exportWalletTx.setTitleText(getString(R.string.wallet_settings_export_tx_data_without_pro))
+                binding.exportWalletTx.disableView(true)
+            } else {
+                binding.exportWalletTx.setTitleText(getString(R.string.wallet_settings_export_tx_data))
+            }
+        })
+
         viewModel.walletBip.observe(viewLifecycleOwner, Observer {
             binding.bip.disableView(true)
 
@@ -85,6 +95,12 @@ class WalletSettingsFragment : ConfigurableFragment<FragmentWalletSettingsBindin
                 }
             }
         })
+
+        binding.exportWalletTx.onClick {
+            navigate(
+                R.id.exportOptionsFragment
+            )
+        }
 
         viewModel.walletNetwork.observe(viewLifecycleOwner, Observer {
             binding.network.disableView(true)

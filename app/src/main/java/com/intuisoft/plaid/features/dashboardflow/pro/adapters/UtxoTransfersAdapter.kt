@@ -1,4 +1,4 @@
-package com.intuisoft.plaid.features.homescreen.adapters
+package com.intuisoft.plaid.features.dashboardflow.pro.adapters
 
 import android.view.View
 import android.view.ViewGroup
@@ -8,8 +8,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.BindingViewHolder
 import com.intuisoft.plaid.databinding.ListItemUtxoTransferBinding
-import com.intuisoft.plaid.features.dashboardflow.shared.adapters.detail.*
-import com.intuisoft.plaid.features.dashboardflow.shared.viewModel.AtpViewModel
+import com.intuisoft.plaid.features.dashboardflow.pro.adapters.detail.UxtoTransferDetail
+import com.intuisoft.plaid.features.dashboardflow.pro.viewmodel.AtpViewModel
 
 
 class UtxoTransfersAdapter() : RecyclerView.Adapter<BindingViewHolder>() {

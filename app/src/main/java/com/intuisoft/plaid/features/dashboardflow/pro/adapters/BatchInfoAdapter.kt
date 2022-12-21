@@ -1,4 +1,4 @@
-package com.intuisoft.plaid.features.dashboardflow.shared.adapters
+package com.intuisoft.plaid.features.dashboardflow.pro.adapters
 
 import android.view.View
 import android.view.ViewGroup
@@ -10,7 +10,7 @@ import com.intuisoft.plaid.androidwrappers.BindingViewHolder
 import com.intuisoft.plaid.common.model.BatchDataModel
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.databinding.ListItemBasicBatchInfoItemBinding
-import com.intuisoft.plaid.features.dashboardflow.shared.adapters.detail.BasicBatchInfoDetail
+import com.intuisoft.plaid.features.dashboardflow.pro.adapters.detail.BasicBatchInfoDetail
 
 
 class BatchInfoAdapter(

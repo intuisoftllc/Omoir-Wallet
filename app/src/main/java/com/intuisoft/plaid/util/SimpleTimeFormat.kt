@@ -221,11 +221,19 @@ object SimpleTimeFormat {
         return SimpleDateFormat("MMM dd, yyyy hh:mm aa", locale).format(Date(timeInMills))
     }
 
+    fun getCsvDateByLocale(timeInMills: Long, locale: Locale): String? {
+        return SimpleDateFormat("MMM dd yyyy hh:mm aa", locale).format(Date(timeInMills))
+    }
+
     fun getShortHistoryDateByLocale(timeInMills: Long, locale: String?): String? {
         return SimpleDateFormat("MMM dd", Locale(locale)).format(Date(timeInMills))
     }
 
     fun getLongHistoryDateByLocale(timeInMills: Long, locale: String?): String? {
         return SimpleDateFormat("MMM dd, yyyy", Locale(locale)).format(Date(timeInMills))
+    }
+
+    fun getFileFormattedDate(timeInMills: Long, locale: Locale): String? {
+        return SimpleDateFormat("MMM-dd-yyyy-hh", locale).format(Date(timeInMills))
     }
 }

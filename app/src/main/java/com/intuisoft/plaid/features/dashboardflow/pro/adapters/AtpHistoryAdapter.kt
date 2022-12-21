@@ -1,4 +1,4 @@
-package com.intuisoft.plaid.features.dashboardflow.shared.adapters
+package com.intuisoft.plaid.features.dashboardflow.pro.adapters
 
 import android.view.View
 import android.view.ViewGroup
@@ -12,7 +12,7 @@ import com.intuisoft.plaid.common.model.AssetTransferModel
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.databinding.ListItemBasicAtpHistoryItemBinding
 import com.intuisoft.plaid.databinding.ListItemSectionInfoBinding
-import com.intuisoft.plaid.features.dashboardflow.shared.adapters.detail.BasicTransferItemDetail
+import com.intuisoft.plaid.features.dashboardflow.pro.adapters.detail.BasicTransferItemDetail
 import com.intuisoft.plaid.features.dashboardflow.shared.adapters.detail.BasicDateDetail
 import java.time.Instant
 import java.time.ZoneId

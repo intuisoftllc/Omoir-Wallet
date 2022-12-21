@@ -1,4 +1,4 @@
-package com.intuisoft.plaid.features.dashboardflow.shared.ui
+package com.intuisoft.plaid.features.dashboardflow.pro.ui
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -18,7 +18,7 @@ import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.common.util.RateConverter
 import com.intuisoft.plaid.common.util.extensions.toArrayList
 import com.intuisoft.plaid.databinding.FragmentReportDetailsBinding
-import com.intuisoft.plaid.features.dashboardflow.shared.viewModel.ReportDetailsViewModel
+import com.intuisoft.plaid.features.dashboardflow.pro.viewmodel.ReportDetailsViewModel
 import com.intuisoft.plaid.features.homescreen.adapters.BasicTransactionAdapter
 import com.intuisoft.plaid.util.Plural
 import com.intuisoft.plaid.util.SimpleTimeFormat

@@ -1,4 +1,4 @@
-package com.intuisoft.plaid.features.dashboardflow.shared.adapters.detail
+package com.intuisoft.plaid.features.dashboardflow.pro.adapters.detail
 
 import android.view.View
 import com.intuisoft.plaid.R
@@ -8,7 +8,7 @@ import com.intuisoft.plaid.androidwrappers.copyToClipboard
 import com.intuisoft.plaid.androidwrappers.setOnSingleClickListener
 import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.common.util.RateConverter
-import com.intuisoft.plaid.features.dashboardflow.shared.viewModel.AtpViewModel
+import com.intuisoft.plaid.features.dashboardflow.pro.viewmodel.AtpViewModel
 import com.intuisoft.plaid.util.Plural
 import kotlinx.android.synthetic.main.list_item_utxo_transfer.view.*
 import kotlinx.coroutines.*

@@ -1,4 +1,4 @@
-package com.intuisoft.plaid.features.dashboardflow.shared.ui
+package com.intuisoft.plaid.features.dashboardflow.pro.ui
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -20,8 +20,10 @@ import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.common.util.RateConverter
 import com.intuisoft.plaid.common.util.extensions.toArrayList
 import com.intuisoft.plaid.databinding.FragmentAtpBinding
-import com.intuisoft.plaid.features.dashboardflow.shared.viewModel.AtpViewModel
-import com.intuisoft.plaid.features.homescreen.adapters.UtxoTransfersAdapter
+import com.intuisoft.plaid.features.dashboardflow.shared.ui.WithdrawConfirmationFragment
+import com.intuisoft.plaid.features.dashboardflow.shared.ui.WithdrawalFragment
+import com.intuisoft.plaid.features.dashboardflow.pro.viewmodel.AtpViewModel
+import com.intuisoft.plaid.features.dashboardflow.pro.adapters.UtxoTransfersAdapter
 import com.intuisoft.plaid.util.Plural
 import com.intuisoft.plaid.util.SimpleTimeFormat
 import com.intuisoft.plaid.util.fragmentconfig.BasicConfigData

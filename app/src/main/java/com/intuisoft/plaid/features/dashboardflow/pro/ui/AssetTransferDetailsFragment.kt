@@ -1,4 +1,4 @@
-package com.intuisoft.plaid.features.dashboardflow.shared.ui
+package com.intuisoft.plaid.features.dashboardflow.pro.ui
 
 import android.content.Context
 import android.os.Bundle
@@ -21,8 +21,8 @@ import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.common.util.RateConverter
 import com.intuisoft.plaid.common.util.extensions.toArrayList
 import com.intuisoft.plaid.databinding.FragmentAssetTransferDetailsBinding
-import com.intuisoft.plaid.features.dashboardflow.shared.adapters.BatchInfoAdapter
-import com.intuisoft.plaid.features.dashboardflow.shared.viewModel.AtpDetailsViewModel
+import com.intuisoft.plaid.features.dashboardflow.pro.adapters.BatchInfoAdapter
+import com.intuisoft.plaid.features.dashboardflow.pro.viewmodel.AtpDetailsViewModel
 import com.intuisoft.plaid.util.Plural
 import com.intuisoft.plaid.util.SimpleTimeFormat
 import com.intuisoft.plaid.util.fragmentconfig.BasicConfigData

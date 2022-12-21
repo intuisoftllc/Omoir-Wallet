@@ -1,4 +1,4 @@
-package com.intuisoft.plaid.features.dashboardflow.shared.adapters.detail
+package com.intuisoft.plaid.features.dashboardflow.pro.adapters.detail
 
 import android.view.View
 import androidx.core.view.isVisible
@@ -9,9 +9,8 @@ import com.intuisoft.plaid.androidwrappers.setOnSingleClickListener
 import com.intuisoft.plaid.common.model.BatchDataModel
 import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.common.util.SimpleCoinNumberFormat
-import com.intuisoft.plaid.common.util.extensions.toArrayList
-import com.intuisoft.plaid.features.dashboardflow.shared.adapters.BatchTxAdapter
-import com.intuisoft.plaid.features.dashboardflow.shared.ui.AssetTransferDetailsFragment
+import com.intuisoft.plaid.features.dashboardflow.pro.adapters.BatchTxAdapter
+import com.intuisoft.plaid.features.dashboardflow.pro.ui.AssetTransferDetailsFragment
 import kotlinx.android.synthetic.main.list_item_basic_batch_info_item.view.*
 
 

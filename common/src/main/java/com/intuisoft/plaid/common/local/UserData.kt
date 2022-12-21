@@ -1,15 +1,13 @@
 package com.intuisoft.plaid.common.local
 
-import android.util.Log
 import com.google.gson.Gson
 import com.intuisoft.plaid.common.CommonService
 import com.intuisoft.plaid.common.model.*
 import com.intuisoft.plaid.common.util.AESUtils
 import com.intuisoft.plaid.common.util.Constants
-import com.intuisoft.plaid.common.util.Constants.Limit.DEFAULT_MAX_PIN_ATTEMPTS
 import com.intuisoft.plaid.common.util.Constants.Limit.MIN_CONFIRMATIONS
 import com.intuisoft.plaid.common.util.extensions.readFromFile
-import com.intuisoft.plaid.common.util.extensions.writeToFile
+import com.intuisoft.plaid.common.util.extensions.writeToPrivateFile
 import kotlinx.coroutines.*
 import java.io.File
 
@@ -158,7 +156,7 @@ class UserData {
                 val json = Gson().toJson(this@UserData, UserData::class.java)
                 AESUtils.encrypt(json, CommonService.getUserPin(), CommonService.getWalletSecret())?.let { usrData ->
                     val dir: File = CommonService.getApplication().filesDir
-                    File(dir, FILE_NAME).writeToFile(
+                    File(dir, FILE_NAME).writeToPrivateFile(
                         usrData,
                         CommonService.getApplication()
                     )

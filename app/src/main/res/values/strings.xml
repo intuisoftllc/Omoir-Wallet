@@ -413,6 +413,9 @@
     <string name="wallet_settings_passphrase_description">Set hd wallet passphrase</string>
     <string name="wallet_settings_export">Export Wallet</string>
     <string name="wallet_settings_export_description">Show wallet\'s master public key</string>
+    <string name="wallet_settings_export_tx_data">Export Transaction Data</string>
+    <string name="wallet_settings_export_tx_data_without_pro">Export Transaction Data (Pro Only)</string>
+    <string name="wallet_settings_export_tx_data_description">Export wallet\'s transaction data</string>
     <string name="wallet_settings_network">Network</string>
     <string name="wallet_settings_sync_type">Sync Type</string>
     <string name="wallet_settings_sync_type_description">Set network sync type</string>
@@ -436,6 +439,25 @@
     <string name="wallet_settings_sync_type_core">Core Based Syncing</string>
     <string name="wallet_settings_hidden_wallets_count">Total Hidden Wallets: %1$s</string>
 <!--    Wallet Settings Strings End -->
+
+<!--    Export Options Strings -->
+    <string name="export_option_1">Export To Csv</string>
+    <string name="export_option_2">Export To PDF (coming soon)</string>
+    <string name="export_button_text">Export</string>
+    <string name="export_type_title">Export Transaction Data</string>
+    <string name="export_type_subtitle">How would you like to\nexport your wallet data?</string>
+    <string name="export_data_loading_message">Exporting Transaction Data</string>
+    <string name="export_data_finished_message">Transaction data exported to file: %1$s</string>
+    <string name="export_csv_column_1">Date</string>
+    <string name="export_csv_column_2">Transaction Type</string>
+    <string name="export_csv_column_3">Transaction Value</string>
+    <string name="export_csv_column_4">Transaction Fees</string>
+    <string name="export_csv_column_5">Total Value</string>
+    <string name="export_csv_column_6">Description (Memo)</string>
+    <string name="export_csv_transaction_type_1">Incoming</string>
+    <string name="export_csv_transaction_type_2">Outgoing</string>
+    <string name="export_csv_transaction_type_3">Sent To Self</string>
+<!--    Export Options Strings End -->
 
 <!--    Coin Control Bottom Sheet Strings -->
     <string name="coin_control_title">Coin Control</string>
@@ -776,6 +798,7 @@
     <string name="local_currency_fragment_label">Local Currency</string>
     <string name="address_book_fragment_label">Address Book</string>
     <string name="withdrawal_type_fragment_label">Withdrawal Type</string>
+    <string name="export_options_fragment_label">Export Options</string>
     <string name="utxo_distro_fragment_label">Utxo Distribution</string>
     <string name="swap_history_fragment_label">History</string>
     <string name="manage_wallets_fragment_label">Manage Wallets</string>

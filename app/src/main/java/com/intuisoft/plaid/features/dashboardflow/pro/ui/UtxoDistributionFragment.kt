@@ -1,4 +1,4 @@
-package com.intuisoft.plaid.features.dashboardflow.shared.ui
+package com.intuisoft.plaid.features.dashboardflow.pro.ui
 
 import android.content.Context
 import android.os.Bundle
@@ -21,7 +21,7 @@ import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.common.util.RateConverter
 import com.intuisoft.plaid.common.util.extensions.toArrayList
 import com.intuisoft.plaid.databinding.FragmentUtxoDistroReportBinding
-import com.intuisoft.plaid.features.dashboardflow.shared.viewModel.UtxoDistributionViewModel
+import com.intuisoft.plaid.features.dashboardflow.pro.viewmodel.UtxoDistributionViewModel
 import com.intuisoft.plaid.features.homescreen.adapters.BasicCoinAdapter
 import com.intuisoft.plaid.util.Plural
 import com.intuisoft.plaid.util.SimpleTimeFormat
@@ -32,7 +32,6 @@ import io.horizontalsystems.bitcoincore.storage.UnspentOutput
 import kotlinx.coroutines.*
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import java.security.SecureRandom
 import java.util.Locale
 
 class UtxoDistributionFragment : ConfigurableFragment<FragmentUtxoDistroReportBinding>(pinProtection = true) {

@@ -229,7 +229,7 @@
 
     <fragment
         android:id="@+id/atpInfoFragment"
-        android:name="com.intuisoft.plaid.features.dashboardflow.shared.ui.AtpInfoFragment"
+        android:name="com.intuisoft.plaid.features.dashboardflow.pro.ui.AtpInfoFragment"
         android:label="@string/atp_info_fragment_label"
         tools:layout="@layout/fragment_atp_info">
 
@@ -237,7 +237,7 @@
 
     <fragment
         android:id="@+id/atpHistoryFragment"
-        android:name="com.intuisoft.plaid.features.dashboardflow.shared.ui.AtpHistoryFragment"
+        android:name="com.intuisoft.plaid.features.dashboardflow.pro.ui.AtpHistoryFragment"
         android:label="@string/atp_history_fragment_label"
         tools:layout="@layout/fragment_atp_history">
 
@@ -245,7 +245,7 @@
 
     <fragment
         android:id="@+id/atpDetailsFragment"
-        android:name="com.intuisoft.plaid.features.dashboardflow.shared.ui.AssetTransferDetailsFragment"
+        android:name="com.intuisoft.plaid.features.dashboardflow.pro.ui.AssetTransferDetailsFragment"
         android:label="@string/atp_details_fragment_label"
         tools:layout="@layout/fragment_asset_transfer_details">
 
@@ -277,7 +277,7 @@
 
     <fragment
         android:id="@+id/atpFragment"
-        android:name="com.intuisoft.plaid.features.dashboardflow.shared.ui.AtpFragment"
+        android:name="com.intuisoft.plaid.features.dashboardflow.pro.ui.AtpFragment"
         android:label="@string/atp_fragment_label"
         tools:layout="@layout/fragment_atp">
 
@@ -285,7 +285,7 @@
 
     <fragment
         android:id="@+id/reportsFragment"
-        android:name="com.intuisoft.plaid.features.dashboardflow.shared.ui.ReportsFragment"
+        android:name="com.intuisoft.plaid.features.dashboardflow.pro.ui.ReportsFragment"
         android:label="@string/reports_fragment_label"
         tools:layout="@layout/fragment_reports">
 
@@ -293,7 +293,7 @@
 
     <fragment
         android:id="@+id/reportDetailsFragment"
-        android:name="com.intuisoft.plaid.features.dashboardflow.shared.ui.ReportDetailsFragment"
+        android:name="com.intuisoft.plaid.features.dashboardflow.pro.ui.ReportDetailsFragment"
         android:label="@string/reports_fragment_label"
         tools:layout="@layout/fragment_report_details">
 
@@ -316,8 +316,16 @@
     </fragment>
 
     <fragment
+        android:id="@+id/exportOptionsFragment"
+        android:name="com.intuisoft.plaid.features.dashboardflow.pro.ui.ExportOptionsFragment"
+        android:label="@string/export_options_fragment_label"
+        tools:layout="@layout/fragment_export_options">
+
+    </fragment>
+
+    <fragment
         android:id="@+id/utxoDistroFragment"
-        android:name="com.intuisoft.plaid.features.dashboardflow.shared.ui.UtxoDistributionFragment"
+        android:name="com.intuisoft.plaid.features.dashboardflow.pro.ui.UtxoDistributionFragment"
         android:label="@string/utxo_distro_fragment_label"
         tools:layout="@layout/fragment_utxo_distro_report">
 

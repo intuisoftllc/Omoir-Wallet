@@ -28,6 +28,7 @@ import com.intuisoft.plaid.common.util.Constants.Navigation.ANIMATED_ENTER_EXIT_
 import com.intuisoft.plaid.common.util.SimpleCurrencyFormat
 import com.intuisoft.plaid.common.util.extensions.safeWalletScope
 import com.intuisoft.plaid.common.util.extensions.toArrayList
+import com.intuisoft.plaid.features.dashboardflow.pro.ui.UtxoDistributionFragment
 import com.intuisoft.plaid.util.fragmentconfig.BasicConfigData
 import com.intuisoft.plaid.util.fragmentconfig.SendFundsData
 import com.intuisoft.plaid.walletmanager.AbstractWalletManager

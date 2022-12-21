@@ -1,29 +1,19 @@
-package com.intuisoft.plaid.features.dashboardflow.shared.adapters
+package com.intuisoft.plaid.features.dashboardflow.pro.adapters
 
-import android.view.View
 import android.view.ViewGroup
-import android.view.animation.Animation
-import android.view.animation.AnimationUtils
 import androidx.recyclerview.widget.RecyclerView
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.BindingViewHolder
 import com.intuisoft.plaid.androidwrappers.ListItem
-import com.intuisoft.plaid.common.model.AssetTransferModel
 import com.intuisoft.plaid.common.model.BatchDataModel
 import com.intuisoft.plaid.common.model.UtxoTransfer
-import com.intuisoft.plaid.common.repositories.LocalStoreRepository
-import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.common.util.extensions.toArrayList
-import com.intuisoft.plaid.databinding.ListItemBasicAtpHistoryItemBinding
-import com.intuisoft.plaid.databinding.ListItemBasicBatchInfoItemBinding
 import com.intuisoft.plaid.databinding.ListItemBatchTxBottomItemBinding
 import com.intuisoft.plaid.databinding.ListItemBatchTxMiddleItemBinding
 import com.intuisoft.plaid.databinding.ListItemBatchTxTopItemBinding
-import com.intuisoft.plaid.databinding.ListItemSectionInfoBinding
-import com.intuisoft.plaid.features.dashboardflow.shared.adapters.detail.BatchTxBottomDetail
-import com.intuisoft.plaid.features.dashboardflow.shared.adapters.detail.BatchTxMiddleDetail
-import com.intuisoft.plaid.features.dashboardflow.shared.adapters.detail.BatchTxTopDetail
-import java.time.Instant
+import com.intuisoft.plaid.features.dashboardflow.pro.adapters.detail.BatchTxBottomDetail
+import com.intuisoft.plaid.features.dashboardflow.pro.adapters.detail.BatchTxMiddleDetail
+import com.intuisoft.plaid.features.dashboardflow.pro.adapters.detail.BatchTxTopDetail
 
 
 class BatchTxAdapter(
