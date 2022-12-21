@@ -17,6 +17,10 @@
     <string name="all_set_description">Congratulations on taking the first step towards your financial sovernty.\n\nPlaid Crypto Wallet™ gives you the tools you need to take your cryptocurrency journey to the next level. Get started by creating a new wallet or navigating to the main screen.</string>
 <!--    On-boarding All Set Strings End -->
 
+<!--    Homescreen Strings -->
+    <string name="homescreen_wallet_limit_reached">Cannot create more than %1$s wallets for free version</string>
+<!--    Homescreen End Strings -->
+
 <!--    Pro Homescreen Strings -->
     <string name="pro_homescreen_full_balance_title">Total Balance</string>
     <string name="homescreen_greeting_1">Good Morning</string>
@@ -24,6 +28,7 @@
     <string name="homescreen_greeting_3">Good Evening</string>
     <string name="homescreen_greeting_4">Hello</string>
     <string name="pro_homescreen_average_price_dialog_title">Average Price</string>
+    <string name="pro_homescreen_wallet_limit_reached">Cannot create more than %1$s wallets for pro version</string>
     <string name="pro_homescreen_average_price_dialog_message">The average price that you acquired this asset at. This is calculated based on the total amount of bitcoin the wallet received and the relative price of the asset at the time it was received.</string>
 <!--    Pro Homescreen Strings End -->
 
@@ -94,6 +99,9 @@
     <string name="settings_meme_message">You have unleashed the memes!</string>
     <string name="settings_send_email_help_message">Send email using…</string>
     <string name="settings_send_email_error">No email clients installed.</string>
+    <string name="settings_option_hide_hidden_wallets_count">Hide Hidden Wallets Count</string>
+    <string name="settings_option_hide_hidden_wallets_count_description">Hide total hidden wallets count in wallet settings</string>
+    <string name="settings_hide_hidden_wallets_fingerprint_error">Failed to request fingerprint, please try again</string>
 <!--    Settings Strings End -->
 
 <!--    Bitcoin Unit Strings -->
@@ -123,7 +131,7 @@
 
 <!--    What is ATP Strings -->
     <string name="what_is_atp_title">What is\nAsset transfer Protocol (ATP)?</string>
-    <string name="what_is_atp_description">Asset transfer protocol is a convenient new way for you to transfer your assets from one wallet to another without sacrificing security.</string>
+    <string name="what_is_atp_description">Asset transfer protocol is a premium feature provided to Plaid Crypto Wallet™ Pro users. As a convenient new way for you to transfer your assets from one wallet to another without sacrificing security.</string>
 <!--    What is ATP Strings End -->
 
 <!--    How does ATP work Strings -->
@@ -326,6 +334,7 @@
     <string name="save_address_title">Save Address</string>
     <string name="save_address_info_1">Address Name</string>
     <string name="save_address_info_2">Address</string>
+    <string name="save_address_name_hint">My Address</string>
     <string name="save_address_validation_error_already_exists">Address with that name already exists!</string>
     <string name="save_address_validation_error_invalid_address">Not a valid bitcoin address!</string>
     <string name="save_address_copy_message">Copied address for \"%1$s\"</string>
@@ -420,10 +429,12 @@
     <string name="wallet_settings_text_box_reenter_passphrase">Re-Enter Passphrase</string>
     <string name="wallet_settings_passphrase_hint">HODL</string>
     <string name="wallet_settings_passphrase_error">Passphrases do not match!</string>
+    <string name="wallet_settings_passphrase_limit_error">Hidden wallet limit reached!\nPlease upgrade to a pro subscription to create additional hidden wallets.</string>
     <string name="wallet_settings_sync_type_title">Sync Type</string>
     <string name="wallet_settings_sync_type_subtitle">Change how your wallet syncs with the bitcoin network. Api syncing is significantly faster however if you are looking for a more secure solution.\n\nPlaid Crypto Wallet™ allows you to sync your wallet directly with bitcoin node operators. Please keep in mind that enabling core syncing may be significantly slower.</string>
     <string name="wallet_settings_sync_type_api">Api Based Syncing</string>
     <string name="wallet_settings_sync_type_core">Core Based Syncing</string>
+    <string name="wallet_settings_hidden_wallets_count">Total Hidden Wallets: %1$s</string>
 <!--    Wallet Settings Strings End -->
 
 <!--    Coin Control Bottom Sheet Strings -->
@@ -493,6 +504,10 @@
 <!--    Import Public Key Strings -->
     <string name="import_public_key_error_invalid_address">You must enter a valid bitcoin address to import</string>
 <!--    Import Public Key Strings End -->
+
+<!--    Utxo Distribution Strings -->
+    <string name="utxo_distro_no_coins_message">No Coins Found</string>
+<!--    Utxo Distribution Strings End -->
 
 <!--    Market Strings -->
     <string name="market_bitcoin_ticker_title">Bitcoin (BTC)</string>

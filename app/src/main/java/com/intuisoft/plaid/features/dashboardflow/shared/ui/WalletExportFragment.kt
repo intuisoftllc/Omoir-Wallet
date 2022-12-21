@@ -16,6 +16,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.EncodeHintType
+import com.google.zxing.common.BitMatrix
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.*
 import com.intuisoft.plaid.common.model.BitcoinDisplayUnit
@@ -29,7 +30,6 @@ import com.intuisoft.plaid.databinding.FragmentWalletExportBinding
 import com.intuisoft.plaid.features.dashboardflow.shared.viewModel.WalletExportViewModel
 import com.intuisoft.plaid.util.entensions.charsAfter
 import com.intuisoft.plaid.util.fragmentconfig.ConfigQrDisplayData
-import com.journeyapps.barcodescanner.BarcodeEncoder
 import io.horizontalsystems.bitcoincore.models.BitcoinPaymentData
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -151,11 +151,13 @@ class WalletExportFragment : ConfigurableFragment<FragmentWalletExportBinding>(p
                 BarcodeFormat.QR_CODE,
                 resources.dpToPixels(250f).toInt(),
                 resources.dpToPixels(250f).toInt(),
-                hints
+                hints,
+                requireContext().getColor(R.color.qr_code_whitespace_color),
+                requireContext().getColor(R.color.qr_code_data_color)
             )
 
             val logo: Bitmap = BitmapFactory.decodeResource(resources, R.mipmap.ic_launcher)
-            val merge = mergeBitmaps(logo, bitmap)
+            val merge = mergeBitmaps(logo, bitmap!!)
             binding.qrCode.setImageBitmap(merge)
         } catch (e: Exception) {
         }

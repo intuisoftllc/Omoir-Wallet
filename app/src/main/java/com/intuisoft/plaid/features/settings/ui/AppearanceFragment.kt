@@ -42,23 +42,20 @@ class AppearanceFragment : ConfigurableFragment<FragmentAppearanceBinding>(
         })
 
         binding.appearanceLight.onRadioClicked { settingsItemView, checked ->
-            if(checked) {
+            if(checked && viewModel.getAppTheme() != AppTheme.LIGHT) {
                 viewModel.saveAppTheme(AppTheme.LIGHT)
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
             }
         }
 
         binding.appearanceDark.onRadioClicked { settingsItemView, checked ->
-            if(checked) {
+            if(checked && viewModel.getAppTheme() != AppTheme.DARK) {
                 viewModel.saveAppTheme(AppTheme.DARK)
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
             }
         }
 
         binding.appearanceAuto.onRadioClicked { settingsItemView, checked ->
-            if(checked) {
+            if(checked && viewModel.getAppTheme() != AppTheme.AUTO) {
                 viewModel.saveAppTheme(AppTheme.AUTO)
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
             }
         }
     }

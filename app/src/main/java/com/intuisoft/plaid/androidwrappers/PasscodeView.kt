@@ -330,6 +330,8 @@ class PasscodeView @JvmOverloads constructor(
                 throw RuntimeException("must set localPasscode when type is TYPE_CHECK_PASSCODE")
             }
         }
+
+        disableEverything(true)
         val psd = passcodeFromView
         if (psd.length < minPasscodeLength || psd.length > passcodeLength) {
             tv_input_tip!!.text = wrongLengthTip
@@ -342,6 +344,7 @@ class PasscodeView @JvmOverloads constructor(
             localPasscode = psd
             clearChar()
             secondInput = true
+            disableEverything(false)
             return
         }
 
@@ -386,6 +389,7 @@ class PasscodeView @JvmOverloads constructor(
 
     fun resetView() {
         clearChar()
+        disableEverything(false)
 
         iv_ok!!.animate().alpha(0f).scaleX(0f).scaleY(0f).setDuration(500).start()
         iv_lock!!.animate().alpha(1f).scaleX(1f).scaleY(1f).setDuration(500).start()
@@ -422,7 +426,6 @@ class PasscodeView @JvmOverloads constructor(
                 override fun onAnimationEnd(animation: Animator) {
                     super.onAnimationEnd(animation)
                     cursor!!.visibility = INVISIBLE
-                    disableEverything(true)
                     var limitReached = false
 
                     if(pinAttemptTracking) {
@@ -469,9 +472,28 @@ class PasscodeView @JvmOverloads constructor(
     }
 
     private fun shakeAnimator(view: View?): Animator {
-        return ObjectAnimator
+        val animator = ObjectAnimator
             .ofFloat(view, "translationX", 0f, 25f, -25f, 25f, -25f, 15f, -15f, 6f, -6f, 0f)
             .setDuration(500)
+
+        animator.addListener(object: Animator.AnimatorListener {
+            override fun onAnimationStart(p0: Animator) {
+            }
+
+            override fun onAnimationEnd(p0: Animator) {
+                disableEverything(false)
+            }
+
+            override fun onAnimationCancel(p0: Animator) {
+                disableEverything(false)
+            }
+
+            override fun onAnimationRepeat(p0: Animator) {
+            }
+
+        })
+
+        return animator
     }
 
     private fun setPSDViewBackgroundResource(color: Int) {
@@ -493,7 +515,6 @@ class PasscodeView @JvmOverloads constructor(
                     cursor!!.visibility = INVISIBLE
                     setPSDViewBackgroundResource(correctStatusColor)
                     tv_input_tip!!.text = correctInputTip
-                    disableEverything(true)
                     iv_lock!!.animate().alpha(0f).scaleX(0f).scaleY(0f).setDuration(500).start()
                     iv_ok!!.animate().alpha(1f).scaleX(1f).scaleY(1f).setDuration(500)
                         .setListener(object : AnimatorListenerAdapter() {

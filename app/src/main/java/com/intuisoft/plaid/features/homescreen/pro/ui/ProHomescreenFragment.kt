@@ -107,8 +107,11 @@ class ProHomescreenFragment : ConfigurableFragment<FragmentProHomescreenBinding>
         })
 
         binding.createWallet.setOnSingleClickListener(Constants.Time.MIN_CLICK_INTERVAL_MED) {
-            // todo: limit to 10 for pro version
-            navigate(R.id.createWalletFragment)
+            if(walletManager.getWalletCount() < Constants.Limit.PRO_MAX_WALLETS) {
+                navigate(R.id.createWalletFragment)
+            } else {
+                styledSnackBar(requireView(), getString(R.string.pro_homescreen_wallet_limit_reached, Constants.Limit.PRO_MAX_WALLETS.toString()))
+            }
         }
 
         walletManager.synchronizeAll(false)

@@ -49,11 +49,11 @@ class LocalStoreRepository_Impl(
     }
 
     override fun getDevicePerformanceLevel(): DevicePerformanceLevel? {
-        return CommonService.getUserData()!!.devicePerformanceLevel
+        return CommonService.getAppPrefs().devicePerformanceLevel
     }
 
     override fun setDevicePerformanceLevel(performanceLevel: DevicePerformanceLevel) {
-        CommonService.getUserData()!!.devicePerformanceLevel = performanceLevel
+        CommonService.getAppPrefs().devicePerformanceLevel = performanceLevel
     }
 
     override fun setMinConfirmations(minConfirmations: Int) {
@@ -116,7 +116,7 @@ class LocalStoreRepository_Impl(
     }
 
     override fun isProEnabled(): Boolean {
-        return true//CommonService.getUserData()!!.isProEnabled
+        return false//CommonService.getUserData()!!.isProEnabled
     }
 
     override fun setProEnabled(enable: Boolean) {
@@ -315,6 +315,14 @@ class LocalStoreRepository_Impl(
             storedWalletInfo ?: StoredWalletInfo(mutableListOf())
     }
 
+    override fun hideHiddenWalletsCount(hide: Boolean) {
+        appPrefs.hideHiddenWalletsCount = hide
+    }
+
+    override fun isHidingHiddenWalletsCount(): Boolean {
+        return appPrefs.hideHiddenWalletsCount
+    }
+
     override fun setFingerprintEnabled(enabled: Boolean) {
         appPrefs.fingerprintSecurity = enabled
     }
@@ -413,6 +421,7 @@ class LocalStoreRepository_Impl(
         CommonService.getAppPrefs().wipeData()
         wipeDataListener?.onWipeData()
         databaseRepository.deleteAllData()
+        memoryCache.clear()
         onWipeFinished()
     }
 

@@ -87,7 +87,6 @@ class MainActivity : BindingActivity<ActivityMainBinding>(), ActionBarDelegate {
         }
 
         intentFilter = IntentFilter("android.net.conn.CONNECTIVITY_CHANGE")
-        setAppTheme()
     }
 
     fun setAppTheme() {

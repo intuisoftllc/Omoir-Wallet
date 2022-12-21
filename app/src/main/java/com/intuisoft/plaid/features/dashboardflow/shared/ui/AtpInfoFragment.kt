@@ -26,7 +26,10 @@ import io.horizontalsystems.hdwalletkit.Mnemonic
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
-class AtpInfoFragment : ConfigurableFragment<FragmentAtpInfoBinding>(pinProtection = true) {
+class AtpInfoFragment : ConfigurableFragment<FragmentAtpInfoBinding>(
+    pinProtection = true,
+    requiresWallet = false
+) {
     protected val viewModel: WalletViewModel by viewModel()
 
     override fun onCreateView(

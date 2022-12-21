@@ -31,7 +31,7 @@
             android:padding="@dimen/horizontal_padding_size"
             android:inputType="text"
             android:imeOptions="actionDone"
-            android:textColorHint="@color/grey"
+            android:textColorHint="@color/edit_text_hint_color"
             android:textSize="14sp" />
     </androidx.cardview.widget.CardView>
 
@@ -71,7 +71,7 @@
             android:padding="@dimen/horizontal_padding_size"
             android:inputType="text"
             android:imeOptions="actionDone"
-            android:textColorHint="@color/grey"
+            android:textColorHint="@color/edit_text_hint_color"
             android:textSize="14sp" />
     </androidx.cardview.widget.CardView>
 

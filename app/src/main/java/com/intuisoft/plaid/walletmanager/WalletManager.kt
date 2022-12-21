@@ -138,6 +138,21 @@ class WalletManager(
         return getOpenedWallet()!!.walletKit!!.getFullPublicKeyPath(key)
     }
 
+    override fun requiresNewHiddenWallet(wallet: LocalWalletModel, passphrase: String): Boolean {
+        val storedWallet = findStoredWallet(wallet.uuid)
+        val passphraseWalletUUID = (wallet.uuid + passphrase).sha256()
+        return storedWallet?.walletHashIds?.find { it == passphraseWalletUUID } == null
+    }
+
+    override fun getWalletCount(): Int {
+        return syncer.getWallets().size
+    }
+
+    override fun getHiddenWalletCount(wallet: LocalWalletModel): Int {
+        val storedWallet = findStoredWallet(wallet.uuid)
+        return storedWallet?.walletHashIds?.size?.minus(1) ?: 0
+    }
+
     private fun getTotalBalance(): Long {
         var balance : Long = 0
 
@@ -156,7 +171,7 @@ class WalletManager(
         localWallet.walletKit?.stop()
 
         findStoredWallet(localWallet.uuid)?.let { walletIdentifier ->
-            walletIdentifier.walletHashIds?.forEach { hashId ->
+            walletIdentifier.walletHashIds.forEach { hashId ->
                 BitcoinKit.clear(
                     application,
                     if(walletIdentifier.isTestNet)

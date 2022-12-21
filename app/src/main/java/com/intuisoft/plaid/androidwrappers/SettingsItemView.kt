@@ -185,8 +185,8 @@ class SettingsItemView(context: Context, attrs: AttributeSet?) : LinearLayout(co
         if(disable) {
             chevron?.background = context.getDrawable(R.drawable.ic_chevron_right_disabled)
             check?.tint(context.getColor(R.color.blue_grey))
-            titleTv?.setTextColor(context.getColor(R.color.grey))
-            subtitleTv?.setTextColor(context.getColor(R.color.grey))
+            titleTv?.setTextColor(context.getColor(R.color.disabled_color))
+            subtitleTv?.setTextColor(context.getColor(R.color.disabled_color))
         } else {
             check?.tint(context.getColor(R.color.black))
             chevron?.background = context.getDrawable(R.drawable.ic_chevron_right)

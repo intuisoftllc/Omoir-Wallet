@@ -81,8 +81,11 @@ class HomescreenFragment : ConfigurableFragment<FragmentHomescreenBinding>(
 
         walletManager.synchronizeAll(false)
         binding.createWallet.setOnSingleClickListener(Constants.Time.MIN_CLICK_INTERVAL_MED) {
-            // todo: limit to 5 for free version
-            navigate(R.id.createWalletFragment)
+            if(walletManager.getWalletCount() < Constants.Limit.FREE_MAX_WALLETS) {
+                navigate(R.id.createWalletFragment)
+            } else {
+                styledSnackBar(requireView(), getString(R.string.homescreen_wallet_limit_reached, Constants.Limit.FREE_MAX_WALLETS.toString()))
+            }
         }
     }
 

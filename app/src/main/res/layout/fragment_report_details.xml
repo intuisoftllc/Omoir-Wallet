@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:paddingHorizontal="@dimen/horizontal_padding_size">
 
 
@@ -85,18 +86,6 @@
                 tools:itemCount="12"
                 tools:listitem="@layout/list_item_basic_transaction_detail" />
         </LinearLayout>
-
-        <TextView
-            style="@style/TextStyle.Semibold.24"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="@dimen/horizontal_padding_size_large"
-            android:gravity="center_horizontal"
-            android:paddingHorizontal="20dp"
-            android:text="@string/wallet_dashboard_transactions_title"
-            android:textColor="?attr/colorPrimaryVariant"
-            android:textStyle="bold" />
     </LinearLayout>
 
     <ProgressBar
@@ -128,7 +117,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="2dp"
-        android:layout_marginTop="@dimen/parent_top_margin_small"
+        android:layout_marginTop="@dimen/parent_top_margin_xsmall"
         app:cardCornerRadius="4dp"
         android:backgroundTint="@color/card_background_color"
         app:layout_constraintBottom_toTopOf="@id/transactions_container"
@@ -219,7 +208,7 @@
                 android:id="@+id/divider"
                 android:layout_width="1dp"
                 android:layout_height="0dp"
-                android:background="@color/grey"
+                android:background="@color/card_divider_color"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -231,7 +220,7 @@
     <com.intuisoft.plaid.androidwrappers.BarChartView
         android:id="@+id/chart"
         android:layout_width="0dp"
-        android:layout_height="200dp"
+        android:layout_height="180dp"
         android:layout_marginTop="@dimen/horizontal_padding_size"
         android:layout_weight="1"
         app:chart_axis="x"
@@ -250,7 +239,6 @@
         android:id="@+id/timePeriod"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_26"
         android:layout_weight="1"
         app:btn_text="@string/report_details_time_period_1"
         app:button_style="outlined"

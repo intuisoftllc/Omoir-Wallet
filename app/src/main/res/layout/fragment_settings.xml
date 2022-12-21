@@ -245,8 +245,19 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         app:settings_variant="normal"
+                        android:layout_marginBottom="@dimen/horizontal_padding_size"
                         app:item_title="@string/settings_option_view_address_min_confirmations"
                         app:item_subtitle="@string/settings_option_view_address_min_confirmations_description"/>
+
+
+                    <com.intuisoft.plaid.androidwrappers.SettingsItemView
+                        android:id="@+id/hideHiddenWallets"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:settings_variant="normal"
+                        app:show_switch="true"
+                        app:item_title="@string/settings_option_hide_hidden_wallets_count"
+                        app:item_subtitle="@string/settings_option_hide_hidden_wallets_count_description"/>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 

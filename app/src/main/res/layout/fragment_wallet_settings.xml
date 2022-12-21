@@ -137,12 +137,13 @@
                 android:layout_height="wrap_content"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/wallet_configuration"
-                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintBottom_toTopOf="@+id/hidden_wallets_count"
                 app:layout_constraintEnd_toEndOf="parent"
-                android:layout_marginBottom="@dimen/horizontal_padding_size"
                 app:cardCornerRadius="4dp"
+                android:layout_marginBottom="@dimen/margin_8"
+                android:layout_marginTop="@dimen/margin_10"
                 android:backgroundTint="@color/card_background_color"
-                android:layout_margin="10dp"
+                android:layout_marginHorizontal="10dp"
                 app:layout_constraintHorizontal_bias="0">
 
                 <LinearLayout
@@ -160,6 +161,19 @@
                         app:item_title="@string/wallet_settings_delete"/>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
+
+            <TextView
+                android:id="@+id/hidden_wallets_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/settings_wipe_data"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                android:gravity="center"
+                style="@style/TextStyle.Semibold.14"
+                android:textStyle="bold"
+                android:layout_marginBottom="@dimen/margin_8"/>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 

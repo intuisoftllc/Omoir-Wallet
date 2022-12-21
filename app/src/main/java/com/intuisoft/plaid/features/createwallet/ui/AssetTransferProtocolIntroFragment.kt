@@ -4,8 +4,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.ConfigurableFragment
 import com.intuisoft.plaid.androidwrappers.FragmentConfiguration
+import com.intuisoft.plaid.androidwrappers.navigate
+import com.intuisoft.plaid.androidwrappers.setOnSingleClickListener
 import com.intuisoft.plaid.databinding.FragmentAssetTransferProtocolIntroBinding
 import com.intuisoft.plaid.features.createwallet.viewmodel.CreateWalletViewModel
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
@@ -27,7 +30,11 @@ class AssetTransferProtocolIntroFragment : ConfigurableFragment<FragmentAssetTra
     }
 
     override fun onConfiguration(configuration: FragmentConfiguration?) {
-        // do nothing
+        binding.atpMoreInfo.setOnSingleClickListener {
+            navigate(
+                R.id.atpInfoFragment
+            )
+        }
     }
 
     override fun actionBarTitle(): Int {

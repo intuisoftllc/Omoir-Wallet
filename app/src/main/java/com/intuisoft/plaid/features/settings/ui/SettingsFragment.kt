@@ -277,6 +277,30 @@ class SettingsFragment : ConfigurableFragment<FragmentSettingsBinding>(
             binding.fingerprint.setSwitchChecked(it)
         })
 
+        viewModel.hideHiddenWallets.observe(viewLifecycleOwner, Observer {
+            binding.hideHiddenWallets.setSwitchChecked(it)
+        })
+
+        binding.hideHiddenWallets.setLayoutClickTriggersSwitch()
+        binding.hideHiddenWallets.onSwitchClicked {
+            if(it != viewModel.isHidingHiddenWalletsCount()) {
+                if (viewModel.isFingerprintEnabled() && !it) {
+                    binding.hideHiddenWallets.setSwitchChecked(true)
+
+                    validateFingerprint(
+                        title = Constants.Strings.USE_BIOMETRIC_AUTH,
+                        subTitle = Constants.Strings.USE_BIOMETRIC_REASON_7,
+                        onSuccess = {
+                            viewModel.hideHiddenWalletsCount(false)
+                            binding.hideHiddenWallets.setSwitchChecked(false)
+                        }
+                    )
+                } else {
+                    viewModel.hideHiddenWalletsCount(it)
+                }
+            }
+        }
+
         binding.fingerprint.onSwitchClicked {
             when {
                 !viewModel.isFingerprintEnabled() && it -> {

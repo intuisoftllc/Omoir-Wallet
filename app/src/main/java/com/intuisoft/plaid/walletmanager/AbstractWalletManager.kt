@@ -46,6 +46,9 @@ abstract class AbstractWalletManager {
     abstract fun getBaseWallet(mainNet: Boolean = true): BitcoinKit
     abstract fun openWallet(wallet: LocalWalletModel)
     abstract fun closeWallet()
+    abstract fun getWalletCount(): Int
+    abstract fun getHiddenWalletCount(wallet: LocalWalletModel): Int
     abstract fun getFullPublicKeyPath(key: PublicKey): String
+    abstract fun requiresNewHiddenWallet(wallet: LocalWalletModel, passphrase: String): Boolean
     abstract fun getOpenedWallet(): LocalWalletModel
 }

@@ -12,6 +12,7 @@
         android:layout_marginLeft="12dp"
         android:layout_marginRight="12dp"
         app:cardCornerRadius="@dimen/rounded_edge_radius"
+        android:backgroundTint="@color/card_background_color"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"

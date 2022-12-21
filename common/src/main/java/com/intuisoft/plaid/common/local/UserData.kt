@@ -20,12 +20,6 @@ class UserData {
             save()
         }
 
-    var devicePerformanceLevel: DevicePerformanceLevel? = null
-        set(value) {
-            field = value
-            save()
-        }
-
     var bitcoinDisplayUnit: BitcoinDisplayUnit = BitcoinDisplayUnit.SATS
         set(value) {
             field = value

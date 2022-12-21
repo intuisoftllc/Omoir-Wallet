@@ -52,8 +52,18 @@ class WalletSettingsFragment : ConfigurableFragment<FragmentWalletSettingsBindin
 
         viewModel.updateWalletSettings()
         viewModel.checkReadOnlyStatus()
+        viewModel.showHiddenWalletsCount()
         viewModel.walletName.observe(viewLifecycleOwner, Observer {
             binding.renameWallet.setSubTitleText(it)
+        })
+
+        viewModel.hiddenWallets.observe(viewLifecycleOwner, Observer {
+            binding.hiddenWalletsCount.isVisible = it != null
+
+            it?.let {
+                binding.hiddenWalletsCount.text =
+                    getString(R.string.wallet_settings_hidden_wallets_count, it.toString())
+            }
         })
 
         onBackPressedCallback {
@@ -260,12 +270,17 @@ class WalletSettingsFragment : ConfigurableFragment<FragmentWalletSettingsBindin
 
         save.onClick {
             if(passphrase.text.toString() == confirmPassphrase.text.toString()) {
-                if(passphrase.text.toString() != originalPassphrase) {
-                    appSettingsViewModel.appRestartNeeded = true
-                    viewModel.setPassphrase(passphrase.text.toString())
-                }
+                if(viewModel.canCreatePassphrase(passphrase.text.toString())) {
+                    if (passphrase.text.toString() != originalPassphrase) {
+                        appSettingsViewModel.appRestartNeeded = true
+                        viewModel.setPassphrase(passphrase.text.toString())
+                    }
 
-                bottomSheetDialog.cancel()
+                    bottomSheetDialog.cancel()
+                } else {
+                    validationError.text = getString(R.string.wallet_settings_passphrase_limit_error)
+                    validationError.isVisible = true
+                }
             } else {
                 validationError.text = getString(R.string.wallet_settings_passphrase_error)
                 validationError.isVisible = true

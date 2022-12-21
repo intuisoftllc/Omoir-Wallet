@@ -70,7 +70,7 @@
                 android:maxLines="1"
                 android:layout_weight="5"
                 android:inputType="text"
-                android:textColorHint="@color/grey"
+                android:textColorHint="@color/edit_text_hint_color"
                 android:textSize="14sp"
                 tools:ignore="TextContrastCheck,TouchTargetSizeCheck" />
         </LinearLayout>

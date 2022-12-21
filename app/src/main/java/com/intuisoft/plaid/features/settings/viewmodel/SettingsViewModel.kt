@@ -32,6 +32,9 @@ class SettingsViewModel(
     private val _fingerprintRegistered = SingleLiveData<Boolean>()
     val fingerprintRegistered: LiveData<Boolean> = _fingerprintRegistered
 
+    private val _hideHiddenWallets = SingleLiveData<Boolean>()
+    val hideHiddenWallets: LiveData<Boolean> = _hideHiddenWallets
+
     private val _appVersionSetting = SingleLiveData<String>()
     val appVersionSetting: LiveData<String> = _appVersionSetting
 
@@ -70,6 +73,7 @@ class SettingsViewModel(
         updateAppVersionSetting()
         updateNameSetting()
         updateLocalCurrencySetting()
+        updateHideHiddenWalletsSetting()
     }
 
     fun pinTimeoutToString(context: Context, timeout: Int) : String =
@@ -115,6 +119,10 @@ class SettingsViewModel(
         _localCurrencySetting.postValue(localStoreRepository.getLocalCurrency())
     }
 
+    fun updateHideHiddenWalletsSetting() {
+        _hideHiddenWallets.postValue(localStoreRepository.isHidingHiddenWalletsCount())
+    }
+
     fun updatePinTimeoutSetting() {
         _pinTimeoutSetting.postValue(localStoreRepository.getPinTimeout())
     }
@@ -139,7 +147,12 @@ class SettingsViewModel(
 
     fun saveAppTheme(theme: AppTheme) {
         localStoreRepository.updateAppTheme(theme)
+        appRestartNeeded = true
         updateAppThemeSetting()
+    }
+
+    fun getAppTheme(): AppTheme {
+        return localStoreRepository.getAppTheme()
     }
 
     fun savePinTimeout(timeout: Int) {
@@ -159,4 +172,10 @@ class SettingsViewModel(
     fun saveFingerprintRegistered(registered: Boolean) {
         localStoreRepository.setFingerprintEnabled(registered)
     }
+
+    fun hideHiddenWalletsCount(hide: Boolean) {
+        localStoreRepository.hideHiddenWalletsCount(hide)
+    }
+
+    fun isHidingHiddenWalletsCount() = localStoreRepository.isHidingHiddenWalletsCount()
 }

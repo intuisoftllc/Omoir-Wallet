@@ -9,6 +9,7 @@ import androidx.core.os.bundleOf
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.intuisoft.plaid.R
+import com.intuisoft.plaid.activities.MainActivity
 import com.intuisoft.plaid.androidwrappers.*
 import com.intuisoft.plaid.databinding.FragmentSplashBinding
 import com.intuisoft.plaid.features.splash.viewmodel.SplashViewModel
@@ -26,12 +27,12 @@ class SplashFragment : BindingFragment<FragmentSplashBinding>() {
 
         _binding = FragmentSplashBinding.inflate(inflater, container, false)
         return binding.root
-
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        (activity as? MainActivity)?.setAppTheme()
         animateLogo()
         ignoreOnBackPressed()
         viewModel.nextScreen()

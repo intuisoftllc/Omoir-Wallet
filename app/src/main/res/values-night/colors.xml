@@ -42,22 +42,26 @@
     <color name="transparent_state_pressed_color">@color/transparent_white</color>
     <color name="transparent_state_unpressed_color">@color/transparent</color>
     <color name="bottom_bar_background_color">@color/navy_blue</color>
-    <color name="batch_line_color">@color/alt_icon_contrast_color</color>
+    <color name="batch_line_color">@color/alt_blue_grey</color>
     <color name="bottom_bar_swap_unselected_background_color">@color/deep_blue</color>
     <color name="settings_category_text_color">@color/grey</color>
     <color name="line_chart_card_background_color">@color/brand_color_dark_blue</color>
     <color name="time_period_indicator_color">@color/white</color>
     <color name="bar_chart_color">@color/alt_blue_grey</color>
+    <color name="edit_text_hint_color">@color/dark_grey</color>
+    <color name="qr_code_whitespace_color">@color/transparent</color>
+    <color name="qr_code_data_color">@color/brand_color_accent_3</color>
+    <color name="disabled_color">@color/dark_grey</color>
 <!--    Component Colors End -->
 
 
-    <!--    Brand Colors    -->
+<!--    Brand Colors    -->
     <color name="brand_color_blue">#145FB9</color>
     <color name="brand_color_dark_blue">#104485</color>
     <color name="brand_color_accent_1">#dce4ed</color>
     <color name="brand_color_accent_2">#bacadc</color>
     <color name="brand_color_accent_3">#98afcb</color>
-    <!--    Brand Colors End    -->
+<!--    Brand Colors End    -->
 
 
 </resources>

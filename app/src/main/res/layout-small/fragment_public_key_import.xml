@@ -68,8 +68,8 @@
                     android:padding="@dimen/horizontal_padding_size"
                     android:inputType="text"
                     android:imeOptions="actionDone"
-                    android:textColorHint="@color/grey"
                     android:textSize="14sp"
+                    android:textColorHint="@color/edit_text_hint_color"
                     tools:ignore="TextContrastCheck,TouchTargetSizeCheck" />
             </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>

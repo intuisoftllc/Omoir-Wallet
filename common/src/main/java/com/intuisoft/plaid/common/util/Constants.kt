@@ -71,6 +71,7 @@ class Constants {
         const val USE_BIOMETRIC_REASON_4 = "Scan your fingerprint to remove biometric authentication."
         const val USE_BIOMETRIC_REASON_5 = "Scan your fingerprint to delete your wallet."
         const val USE_BIOMETRIC_REASON_6 = "Scan your fingerprint to send transaction."
+        const val USE_BIOMETRIC_REASON_7 = "Scan your fingerprint to show/hide hidden wallet counts."
         const val SKIP_FOR_NOW = "Skip for now"
         const val USE_PIN = "Use pin"
         const val COPIED_TO_CLIPBOARD = "Copied To Clipboard!"
@@ -135,6 +136,7 @@ class Constants {
         const val MIN_FEE = 1
         const val MAX_FEE = 999
         const val FREE_MAX_WALLETS = 4
+        const val FREE_MAX_HIDDEN_WALLETS = 1
         const val PRO_MAX_WALLETS = 10
         const val ATP_MAX_RETRY_LIMIT = 3
         const val SYNC_RESTART_LIMIT = 6

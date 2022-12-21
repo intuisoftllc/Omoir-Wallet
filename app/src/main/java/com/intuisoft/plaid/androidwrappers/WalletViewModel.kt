@@ -57,6 +57,9 @@ open class WalletViewModel(
     protected val _walletName = SingleLiveData<String>()
     val walletName: LiveData<String> = _walletName
 
+    protected val _hiddenWallets = SingleLiveData<Int?>()
+    val hiddenWallets: LiveData<Int?> = _hiddenWallets
+
     protected val _walletNetwork = SingleLiveData<BitcoinKit.NetworkType>()
     val walletNetwork: LiveData<BitcoinKit.NetworkType> = _walletNetwork
 
@@ -214,6 +217,10 @@ open class WalletViewModel(
         _walletName.postValue(getWalletName())
     }
 
+    fun showHiddenWalletsCount() {
+        _hiddenWallets.postValue(if(localStoreRepository.isHidingHiddenWalletsCount()) null else walletManager.getHiddenWalletCount(localWallet!!))
+    }
+
     fun showWalletNetwork() {
         _walletNetwork.postValue(getWalletNetwork())
     }
@@ -352,9 +359,9 @@ open class WalletViewModel(
 
     fun getTransactions() {
         localWallet!!.walletKit!!.transactions(type = null)
-            .subscribe { txList: List<TransactionInfo> ->
-                val blacklist = localStoreRepository.getAllBlacklistedTransactions(getWalletId())
-                _transactions.postValue(txList.filter { tx -> blacklist.find { tx.transactionHash == it.txId } == null })
+            .subscribe { txList: List<TransactionInfo> -> // todo: hide them visually and show atp in transactions list
+//                val blacklist = localStoreRepository.getAllBlacklistedTransactions(getWalletId())
+                _transactions.postValue(txList)//txList.filter { tx -> blacklist.find { tx.transactionHash == it.txId } == null })
             }.let {
                 disposables.add(it)
             }

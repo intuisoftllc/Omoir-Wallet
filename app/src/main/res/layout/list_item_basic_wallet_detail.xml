@@ -57,7 +57,7 @@
                     android:maxLines="1"
                     style="@style/TextStyle.Medium.14"
                     android:textColor="@color/title_text_color"
-                    tools:text="@string/welcome_alias_suggestion"/>
+                    tools:text="@string/name_wallet_hint"/>
 
                 <TextView
                     android:id="@+id/stateOrType"
