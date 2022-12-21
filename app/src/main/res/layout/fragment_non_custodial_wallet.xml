@@ -28,19 +28,33 @@
         android:textStyle="bold"
         android:textColor="?attr/colorPrimaryVariant"/>
 
-    <TextView
+    <ScrollView
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_24"
-        android:gravity="center_horizontal"
-        android:paddingHorizontal="20dp"
-        style="@style/TextStyle.Regular.16"
-        android:textColor="@color/subtitle_text_color"
-        android:text="@string/non_custodial_wallet_description"
+        android:layout_height="0dp"
+        android:scrollbars="none"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/illustration_title"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="0.0"
+        app:layout_constraintTop_toBottomOf="@id/illustration_title">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_24"
+                    android:gravity="center_horizontal"
+                    android:paddingHorizontal="20dp"
+                    style="@style/TextStyle.Regular.16"
+                    android:textColor="@color/subtitle_text_color"
+                    android:text="@string/non_custodial_wallet_description"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/illustration_title"
+                    app:layout_constraintVertical_bias="0.0" />
+            </LinearLayout>
+    </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -26,29 +26,44 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintVertical_bias="@dimen/parent_top_vertical_bias"/>
 
-    <TextView
-        android:id="@+id/fingerprint_use_title"
+    <ScrollView
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
+        android:layout_height="0dp"
+        android:scrollbars="none"
+        app:layout_constraintBottom_toTopOf="@+id/register"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="52dp"
-        style="@style/TextStyle.Semibold.24"
-        android:gravity="center"
-        android:textColor="?attr/colorPrimary"
-        app:layout_constraintTop_toBottomOf="@id/fingerprint_icon"
-        android:text="@string/fingerprint_use_title"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintVertical_bias="0.0"
+        app:layout_constraintTop_toBottomOf="@id/fingerprint_icon">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+                <TextView
+                    android:id="@+id/fingerprint_use_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginTop="52dp"
+                    style="@style/TextStyle.Semibold.24"
+                    android:gravity="center"
+                    android:textColor="?attr/colorPrimary"
+                    app:layout_constraintTop_toBottomOf="@id/fingerprint_icon"
+                    android:text="@string/fingerprint_use_title"/>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/fingerprint_use_description"
-        android:gravity="center"
-        style="@style/TextStyle.Regular.16"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/fingerprint_use_title"
-        android:layout_marginTop="@dimen/margin_24"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/fingerprint_use_description"
+                    android:gravity="center"
+                    style="@style/TextStyle.Regular.16"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/fingerprint_use_title"
+                    android:layout_marginTop="@dimen/margin_24"/>
+        </LinearLayout>
+    </ScrollView>
 
 
     <com.intuisoft.plaid.androidwrappers.RoundedButtonView

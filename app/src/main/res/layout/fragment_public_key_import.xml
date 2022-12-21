@@ -16,7 +16,6 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintVertical_bias="@dimen/vertical_bias_10"
-        android:layout_marginTop="@dimen/horizontal_padding_size_large"
         android:gravity="center"
         style="@style/TextStyle.Semibold.24"
         android:textColor="?attr/colorPrimaryVariant"

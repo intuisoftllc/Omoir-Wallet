@@ -21,6 +21,7 @@
     <color name="blue_grey">#A8AFBF</color>
     <color name="alt_blue_grey">#A1A1AA</color>
     <color name="grey">#CACACA</color>
+    <color name="semi_transparent_grey">#CCCACACA</color>
     <color name="dark_grey">#555759</color>
     <color name="navy_blue">#101338</color>
     <color name="alt_navy_blue">#161833</color>

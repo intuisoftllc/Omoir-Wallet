@@ -30,58 +30,87 @@
         android:textStyle="bold"
         android:textColor="?attr/colorPrimaryVariant"/>
 
-    <TextView
-        android:id="@+id/seed_phrase_backup_subtitle"
+    <!--        android:layout_marginBottom="@dimen/horizontal_padding_size_large"-->
+    <ScrollView
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_24"
-        android:gravity="center_horizontal"
-        android:paddingHorizontal="@dimen/margin_35"
-        style="@style/TextStyle.Regular.16"
-        android:textColor="@color/subtitle_text_color"
-        tools:text="@string/backup_seed_phrase_description"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_height="0dp"
+        android:scrollbars="none"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/illustration_title"
-        app:layout_constraintVertical_bias="0.0" />
-
-    <RadioButton
-        android:id="@+id/backup_acknowledgement_1"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="@+id/continue_button"
-        app:layout_constraintEnd_toEndOf="@+id/continue_button"
-        app:layout_constraintBottom_toTopOf="@+id/backup_acknowledgement_2"
-        android:paddingStart="@dimen/horizontal_padding_size"
-        android:layout_marginBottom="@dimen/horizontal_padding_size"
-        android:gravity="top"
-        android:text="@string/backup_seed_phrase_acknowledgement_1"/>
-
-    <RadioButton
-        android:id="@+id/backup_acknowledgement_2"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="@+id/continue_button"
-        app:layout_constraintEnd_toEndOf="@+id/continue_button"
-        app:layout_constraintBottom_toTopOf="@+id/backup_acknowledgement_3"
-        android:paddingStart="@dimen/horizontal_padding_size"
-        android:layout_marginBottom="@dimen/horizontal_padding_size"
-        android:gravity="top"
-        android:text="@string/backup_seed_phrase_acknowledgement_2"/>
-
-    <RadioButton
-        android:id="@+id/backup_acknowledgement_3"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="@+id/continue_button"
-        app:layout_constraintEnd_toEndOf="@+id/continue_button"
+        app:layout_constraintVertical_bias="0.0"
+        android:fillViewport="true"
         app:layout_constraintBottom_toTopOf="@+id/continue_button"
-        android:paddingStart="@dimen/horizontal_padding_size"
-        android:layout_marginBottom="@dimen/horizontal_padding_size_large"
-        android:gravity="top"
-        android:text="@string/backup_seed_phrase_acknowledgement_3"/>
+        app:layout_constraintTop_toBottomOf="@id/illustration_title">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:orientation="vertical">
 
+                <TextView
+                    android:id="@+id/seed_phrase_backup_subtitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_24"
+                    android:gravity="center_horizontal"
+                    android:paddingHorizontal="@dimen/margin_35"
+                    style="@style/TextStyle.Regular.16"
+                    android:textColor="@color/subtitle_text_color"
+                    tools:text="@string/backup_seed_phrase_description"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.0" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"/>
+
+                <RadioButton
+                    android:id="@+id/backup_acknowledgement_1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintStart_toStartOf="@+id/continue_button"
+                    app:layout_constraintEnd_toEndOf="@+id/continue_button"
+                    app:layout_constraintBottom_toTopOf="@+id/backup_acknowledgement_2"
+                    android:layout_marginHorizontal="@dimen/horizontal_padding_size_large"
+                    android:layout_marginBottom="@dimen/horizontal_padding_size"
+                    android:paddingStart="@dimen/horizontal_padding_size"
+                    android:gravity="top"
+                    android:layout_gravity="bottom"
+                    android:text="@string/backup_seed_phrase_acknowledgement_1"/>
+
+                <RadioButton
+                    android:id="@+id/backup_acknowledgement_2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintStart_toStartOf="@+id/continue_button"
+                    app:layout_constraintEnd_toEndOf="@+id/continue_button"
+                    app:layout_constraintBottom_toTopOf="@+id/backup_acknowledgement_3"
+                    android:layout_marginHorizontal="@dimen/horizontal_padding_size_large"
+                    android:paddingStart="@dimen/horizontal_padding_size"
+                    android:layout_marginBottom="@dimen/horizontal_padding_size"
+                    android:gravity="top"
+                    android:layout_gravity="bottom"
+                    android:text="@string/backup_seed_phrase_acknowledgement_2"/>
+
+                <RadioButton
+                    android:id="@+id/backup_acknowledgement_3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintStart_toStartOf="@+id/continue_button"
+                    android:layout_marginHorizontal="@dimen/horizontal_padding_size_large"
+                    android:layout_marginBottom="@dimen/horizontal_padding_size"
+                    app:layout_constraintEnd_toEndOf="@+id/continue_button"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:paddingStart="@dimen/horizontal_padding_size"
+                    android:gravity="top"
+                    android:layout_gravity="bottom"
+                    android:text="@string/backup_seed_phrase_acknowledgement_3"/>
+
+        </LinearLayout>
+    </ScrollView>
 
     <com.intuisoft.plaid.androidwrappers.RoundedButtonView
         android:layout_width="match_parent"

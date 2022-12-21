@@ -9,6 +9,7 @@
     <color name="warning_color">#FFB800</color>
 <!--   Success/error Colors End -->
 
+
 <!--    Hard Colors [Do Not Use Directly!] -->
     <color name="black">#FF000000</color>
     <color name="alt_black">#222222</color>
@@ -17,6 +18,7 @@
     <color name="transparent">#00FFFFFF</color>
     <color name="grey_white">#F1F0F0</color>
     <color name="grey">#CACACA</color>
+    <color name="semi_transparent_grey">#CCCACACA</color>
     <color name="blue_purple_grey">#71717A</color>
     <color name="dark_grey">#555759</color>
     <color name="blue_grey">#A8AFBF</color>
