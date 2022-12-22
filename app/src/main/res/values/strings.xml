@@ -131,7 +131,7 @@
 
 <!--    What is ATP Strings -->
     <string name="what_is_atp_title">What is\nAsset transfer Protocol (ATP)?</string>
-    <string name="what_is_atp_description">Asset transfer protocol is a premium feature provided to Plaid Crypto Wallet™ Pro users. As a convenient new way for you to transfer your assets from one wallet to another without sacrificing security.</string>
+    <string name="what_is_atp_description">Asset transfer protocol is a premium feature provided to Plaid Crypto Wallet™ Pro users. It provides a convenient new way for you to transfer your assets from one wallet to another without sacrificing security.</string>
 <!--    What is ATP Strings End -->
 
 <!--    How does ATP work Strings -->

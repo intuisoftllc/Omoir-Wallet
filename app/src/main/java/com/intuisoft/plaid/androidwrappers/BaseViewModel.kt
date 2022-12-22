@@ -17,6 +17,7 @@ import com.intuisoft.plaid.R
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.common.util.extensions.safeWalletScope
 import com.intuisoft.plaid.walletmanager.AbstractWalletManager
+import com.jakewharton.processphoenix.ProcessPhoenix
 import kotlinx.coroutines.*
 
 open class BaseViewModel(
@@ -108,14 +109,7 @@ open class BaseViewModel(
                 localStoreRepository.clearCache()
 
                 MainScope().launch {
-                    fragment.navigate(
-                        R.id.splashFragment,
-                        navOptions {
-                            popUpTo(navigationId()) {
-                                inclusive = true
-                            }
-                        }
-                    )
+                    ProcessPhoenix.triggerRebirth(fragment.context)
                 }
             }
         }
