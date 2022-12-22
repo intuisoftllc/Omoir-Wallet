@@ -10,6 +10,9 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.activities.MainActivity
 import com.intuisoft.plaid.androidwrappers.*
+import com.intuisoft.plaid.common.analytics.EventTracker
+import com.intuisoft.plaid.common.analytics.events.EventHomescreenCreateWallet
+import com.intuisoft.plaid.common.analytics.events.EventHomescreenView
 import com.intuisoft.plaid.common.model.BitcoinDisplayUnit
 import com.intuisoft.plaid.features.homescreen.shared.viewmodel.HomeScreenViewModel
 import com.intuisoft.plaid.listeners.StateListener
@@ -33,6 +36,7 @@ class ProHomescreenFragment : ConfigurableFragment<FragmentProHomescreenBinding>
     protected val walletVM: WalletViewModel by viewModel()
     protected val localStoreRepository: LocalStoreRepository by inject()
     protected val walletManager: AbstractWalletManager by inject()
+    protected val eventTracker: EventTracker by inject()
 
     private val adapter = ProWalletDataAdapter(
         onWalletSelected = ::onWalletSelected,
@@ -54,6 +58,7 @@ class ProHomescreenFragment : ConfigurableFragment<FragmentProHomescreenBinding>
             requireActivity().finish()
         }
 
+        eventTracker.log(EventHomescreenView())
         (activity as? MainActivity)?.performSetup()
         viewModel.updateGreeting()
         walletVM.refreshLocalCache()
@@ -108,6 +113,7 @@ class ProHomescreenFragment : ConfigurableFragment<FragmentProHomescreenBinding>
 
         binding.createWallet.setOnSingleClickListener(Constants.Time.MIN_CLICK_INTERVAL_MED) {
             if(walletManager.getWalletCount() < Constants.Limit.PRO_MAX_WALLETS) {
+                eventTracker.log(EventHomescreenCreateWallet())
                 navigate(R.id.createWalletFragment)
             } else {
                 styledSnackBar(requireView(), getString(R.string.pro_homescreen_wallet_limit_reached, Constants.Limit.PRO_MAX_WALLETS.toString()))

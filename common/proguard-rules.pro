@@ -19,3 +19,11 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+-keepattributes EnclosingMethod
+-keepattributes InnerClasses
+
+-dontwarn org.xmlpull.v1.**
+-dontnote org.xmlpull.v1.**
+-keep class org.xmlpull.** { *; }
+-keepclassmembers class org.xmlpull.** { *; }

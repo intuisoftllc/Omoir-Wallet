@@ -13,6 +13,10 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.*
+import com.intuisoft.plaid.common.analytics.EventTracker
+import com.intuisoft.plaid.common.analytics.events.EventCreateWallet
+import com.intuisoft.plaid.common.analytics.events.EventCreateWalletAdvancedOptions
+import com.intuisoft.plaid.common.analytics.events.EventHomescreenView
 import com.intuisoft.plaid.databinding.FragmentCreateImportWalletBinding
 import com.intuisoft.plaid.features.createwallet.ZoomOutPageTransformer
 import com.intuisoft.plaid.features.createwallet.adapters.WalletBenefitsAdapter
@@ -20,6 +24,7 @@ import com.intuisoft.plaid.features.createwallet.viewmodel.CreateWalletViewModel
 import com.intuisoft.plaid.common.util.Constants
 import io.horizontalsystems.hdwalletkit.HDWallet
 import io.horizontalsystems.hdwalletkit.Mnemonic
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
@@ -28,6 +33,7 @@ class CreateWalletFragment : ConfigurableFragment<FragmentCreateImportWalletBind
     requiresWallet = false
 ) {
     protected val viewModel: CreateWalletViewModel by viewModel()
+    protected val eventTracker: EventTracker by inject()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -45,6 +51,7 @@ class CreateWalletFragment : ConfigurableFragment<FragmentCreateImportWalletBind
 
     override fun onConfiguration(configuration: FragmentConfiguration?) {
         binding.advancedOptions.setOnSingleClickListener(Constants.Time.MIN_CLICK_INTERVAL_MED) {
+            eventTracker.log(EventCreateWalletAdvancedOptions())
             showAdvancedOptionsDialog()
         }
 
@@ -68,6 +75,7 @@ class CreateWalletFragment : ConfigurableFragment<FragmentCreateImportWalletBind
         }
 
         binding.createNewWallet.onClick {
+            eventTracker.log(EventCreateWallet())
             var bundle = bundleOf(
                 Constants.Navigation.FRAGMENT_CONFIG to FragmentConfiguration(
                     configurationType = FragmentConfigurationType.CONFIGURATION_WALLET_DATA,
