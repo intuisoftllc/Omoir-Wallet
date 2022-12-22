@@ -18,7 +18,6 @@ class AppPrefs(
         const val PIN_ATTEMPTS_KEY = "PIN_ATTEMPTS_KEY"
         const val ALIAS_KEY = "ALIAS_KEY"
         const val APP_THEME = "APP_THEME"
-        const val DEVICE_PERFORMANCE_LEVEL = "DEVICE_PERFORMANCE_LEVEL"
         const val HIDE_HIDDEN_WALLETS = "HIDE_HIDDEN_WALLETS"
     }
 
@@ -70,16 +69,6 @@ class AppPrefs(
         set(attempts) {
             putInt(PIN_ATTEMPTS_KEY, attempts)
         }
-
-    var devicePerformanceLevel: DevicePerformanceLevel?
-        get() {
-            val level = getInt(DEVICE_PERFORMANCE_LEVEL, -1)
-            return DevicePerformanceLevel.values().find { it.ordinal == level }
-        }
-        set(level) {
-            putInt(DEVICE_PERFORMANCE_LEVEL, level?.ordinal ?: -1)
-        }
-
 
     var alias: String?
         get() {

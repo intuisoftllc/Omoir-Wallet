@@ -1,5 +1,6 @@
 package io.horizontalsystems.bitcoincore.blocks
 
+import com.intuisoft.plaid.common.coroutines.PlaidScope
 import io.horizontalsystems.bitcoincore.BitcoinCore
 import io.horizontalsystems.bitcoincore.core.IBlockSyncListener
 import io.horizontalsystems.bitcoincore.models.InventoryItem
@@ -8,6 +9,7 @@ import io.horizontalsystems.bitcoincore.network.peer.*
 import io.horizontalsystems.bitcoincore.network.peer.task.GetBlockHashesTask
 import io.horizontalsystems.bitcoincore.network.peer.task.GetMerkleBlocksTask
 import io.horizontalsystems.bitcoincore.network.peer.task.PeerTask
+import kotlinx.coroutines.launch
 import java.util.concurrent.CopyOnWriteArrayList
 import java.util.concurrent.Executors
 import java.util.logging.Logger
@@ -27,7 +29,6 @@ class InitialBlockDownload(
     @Volatile
     var syncPeer: Peer? = null
     private var selectNewPeer = false
-    private val peersQueue = Executors.newSingleThreadExecutor()
     private val logger = Logger.getLogger("IBD")
 
     private var minMerkleBlocks = 500.0
@@ -119,7 +120,7 @@ class InitialBlockDownload(
     }
 
     private fun assignNextSyncPeer() {
-        peersQueue.execute {
+        PlaidScope.IoScope.launch {
             if (syncPeer == null) {
                 val notSyncedPeers = peerManager.sorted().filter { !it.synced }
                 if (notSyncedPeers.isEmpty()) {

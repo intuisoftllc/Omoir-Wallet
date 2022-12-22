@@ -16,10 +16,6 @@ interface LocalStoreRepository {
 
     fun getMinimumConfirmations(): Int
 
-    fun getDevicePerformanceLevel(): DevicePerformanceLevel?
-
-    fun setDevicePerformanceLevel(performanceLevel: DevicePerformanceLevel)
-
     fun setMinConfirmations(minConfirmations: Int)
 
     fun getLocalCurrency(): String

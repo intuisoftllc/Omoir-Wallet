@@ -151,29 +151,7 @@ class MainActivity : BindingActivity<ActivityMainBinding>(), ActionBarDelegate {
     fun performSetup() {
         if(!configurationSetup) {
             configurationSetup = true
-            setupPerformanceLevel()
             setupBottomNavigationBar()
-        }
-    }
-
-    private fun setupPerformanceLevel() {
-        if(localStoreRepository.getDevicePerformanceLevel() == null) {
-            when {
-                (application as PlaidApp).devicePerformance.mediaPerformanceClass >= Build.VERSION_CODES.S -> {
-                    localStoreRepository.setDevicePerformanceLevel(DevicePerformanceLevel.HIGH)
-                    // Performance class level 12 and above
-                    // Provide the most premium experience for highest performing devices
-                }
-                (application as PlaidApp).devicePerformance.mediaPerformanceClass == Build.VERSION_CODES.R -> {
-                    localStoreRepository.setDevicePerformanceLevel(DevicePerformanceLevel.MED)
-                    // Performance class level 11
-                    // Provide a high quality experience
-                }
-                else -> {
-                    localStoreRepository.setDevicePerformanceLevel(DevicePerformanceLevel.DEFAULT)
-                    // Performance class level undefined
-                }
-            }
         }
     }
 

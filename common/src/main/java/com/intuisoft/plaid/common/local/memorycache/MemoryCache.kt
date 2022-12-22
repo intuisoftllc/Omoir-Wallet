@@ -2,6 +2,8 @@ package com.intuisoft.plaid.common.local.memorycache
 
 import com.intuisoft.plaid.common.model.*
 import com.intuisoft.plaid.common.util.extensions.remove
+import com.intuisoft.plaid.common.util.extensions.toArrayList
+import java.util.concurrent.CopyOnWriteArrayList
 
 /**
  * Memory Cache aims to lower the latency to requesting frequently used data by bypassing both
@@ -10,24 +12,24 @@ import com.intuisoft.plaid.common.util.extensions.remove
 class MemoryCache {
     private var rangeLimitsCache: HashMap<String, Pair<Long, CurrencyRangeLimitModel>> = hashMapOf()
     private var chartPriceUpdateTimes: HashMap<Int, Long> = hashMapOf()
-    private var wholeCoinConversionFixedCache: MutableList<Pair<WholeCoinConversionModel, Long>> = mutableListOf()
-    private var wholeCoinConversionFloatingCache: MutableList<Pair<WholeCoinConversionModel, Long>> = mutableListOf()
+    private var wholeCoinConversionFixedCache: CopyOnWriteArrayList<Pair<WholeCoinConversionModel, Long>> = CopyOnWriteArrayList()
+    private var wholeCoinConversionFloatingCache: CopyOnWriteArrayList<Pair<WholeCoinConversionModel, Long>> = CopyOnWriteArrayList()
     private var exchangeUpdateTimes: HashMap<String, Long> = hashMapOf()
     private var currencyRateCache: HashMap<String, BasicPriceDataModel?> = hashMapOf()
     private var storedWalletInfoCache: StoredWalletInfo? = null
-    private var blacklistedAddressesCache: List<BlacklistedAddressModel>? = null
-    private var blacklistedTransactionsCache: List<BlacklistedTransactionModel>? = null
+    private var blacklistedAddressesCache: CopyOnWriteArrayList<BlacklistedAddressModel>? = null
+    private var blacklistedTransactionsCache: CopyOnWriteArrayList<BlacklistedTransactionModel>? = null
     private var blockHashCache: HashMap<Int, Pair<Long, String?>> = hashMapOf()
     private var testnetBlockHashCache: HashMap<Int, Pair<Long, String?>> = hashMapOf()
-    private var addressTransactionsCache: HashMap<String, Pair<Long, List<AddressTransactionData>>> = hashMapOf()
-    private var testnetAddressTransactionsCache: HashMap<String, Pair<Long, List<AddressTransactionData>>> = hashMapOf()
-    private var marketHistoryCache: MutableList<MarketHistoryCache> = mutableListOf()
+    private var addressTransactionsCache: HashMap<String, Pair<Long, CopyOnWriteArrayList<AddressTransactionData>>> = hashMapOf()
+    private var testnetAddressTransactionsCache: HashMap<String, Pair<Long, CopyOnWriteArrayList<AddressTransactionData>>> = hashMapOf()
+    private var marketHistoryCache: CopyOnWriteArrayList<MarketHistoryCache> = CopyOnWriteArrayList()
 
     fun clear() {
         rangeLimitsCache = hashMapOf()
         chartPriceUpdateTimes = hashMapOf()
-        wholeCoinConversionFixedCache = mutableListOf()
-        wholeCoinConversionFloatingCache = mutableListOf()
+        wholeCoinConversionFixedCache = CopyOnWriteArrayList()
+        wholeCoinConversionFloatingCache = CopyOnWriteArrayList()
         exchangeUpdateTimes = hashMapOf()
         currencyRateCache = hashMapOf()
         storedWalletInfoCache = null
@@ -37,7 +39,7 @@ class MemoryCache {
         testnetBlockHashCache = hashMapOf()
         addressTransactionsCache = hashMapOf()
         testnetAddressTransactionsCache = hashMapOf()
-        marketHistoryCache = mutableListOf()
+        marketHistoryCache = CopyOnWriteArrayList()
     }
 
     fun getStoredWalletInfo() = storedWalletInfoCache
@@ -79,20 +81,20 @@ class MemoryCache {
     }
 
     fun setAddressTransactions(address: String, testnet: Boolean, updateTime: Long, data: List<AddressTransactionData>) {
-        if(testnet) testnetAddressTransactionsCache.put(address, updateTime to data)
-        else addressTransactionsCache.put(address, updateTime to data)
+        if(testnet) testnetAddressTransactionsCache.put(address, updateTime to CopyOnWriteArrayList(data))
+        else addressTransactionsCache.put(address, updateTime to CopyOnWriteArrayList(data))
     }
 
     fun getBlacklistedAddresses() = blacklistedAddressesCache
 
     fun setBlacklistedAddresses(addresses: List<BlacklistedAddressModel>) {
-        blacklistedAddressesCache = addresses
+        blacklistedAddressesCache = CopyOnWriteArrayList(addresses)
     }
 
     fun getBlacklistedTransactions(walletId: String) = blacklistedTransactionsCache?.filter { it.walletId == walletId }
 
     fun setBlacklistedTransactions(transactions: List<BlacklistedTransactionModel>) {
-        blacklistedTransactionsCache = transactions
+        blacklistedTransactionsCache = CopyOnWriteArrayList(transactions)
     }
 
     fun getRateFor(currencyCode: String): BasicPriceDataModel? {

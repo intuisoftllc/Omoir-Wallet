@@ -9,6 +9,7 @@ import com.intuisoft.plaid.model.LocalWalletModel
 import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.common.util.extensions.remove
 import com.intuisoft.plaid.common.util.extensions.splitIntoGroupOf
+import com.intuisoft.plaid.util.NetworkUtil
 import com.intuisoft.plaid.util.entensions.ensureActive
 import io.horizontalsystems.bitcoincore.network.peer.PeerGroup
 import kotlinx.coroutines.*
@@ -175,26 +176,6 @@ class SyncManager(
         }
     }
 
-    fun getSyncGrouping(): Int { // todo: prevent user from syncing more wallets than allowed based on performance specs
-        return when(localStoreRepository.getDevicePerformanceLevel()) {
-            DevicePerformanceLevel.DEFAULT -> {
-                1
-            }
-
-            DevicePerformanceLevel.MED -> {
-                2
-            }
-
-            DevicePerformanceLevel.HIGH -> {
-                3
-            }
-
-            else -> {
-                1
-            }
-        }
-    }
-
     fun cancelTransfer(id: String) {
         CoroutineScope(Dispatchers.IO).launch {
             atp.cancelTransfer(id, openedWallet!!)
@@ -215,32 +196,16 @@ class SyncManager(
                 var resync = false
 
                 _wallets
-                    .splitIntoGroupOf(getSyncGrouping())
+                    .splitIntoGroupOf(3) // sync 3 wallets at the same time
                     .forEach { group ->
                         group.items.forEach {
                             syncInternal(it)
                         }
 
                         // wait for this group of wallets to sync
-                        var startTime = System.currentTimeMillis()
-                        var restarts = 0
-                        while(!group.items.all { it.isSynced }) {
+                        while(!group.items.all { it.isSynced } && NetworkUtil.hasInternet(application)) {
                             masterSyncJob?.ensureActive()
                             delay(100)
-
-                            if((System.currentTimeMillis() - startTime) >= Constants.Time.SYNC_TIMEOUT) {
-                                group.items.forEach {
-                                    if (listener?.getLastSyncedTime(it) != 0L && !it.isSynced && it.syncPercentage == 0) { // restart stuck wallets
-                                        it.walletKit!!.restart()
-                                        startTime = System.currentTimeMillis()
-                                        ++restarts
-                                    }
-                                }
-
-                                if(restarts > Constants.Limit.SYNC_RESTART_LIMIT) {
-                                    break
-                                }
-                            }
                         }
 
                         group.items.forEach {

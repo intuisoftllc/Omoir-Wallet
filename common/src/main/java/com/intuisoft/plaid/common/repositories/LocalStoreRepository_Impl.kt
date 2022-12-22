@@ -48,14 +48,6 @@ class LocalStoreRepository_Impl(
         return CommonService.getUserData()!!.minConfirmations
     }
 
-    override fun getDevicePerformanceLevel(): DevicePerformanceLevel? {
-        return CommonService.getAppPrefs().devicePerformanceLevel
-    }
-
-    override fun setDevicePerformanceLevel(performanceLevel: DevicePerformanceLevel) {
-        CommonService.getAppPrefs().devicePerformanceLevel = performanceLevel
-    }
-
     override fun setMinConfirmations(minConfirmations: Int) {
         CommonService.getUserData()!!.minConfirmations = minConfirmations
     }

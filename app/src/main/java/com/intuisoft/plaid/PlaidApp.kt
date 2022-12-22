@@ -18,7 +18,6 @@ import org.koin.core.logger.Level
 class PlaidApp : Application(), Application.ActivityLifecycleCallbacks, KoinComponent {
     private val preferences: UserData?
         get() = CommonService.getUserData()
-    lateinit var devicePerformance: DevicePerformance
     var ignorePinCheck = false
 
     override fun onCreate() {
@@ -36,8 +35,6 @@ class PlaidApp : Application(), Application.ActivityLifecycleCallbacks, KoinComp
             BuildConfig.SIMPLE_SWAP_SERVER_URL,
             BuildConfig.WALLET_SECRET
         )
-
-        devicePerformance = DevicePerformance.create(this)
 
         startKoin {
             androidLogger(Level.DEBUG)

@@ -128,18 +128,6 @@ class BlockchainComApi : IInitialSyncApi {
     companion object {
         private const val paginationLimit = 100
         private const val addressesLimit = 50
-
-        private val executor = Executors.newSingleThreadExecutor()
-
-        fun requestInQueue(apiManager: ApiManager, path: String): JsonValue {
-            val callable = Callable {
-                Thread.sleep(500)
-                apiManager.doOkHttpGet(false, path)
-            }
-
-            return executor.submit(callable).get()
-        }
-
     }
 
 }

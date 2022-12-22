@@ -1,11 +1,17 @@
 package io.horizontalsystems.bitcoincore.managers
 
+import com.intuisoft.plaid.common.coroutines.PlaidScope
+import com.intuisoft.plaid.common.util.extensions.remove
 import io.horizontalsystems.bitcoincore.core.IPublicKeyManager
 import io.horizontalsystems.bitcoincore.core.IStorage
 import io.horizontalsystems.bitcoincore.models.BlockHash
 import io.horizontalsystems.bitcoincore.models.PublicKey
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.job
+import kotlinx.coroutines.launch
+import java.util.concurrent.CopyOnWriteArrayList
 import java.util.logging.Logger
 
 class InitialSyncer(
@@ -23,26 +29,32 @@ class InitialSyncer(
     var listener: Listener? = null
 
     private val logger = Logger.getLogger("InitialSyncer")
-    private val disposables = CompositeDisposable()
+    private var syncJobs: CopyOnWriteArrayList<Job> = CopyOnWriteArrayList()
 
     fun terminate() {
-        disposables.clear()
+        syncJobs.forEach {
+            it.cancel()
+        }
+
+        syncJobs.clear()
     }
 
     fun sync() {
-        val disposable = blockDiscovery.discoverBlockHashes()
-            .subscribeOn(Schedulers.io())
-            .subscribe(
-                { (publicKeys, blockHashes) ->
+        val job = PlaidScope.IoScope.launch {
+            try {
+                blockDiscovery.discoverBlockHashes(this.coroutineContext.job).let { (publicKeys, blockHashes) ->
                     val sortedUniqueBlockHashes = blockHashes.distinctBy { it.height }.sortedBy { it.height }
-
                     handle(publicKeys, sortedUniqueBlockHashes)
-                },
-                {
-                    handleError(it)
-                })
+                }
 
-        disposables.add(disposable)
+                syncJobs.remove { it == this.coroutineContext.job }
+            } catch (e: Throwable) {
+                handleError(e)
+                syncJobs.remove { it == this.coroutineContext.job }
+            }
+        }
+
+        syncJobs.add(job)
     }
 
     private fun handle(keys: List<PublicKey>, blockHashes: List<BlockHash>) {

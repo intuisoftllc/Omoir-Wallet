@@ -45,8 +45,6 @@ class PeerGroup(
     private var running = false
     private val logger = Logger.getLogger("PeerGroup")
     private val peerGroupListeners = mutableListOf<Listener>()
-    private val executorService = Executors.newFixedThreadPool(peerCountToConnectMax) // todo: use coroutines instead
-    private val peerThreadPool = Executors.newFixedThreadPool(peerCountToConnectMax)
 
 
     fun start() {
@@ -164,6 +162,7 @@ class PeerGroup(
         if (peerCountToConnect > peerCountConnected && peerCountToHold > 1 && hostManager.hasFreshIps) {
             val sortedPeers = peerManager.sorted()
             if (sortedPeers.size >= peerCountToHold) {
+                if(BitcoinCore.loggingEnabled)  logger.info("Disconnecting slowest peer.")
                 sortedPeers.lastOrNull()?.close()
             }
         }
@@ -177,11 +176,11 @@ class PeerGroup(
 
         for (i in peerManager.peersCount until peerCountToHold) {
             val ip = hostManager.getIp() ?: break
-            val peer = Peer(ip, network, this, networkMessageParser, networkMessageSerializer, executorService)
+            val peer = Peer(ip, network, this, networkMessageParser, networkMessageSerializer)
             peerCountConnected += 1
             peerGroupListeners.forEach { it.onPeerCreate(peer) }
             peerManager.add(peer)
-            peer.start(peerThreadPool)
+            peer.start()
         }
     }
 

@@ -1,6 +1,7 @@
 package io.horizontalsystems.bitcoincore
 
 import android.content.Context
+import com.intuisoft.plaid.common.coroutines.PlaidScope
 import io.horizontalsystems.bitcoincore.blocks.*
 import io.horizontalsystems.bitcoincore.blocks.validators.IBlockValidator
 import io.horizontalsystems.bitcoincore.core.*
@@ -27,6 +28,7 @@ import io.horizontalsystems.hdwalletkit.HDWallet.Purpose
 import io.horizontalsystems.hdwalletkit.HDWalletAccount
 import io.horizontalsystems.hdwalletkit.HDWalletAccountWatch
 import io.reactivex.Single
+import kotlinx.coroutines.launch
 import java.util.*
 import java.util.concurrent.Executor
 import kotlin.math.roundToInt
@@ -511,8 +513,6 @@ class BitcoinCore(
 
     // END: Extending
 
-    var listenerExecutor: Executor = DirectExecutor()
-
     //  DataProvider getters
     val balance get() = dataProvider.balance
     val lastBlockInfo get() = dataProvider.lastBlockInfo
@@ -699,25 +699,25 @@ class BitcoinCore(
     // DataProvider Listener implementations
     //
     override fun onTransactionsUpdate(inserted: List<TransactionInfo>, updated: List<TransactionInfo>) {
-        listenerExecutor.execute {
+        PlaidScope.IoScope.launch {
             listener?.onTransactionsUpdate(inserted, updated)
         }
     }
 
     override fun onTransactionsDelete(hashes: List<String>) {
-        listenerExecutor.execute {
+        PlaidScope.IoScope.launch {
             listener?.onTransactionsDelete(hashes)
         }
     }
 
     override fun onBalanceUpdate(balance: BalanceInfo) {
-        listenerExecutor.execute {
+        PlaidScope.IoScope.launch {
             listener?.onBalanceUpdate(balance)
         }
     }
 
     override fun onLastBlockInfoUpdate(blockInfo: BlockInfo) {
-        listenerExecutor.execute {
+        PlaidScope.IoScope.launch {
             listener?.onLastBlockInfoUpdate(blockInfo)
         }
     }
@@ -726,7 +726,7 @@ class BitcoinCore(
     // IKitStateManagerListener implementations
     //
     override fun onKitStateUpdate(state: KitState) {
-        listenerExecutor.execute {
+        PlaidScope.IoScope.launch {
             listener?.onKitStateUpdate(state)
         }
     }
@@ -832,7 +832,7 @@ class BitcoinCore(
     }
 
     companion object {
-        var loggingEnabled: Boolean = false
+        var loggingEnabled: Boolean = true
     }
 
 }
