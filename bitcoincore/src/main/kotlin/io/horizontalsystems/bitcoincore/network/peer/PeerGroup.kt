@@ -45,7 +45,7 @@ class PeerGroup(
     private var running = false
     private val logger = Logger.getLogger("PeerGroup")
     private val peerGroupListeners = mutableListOf<Listener>()
-    private val executorService = Executors.newCachedThreadPool() // todo: use coroutines instead
+    private val executorService = Executors.newFixedThreadPool(peerCountToConnectMax) // todo: use coroutines instead
     private val peerThreadPool = Executors.newFixedThreadPool(peerCountToConnectMax)
 
 

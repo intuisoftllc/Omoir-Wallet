@@ -162,96 +162,94 @@ class DashboardViewModel(
                                     ?: 0.0
                             )
 
-                            if(localStoreRepository.isProEnabled()) {
-                                val time = getMaxMarketInterval(ChartIntervalType.INTERVAL_ALL_TIME, Instant.ofEpochSecond(balanceHistory.first().second-1))
-                                val allTimeMarketData =
-                                    apiRepository.getMarketHistoryData(localStoreRepository.getLocalCurrency(), time.first, time.second)
-                                val createdTime =
-                                    Math.min(walletManager.findStoredWallet(getWalletId())!!.createdAt, balanceHistory.first().second * Constants.Time.MILLS_PER_SEC)
-                                val incomingTxs =
-                                    walletTransactions.filter { it.type == TransactionType.Incoming }
-                                val outgoingTxs =
-                                    walletTransactions.filter { it.type == TransactionType.Outgoing || it.type == TransactionType.SentToSelf }
+                            val time = getMaxMarketInterval(ChartIntervalType.INTERVAL_ALL_TIME, Instant.ofEpochSecond(balanceHistory.first().second-1))
+                            val allTimeMarketData =
+                                apiRepository.getMarketHistoryData(localStoreRepository.getLocalCurrency(), time.first, time.second)
+                            val createdTime =
+                                Math.min(walletManager.findStoredWallet(getWalletId())!!.createdAt, balanceHistory.first().second * Constants.Time.MILLS_PER_SEC)
+                            val incomingTxs =
+                                walletTransactions.filter { it.type == TransactionType.Incoming }
+                            val outgoingTxs =
+                                walletTransactions.filter { it.type == TransactionType.Outgoing || it.type == TransactionType.SentToSelf }
 
-                                val totalSentCost = outgoingTxs
-                                    .map { tx ->
-                                        if(tx.type == TransactionType.Outgoing) {
-                                            (tx.amount.toDouble() + (tx.fee?.toDouble() ?: 0.0)) / Constants.Limit.SATS_PER_BTC
-                                        } else {
-                                            (tx.fee?.toDouble() ?: 0.0) / Constants.Limit.SATS_PER_BTC
-                                        }
-                                    }.sum()
+                            val totalSentCost = outgoingTxs
+                                .map { tx ->
+                                    if(tx.type == TransactionType.Outgoing) {
+                                        (tx.amount.toDouble() + (tx.fee?.toDouble() ?: 0.0)) / Constants.Limit.SATS_PER_BTC
+                                    } else {
+                                        (tx.fee?.toDouble() ?: 0.0) / Constants.Limit.SATS_PER_BTC
+                                    }
+                                }.sum()
 
-                                val totalReceivedCost = incomingTxs
-                                    .map { tx ->
-                                        (tx.amount.toDouble()) / Constants.Limit.SATS_PER_BTC
-                                    }.sum()
+                            val totalReceivedCost = incomingTxs
+                                .map { tx ->
+                                    (tx.amount.toDouble()) / Constants.Limit.SATS_PER_BTC
+                                }.sum()
 
-                                val averagePrice = incomingTxs
-                                    .map { tx ->
-                                        allTimeMarketData?.find { it.time >= tx.timestamp }?.price?.toFloat() ?: 0f
-                                    }.average()
+                            val averagePrice = incomingTxs
+                                .map { tx ->
+                                    allTimeMarketData?.find { it.time >= tx.timestamp }?.price?.toFloat() ?: 0f
+                                }.average()
 
-                                val highestBalance = balanceHistory
-                                    .map { balance ->
-                                        balance.first
-                                    }.maxOrNull()
+                            val highestBalance = balanceHistory
+                                .map { balance ->
+                                    balance.first
+                                }.maxOrNull()
 
-                                val rate = RateConverter(
-                                    localStoreRepository.getRateFor(localStoreRepository.getLocalCurrency())?.currentPrice
-                                        ?: 0.0
+                            val rate = RateConverter(
+                                localStoreRepository.getRateFor(localStoreRepository.getLocalCurrency())?.currentPrice
+                                    ?: 0.0
+                            )
+                            rate.setLocalRate(
+                                RateConverter.RateType.BTC_RATE,
+                                totalSentCost
+                            )
+                            _totalSent.postValue(
+                                rate.from(
+                                    if(rate.getRawBtcRate() >= 1.0 && localStoreRepository.getBitcoinDisplayUnit() != BitcoinDisplayUnit.FIAT)
+                                        RateConverter.RateType.BTC_RATE
+                                    else localStoreRepository.getBitcoinDisplayUnit().toRateType(),
+                                    localStoreRepository.getLocalCurrency()
+                                ).second!!
+                            )
+
+                            rate.setLocalRate(
+                                RateConverter.RateType.BTC_RATE,
+                                totalReceivedCost
+                            )
+                            _totalReceived.postValue(
+                                rate.from(
+                                    if(rate.getRawBtcRate() >= 1.0 && localStoreRepository.getBitcoinDisplayUnit() != BitcoinDisplayUnit.FIAT)
+                                        RateConverter.RateType.BTC_RATE
+                                    else localStoreRepository.getBitcoinDisplayUnit().toRateType(),
+                                    localStoreRepository.getLocalCurrency()
+                                ).second!!
+                            )
+
+                            rate.setLocalRate(RateConverter.RateType.FIAT_RATE, averagePrice)
+                            _averagePrice.postValue(
+                                rate.from(
+                                    RateConverter.RateType.FIAT_RATE,
+                                    localStoreRepository.getLocalCurrency()
+                                ).second!!
+                            )
+
+                            rate.setLocalRate(RateConverter.RateType.SATOSHI_RATE, highestBalance?.toDouble() ?: 0.0)
+                            _highestBalance.postValue(
+                                rate.from(
+                                    if(rate.getRawBtcRate() >= 1.0 && localStoreRepository.getBitcoinDisplayUnit() != BitcoinDisplayUnit.FIAT)
+                                        RateConverter.RateType.BTC_RATE
+                                    else localStoreRepository.getBitcoinDisplayUnit().toRateType(),
+                                    localStoreRepository.getLocalCurrency()
+                                ).second!!
+                            )
+
+                            _walletAge.postValue(
+                                SimpleTimeFormat.timeToString(
+                                    createdTime,
+                                    "(${SimpleTimeFormat.getDateByLocale(createdTime, Locale.US)})"
                                 )
-                                rate.setLocalRate(
-                                    RateConverter.RateType.BTC_RATE,
-                                    totalSentCost
-                                )
-                                _totalSent.postValue(
-                                    rate.from(
-                                        if(rate.getRawBtcRate() >= 1.0 && localStoreRepository.getBitcoinDisplayUnit() != BitcoinDisplayUnit.FIAT)
-                                            RateConverter.RateType.BTC_RATE
-                                        else localStoreRepository.getBitcoinDisplayUnit().toRateType(),
-                                        localStoreRepository.getLocalCurrency()
-                                    ).second!!
-                                )
-
-                                rate.setLocalRate(
-                                    RateConverter.RateType.BTC_RATE,
-                                    totalReceivedCost
-                                )
-                                _totalReceived.postValue(
-                                    rate.from(
-                                        if(rate.getRawBtcRate() >= 1.0 && localStoreRepository.getBitcoinDisplayUnit() != BitcoinDisplayUnit.FIAT)
-                                            RateConverter.RateType.BTC_RATE
-                                        else localStoreRepository.getBitcoinDisplayUnit().toRateType(),
-                                        localStoreRepository.getLocalCurrency()
-                                    ).second!!
-                                )
-
-                                rate.setLocalRate(RateConverter.RateType.FIAT_RATE, averagePrice)
-                                _averagePrice.postValue(
-                                    rate.from(
-                                        RateConverter.RateType.FIAT_RATE,
-                                        localStoreRepository.getLocalCurrency()
-                                    ).second!!
-                                )
-
-                                rate.setLocalRate(RateConverter.RateType.SATOSHI_RATE, highestBalance?.toDouble() ?: 0.0)
-                                _highestBalance.postValue(
-                                    rate.from(
-                                        if(rate.getRawBtcRate() >= 1.0 && localStoreRepository.getBitcoinDisplayUnit() != BitcoinDisplayUnit.FIAT)
-                                            RateConverter.RateType.BTC_RATE
-                                        else localStoreRepository.getBitcoinDisplayUnit().toRateType(),
-                                        localStoreRepository.getLocalCurrency()
-                                    ).second!!
-                                )
-
-                                _walletAge.postValue(
-                                    SimpleTimeFormat.timeToString(
-                                        createdTime,
-                                        "(${SimpleTimeFormat.getDateByLocale(createdTime, Locale.US)})"
-                                    )
-                                )
-                            }
+                            )
 
                             when (localStoreRepository.getBitcoinDisplayUnit()) {
                                 BitcoinDisplayUnit.SATS -> {
@@ -338,7 +336,7 @@ class DashboardViewModel(
 
     private fun getMaxMarketInterval(interval: ChartIntervalType, birthdate: Instant): Pair<Long, Long> {
         val nowTime = SimpleTimeFormat.endOfDay(ZonedDateTime.ofInstant(Instant.now(), ZoneId.systemDefault()))
-        val startOfBDay  = SimpleTimeFormat.endOfDay(ZonedDateTime.ofInstant(birthdate, ZoneId.systemDefault())).toEpochSecond()
+        val startOfBDay  = SimpleTimeFormat.startOfDay(ZonedDateTime.ofInstant(birthdate, ZoneId.systemDefault())).toEpochSecond()
         var startDay: Long
 
         when {
