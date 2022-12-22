@@ -15,6 +15,8 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.*
+import com.intuisoft.plaid.common.analytics.EventTracker
+import com.intuisoft.plaid.common.analytics.events.*
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.common.util.RateConverter
@@ -35,6 +37,7 @@ class AtpFragment : ConfigurableFragment<FragmentAtpBinding>(pinProtection = tru
     protected val viewModel: AtpViewModel by viewModel()
     protected val localStoreRepository: LocalStoreRepository by inject()
     protected val walletManager: AbstractWalletManager by inject()
+    protected val eventTracker: EventTracker by inject()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -51,6 +54,7 @@ class AtpFragment : ConfigurableFragment<FragmentAtpBinding>(pinProtection = tru
             onNavigateBottomBarSecondaryFragmentBackwards(localStoreRepository)
         }
 
+        eventTracker.log(EventAtpView())
         viewModel.getInitialWallet()
         viewModel.updateValues()
 
@@ -287,6 +291,9 @@ class AtpFragment : ConfigurableFragment<FragmentAtpBinding>(pinProtection = tru
             onValueChanged = {
                 viewModel.setBatchGap(it)
             },
+            onCancel = {
+                eventTracker.log(EventAtpBatchGap(viewModel.getBatchGap()))
+            },
             onDisplayInfo = {
                 batchInfoDialog(
                     layoutId = R.layout.bottom_sheet_atp_batch_gap_info,
@@ -307,6 +314,9 @@ class AtpFragment : ConfigurableFragment<FragmentAtpBinding>(pinProtection = tru
             onValueChanged = {
                 viewModel.setBatchSize(it)
             },
+            onCancel = {
+                eventTracker.log(EventAtpBatchSize(viewModel.getBatchSize()))
+            },
             onDisplayInfo = {
                 batchInfoDialog(
                     layoutId = R.layout.bottom_sheet_atp_batch_size_info,
@@ -324,6 +334,7 @@ class AtpFragment : ConfigurableFragment<FragmentAtpBinding>(pinProtection = tru
         min: Int,
         max: Int,
         onValueChanged: (Int) -> Unit,
+        onCancel: () -> Unit,
         onDisplayInfo: (() -> Unit)? = null
     ) {
         val bottomSheetDialog = BottomSheetDialog(requireContext())
@@ -349,6 +360,7 @@ class AtpFragment : ConfigurableFragment<FragmentAtpBinding>(pinProtection = tru
         }
 
         bottomSheetDialog.setOnCancelListener {
+            onCancel()
             removeFromStack(bottomSheetDialog)
         }
         bottomSheetDialog.show()
@@ -389,7 +401,7 @@ class AtpFragment : ConfigurableFragment<FragmentAtpBinding>(pinProtection = tru
                     max?.setSubTitleText(spread.last.toString())
                     viewModel.setFeeSpread(spread)
                     viewModel.updateValues()
-                }
+                }, onCancel = {}
             )
         }
 
@@ -410,7 +422,8 @@ class AtpFragment : ConfigurableFragment<FragmentAtpBinding>(pinProtection = tru
                     max.setSubTitleText(spread.last.toString())
                     viewModel.setFeeSpread(spread)
                     viewModel.updateValues()
-                }
+                },
+                onCancel = {}
             )
         }
 
@@ -437,6 +450,11 @@ class AtpFragment : ConfigurableFragment<FragmentAtpBinding>(pinProtection = tru
         }
 
         bottomSheetDialog.setOnCancelListener {
+            val newSpread = viewModel.getFeeSpread()
+            eventTracker.logIf(EventAtpFeeSpread(newSpread.first, newSpread.last)) {
+                newSpread.first != spread.first || newSpread.last  != spread.last
+            }
+
             removeFromStack(bottomSheetDialog)
         }
         bottomSheetDialog.show()
@@ -494,6 +512,7 @@ class AtpFragment : ConfigurableFragment<FragmentAtpBinding>(pinProtection = tru
     }
 
     override fun onActionRight() {
+        eventTracker.log(EventAtpHistoryView())
         navigate(
             R.id.atpHistoryFragment
         )

@@ -7,10 +7,13 @@ import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.*
+import com.intuisoft.plaid.common.analytics.EventTracker
+import com.intuisoft.plaid.common.analytics.events.EventAtpInfoView
 import com.intuisoft.plaid.features.createwallet.ZoomOutPageTransformer
 import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.databinding.FragmentAtpInfoBinding
 import com.intuisoft.plaid.features.dashboardflow.pro.adapters.AtpInfoAdapter
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
@@ -19,6 +22,7 @@ class AtpInfoFragment : ConfigurableFragment<FragmentAtpInfoBinding>(
     requiresWallet = false
 ) {
     protected val viewModel: WalletViewModel by viewModel()
+    protected val eventTracker: EventTracker by inject()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -35,6 +39,7 @@ class AtpInfoFragment : ConfigurableFragment<FragmentAtpInfoBinding>(
             requireActivity()
         )
 
+        eventTracker.log(EventAtpInfoView())
         binding.close.setOnSingleClickListener(Constants.Time.MIN_CLICK_INTERVAL_SHORT) {
             findNavController().popBackStack()
         }

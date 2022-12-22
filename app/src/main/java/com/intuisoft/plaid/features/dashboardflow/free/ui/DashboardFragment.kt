@@ -11,6 +11,8 @@ import com.intuisoft.plaid.R
 import com.intuisoft.plaid.activities.MainActivity
 import com.intuisoft.plaid.androidwrappers.*
 import com.intuisoft.plaid.common.CommonService
+import com.intuisoft.plaid.common.analytics.EventTracker
+import com.intuisoft.plaid.common.analytics.events.*
 import com.intuisoft.plaid.common.model.BitcoinDisplayUnit
 import com.intuisoft.plaid.common.model.ChartDataModel
 import com.intuisoft.plaid.common.model.ChartIntervalType
@@ -40,6 +42,7 @@ class DashboardFragment : ConfigurableFragment<FragmentWalletDashboardBinding>(p
     protected val viewModel: DashboardViewModel by viewModel()
     protected val localStoreRepository: LocalStoreRepository by inject()
     protected val walletManager: AbstractWalletManager by inject()
+    protected val eventTracker: EventTracker by inject()
 
     private val adapter = BasicTransactionAdapter(
         onTransactionSelected = ::onTransactionSelected,
@@ -65,6 +68,7 @@ class DashboardFragment : ConfigurableFragment<FragmentWalletDashboardBinding>(p
             onNavigateBottomBarPrimaryFragmentBackwards(localStoreRepository)
         }
 
+        eventTracker.log(EventDashboardView())
         viewModel.getTransactions()
         viewModel.displayCurrentWallet()
         viewModel.showWalletBalance(requireContext())
@@ -107,6 +111,7 @@ class DashboardFragment : ConfigurableFragment<FragmentWalletDashboardBinding>(p
         })
 
         binding.deposit.onClick {
+            eventTracker.log(EventDashboardDeposit())
             var bundle = bundleOf(
                 Constants.Navigation.FRAGMENT_CONFIG to FragmentConfiguration(
                     actionBarTitle = 0,
@@ -130,6 +135,7 @@ class DashboardFragment : ConfigurableFragment<FragmentWalletDashboardBinding>(p
         }
 
         binding.withdraw.onClick {
+            eventTracker.log(EventDashboardWithdrawal())
             navigate(
                 R.id.withdrawalTypeFragment,
                 Constants.Navigation.ANIMATED_SLIDE_UP_OPTION
@@ -142,6 +148,7 @@ class DashboardFragment : ConfigurableFragment<FragmentWalletDashboardBinding>(p
     }
 
     fun onTransactionSelected(transaction: TransactionInfo) {
+        eventTracker.log(EventDashboardViewTransaction())
         var bundle = bundleOf(
             Constants.Navigation.FRAGMENT_CONFIG to FragmentConfiguration(
                 configurationType = FragmentConfigurationType.CONFIGURATION_TRANSACTION_DATA,
@@ -214,6 +221,7 @@ class DashboardFragment : ConfigurableFragment<FragmentWalletDashboardBinding>(p
     }
 
     override fun onActionRight() {
+        eventTracker.log(EventDashboardOpenSettingsOpen())
         navigate(
             R.id.walletSettingsFragment
         )

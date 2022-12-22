@@ -14,6 +14,8 @@ import com.intuisoft.plaid.androidwrappers.BindingFragment
 import com.intuisoft.plaid.androidwrappers.TopBarView
 import com.intuisoft.plaid.androidwrappers.hideSoftKeyboard
 import com.intuisoft.plaid.androidwrappers.ignoreOnBackPressed
+import com.intuisoft.plaid.common.analytics.EventTracker
+import com.intuisoft.plaid.common.analytics.events.EventOnboardingStart
 import com.intuisoft.plaid.databinding.FragmentOnboardingWelcomeBinding
 import com.intuisoft.plaid.features.onboarding.viewmodel.OnboardingViewModel
 import com.intuisoft.plaid.common.util.Constants
@@ -26,6 +28,7 @@ import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 class WelcomeFragment : BindingFragment<FragmentOnboardingWelcomeBinding>() {
     private val viewModel: OnboardingViewModel by sharedViewModel()
     private val walletManager: AbstractWalletManager by inject()
+    protected val eventTracker: EventTracker by inject()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -40,6 +43,7 @@ class WelcomeFragment : BindingFragment<FragmentOnboardingWelcomeBinding>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        eventTracker.log(EventOnboardingStart())
         binding.next.enableButton(false)
         binding.name.setOnKeyListener(object : View.OnKeyListener {
             override fun onKey(v: View?, keyCode: Int, event: KeyEvent): Boolean {

@@ -9,6 +9,9 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.navOptions
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.*
+import com.intuisoft.plaid.common.analytics.EventTracker
+import com.intuisoft.plaid.common.analytics.events.EventOnboardingCreateWallet
+import com.intuisoft.plaid.common.analytics.events.EventOnboardingGotoHomescreen
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.databinding.FragmentOnboardingAllSetBinding
 import com.intuisoft.plaid.features.onboarding.viewmodel.OnboardingViewModel
@@ -24,6 +27,7 @@ class AllSetFragment : ConfigurableFragment<FragmentOnboardingAllSetBinding>(
 ) {
     private val viewModel: OnboardingViewModel by sharedViewModel()
     private val localStoreRepository: LocalStoreRepository by inject()
+    protected val eventTracker: EventTracker by inject()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -33,7 +37,8 @@ class AllSetFragment : ConfigurableFragment<FragmentOnboardingAllSetBinding>(
         _binding = FragmentOnboardingAllSetBinding.inflate(inflater, container, false)
         setupConfiguration(viewModel,
             listOf(
-                FragmentConfigurationType.CONFIGURATION_All_SET
+                FragmentConfigurationType.CONFIGURATION_All_SET,
+                FragmentConfigurationType.CONFIGURATION_ONBOARDING_All_SET
             )
         )
         return binding.root
@@ -43,6 +48,7 @@ class AllSetFragment : ConfigurableFragment<FragmentOnboardingAllSetBinding>(
     // todo: clear backstack when navigating here
     override fun onConfiguration(configuration: FragmentConfiguration?) {
         when(configuration?.configurationType ?: FragmentConfigurationType.CONFIGURATION_NONE) {
+            FragmentConfigurationType.CONFIGURATION_ONBOARDING_All_SET,
             FragmentConfigurationType.CONFIGURATION_All_SET -> {
                 val data = configuration!!.configData as AllSetData
 
@@ -56,6 +62,10 @@ class AllSetFragment : ConfigurableFragment<FragmentOnboardingAllSetBinding>(
 
                 binding.positiveButton.onClick {
                     findNavController().popBackStack(if(localStoreRepository.isProEnabled()) R.id.proHomescreenFragment else R.id.homescreenFragment, false)
+                    if(data.positiveDestination == R.id.createWalletFragment
+                        && configuration.configurationType == FragmentConfigurationType.CONFIGURATION_ONBOARDING_All_SET) {
+                        eventTracker.log(EventOnboardingCreateWallet())
+                    }
                     navigate(
                         data.positiveDestination,
                         navOptions {
@@ -70,6 +80,11 @@ class AllSetFragment : ConfigurableFragment<FragmentOnboardingAllSetBinding>(
                 binding.negativeButton.onClick {
 
                     findNavController().popBackStack(if(localStoreRepository.isProEnabled()) R.id.proHomescreenFragment else R.id.homescreenFragment, false)
+                    if((data.positiveDestination == R.id.proHomescreenFragment ||data.positiveDestination == R.id.homescreenFragment)
+                        && configuration.configurationType == FragmentConfigurationType.CONFIGURATION_ONBOARDING_All_SET) {
+                        eventTracker.log(EventOnboardingGotoHomescreen())
+                    }
+
                     navigate(
                         data.negativeDestination,
                         navOptions {

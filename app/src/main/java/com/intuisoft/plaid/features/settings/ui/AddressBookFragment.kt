@@ -16,11 +16,16 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_EXPANDE
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.*
+import com.intuisoft.plaid.common.analytics.EventTracker
+import com.intuisoft.plaid.common.analytics.events.EventSettingsDeleteAddress
+import com.intuisoft.plaid.common.analytics.events.EventSettingsSaveAddress
+import com.intuisoft.plaid.common.analytics.events.EventSettingsUpdateAddress
 import com.intuisoft.plaid.databinding.FragmentAddressBookBinding
 import com.intuisoft.plaid.features.settings.adapters.AddressBookAdapter
 import com.intuisoft.plaid.features.settings.viewmodel.AddressBookViewModel
 import com.intuisoft.plaid.common.model.SavedAddressModel
 import com.intuisoft.plaid.common.util.extensions.toArrayList
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
@@ -29,6 +34,7 @@ class AddressBookFragment : ConfigurableFragment<FragmentAddressBookBinding>(
     requiresWallet = false
 ) {
     private val viewModel: AddressBookViewModel by viewModel()
+    protected val eventTracker: EventTracker by inject()
 
     private val adapter = AddressBookAdapter(
         onAddressSelected = ::onAddressSelected,
@@ -69,6 +75,7 @@ class AddressBookFragment : ConfigurableFragment<FragmentAddressBookBinding>(
                 viewModel.isAddressValid(it)
             },
             saveAddress = { name, address ->
+                eventTracker.log(EventSettingsUpdateAddress())
                 viewModel.updateAddress(addressModel.addressName, name, address)
                 viewModel.showAddresses()
                 true
@@ -82,6 +89,7 @@ class AddressBookFragment : ConfigurableFragment<FragmentAddressBookBinding>(
                     negative = getString(R.string.cancel),
                     positiveTint = 0,
                     onPositive = {
+                        eventTracker.log(EventSettingsDeleteAddress())
                         viewModel.removeAddress(addressModel.addressName)
                         viewModel.showAddresses()
                     },
@@ -134,6 +142,7 @@ class AddressBookFragment : ConfigurableFragment<FragmentAddressBookBinding>(
             saveButtonText = getString(R.string.save),
             cancelButtonText = getString(R.string.cancel),
             isAddressValid = {
+                eventTracker.log(EventSettingsSaveAddress())
                 viewModel.isAddressValid(it)
             },
             saveAddress = { name, address ->

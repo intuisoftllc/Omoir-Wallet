@@ -10,6 +10,10 @@ import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import androidx.lifecycle.Observer
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.*
+import com.intuisoft.plaid.common.analytics.EventTracker
+import com.intuisoft.plaid.common.analytics.events.EventOnboardingFingerprintRegister
+import com.intuisoft.plaid.common.analytics.events.EventOnboardingFinish
+import com.intuisoft.plaid.common.analytics.events.EventOnboardingSkipFingerprintRegister
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.databinding.FragmentOnboardingFingerprintRegistrationBinding
 import com.intuisoft.plaid.common.util.Constants
@@ -20,6 +24,7 @@ import org.koin.android.ext.android.inject
 class FingerprintSetupFragment : BindingFragment<FragmentOnboardingFingerprintRegistrationBinding>() {
     private val viewModel: OnboardingViewModel by sharedViewModel()
     private val localStoreRepository: LocalStoreRepository by inject()
+    protected val eventTracker: EventTracker by inject()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -35,6 +40,7 @@ class FingerprintSetupFragment : BindingFragment<FragmentOnboardingFingerprintRe
         super.onViewCreated(view, savedInstanceState)
 
         binding.register.onClick {
+            eventTracker.log(EventOnboardingFingerprintRegister())
             viewModel.checkFingerprintSupport(
                 onEnroll = {
                     viewModel.navigateToFingerprintSettings(requireActivity())
@@ -43,6 +49,7 @@ class FingerprintSetupFragment : BindingFragment<FragmentOnboardingFingerprintRe
         }
 
         binding.skip.onClick {
+            eventTracker.log(EventOnboardingSkipFingerprintRegister())
             onNextStep()
         }
 
@@ -107,6 +114,7 @@ class FingerprintSetupFragment : BindingFragment<FragmentOnboardingFingerprintRe
 
     fun onNextStep() {
         localStoreRepository.setOnboardingComplete(true)
+        eventTracker.log(EventOnboardingFinish())
 
         var bundle = bundleOf(
             Constants.Navigation.FRAGMENT_CONFIG to FragmentConfiguration(
@@ -115,7 +123,7 @@ class FingerprintSetupFragment : BindingFragment<FragmentOnboardingFingerprintRe
                 actionBarVariant = 0,
                 actionLeft = 0,
                 actionRight = 0,
-                configurationType = FragmentConfigurationType.CONFIGURATION_All_SET,
+                configurationType = FragmentConfigurationType.CONFIGURATION_ONBOARDING_All_SET,
                 configData = AllSetData(
                     title = getString(R.string.all_set_title),
                     subtitle = getString(R.string.all_set_description),

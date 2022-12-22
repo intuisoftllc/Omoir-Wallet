@@ -203,7 +203,11 @@ class AtpViewModel(
                     val batchGap = getBatchGap()
                     val batchSize = min(getBatchSize(), selectedUTXOs.size)
                     var penalty = batchSize / Constants.Limit.BATCH_PENALTY_THRESHOLD
-                    val randomFees = selectedUTXOs.map { randomNumberGenerator.nextInt(getFeeSpread().first, getFeeSpread().last) }
+                    val randomFees = selectedUTXOs.map {
+                        if(getFeeSpread().first != getFeeSpread().last)
+                            randomNumberGenerator.nextInt(getFeeSpread().first, getFeeSpread().last)
+                        else getFeeSpread().first
+                    }
                     val batchesNeeded = selectedUTXOs.splitIntoGroupOf(batchSize).size
                     var blocksNeeded =
                         if(batchesNeeded == 1) batchesNeeded

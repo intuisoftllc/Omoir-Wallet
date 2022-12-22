@@ -18,6 +18,10 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.gson.Gson
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.*
+import com.intuisoft.plaid.common.analytics.EventTracker
+import com.intuisoft.plaid.common.analytics.events.EventExchangeCreate
+import com.intuisoft.plaid.common.analytics.events.EventExchangeHistoryView
+import com.intuisoft.plaid.common.analytics.events.EventExchangeView
 import com.intuisoft.plaid.common.model.ExchangeInfoDataModel
 import com.intuisoft.plaid.common.network.blockchair.response.SupportedCurrencyModel
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
@@ -38,6 +42,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class ExchangeFragment : ConfigurableFragment<FragmentExchangeBinding>(pinProtection = true) {
     private val viewModel: ExchangeViewModel by viewModel()
     private val localStore: LocalStoreRepository by inject()
+    protected val eventTracker: EventTracker by inject()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -56,6 +61,7 @@ class ExchangeFragment : ConfigurableFragment<FragmentExchangeBinding>(pinProtec
             onNavigateBottomBarSecondaryFragmentBackwards(localStore)
         }
 
+        eventTracker.log(EventExchangeView())
         viewModel.setInitialValues()
         binding.swapPairSend.setOnTextChangedListener {
             viewModel.validateSendAmount(
@@ -179,6 +185,7 @@ class ExchangeFragment : ConfigurableFragment<FragmentExchangeBinding>(pinProtec
         })
 
         viewModel.onNext.observe(viewLifecycleOwner, Observer {
+            eventTracker.log(EventExchangeCreate())
             var bundle = bundleOf(
                 Constants.Navigation.FRAGMENT_CONFIG to FragmentConfiguration(
                     actionBarTitle = 0,
@@ -438,7 +445,7 @@ class ExchangeFragment : ConfigurableFragment<FragmentExchangeBinding>(pinProtec
     }
 
     override fun onActionRight() {
-
+        eventTracker.log(EventExchangeHistoryView())
         navigate(
             R.id.exchangeHistoryFragment,
             Constants.Navigation.ANIMATED_ENTER_EXIT_RIGHT_NAV_OPTION

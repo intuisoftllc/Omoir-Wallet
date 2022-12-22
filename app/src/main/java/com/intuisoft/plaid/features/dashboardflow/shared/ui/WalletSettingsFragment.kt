@@ -19,6 +19,8 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.*
+import com.intuisoft.plaid.common.analytics.EventTracker
+import com.intuisoft.plaid.common.analytics.events.*
 import com.intuisoft.plaid.databinding.FragmentWalletSettingsBinding
 import com.intuisoft.plaid.features.settings.ui.SettingsFragment
 import com.intuisoft.plaid.features.settings.viewmodel.SettingsViewModel
@@ -27,6 +29,7 @@ import com.intuisoft.plaid.util.fragmentconfig.ConfigQrDisplayData
 import com.intuisoft.plaid.util.fragmentconfig.ConfigSeedData
 import io.horizontalsystems.bitcoinkit.BitcoinKit
 import io.horizontalsystems.hdwalletkit.HDWallet
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -34,6 +37,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class WalletSettingsFragment : ConfigurableFragment<FragmentWalletSettingsBinding>(pinProtection = true) {
     private val viewModel: WalletSettingsViewModel by viewModel()
     private val appSettingsViewModel: SettingsViewModel by sharedViewModel()
+    protected val eventTracker: EventTracker by inject()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -50,6 +54,7 @@ class WalletSettingsFragment : ConfigurableFragment<FragmentWalletSettingsBindin
 
     override fun onConfiguration(configuration: FragmentConfiguration?) {
 
+        eventTracker.log(EventWalletSettingsView())
         viewModel.updateWalletSettings()
         viewModel.checkReadOnlyStatus()
         viewModel.showHiddenWalletsCount()
@@ -97,6 +102,7 @@ class WalletSettingsFragment : ConfigurableFragment<FragmentWalletSettingsBindin
         })
 
         binding.exportWalletTx.onClick {
+            eventTracker.log(EventWalletSettingsExportTransactions())
             navigate(
                 R.id.exportOptionsFragment
             )
@@ -140,6 +146,7 @@ class WalletSettingsFragment : ConfigurableFragment<FragmentWalletSettingsBindin
         }
 
         binding.passphrase.onClick {
+            eventTracker.log(EventWalletSettingsViewPassphrase())
             showPassphraseDialog()
         }
 
@@ -174,6 +181,7 @@ class WalletSettingsFragment : ConfigurableFragment<FragmentWalletSettingsBindin
                 fieldHint = getString(R.string.name_wallet_hint),
                 initialText = viewModel.getWalletName(),
                 onSave = {
+                    eventTracker.log(EventWalletSettingsRenameWallet())
                     viewModel.updateWalletName(it)
                     viewModel.updateWalletSettings()
                 },
@@ -196,10 +204,12 @@ class WalletSettingsFragment : ConfigurableFragment<FragmentWalletSettingsBindin
                             title = Constants.Strings.SCAN_TO_ERASE_DATA,
                             subTitle = Constants.Strings.USE_BIOMETRIC_REASON_5,
                             onSuccess = {
+                                eventTracker.log(EventWalletSettingsDeleteWallet())
                                 wipeData()
                             }
                         )
                     } else {
+                        eventTracker.log(EventWalletSettingsDeleteWallet())
                         wipeData()
                     }
                 },
@@ -288,6 +298,7 @@ class WalletSettingsFragment : ConfigurableFragment<FragmentWalletSettingsBindin
             if(passphrase.text.toString() == confirmPassphrase.text.toString()) {
                 if(viewModel.canCreatePassphrase(passphrase.text.toString())) {
                     if (passphrase.text.toString() != originalPassphrase) {
+                        eventTracker.log(EventWalletSettingsSetPassphrase())
                         appSettingsViewModel.appRestartNeeded = true
                         viewModel.setPassphrase(passphrase.text.toString())
                     }

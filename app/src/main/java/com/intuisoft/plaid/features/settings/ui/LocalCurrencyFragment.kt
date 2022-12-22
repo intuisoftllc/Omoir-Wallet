@@ -10,6 +10,9 @@ import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.ConfigurableFragment
 import com.intuisoft.plaid.androidwrappers.FragmentConfiguration
 import com.intuisoft.plaid.androidwrappers.TopBarView
+import com.intuisoft.plaid.common.analytics.EventTracker
+import com.intuisoft.plaid.common.analytics.events.EventSettingsChangeAppearance
+import com.intuisoft.plaid.common.analytics.events.EventSettingsSetLocalCurrency
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.features.settings.viewmodel.SettingsViewModel
 import com.intuisoft.plaid.common.util.Constants
@@ -30,6 +33,7 @@ class LocalCurrencyFragment : ConfigurableFragment<FragmentLocalCurrencyBinding>
 ) {
     private val viewModel: SettingsViewModel by sharedViewModel()
     private val localStoreRepository: LocalStoreRepository by inject()
+    protected val eventTracker: EventTracker by inject()
 
     private val adapter = SupportedCurrenciesAdapter(
         currencySelected = ::onCurrencySelected
@@ -75,6 +79,7 @@ class LocalCurrencyFragment : ConfigurableFragment<FragmentLocalCurrencyBinding>
     }
 
     private fun onCurrencySelected(currencyCode: String) {
+        eventTracker.log(EventSettingsSetLocalCurrency(currencyCode))
         viewModel.saveLocalCurrency(currencyCode)
     }
 

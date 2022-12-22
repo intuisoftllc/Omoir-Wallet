@@ -19,6 +19,10 @@ import com.google.zxing.EncodeHintType
 import com.google.zxing.common.BitMatrix
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.*
+import com.intuisoft.plaid.common.analytics.EventTracker
+import com.intuisoft.plaid.common.analytics.events.EventDepositBuildInvoice
+import com.intuisoft.plaid.common.analytics.events.EventDepositCreateInvoice
+import com.intuisoft.plaid.common.analytics.events.EventDepositShareAddress
 import com.intuisoft.plaid.common.model.BitcoinDisplayUnit
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.common.util.Constants
@@ -39,6 +43,7 @@ import java.util.*
 class WalletExportFragment : ConfigurableFragment<FragmentWalletExportBinding>(pinProtection = true) {
     private val viewModel: WalletExportViewModel by viewModel()
     private val localStoreRepository: LocalStoreRepository by inject()
+    protected val eventTracker: EventTracker by inject()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -90,6 +95,7 @@ class WalletExportFragment : ConfigurableFragment<FragmentWalletExportBinding>(p
             }
 
             viewModel.showInvoice.observe(viewLifecycleOwner, Observer {
+                eventTracker.log(EventDepositShareAddress())
                 val rateConverter = RateConverter(localStoreRepository.getRateFor(localStoreRepository.getLocalCurrency())?.currentPrice ?: 0.0 )
 
                 rateConverter.setLocalRate(RateConverter.RateType.BTC_RATE, it.amount!!)
@@ -191,6 +197,7 @@ class WalletExportFragment : ConfigurableFragment<FragmentWalletExportBinding>(p
         val rateConverter = RateConverter(localStoreRepository.getRateFor(localStoreRepository.getLocalCurrency())?.currentPrice ?: 0.0 )
         var watcher: TextWatcher? = null
 
+        eventTracker.log(EventDepositBuildInvoice())
         save.enableButton(false)
         showInvoiceDisplayType(conversionType)
         watcher = invoiceAmount.doOnTextChanged { text, start, before, count ->
@@ -307,6 +314,7 @@ class WalletExportFragment : ConfigurableFragment<FragmentWalletExportBinding>(p
                 description.text.toString()
             )
 
+            eventTracker.log(EventDepositCreateInvoice())
             bottomSheetDialog.cancel()
         }
 

@@ -8,6 +8,8 @@ import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.*
+import com.intuisoft.plaid.common.analytics.EventTracker
+import com.intuisoft.plaid.common.analytics.events.EventMarketView
 import com.intuisoft.plaid.common.model.ChartDataModel
 import com.intuisoft.plaid.common.model.ChartIntervalType
 import com.intuisoft.plaid.common.model.CongestionRating
@@ -27,6 +29,7 @@ import java.util.*
 class MarketFragment : ConfigurableFragment<FragmentMarketBinding>(pinProtection = true) {
     private val viewModel: MarketViewModel by viewModel()
     private val localStore: LocalStoreRepository by inject()
+    protected val eventTracker: EventTracker by inject()
 
     val adapter = BasicLineChartAdapter()
 
@@ -46,6 +49,7 @@ class MarketFragment : ConfigurableFragment<FragmentMarketBinding>(pinProtection
             onNavigateBottomBarSecondaryFragmentBackwards(localStore)
         }
 
+        eventTracker.log(EventMarketView())
         binding.sparkview.setAdapter(adapter)
         binding.sparkview.isScrubEnabled = true
         binding.sparkview.setScrubListener {

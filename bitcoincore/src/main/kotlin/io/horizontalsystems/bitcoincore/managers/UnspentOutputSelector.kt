@@ -62,6 +62,7 @@ class UnspentOutputSelector(private val calculator: TransactionSizeCalculator, p
 
         val selectedOutputs = mutableListOf<UnspentOutput>()
         var totalValue = 0L
+        var maxValue = sortedOutputs.sumOf { it.output.value }
         var recipientValue = 0L
         var sentValue = 0L
         var fee: Long
@@ -99,17 +100,28 @@ class UnspentOutputSelector(private val calculator: TransactionSizeCalculator, p
             throw SendValueErrors.InsufficientUnspentOutputs
         }
 
-        val feeWithChangeAddress = calculator.transactionSize(selectedOutputs.map { it.output }, listOf(outputType, changeType), pluginDataOutputSize) * feeRate
-        val sendValueWithChange = if (senderPay) value + feeWithChangeAddress  else value - feeWithChangeAddress
+        if(totalValue != maxValue) {
+            val feeWithChangeAddress = calculator.transactionSize(
+                selectedOutputs.map { it.output },
+                listOf(outputType, changeType),
+                pluginDataOutputSize
+            ) * feeRate
+            val sendValueWithChange =
+                if (senderPay) value + feeWithChangeAddress else value - feeWithChangeAddress
 
-        // if selected UTXOs total value >= recipientValue(toOutput value) + fee(for transaction with change output) + dust(minimum changeOutput value)
-        if (totalValue >= sendValueWithChange) {
-            // totalValue is too much, we must have change output
-            if (sendValueWithChange <= dust) {
-                throw SendValueErrors.Dust
+            // if selected UTXOs total value >= recipientValue(toOutput value) + fee(for transaction with change output) + dust(minimum changeOutput value)
+            if (totalValue >= sendValueWithChange) {
+                // totalValue is too much, we must have change output
+                if (sendValueWithChange <= dust) {
+                    throw SendValueErrors.Dust
+                }
+
+                return SelectedUnspentOutputInfo(
+                    selectedOutputs,
+                    value,
+                    totalValue - sendValueWithChange
+                )
             }
-
-            return SelectedUnspentOutputInfo(selectedOutputs, value, totalValue - sendValueWithChange)
         }
 
         // No change needed

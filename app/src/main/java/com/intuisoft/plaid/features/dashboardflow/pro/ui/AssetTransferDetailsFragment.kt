@@ -13,6 +13,8 @@ import androidx.navigation.fragment.findNavController
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.*
 import com.intuisoft.plaid.common.CommonService
+import com.intuisoft.plaid.common.analytics.EventTracker
+import com.intuisoft.plaid.common.analytics.events.EventAtpCancel
 import com.intuisoft.plaid.common.local.db.AssetTransferDao
 import com.intuisoft.plaid.common.local.db.BatchDao
 import com.intuisoft.plaid.common.model.AssetTransferStatus
@@ -35,6 +37,7 @@ class AssetTransferDetailsFragment : ConfigurableFragment<FragmentAssetTransferD
     protected val viewModel: AtpDetailsViewModel by viewModel()
     protected val localStoreRepository: LocalStoreRepository by inject()
     protected val walletManager: AbstractWalletManager by inject()
+    protected val eventTracker: EventTracker by inject()
 
     val adapter = BatchInfoAdapter(
         localStoreRepository = localStoreRepository
@@ -95,6 +98,7 @@ class AssetTransferDetailsFragment : ConfigurableFragment<FragmentAssetTransferD
 
             binding.cancel.isVisible = transfer.status.id in AssetTransferStatus.NOT_STARTED.id..AssetTransferStatus.IN_PROGRESS.id
             binding.cancel.setOnSingleClickListener(Constants.Time.MIN_CLICK_INTERVAL_SHORT) {
+                eventTracker.log(EventAtpCancel())
                 walletManager.cancelTransfer(transfer.id)
                 binding.cancel.isVisible = false
             }

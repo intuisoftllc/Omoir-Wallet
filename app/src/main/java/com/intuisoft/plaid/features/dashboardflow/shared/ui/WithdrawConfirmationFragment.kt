@@ -27,6 +27,8 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_EXPANDE
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.*
+import com.intuisoft.plaid.common.analytics.EventTracker
+import com.intuisoft.plaid.common.analytics.events.*
 import com.intuisoft.plaid.databinding.FragmentWithdrawConfirmationBinding
 import com.intuisoft.plaid.features.dashboardflow.shared.adapters.TransferToWalletAdapter
 import com.intuisoft.plaid.features.dashboardflow.shared.viewModel.WithdrawConfirmationViewModel
@@ -54,6 +56,7 @@ class WithdrawConfirmationFragment : ConfigurableFragment<FragmentWithdrawConfir
     private val viewModel: WithdrawConfirmationViewModel by viewModel()
     private val addressBookVM: AddressBookViewModel by viewModel()
     private val localStoreRepository: LocalStoreRepository by inject()
+    protected val eventTracker: EventTracker by inject()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -108,12 +111,14 @@ class WithdrawConfirmationFragment : ConfigurableFragment<FragmentWithdrawConfir
         })
 
         binding.addMemo.setOnSingleClickListener(Constants.Time.MIN_CLICK_INTERVAL_SHORT) {
+            eventTracker.log(EventWithdrawAddMemo())
             binding.addMemo.isVisible = false
             binding.memoContainer.isVisible = true
             binding.memoFieldTitle.isVisible = true
         }
 
         binding.advancedOptions.setOnSingleClickListener(Constants.Time.MIN_CLICK_INTERVAL_MED) {
+            eventTracker.log(EventWithdrawViewAdvancedOptions())
             showAdvancedOptionsDialog()
         }
 
@@ -398,11 +403,13 @@ class WithdrawConfirmationFragment : ConfigurableFragment<FragmentWithdrawConfir
             sendToOtherWallets.disableView(true)
         } else {
             addressBook.onClick {
+                eventTracker.log(EventWithdrawUseSavedAddress())
                 bottomSheetDialog.cancel()
                 showAddressBookBottomSheet()
             }
 
             sendToOtherWallets.onClick {
+                eventTracker.log(EventWithdrawWalletTransfer())
                 bottomSheetDialog.cancel()
                 showSendToWalletBottomSheet(
                     context = requireContext(),

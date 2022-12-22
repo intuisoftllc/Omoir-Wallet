@@ -23,6 +23,8 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.intuisoft.plaid.PlaidApp
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.*
+import com.intuisoft.plaid.common.analytics.EventTracker
+import com.intuisoft.plaid.common.analytics.events.*
 import com.intuisoft.plaid.common.model.AppMode
 import com.intuisoft.plaid.common.model.AppTheme
 import com.intuisoft.plaid.databinding.FragmentSettingsBinding
@@ -30,6 +32,7 @@ import com.intuisoft.plaid.features.settings.viewmodel.SettingsViewModel
 import com.intuisoft.plaid.common.model.BitcoinDisplayUnit
 import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.common.util.SimpleCurrencyFormat
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 
@@ -38,6 +41,7 @@ class SettingsFragment : ConfigurableFragment<FragmentSettingsBinding>(
     requiresWallet = false
 ) {
     private val viewModel: SettingsViewModel by sharedViewModel()
+    protected val eventTracker: EventTracker by inject()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -54,6 +58,7 @@ class SettingsFragment : ConfigurableFragment<FragmentSettingsBinding>(
             onNavigateBack()
         }
 
+        eventTracker.log(EventSettingsView())
         viewModel.bitcoinDisplayUnitSetting.observe(viewLifecycleOwner, Observer {
             when(it) {
                 BitcoinDisplayUnit.BTC -> {
@@ -173,6 +178,7 @@ class SettingsFragment : ConfigurableFragment<FragmentSettingsBinding>(
                                 negative = getString(R.string.cancel),
                                 positiveTint = 0,
                                 onPositive = {
+                                    eventTracker.log(EventSettingsMaxPinAttempts(newLimit))
                                     viewModel.saveMaxPinAttempts(newLimit)
                                 },
                                 onNegative = {
@@ -182,6 +188,7 @@ class SettingsFragment : ConfigurableFragment<FragmentSettingsBinding>(
                                 removeFromStack = ::removeFromStack
                             )
                         } else {
+                            eventTracker.log(EventSettingsMaxPinAttempts(newLimit))
                             viewModel.saveMaxPinAttempts(newLimit)
                         }
                     }
@@ -198,10 +205,8 @@ class SettingsFragment : ConfigurableFragment<FragmentSettingsBinding>(
             val numberPicker = bottomSheetDialog.findViewById<NumberPicker>(R.id.numberPicker)
             val title = bottomSheetDialog.findViewById<TextView>(R.id.bottom_sheet_title)
 
-            title?.text = getString(R.string.pin_timeout_title)
-            numberPicker?.minValue = 0
-            numberPicker?.maxValue = 4
-            numberPicker?.displayedValues = arrayOf(
+            val originalTimeout = viewModel.getPinTimeout()
+            val displayValues = arrayOf(
                 getString(R.string.settings_option_max_pin_timeout_variant_1),
                 getString(R.string.settings_option_max_pin_timeout_variant_2),
                 getString(R.string.settings_option_max_pin_timeout_variant_3),
@@ -209,7 +214,12 @@ class SettingsFragment : ConfigurableFragment<FragmentSettingsBinding>(
                 getString(R.string.settings_option_max_pin_timeout_variant_5)
             )
 
-            when(viewModel.getPinTimeout()) {
+            title?.text = getString(R.string.pin_timeout_title)
+            numberPicker?.minValue = 0
+            numberPicker?.maxValue = 4
+            numberPicker?.displayedValues = displayValues
+
+            when(originalTimeout) {
                 Constants.Time.ONE_MINUTE -> {
                     numberPicker?.value = 1
                 }
@@ -249,6 +259,26 @@ class SettingsFragment : ConfigurableFragment<FragmentSettingsBinding>(
             }
 
             bottomSheetDialog.setOnCancelListener {
+                if(originalTimeout != viewModel.getPinTimeout()) {
+                    when (viewModel.getPinTimeout()) {
+                        Constants.Time.ONE_MINUTE -> {
+                            eventTracker.log(EventSettingsPinTimeout(displayValues[1]))
+                        }
+                        Constants.Time.TWO_MINUTES -> {
+                            eventTracker.log(EventSettingsPinTimeout(displayValues[2]))
+                        }
+                        Constants.Time.FIVE_MINUTES -> {
+                            eventTracker.log(EventSettingsPinTimeout(displayValues[3]))
+                        }
+                        Constants.Time.TEN_MINUTES -> {
+                            eventTracker.log(EventSettingsPinTimeout(displayValues[4]))
+                        }
+                        else -> {
+                            eventTracker.log(EventSettingsPinTimeout(displayValues[0]))
+                        }
+                    }
+                }
+
                 removeFromStack(bottomSheetDialog)
             }
             bottomSheetDialog.show()
@@ -310,6 +340,7 @@ class SettingsFragment : ConfigurableFragment<FragmentSettingsBinding>(
                         onCheck = { supported ->
                             if(supported) {
                                 validateFingerprint {
+                                    eventTracker.log(EventSettingsEnableFingerprint())
                                     viewModel.saveFingerprintRegistered(true)
                                     binding.fingerprint.setSwitchChecked(true)
                                 }
@@ -329,6 +360,7 @@ class SettingsFragment : ConfigurableFragment<FragmentSettingsBinding>(
                         title = Constants.Strings.DISABLE_BIOMETRIC_AUTH,
                         subTitle = Constants.Strings.USE_BIOMETRIC_REASON_4,
                         onSuccess = {
+                            eventTracker.log(EventSettingsDisableFingerprint())
                             viewModel.saveFingerprintRegistered(false)
                             binding.fingerprint.setSwitchChecked(false)
                         }
@@ -349,6 +381,7 @@ class SettingsFragment : ConfigurableFragment<FragmentSettingsBinding>(
         }
 
         binding.addressBook.onClick {
+            eventTracker.log(EventSettingsViewAddressBook())
             navigate(
                 R.id.addressBookFragment,
                 Constants.Navigation.ANIMATED_ENTER_EXIT_RIGHT_NAV_OPTION
@@ -375,6 +408,7 @@ class SettingsFragment : ConfigurableFragment<FragmentSettingsBinding>(
             bottomSheetDialog.setOnCancelListener {
                 removeFromStack(bottomSheetDialog)
                 if(originalConfirmations != viewModel.getMinConfirmations()) {
+                    eventTracker.log(EventSettingsMinimumConfirmations(viewModel.getMinConfirmations()))
                     viewModel.appRestartNeeded = true
                 }
             }
@@ -459,6 +493,7 @@ class SettingsFragment : ConfigurableFragment<FragmentSettingsBinding>(
         }
 
         binding.credits.onClick {
+            eventTracker.log(EventSettingsViewCredits())
             navigate(
                 R.id.creditsFragment,
                 Constants.Navigation.ANIMATED_ENTER_EXIT_RIGHT_NAV_OPTION
@@ -474,6 +509,7 @@ class SettingsFragment : ConfigurableFragment<FragmentSettingsBinding>(
     }
 
     fun wipeData() {
+        eventTracker.log(EventSettingsWipeData())
         val progressDialog = ProgressDialog.show(requireContext(), getString(R.string.wiping_data_title), getString(R.string.wiping_data_message))
         progressDialog.setCancelable(false)
 
@@ -500,6 +536,7 @@ class SettingsFragment : ConfigurableFragment<FragmentSettingsBinding>(
             fieldHint = getString(R.string.welcome_alias_suggestion),
             initialText = viewModel.getName() ?: "",
             onSave = {
+                eventTracker.log(EventSettingsChangeName())
                 viewModel.saveName(it)
             },
             addToStack = ::addToStack,

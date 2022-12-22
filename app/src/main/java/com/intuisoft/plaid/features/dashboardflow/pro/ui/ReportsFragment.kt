@@ -7,6 +7,10 @@ import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.*
+import com.intuisoft.plaid.common.analytics.EventTracker
+import com.intuisoft.plaid.common.analytics.events.EventReportSelected
+import com.intuisoft.plaid.common.analytics.events.EventReportsView
+import com.intuisoft.plaid.common.analytics.events.ReportType
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.databinding.FragmentReportsBinding
@@ -15,8 +19,9 @@ import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class ReportsFragment : ConfigurableFragment<FragmentReportsBinding>(pinProtection = true) {
-    protected val viewModel: SwapDetailsViewModel by viewModel()
+    protected val viewModel: WalletViewModel by viewModel()
     protected val localStoreRepository: LocalStoreRepository by inject()
+    protected val eventTracker: EventTracker by inject()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -33,6 +38,7 @@ class ReportsFragment : ConfigurableFragment<FragmentReportsBinding>(pinProtecti
             onNavigateBottomBarSecondaryFragmentBackwards(localStoreRepository)
         }
 
+        eventTracker.log(EventReportsView())
         binding.inflow.onClick {
             var bundle = bundleOf(
                 Constants.Navigation.FRAGMENT_CONFIG to FragmentConfiguration(
@@ -53,6 +59,7 @@ class ReportsFragment : ConfigurableFragment<FragmentReportsBinding>(pinProtecti
         }
 
         binding.inflow.onClick {
+            eventTracker.log(EventReportSelected(ReportType.INFLOW_REPORT))
             var bundle = bundleOf(
                 Constants.Navigation.FRAGMENT_CONFIG to FragmentConfiguration(
                     actionBarTitle = 0,
@@ -72,6 +79,7 @@ class ReportsFragment : ConfigurableFragment<FragmentReportsBinding>(pinProtecti
         }
 
         binding.outflow.onClick {
+            eventTracker.log(EventReportSelected(ReportType.OUTFLOW_REPORT))
             var bundle = bundleOf(
                 Constants.Navigation.FRAGMENT_CONFIG to FragmentConfiguration(
                     actionBarTitle = 0,
@@ -91,6 +99,7 @@ class ReportsFragment : ConfigurableFragment<FragmentReportsBinding>(pinProtecti
         }
 
         binding.fees.onClick {
+            eventTracker.log(EventReportSelected(ReportType.TXFEE_REPORT))
             var bundle = bundleOf(
                 Constants.Navigation.FRAGMENT_CONFIG to FragmentConfiguration(
                     actionBarTitle = 0,
@@ -110,6 +119,7 @@ class ReportsFragment : ConfigurableFragment<FragmentReportsBinding>(pinProtecti
         }
 
         binding.utxDistro.onClick {
+            eventTracker.log(EventReportSelected(ReportType.UTXODISTRO_REPORT))
             navigate(
                 R.id.utxoDistroFragment
             )

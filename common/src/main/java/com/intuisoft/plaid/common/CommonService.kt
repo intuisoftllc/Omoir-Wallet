@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import com.intuisoft.plaid.common.analytics.EventTracker
 import com.intuisoft.plaid.common.local.AppPrefs
 import com.intuisoft.plaid.common.local.UserData
 import com.intuisoft.plaid.common.local.db.*
@@ -28,7 +29,6 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
-import java.time.Instant
 import java.time.LocalDate
 import java.util.concurrent.TimeUnit
 
@@ -47,6 +47,7 @@ object CommonService {
     private var databaseRepository: DatabaseRepository? = null
     private var simpleSwapRepository: SimpleSwapRepository? = null
     private var memoryCache: MemoryCache? = null
+    private var eventTracker: EventTracker? = null
     private var application: Application? = null
     private var blockchairClientSecret: String? = ""
     private var blockchairApiUrl: String? = ""
@@ -78,6 +79,16 @@ object CommonService {
         }
 
         return appPrefs!!
+    }
+
+    fun getEventTrackerInstance(): EventTracker {
+        if(eventTracker == null) {
+            eventTracker = provideEventTracker(
+                getApplication()
+            )
+        }
+
+        return eventTracker!!
     }
 
     fun getLocalStoreInstance(): LocalStoreRepository {
@@ -328,6 +339,7 @@ object CommonService {
         getBlockchainInfoRepositoryInstance()
         getCoingeckoRepositoryInstance()
         getSimpleSwapRepositoryInstance()
+        getEventTrackerInstance()
     }
 
     // loaders
@@ -521,6 +533,12 @@ object CommonService {
         sharedPreferences: SharedPreferences
     ): AppPrefs {
         return AppPrefs(sharedPreferences)
+    }
+
+    private fun provideEventTracker(
+        application: Application
+    ): EventTracker {
+        return EventTracker(application)
     }
 
     private fun provideApiRepository(

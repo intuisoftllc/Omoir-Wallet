@@ -9,6 +9,10 @@ import androidx.lifecycle.Observer
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.activities.MainActivity
 import com.intuisoft.plaid.androidwrappers.*
+import com.intuisoft.plaid.common.analytics.EventTracker
+import com.intuisoft.plaid.common.analytics.events.EventHomescreenCreateWallet
+import com.intuisoft.plaid.common.analytics.events.EventHomescreenOpenSettings
+import com.intuisoft.plaid.common.analytics.events.EventHomescreenView
 import com.intuisoft.plaid.databinding.FragmentHomescreenBinding
 import com.intuisoft.plaid.features.homescreen.free.adapters.BasicWalletDataAdapter
 import com.intuisoft.plaid.features.homescreen.shared.viewmodel.HomeScreenViewModel
@@ -30,6 +34,7 @@ class HomescreenFragment : ConfigurableFragment<FragmentHomescreenBinding>(
     protected val walletVM: WalletViewModel by viewModel()
     protected val localStoreRepository: LocalStoreRepository by inject()
     protected val walletManager: AbstractWalletManager by inject()
+    protected val eventTracker: EventTracker by inject()
 
     private val adapter = BasicWalletDataAdapter(
         onWalletSelected = ::onWalletSelected,
@@ -51,6 +56,7 @@ class HomescreenFragment : ConfigurableFragment<FragmentHomescreenBinding>(
             requireActivity().finish()
         }
 
+        eventTracker.log(EventHomescreenView())
         (activity as? MainActivity)?.performSetup()
         viewModel.updateGreeting()
         walletVM.addWalletStateListener(this)
@@ -82,6 +88,7 @@ class HomescreenFragment : ConfigurableFragment<FragmentHomescreenBinding>(
         walletManager.synchronizeAll(false)
         binding.createWallet.setOnSingleClickListener(Constants.Time.MIN_CLICK_INTERVAL_MED) {
             if(walletManager.getWalletCount() < Constants.Limit.FREE_MAX_WALLETS) {
+                eventTracker.log(EventHomescreenCreateWallet())
                 navigate(R.id.createWalletFragment)
             } else {
                 styledSnackBar(requireView(), getString(R.string.homescreen_wallet_limit_reached, Constants.Limit.FREE_MAX_WALLETS.toString()))
@@ -124,6 +131,7 @@ class HomescreenFragment : ConfigurableFragment<FragmentHomescreenBinding>(
     }
 
     override fun onActionRight() {
+        eventTracker.log(EventHomescreenOpenSettings())
         navigate(R.id.settingsFragment)
     }
 

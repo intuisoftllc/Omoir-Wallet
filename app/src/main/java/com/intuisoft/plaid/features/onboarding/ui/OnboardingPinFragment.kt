@@ -4,17 +4,19 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.intuisoft.plaid.R
-import com.intuisoft.plaid.androidwrappers.BindingFragment
-import com.intuisoft.plaid.androidwrappers.FingerprintScanResponse
-import com.intuisoft.plaid.androidwrappers.PasscodeView
-import com.intuisoft.plaid.androidwrappers.TopBarView
+import com.intuisoft.plaid.androidwrappers.*
+import com.intuisoft.plaid.common.analytics.EventTracker
+import com.intuisoft.plaid.common.analytics.events.EventOnboardingFinish
+import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.databinding.FragmentOnboardingPinBinding
 import com.intuisoft.plaid.features.onboarding.viewmodel.OnboardingViewModel
 import com.intuisoft.plaid.features.pin.viewmodel.PinViewModel
 import com.intuisoft.plaid.common.util.Constants
+import com.intuisoft.plaid.util.fragmentconfig.AllSetData
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
@@ -22,6 +24,8 @@ import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 class OnboardingPinFragment : BindingFragment<FragmentOnboardingPinBinding>() {
     private val viewModel: OnboardingViewModel by sharedViewModel()
     private val pinViewModel: PinViewModel by inject()
+    private val localStoreRepository: LocalStoreRepository by inject()
+    protected val eventTracker: EventTracker by inject()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -66,9 +70,32 @@ class OnboardingPinFragment : BindingFragment<FragmentOnboardingPinBinding>() {
                     Constants.Navigation.ANIMATED_ENTER_EXIT_RIGHT_NAV_OPTION
                 )
             } else {
-                findNavController().navigate(
-                    OnboardingPinFragmentDirections.actionOnboardingPinSetupFragmentToAllSetFragment(),
-                    Constants.Navigation.ANIMATED_ENTER_EXIT_RIGHT_NAV_OPTION
+                localStoreRepository.setOnboardingComplete(true)
+                eventTracker.log(EventOnboardingFinish())
+
+                var bundle = bundleOf(
+                    Constants.Navigation.FRAGMENT_CONFIG to FragmentConfiguration(
+                        actionBarTitle = 0,
+                        actionBarSubtitle = 0,
+                        actionBarVariant = 0,
+                        actionLeft = 0,
+                        actionRight = 0,
+                        configurationType = FragmentConfigurationType.CONFIGURATION_ONBOARDING_All_SET,
+                        configData = AllSetData(
+                            title = getString(R.string.all_set_title),
+                            subtitle = getString(R.string.all_set_description),
+                            positiveText = getString(R.string.create_new_wallet),
+                            negativeText = getString(R.string.goto_homescreen),
+                            positiveDestination = R.id.createWalletFragment,
+                            negativeDestination = if(localStoreRepository.isProEnabled()) R.id.proHomescreenFragment else R.id.homescreenFragment,
+                            walletUUID = ""
+                        )
+                    )
+                )
+
+                navigate(
+                    R.id.allSetFragment,
+                    bundle
                 )
             }
         })

@@ -12,6 +12,9 @@ import androidx.navigation.fragment.findNavController
 import com.google.gson.Gson
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.*
+import com.intuisoft.plaid.common.analytics.EventTracker
+import com.intuisoft.plaid.common.analytics.events.EventExchangeDetailsSmartPay
+import com.intuisoft.plaid.common.analytics.events.EventExchangeDetailsView
 import com.intuisoft.plaid.common.model.ExchangeInfoDataModel
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.common.util.Constants
@@ -27,6 +30,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class ExchangeDetailsFragment : ConfigurableFragment<FragmentExchangeDetailsBinding>(pinProtection = true) {
     protected val viewModel: SwapDetailsViewModel by viewModel()
     protected val localStoreRepository: LocalStoreRepository by inject()
+    protected val eventTracker: EventTracker by inject()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -47,6 +51,7 @@ class ExchangeDetailsFragment : ConfigurableFragment<FragmentExchangeDetailsBind
         val swapData = configuration!!.configData as BasicConfigData
         val data = Gson().fromJson(swapData.payload, ExchangeInfoDataModel::class.java)
 
+        eventTracker.log(EventExchangeDetailsView())
         binding.status.text = data.status
         binding.status.setTextColor(
             resources.getColor(
@@ -115,6 +120,7 @@ class ExchangeDetailsFragment : ConfigurableFragment<FragmentExchangeDetailsBind
         )
 
         binding.smartPay.onClick {
+            eventTracker.log(EventExchangeDetailsSmartPay())
             var bundle = bundleOf(
                 Constants.Navigation.FRAGMENT_CONFIG to FragmentConfiguration(
                     actionBarTitle = 0,

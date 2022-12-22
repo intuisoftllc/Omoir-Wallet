@@ -16,6 +16,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.*
+import com.intuisoft.plaid.common.analytics.EventTracker
+import com.intuisoft.plaid.common.analytics.events.EventWithdrawMax
+import com.intuisoft.plaid.common.analytics.events.EventWithdrawTypeStandard
 import com.intuisoft.plaid.common.model.BitcoinDisplayUnit
 import com.intuisoft.plaid.databinding.FragmentWithdrawBinding
 import com.intuisoft.plaid.features.dashboardflow.shared.viewModel.WithdrawalViewModel
@@ -43,6 +46,7 @@ class WithdrawalFragment : ConfigurableFragment<FragmentWithdrawBinding>(pinProt
     private val viewModel: WithdrawalViewModel by viewModel()
     private val localStoreRepository: LocalStoreRepository by inject()
     private val walletManager: AbstractWalletManager by inject()
+    protected val eventTracker: EventTracker by inject()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -209,6 +213,7 @@ class WithdrawalFragment : ConfigurableFragment<FragmentWithdrawBinding>(pinProt
         })
 
         binding.sendMax.setOnClickListener {
+            eventTracker.log(EventWithdrawMax())
             viewModel.spendMaxBalance()
         }
 

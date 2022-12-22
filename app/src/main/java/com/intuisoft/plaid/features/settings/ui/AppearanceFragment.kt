@@ -11,9 +11,13 @@ import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.ConfigurableFragment
 import com.intuisoft.plaid.androidwrappers.FragmentConfiguration
 import com.intuisoft.plaid.androidwrappers.TopBarView
+import com.intuisoft.plaid.common.analytics.EventTracker
+import com.intuisoft.plaid.common.analytics.events.EventSettingsChangeAppearance
+import com.intuisoft.plaid.common.analytics.events.EventSettingsView
 import com.intuisoft.plaid.databinding.FragmentAppearanceBinding
 import com.intuisoft.plaid.features.settings.viewmodel.SettingsViewModel
 import com.intuisoft.plaid.common.model.AppTheme
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 
@@ -22,6 +26,7 @@ class AppearanceFragment : ConfigurableFragment<FragmentAppearanceBinding>(
     requiresWallet = false
 ) {
     private val viewModel: SettingsViewModel by sharedViewModel()
+    protected val eventTracker: EventTracker by inject()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -43,18 +48,21 @@ class AppearanceFragment : ConfigurableFragment<FragmentAppearanceBinding>(
 
         binding.appearanceLight.onRadioClicked { settingsItemView, checked ->
             if(checked && viewModel.getAppTheme() != AppTheme.LIGHT) {
+                eventTracker.log(EventSettingsChangeAppearance(viewModel.getAppTheme()))
                 viewModel.saveAppTheme(AppTheme.LIGHT)
             }
         }
 
         binding.appearanceDark.onRadioClicked { settingsItemView, checked ->
             if(checked && viewModel.getAppTheme() != AppTheme.DARK) {
+                eventTracker.log(EventSettingsChangeAppearance(viewModel.getAppTheme()))
                 viewModel.saveAppTheme(AppTheme.DARK)
             }
         }
 
         binding.appearanceAuto.onRadioClicked { settingsItemView, checked ->
             if(checked && viewModel.getAppTheme() != AppTheme.AUTO) {
+                eventTracker.log(EventSettingsChangeAppearance(viewModel.getAppTheme()))
                 viewModel.saveAppTheme(AppTheme.AUTO)
             }
         }

@@ -12,6 +12,8 @@ import com.intuisoft.plaid.R
 import com.intuisoft.plaid.activities.MainActivity
 import com.intuisoft.plaid.androidwrappers.*
 import com.intuisoft.plaid.common.CommonService
+import com.intuisoft.plaid.common.analytics.EventTracker
+import com.intuisoft.plaid.common.analytics.events.EventDashboardViewTransaction
 import com.intuisoft.plaid.common.model.BitcoinDisplayUnit
 import com.intuisoft.plaid.common.model.ChartDataModel
 import com.intuisoft.plaid.common.model.ChartIntervalType
@@ -41,6 +43,7 @@ class ProWalletTransactionsFragment : ConfigurableFragment<FragmentProWalletTras
     protected val viewModel: DashboardViewModel by viewModel()
     protected val localStoreRepository: LocalStoreRepository by inject()
     protected val walletManager: AbstractWalletManager by inject()
+    protected val eventTracker: EventTracker by inject()
 
     private val adapter = BasicTransactionAdapter(
         onTransactionSelected = ::onTransactionSelected,
@@ -89,6 +92,7 @@ class ProWalletTransactionsFragment : ConfigurableFragment<FragmentProWalletTras
     }
 
     fun onTransactionSelected(transaction: TransactionInfo) {
+        eventTracker.log(EventDashboardViewTransaction())
         var bundle = bundleOf(
             Constants.Navigation.FRAGMENT_CONFIG to FragmentConfiguration(
                 configurationType = FragmentConfigurationType.CONFIGURATION_TRANSACTION_DATA,

@@ -15,6 +15,11 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.activities.MainActivity
 import com.intuisoft.plaid.androidwrappers.*
+import com.intuisoft.plaid.common.analytics.EventTracker
+import com.intuisoft.plaid.common.analytics.events.EventDashboardDeposit
+import com.intuisoft.plaid.common.analytics.events.EventDashboardOpenSettingsOpen
+import com.intuisoft.plaid.common.analytics.events.EventDashboardView
+import com.intuisoft.plaid.common.analytics.events.EventDashboardWithdrawal
 import com.intuisoft.plaid.common.model.BitcoinDisplayUnit
 import com.intuisoft.plaid.common.model.ChartDataModel
 import com.intuisoft.plaid.common.model.ChartIntervalType
@@ -41,6 +46,7 @@ class ProDashboardFragment : ConfigurableFragment<FragmentProWalletDashboardBind
     protected val viewModel: DashboardViewModel by viewModel()
     protected val localStoreRepository: LocalStoreRepository by inject()
     protected val walletManager: AbstractWalletManager by inject()
+    protected val eventTracker: EventTracker by inject()
 
     val balanceHistoryAdapter = BasicLineChartAdapter()
 
@@ -60,6 +66,7 @@ class ProDashboardFragment : ConfigurableFragment<FragmentProWalletDashboardBind
             onNavigateBottomBarPrimaryFragmentBackwards(localStoreRepository)
         }
 
+        eventTracker.log(EventDashboardView())
         viewModel.getTransactions()
         viewModel.displayCurrentWallet()
         viewModel.showWalletBalance(requireContext())
@@ -294,6 +301,7 @@ class ProDashboardFragment : ConfigurableFragment<FragmentProWalletDashboardBind
         })
 
         binding.deposit.onClick {
+            eventTracker.log(EventDashboardDeposit())
             var bundle = bundleOf(
                 Constants.Navigation.FRAGMENT_CONFIG to FragmentConfiguration(
                     actionBarTitle = 0,
@@ -317,6 +325,7 @@ class ProDashboardFragment : ConfigurableFragment<FragmentProWalletDashboardBind
         }
 
         binding.withdraw.onClick {
+            eventTracker.log(EventDashboardWithdrawal())
             navigate(
                 R.id.withdrawalTypeFragment,
                 Constants.Navigation.ANIMATED_SLIDE_UP_OPTION
@@ -413,6 +422,7 @@ class ProDashboardFragment : ConfigurableFragment<FragmentProWalletDashboardBind
     }
 
     override fun onActionRight() {
+        eventTracker.log(EventDashboardOpenSettingsOpen())
         navigate(
             R.id.walletSettingsFragment
         )
