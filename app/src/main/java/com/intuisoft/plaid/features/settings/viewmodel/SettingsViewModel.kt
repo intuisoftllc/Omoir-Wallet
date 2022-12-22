@@ -128,7 +128,7 @@ class SettingsViewModel(
     }
 
     fun updateNameSetting() {
-        _nameSetting.postValue(localStoreRepository.getUserAlias())
+        _nameSetting.postValue(localStoreRepository.getUserAlias() ?: "")
     }
 
     fun updateAppVersionSetting() {

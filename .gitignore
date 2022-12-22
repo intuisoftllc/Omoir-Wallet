@@ -3,9 +3,7 @@ keystore/
 .gradle/
 .idea/
 app/src/debug/google-services.json
-app/src/main/res/drwe-old
-app/src/main/res/lyt-old
-app/src/main/res/vlus-old
+app/src/prod/google-services.json
 app/dev
 app/prod
 local.properties

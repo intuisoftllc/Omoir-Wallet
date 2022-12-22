@@ -9,6 +9,13 @@
     <color name="warning_color">#FFB800</color>
 <!--   Success/error Colors End -->
 
+<!--    Ignore These -->
+    <color name="white_blue_grey">#D4D4D8</color>
+    <color name="navy_blue">#101338</color>
+    <color name="alt_navy_blue">#161833</color>
+    <color name="deep_blue">#0A0C24</color>
+    <color name="purple">#2D2F51</color>
+<!--    Ignore these (above) -->
 
 <!--    Hard Colors [Do Not Use Directly!] -->
     <color name="black">#FF000000</color>

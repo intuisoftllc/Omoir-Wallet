@@ -39,8 +39,8 @@ class AppPrefs(
 
     var appTheme: AppTheme
         get() {
-            val theme = getInt(APP_THEME, AppTheme.AUTO.typeId)
-            return AppTheme.values().find { it.typeId == theme } ?: AppTheme.AUTO
+            val theme = getInt(APP_THEME, AppTheme.LIGHT.typeId)
+            return AppTheme.values().find { it.typeId == theme } ?: AppTheme.LIGHT
         }
         set(theme) {
             putInt(APP_THEME, theme.typeId)

@@ -215,12 +215,12 @@ class MarketViewModel(
                     val extendedData = apiRepository.getExtendedNetworkData(getWalletNetwork() == BitcoinKit.NetworkType.TestNet)
 
                     if(extendedData != null) {
-                        _blockHeight.postValue(SimpleCoinNumberFormat.format(extendedData.height.toLong()))
-                        _difficulty.postValue(SimpleCoinNumberFormat.format(extendedData.difficulty))
-                        _blockchainSize.postValue(extendedData.blockchainSize.humanReadableByteCountSI())
+                        _blockHeight.postValue(SimpleCoinNumberFormat.format(extendedData.height.toLong()) ?: "")
+                        _difficulty.postValue(SimpleCoinNumberFormat.format(extendedData.difficulty) ?: "")
+                        _blockchainSize.postValue(extendedData.blockchainSize.humanReadableByteCountSI() ?: "")
                         _addressesWithBalance.postValue(SimpleCoinNumberFormat.formatSatsShort(extendedData.addressesWithBalance) + " ${getApplication<PlaidApp>().getString(R.string.addresses)}")
-                        _memoryPoolSize.postValue(extendedData.memPoolSize.humanReadableByteCountSI())
-                        _unconfirmedTxs.postValue(SimpleCoinNumberFormat.format(extendedData.unconfirmedTxs.toLong()))
+                        _memoryPoolSize.postValue(extendedData.memPoolSize.humanReadableByteCountSI() ?: "")
+                        _unconfirmedTxs.postValue(SimpleCoinNumberFormat.format(extendedData.unconfirmedTxs.toLong()) ?: "")
 
                         if(getWalletNetwork() == BitcoinKit.NetworkType.TestNet || extendedData == null) {
                             _congestionRating.postValue(CongestionRating.NA)
@@ -228,7 +228,7 @@ class MarketViewModel(
                             _nodesOnNetwork.postValue(getApplication<PlaidApp>().getString(R.string.not_applicable))
                             _txPerSecond.postValue(getApplication<PlaidApp>().getString(R.string.not_applicable))
                         } else {
-                            _avgConfTime.postValue(SimpleCoinNumberFormat.formatCurrency(extendedData.avgConfTime))
+                            _avgConfTime.postValue(SimpleCoinNumberFormat.formatCurrency(extendedData.avgConfTime) ?: "")
                             _nodesOnNetwork.postValue(SimpleCoinNumberFormat.format(extendedData.nodesOnNetwork.toLong()) + " ${getApplication<PlaidApp>().getString(R.string.nodes)}")
                             _txPerSecond.postValue(SimpleCoinNumberFormat.format(extendedData.txPerSecond.toLong()) + " ${getApplication<PlaidApp>().getString(R.string.tx_per_sec)}")
 

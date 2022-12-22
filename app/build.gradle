@@ -35,14 +35,14 @@ android {
 
     signingConfigs {
         develop {
-            storeFile file("${project.rootDir}/keystores/app.keystore")
+            storeFile file("${project.rootDir}/keystore/app.keystore")
             storePassword properties['KEY_PASSWORD']
             keyAlias properties['KEY_ALIAS']
             keyPassword properties['STORE_PASSWORD']
         }
 
         production {
-            storeFile file("${project.rootDir}/keystores/app.keystore")
+            storeFile file("${project.rootDir}/keystore/app.keystore")
             storePassword properties['KEY_PASSWORD']
             keyAlias properties['KEY_ALIAS']
             keyPassword properties['STORE_PASSWORD']
@@ -151,7 +151,7 @@ dependencies {
 
     implementation 'com.jakewharton:process-phoenix:2.1.2'
 
-    implementation "com.android.billingclient:billing:5.1.0"
+    implementation "com.android.billingclient:billing-ktx:5.1.0"
 
 // Tooltips
     implementation 'com.diogobernardino.williamchart:tooltip-slider:3.11.0'
