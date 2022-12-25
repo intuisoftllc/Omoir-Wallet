@@ -74,7 +74,7 @@ class ExchangeViewModel(
     protected val _onNext = SingleLiveData<ExchangeInfoDataModel>()
     val onNext: LiveData<ExchangeInfoDataModel> = _onNext
 
-    private var fixed: Boolean = true
+    private var fixed: Boolean = false
     private var sendTicker = ""
     private var receiveTicker = ""
     private var receiveAddress = ""
@@ -93,10 +93,17 @@ class ExchangeViewModel(
 
     fun setFixed(fixed: Boolean) {
         viewModelScope.launch {
-            _screenFunctionsEnabled.postValue(false)
-            this@ExchangeViewModel.fixed = fixed
-            setFixedFloatingRange().join()
-            _screenFunctionsEnabled.postValue(true)
+            withContext(Dispatchers.IO) {
+                safeWalletScope {
+                    _screenFunctionsEnabled.postValue(false)
+                    this@ExchangeViewModel.fixed = fixed
+                    setFixedFloatingRange().join()
+                    wholeCoinConversion = 0.0
+                    updateWholeCoinConversion(sendTicker, receiveTicker)
+                    validateSendAmount(sendAmount)
+                    _screenFunctionsEnabled.postValue(true)
+                }
+            }
         }
     }
 
@@ -297,7 +304,7 @@ class ExchangeViewModel(
 
     fun setInitialValues() {
         if(NetworkUtil.hasInternet(getApplication<PlaidApp>())) {
-            this.fixed = true
+            this.fixed = false
             sendAmount = 0.0
             receiveAmount = 0.0
             min = 0.0

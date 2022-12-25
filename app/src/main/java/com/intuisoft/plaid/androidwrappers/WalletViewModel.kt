@@ -2,12 +2,12 @@ package com.intuisoft.plaid.androidwrappers
 
 import android.app.Application
 import android.content.Context
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
 import com.intuisoft.plaid.PlaidApp
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.common.model.BitcoinDisplayUnit
+import com.intuisoft.plaid.common.model.SavedAccountModel
 import com.intuisoft.plaid.common.model.TransactionMemoModel
 import com.intuisoft.plaid.common.repositories.ApiRepository
 import com.intuisoft.plaid.listeners.StateListener
@@ -89,8 +89,8 @@ open class WalletViewModel(
         _walletBalance.postValue(localWallet!!.onWalletStateChanged(context, 0, false, localStoreRepository))
     }
 
-    fun setWalletPassphrase(passphrase: String) {
-        walletManager.setWalletPassphrase(localWallet!!, passphrase)
+    open fun setHiddenWalletParams(passphrase: String, account: SavedAccountModel) {
+        walletManager.setCurrentHiddenWallet(localWallet!!, passphrase, account)
     }
 
     fun isWalletSyncing() = localWallet!!.isSyncing
@@ -102,6 +102,23 @@ open class WalletViewModel(
             || (currentBlock - transaction.blockHeight!!) < 0) {
             return 0
         } else return (currentBlock - transaction.blockHeight!!) + 1
+    }
+
+    fun getSavedAccount(accountName: String) = localStoreRepository.getSavedAccounts().find { it.accountName == accountName }
+
+    fun getSavedAccounts() = localStoreRepository.getSavedAccounts()
+
+    fun getDefaultAccount() = localStoreRepository.getSavedAccounts().find { it.accountName == getApplication<PlaidApp>().getString(R.string._default) }!!
+
+    fun saveAccount(name: String, accountNumber: Int) {
+        localStoreRepository.saveAccount(name, accountNumber)
+    }
+    fun deleteAccount(name: String) {
+        localStoreRepository.deleteSavedAccount(name)
+    }
+
+    fun updateAccount(oldName: String, name: String, accountNumber: Int) {
+        localStoreRepository.updateSavedAccount(oldName, accountNumber, name)
     }
 
     fun getWalletName(id: String): String {
@@ -277,7 +294,7 @@ open class WalletViewModel(
         }
     }
 
-    fun getWalletPassphrase() = walletManager.getWalletPassphrase(localWallet!!)
+    fun getHiddenWallet() = walletManager.getCurrentHiddenWallet(localWallet!!)
 
     fun getWalletSeedPhrase() = walletManager.findStoredWallet(localWallet!!.uuid)!!.seedPhrase
 

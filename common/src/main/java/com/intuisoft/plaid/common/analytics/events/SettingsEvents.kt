@@ -30,11 +30,19 @@ class EventSettingsDisableFingerprint: Event("settings_disable_fingerprint", lis
 
 class EventSettingsViewAddressBook: Event("settings_view_address_book", listOf())
 
+class EventSettingsViewAccounts: Event("settings_view_accounts", listOf())
+
 class EventSettingsSaveAddress: Event("settings_save_address", listOf())
+
+class EventSettingsSaveAccount: Event("settings_save_account", listOf())
 
 class EventSettingsDeleteAddress: Event("settings_delete_address", listOf())
 
+class EventSettingsDeleteAccount: Event("settings_delete_account", listOf())
+
 class EventSettingsUpdateAddress: Event("settings_update_address", listOf())
+
+class EventSettingsUpdateAccount: Event("settings_update_account", listOf())
 
 class EventSettingsMinimumConfirmations(
     val min: Int

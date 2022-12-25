@@ -18,7 +18,7 @@ class BCoinApi() : IInitialSyncApi {
             val result = CommonService.getApiRepositoryInstance().getAddressTransactions(it, true)
 
             if(BitcoinCore.loggingEnabled)  {
-                if(result == null)
+                if(result != null)
                     logger.info("Got transactions for requested address: $it")
                 else
                     logger.info("Failed to get transactions for requested address: $it")

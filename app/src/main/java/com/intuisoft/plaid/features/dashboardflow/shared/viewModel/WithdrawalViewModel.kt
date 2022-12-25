@@ -11,8 +11,8 @@ import com.intuisoft.plaid.common.repositories.ApiRepository
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.common.util.RateConverter
 import com.intuisoft.plaid.common.util.SimpleCurrencyFormat
-import com.intuisoft.plaid.util.entensions.addChars
-import com.intuisoft.plaid.util.entensions.charsAfter
+import com.intuisoft.plaid.common.util.extensions.addChars
+import com.intuisoft.plaid.common.util.extensions.charsAfter
 import com.intuisoft.plaid.walletmanager.AbstractWalletManager
 import io.horizontalsystems.bitcoincore.storage.UnspentOutput
 

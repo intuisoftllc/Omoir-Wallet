@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.FragmentManager
 import androidx.navigation.fragment.findNavController
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.*
@@ -36,12 +37,12 @@ class AtpInfoFragment : ConfigurableFragment<FragmentAtpInfoBinding>(
 
     override fun onConfiguration(configuration: FragmentConfiguration?) {
         val adapter = AtpInfoAdapter(
-            requireActivity()
+            this
         )
 
         eventTracker.log(EventAtpInfoView())
         binding.close.setOnSingleClickListener(Constants.Time.MIN_CLICK_INTERVAL_SHORT) {
-            findNavController().popBackStack()
+            findNavController().popBackStack(navigationId(), true)
         }
 
         binding.useCasesViewpager.adapter = adapter

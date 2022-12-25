@@ -1,16 +1,19 @@
 package com.intuisoft.plaid.walletmanager
 
 import android.app.Application
+import android.util.Log
 import com.intuisoft.plaid.common.listeners.WipeDataListener
 import com.intuisoft.plaid.common.local.db.listeners.DatabaseListener
+import com.intuisoft.plaid.common.model.HiddenWalletModel
+import com.intuisoft.plaid.common.model.SavedAccountModel
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.common.util.extensions.remove
 import com.intuisoft.plaid.listeners.StateListener
 import com.intuisoft.plaid.model.LocalWalletModel
-import com.intuisoft.plaid.util.entensions.sha256
 import com.intuisoft.plaid.common.util.errors.ClosedWalletErr
 import com.intuisoft.plaid.common.util.errors.ExistingWalletErr
+import com.intuisoft.plaid.common.util.extensions.sha256
 import io.horizontalsystems.bitcoincore.BitcoinCore
 import io.horizontalsystems.bitcoincore.models.BalanceInfo
 import io.horizontalsystems.bitcoincore.models.BitcoinPaymentData
@@ -28,7 +31,7 @@ class WalletManager(
     val localStoreRepository: LocalStoreRepository,
     val syncer: SyncManager
 ): AbstractWalletManager(), WipeDataListener, DatabaseListener, SyncManager.SyncEvent {
-    private val localPassphrases: MutableMap<String,String> = mutableMapOf()
+    private var hiddenWallets: MutableMap<String, HiddenWalletModel?> = mutableMapOf()
     private var _baseMainNetWallet: BitcoinKit? = null
     private var _baseTestNetWallet: BitcoinKit? = null
     private var stateListeners: MutableList<StateListener> = mutableListOf()
@@ -53,6 +56,14 @@ class WalletManager(
 
     override suspend fun stop() {
         syncer.stop()
+    }
+
+    override fun getHiddenWallets(): MutableMap<String, HiddenWalletModel?> {
+        return hiddenWallets
+    }
+
+    override fun setInitialHiddenWallets(hiddenWallets: MutableMap<String, HiddenWalletModel?>) {
+        this.hiddenWallets = hiddenWallets
     }
 
     private fun createBaseWallet(baseWallet: BitcoinKit?, network: BitcoinKit.NetworkType): BitcoinKit {
@@ -106,20 +117,31 @@ class WalletManager(
         }
     }
 
-    private fun getWalletPassPhrase(walletId: String): String {
-        return localPassphrases.get(walletId) ?: ""
+    private fun getCurrentHiddenWallet(uuid: String): HiddenWalletModel? {
+        return hiddenWallets.get(uuid)
     }
 
-    private fun setWalletPassphrase(walletId: String, passphrase: String) {
-        localPassphrases.put(walletId, passphrase)
+    private fun setCurrentHiddenWallet(walletId: String, passphrase: String, account: SavedAccountModel) {
+        if(passphrase.isBlank() && account.account == 0) {
+            hiddenWallets.put(walletId, null)
+        } else {
+            hiddenWallets.put(
+                walletId,
+                HiddenWalletModel(
+                    walletUUID = walletId,
+                    passphrase = passphrase,
+                    account = account
+                )
+            )
+        }
     }
 
-    override fun getWalletPassphrase(localWallet: LocalWalletModel): String {
-        return getWalletPassPhrase(localWallet.uuid)
+    override fun getCurrentHiddenWallet(localWallet: LocalWalletModel): HiddenWalletModel? {
+        return getCurrentHiddenWallet(localWallet.uuid)
     }
 
-    override fun setWalletPassphrase(localWallet: LocalWalletModel, passphrase: String) {
-        setWalletPassphrase(localWallet.uuid, passphrase)
+    override fun setCurrentHiddenWallet(localWallet: LocalWalletModel, passphrase: String, account: SavedAccountModel) {
+        setCurrentHiddenWallet(localWallet.uuid, passphrase, account)
     }
 
     override fun validAddress(address: String) : Boolean {
@@ -138,9 +160,9 @@ class WalletManager(
         return getOpenedWallet()!!.walletKit!!.getFullPublicKeyPath(key)
     }
 
-    override fun requiresNewHiddenWallet(wallet: LocalWalletModel, passphrase: String): Boolean {
+    override fun requiresNewHiddenWallet(wallet: LocalWalletModel, passphrase: String, account: SavedAccountModel): Boolean {
         val storedWallet = findStoredWallet(wallet.uuid)
-        val passphraseWalletUUID = (wallet.uuid + passphrase).sha256()
+        val passphraseWalletUUID = HiddenWalletModel(wallet.uuid, passphrase, account).uuid
         return storedWallet?.walletHashIds?.find { it == passphraseWalletUUID } == null
     }
 
@@ -192,7 +214,7 @@ class WalletManager(
         localStoreRepository.getStoredWalletInfo().walletIdentifiers.remove { it.walletUUID == localWallet.uuid }
         localStoreRepository.setStoredWalletInfo(localStoreRepository.getStoredWalletInfo())
 
-        localPassphrases.remove(localWallet.uuid)
+        hiddenWallets.remove(localWallet.uuid)
         syncer.removeWallet(localWallet.uuid)
         start()
         onDeleteFinished()
@@ -253,7 +275,7 @@ class WalletManager(
            deleteWalletFromDatabase(it)
        }
 
-       localPassphrases.clear()
+       hiddenWallets.clear()
        localStoreRepository.setStoredWalletInfo(null)
        _balanceUpdated.postValue(0)
    }
@@ -346,10 +368,10 @@ class WalletManager(
 
        syncer.addWallets(
            localStoreRepository.getStoredWalletInfo().walletIdentifiers.map { identifier ->
-               val passphrase = getWalletPassPhrase(identifier.walletUUID)
+               val hiddenWallet = getCurrentHiddenWallet(identifier.walletUUID)
                val model = LocalWalletModel.consume(
                    identifier,
-                   if (!identifier.readOnly) passphrase else ""
+                   if (!identifier.readOnly) hiddenWallet else null
                )
 
                // Store wallet hashes for passphrases
@@ -357,6 +379,7 @@ class WalletManager(
                    identifier.walletHashIds!!.add(model.hashId)
                    localStoreRepository.setStoredWalletInfo(localStoreRepository.getStoredWalletInfo())
                }
+
 
                if (identifier.readOnly) {
                    model.walletKit = BitcoinKit(
@@ -369,12 +392,28 @@ class WalletManager(
                        syncMode = BitcoinCore.SyncMode.Api(),
                        confirmationsThreshold = localStoreRepository.getMinimumConfirmations()
                    )
-               } else {
+               } else if(hiddenWallet != null) {
                    model.walletKit =
                        BitcoinKit(
                            context = application,
                            words = identifier.seedPhrase,
-                           passphrase = passphrase,
+                           passphrase = hiddenWallet.passphrase,
+                           walletAccount = hiddenWallet.account.account,
+                           walletId = model.hashId,
+                           networkType = getWalletNetwork(model),
+                           peerSize = Constants.Limit.MAX_PEERS,
+                           gapLimit = 50,
+                           syncMode = BitcoinCore.SyncMode.Api(),
+                           confirmationsThreshold = localStoreRepository.getMinimumConfirmations(),
+                           purpose = HDWallet.Purpose.values()
+                               .find { it.ordinal == identifier.bip }!!
+                       )
+               } else { // enter default HD Wallet
+                   model.walletKit =
+                       BitcoinKit(
+                           context = application,
+                           words = identifier.seedPhrase,
+                           passphrase = "",
                            walletId = model.hashId,
                            networkType = getWalletNetwork(model),
                            peerSize = Constants.Limit.MAX_PEERS,
@@ -391,15 +430,17 @@ class WalletManager(
                    object : BitcoinEventListener() {
                        override fun onBalanceUpdate(balance: BalanceInfo) {
                            super.onBalanceUpdate(balance)
-                           CoroutineScope(Dispatchers.Main).launch {
-                               onWalletStateUpdated(model)
-                               _balanceUpdated.postValue(getTotalBalance())
+
+                           if(model.isSynced) {
+                               CoroutineScope(Dispatchers.Main).launch {
+                                   onWalletStateUpdated(model)
+                                   _balanceUpdated.postValue(getTotalBalance())
+                               }
                            }
                        }
 
                        override fun onKitStateUpdate(state: BitcoinCore.KitState) {
                            super.onKitStateUpdate(state)
-
                            when (state) {
                                is BitcoinCore.KitState.NotSynced,
                                is BitcoinCore.KitState.Synced -> {
@@ -415,8 +456,12 @@ class WalletManager(
                                }
 
                                else -> {
-                                   CoroutineScope(Dispatchers.Main).launch {
-                                       onWalletStateUpdated(model)
+                                   if(model.syncPercentage != model.lastSyncPercentage) {
+                                       model.lastSyncPercentage = model.syncPercentage
+
+                                       CoroutineScope(Dispatchers.Main).launch {
+                                           onWalletStateUpdated(model)
+                                       }
                                    }
                                }
                            }

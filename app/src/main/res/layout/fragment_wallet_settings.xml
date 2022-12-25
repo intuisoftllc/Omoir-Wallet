@@ -94,12 +94,12 @@
                             app:item_subtitle="@string/wallet_settings_seed_phrase_description" />
 
                         <com.intuisoft.plaid.androidwrappers.SettingsItemView
-                            android:id="@+id/passphrase"
+                            android:id="@+id/hidden_wallet"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="@dimen/horizontal_padding_size"
-                            app:item_subtitle="@string/wallet_settings_passphrase_description"
-                            app:item_title="@string/wallet_settings_passphrase"
+                            app:item_subtitle="@string/wallet_settings_hidden_wallet_description"
+                            app:item_title="@string/wallet_settings_hidden_wallet"
                             app:settings_variant="normal" />
 
                         <com.intuisoft.plaid.androidwrappers.SettingsItemView

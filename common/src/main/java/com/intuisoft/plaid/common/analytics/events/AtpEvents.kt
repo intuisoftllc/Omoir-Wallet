@@ -11,7 +11,7 @@ class EventAtpBatchGap(
 
 class EventAtpBatchSize(
     val size: Int
-): Event("atp_batch_gap", listOf(EventParamId.AMOUNT to size.toString()))
+): Event("atp_batch_size", listOf(EventParamId.AMOUNT to size.toString()))
 
 class EventAtpFeeSpread(
     val low: Int,

@@ -64,6 +64,14 @@ interface LocalStoreRepository {
 
     fun saveBaseWalletSeed(words: List<String>)
 
+    fun updateSavedAccount(oldName: String, account: Int, name: String)
+
+    fun deleteSavedAccount(name: String)
+
+    fun getSavedAccounts(): List<SavedAccountModel>
+
+    fun saveAccount(name: String, account: Int)
+
     fun getBaseWalletSeed(): List<String>
 
     fun deleteSavedAddress(name: String)
@@ -125,6 +133,10 @@ interface LocalStoreRepository {
     fun setFingerprintEnabled(enabled: Boolean)
 
     fun getStoredWalletInfo(): StoredWalletInfo
+
+    fun setShowDerivationPathChangeWarning(show: Boolean)
+
+    fun showDerivationPathChangeWarning(): Boolean
 
     fun hideHiddenWalletsCount(enabled: Boolean)
 

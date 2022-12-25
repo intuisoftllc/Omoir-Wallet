@@ -66,6 +66,8 @@
     <string name="settings_option_view_help_description">Get Help and Learn More</string>
     <string name="settings_option_view_address_book">Address Book</string>
     <string name="settings_option_view_address_book_description">Save your frequently used addresses</string>
+    <string name="settings_option_view_accounts">Accounts</string>
+    <string name="settings_option_view_accounts_description">Create accounts for your wallets</string>
     <string name="settings_option_view_address_min_confirmations">Minimum Confirmations</string>
     <string name="settings_option_view_address_min_confirmations_description">Set the minimum confirmations needed for incoming/outgoing transactions</string>
     <string name="settings_option_view_address_min_escape_pod_protocol">Escape Pod Protocol</string>
@@ -313,7 +315,6 @@
 <!--    Low Pin Entry Bottom Sheet Strings -->
     <string name="low_pin_entry_title">Low Pin Entry Limit</string>
     <string name="low_pin_entry_subtitle">Setting your invalid pin entry limit below 5 may result in you losing access to your funds if not properly backed up.</string>
-    <string name="low_pin_entry_positive_button">I Understand The Risks</string>
 <!--    Low Pin Entry Bottom Sheet Strings End -->
 
 <!--    Pin Timeout Bottom Sheet Strings -->
@@ -323,6 +324,14 @@
 <!--    Address Book Strings -->
     <string name="address_book_no_addresses">You have not saved any\naddresses yet</string>
 <!--    Address Book Strings End -->
+
+<!--    Account Strings -->
+    <string name="accounts_no_accounts">You have not saved any\naccounts yet</string>
+    <string name="update_account_update_title">Update Account</string>
+    <string name="save_account_delete_title">Delete Account</string>
+    <string name="save_account_delete_subtitle">Are you sure you want to delete the saved account for \"%1$s\"?</string>
+    <string name="save_account_delete_failure">Cannot delete, account \"%1$s\" is currently in use!</string>
+<!--    Account Strings End -->
 
 <!--    Search Currency Strings -->
     <string name="search_currencies_hint">Type a currency</string>
@@ -409,8 +418,8 @@
     <string name="wallet_settings_rename_wallet">Rename Wallet</string>
     <string name="wallet_settings_seed_phrase">Seed Phrase</string>
     <string name="wallet_settings_seed_phrase_description">Show seed phrase</string>
-    <string name="wallet_settings_passphrase">Wallet Passphrase</string>
-    <string name="wallet_settings_passphrase_description">Set hd wallet passphrase</string>
+    <string name="wallet_settings_hidden_wallet">Hidden Wallet</string>
+    <string name="wallet_settings_hidden_wallet_description">Create a hidden wallet</string>
     <string name="wallet_settings_export">Export Wallet</string>
     <string name="wallet_settings_export_description">Show wallet\'s master public key</string>
     <string name="wallet_settings_export_tx_data">Export Transaction Data</string>
@@ -426,10 +435,11 @@
     <string name="wallet_settings_deleting_wallet_title">Erasing Wallet</string>
     <string name="wallet_settings_delete_wallet_title">Erase Wallet Data</string>
     <string name="wallet_settings_delete_wallet_subtitle">Are you sure you want to erase your wallet? This action is irreversible, please be sure you have backed up your seed phrase and passphrases (if applicable).</string>
-    <string name="wallet_settings_passphrase_title">Wallet Passphrase</string>
-    <string name="wallet_settings_passphrase_subtitle">Please Note\n\n1. When a hidden wallet is created it\'s passphrase cannot be changed. If the passphrase is lost, entered in the wrong case, or forgotten, the hidden wallet will be lost forever along with any funds held within.\n\n2. Keep the passphrase fields blank to enter the default wallet.\n\n3. For security reasons, only transactions related to a hidden wallet are saved. The private keys and passphrase are stored in memory and will be wiped upon app termination (you will have to re-enter the passphrase to restore the hidden wallet).</string>
+    <string name="wallet_settings_hidden_wallet_title">Hidden Wallet</string>
+    <string name="wallet_settings_passphrase_subtitle">Please Note\n\n1. When a hidden wallet is created it\'s passphrase cannot be changed. If the passphrase is lost, entered in the wrong case, or forgotten, the hidden wallet will be lost forever along with any funds held within.\n\n2. Keep the passphrase fields blank and set the account number to 0 to enter the default wallet.\n\n3. For security reasons, only transactions related to a hidden wallet are saved. The private keys and passphrase are stored in memory and will be wiped upon app termination (you will have to re-enter the passphrase to restore the hidden wallet).</string>
     <string name="wallet_settings_text_box_passphrase">Passphrase</string>
     <string name="wallet_settings_text_box_reenter_passphrase">Re-Enter Passphrase</string>
+    <string name="wallet_settings_text_box_account">Account</string>
     <string name="wallet_settings_passphrase_hint">HODL</string>
     <string name="wallet_settings_passphrase_error">Passphrases do not match!</string>
     <string name="wallet_settings_passphrase_limit_error">Hidden wallet limit reached!\nPlease upgrade to a pro subscription to create additional hidden wallets.</string>
@@ -438,6 +448,8 @@
     <string name="wallet_settings_sync_type_api">Api Based Syncing</string>
     <string name="wallet_settings_sync_type_core">Core Based Syncing</string>
     <string name="wallet_settings_hidden_wallets_count">Total Hidden Wallets: %1$s</string>
+    <string name="wallet_settings_derivation_path_change_title">Derivation Path Change</string>
+    <string name="wallet_settings_derivation_path_change_subtitle">You are about to modify the wallet\'s default derivation path.\n\nIf you do not know what a derivation path is and or how they work. It may be best to leave this setting alone.\n\nBy proceeding you understand the risks of potentially losing access to your funds if the \"account number\" is lost. Otherwise swipe down on this dialog to go back.</string>
 <!--    Wallet Settings Strings End -->
 
 <!--    Export Options Strings -->
@@ -464,6 +476,18 @@
     <string name="coin_control_no_utxos">No UTXO\'s Available For Spend</string>
     <string name="coin_control_hint">Long press coins to view more info</string>
 <!--    Coin Control Bottom Sheet Strings End -->
+
+<!--    Saved Account Strings -->
+    <string name="saved_account_bottom_sheet_title">Saved Accounts</string>
+    <string name="saved_account_add_account">Add Account</string>
+    <string name="saved_account_none">You have not saved any\naccounts yet</string>
+    <string name="saved_account_save_title">Save Account</string>
+    <string name="saved_account_bottom_sheet_info_1">Account Name</string>
+    <string name="saved_account_bottom_sheet_info_2">Account Number</string>
+    <string name="saved_account_bottom_sheet_info_hint_1">My Vault</string>
+    <string name="saved_account_bottom_sheet_info_hint_2">0 to 2147483647</string>
+    <string name="saved_account_validation_error_invalid_account">Account number is too large!</string>
+<!--    Saved Account Strings End -->
 
 <!--    Withdrawal Type Strings -->
     <string name="withdrawal_type_title">Withdrawal Type</string>
@@ -739,6 +763,7 @@
     <string name="to">To</string>
     <string name="reports">Reports</string>
     <string name="proceed_anyway">Proceed Anyway</string>
+    <string name="i_understand_the_risks">I Understand The Risks</string>
     <string name="done">Done</string>
     <string name="share">share</string>
     <string name="bytes">bytes</string>
@@ -760,6 +785,7 @@
     <string name="exchange">Exchange</string>
     <string name="currencies">Currencies</string>
     <string name="deposit">Deposit</string>
+    <string name="_default">Default</string>
     <string name="no_data">No Data</string>
     <string name="memo">Memo</string>
     <string name="today">Today</string>
@@ -797,6 +823,7 @@
     <string name="atp_details_fragment_label">Transfer</string>
     <string name="local_currency_fragment_label">Local Currency</string>
     <string name="address_book_fragment_label">Address Book</string>
+    <string name="accounts_fragment_label">Accounts</string>
     <string name="withdrawal_type_fragment_label">Withdrawal Type</string>
     <string name="export_options_fragment_label">Export Options</string>
     <string name="utxo_distro_fragment_label">Utxo Distribution</string>

@@ -19,6 +19,7 @@ class Constants {
         const val FROM_SETTINGS = "from_settings"
         const val HOME_PASS_THROUGH = "hom_pass_through"
         const val PIN_SETUP = "pin_setup"
+        const val PASSPHRASES = "PASSPHRASES"
 
         val ANIMATED_SLIDE_UP_OPTION =
             navOptions {

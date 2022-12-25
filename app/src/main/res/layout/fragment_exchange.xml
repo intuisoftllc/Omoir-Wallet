@@ -25,7 +25,7 @@
                     app:btn_text="@string/swap_type_fixed"
                     android:id="@+id/fixed"
                     app:text_position="center"
-                    app:button_style="rounded"
+                    app:button_style="outlined"
                     android:layout_weight="1"
                     android:paddingHorizontal="@dimen/margin_6"/>
 
@@ -36,7 +36,7 @@
                     android:id="@+id/floating"
                     app:text_position="center"
                     android:layout_weight="1"
-                    app:button_style="outlined"
+                    app:button_style="rounded"
                     android:paddingHorizontal="@dimen/margin_6"/>
             </LinearLayout>
 

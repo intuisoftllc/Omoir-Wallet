@@ -81,7 +81,7 @@ class NameYourWalletFragment : ConfigurableFragment<FragmentNameWalletBinding>(
         binding.confirm.onClick {
             binding.loading.isVisible = true
             binding.confirm.enableButton(false)
-            viewModel.commitWalletToDisk(binding.name.text.toString())
+            viewModel.commitWalletToDisk(binding.name.text.toString().trim())
         }
 
         viewModel.walletCreationError.observe(viewLifecycleOwner, Observer {

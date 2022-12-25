@@ -29,6 +29,7 @@ import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.common.util.RateConverter
 import com.intuisoft.plaid.common.util.SimpleCoinNumberFormat
+import com.intuisoft.plaid.common.util.extensions.ignoreNan
 import com.intuisoft.plaid.common.util.extensions.safeWalletScope
 import com.intuisoft.plaid.databinding.FragmentProWalletDashboardBinding
 import com.intuisoft.plaid.features.dashboardflow.shared.adapters.BasicLineChartAdapter
@@ -132,10 +133,10 @@ class ProDashboardFragment : ConfigurableFragment<FragmentProWalletDashboardBind
                 }
             }
 
-            binding.percentageGain.text = SimpleCoinNumberFormat.formatCurrency(percentageGain) +
+            binding.percentageGain.text = SimpleCoinNumberFormat.formatCurrency(percentageGain.ignoreNan()) +
                     "% (${rateConverter.from(localStoreRepository.getBitcoinDisplayUnit().toRateType(), localStoreRepository.getLocalCurrency()).second})"
 
-            if(percentageGain >= 0.0) {
+            if(percentageGain.ignoreNan() >= 0.0) {
                 binding.percentageGain.setTextColor(resources.getColor(R.color.success_color))
             } else {
                 binding.percentageGain.setTextColor(resources.getColor(R.color.alt_error_color))

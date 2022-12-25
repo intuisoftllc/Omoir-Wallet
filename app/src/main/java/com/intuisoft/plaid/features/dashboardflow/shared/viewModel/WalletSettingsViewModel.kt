@@ -1,6 +1,9 @@
 
 import android.app.Application
+import com.intuisoft.plaid.PlaidApp
+import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.WalletViewModel
+import com.intuisoft.plaid.common.model.SavedAccountModel
 import com.intuisoft.plaid.common.repositories.ApiRepository
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.common.util.Constants
@@ -16,13 +19,19 @@ class WalletSettingsViewModel(
 
     var fromSettings: Boolean = false
 
-    fun setPassphrase(passphrase: String) {
-        setWalletPassphrase(passphrase)
+    fun setHiddenWalletParams(passphrase: String, account: SavedAccountModel, restartRequired: () -> Unit) {
+        val currentHiddenWallet = walletManager.getCurrentHiddenWallet(getWallet()!!)
+        if(currentHiddenWallet == null || (currentHiddenWallet.passphrase != passphrase || currentHiddenWallet.account.account != account.account)) {
+            restartRequired()
+            setHiddenWalletParams(passphrase, account)
+        } else {
+            setHiddenWalletParams(passphrase, account)
+        }
     }
 
-    fun canCreatePassphrase(passphrase: String) : Boolean {
+    fun canCreatePassphrase(passphrase: String, account: SavedAccountModel) : Boolean {
         val hiddenWallets = walletManager.getHiddenWalletCount(localWallet!!)
-        val requiresNewWallet = walletManager.requiresNewHiddenWallet(localWallet!!, passphrase)
+        val requiresNewWallet = walletManager.requiresNewHiddenWallet(localWallet!!, passphrase, account)
 
         if(localStoreRepository.isProEnabled()) return true
         else {
@@ -30,6 +39,9 @@ class WalletSettingsViewModel(
                     (hiddenWallets >= Constants.Limit.FREE_MAX_HIDDEN_WALLETS && !requiresNewWallet)
         }
     }
+
+    fun showDerivationPathChangeWarning() = localStoreRepository.showDerivationPathChangeWarning()
+    fun hideDerivationPathChangeWarning() = localStoreRepository.setShowDerivationPathChangeWarning(false)
 
     fun updateWalletSettings() {
         showWalletName()

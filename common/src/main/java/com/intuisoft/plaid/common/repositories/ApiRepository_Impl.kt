@@ -284,7 +284,7 @@ class ApiRepository_Impl(
     }
 
     private suspend fun updateCurrencyRangeLimitData(from: String, to: String, fixed: Boolean) {
-        if((System.currentTimeMillis() - (memoryCache.getLastCurrencySwapRangeLimitUpdateTime(from, to, fixed) ?: 0)) > Constants.Time.GENERAL_CACHE_UPDATE_TIME) {
+        if((System.currentTimeMillis() - (memoryCache.getLastCurrencySwapRangeLimitUpdateTime(from, to, fixed) ?: 0)) > Constants.Time.GENERAL_CACHE_UPDATE_TIME_SHORT) {
             val rangeLimit = simpleSwapRepository.getRangeFor(fixed, from, to)
 
             if(rangeLimit.isSuccess) {
@@ -367,7 +367,7 @@ class ApiRepository_Impl(
     }
 
     private suspend fun updateWholeCoinConversionData(altCoin: String, fixed: Boolean) {
-        if(((System.currentTimeMillis() - memoryCache.getLastWholeCoinConversionUpdateTime(altCoin, fixed)) > Constants.Time.GENERAL_CACHE_UPDATE_TIME_MED)
+        if(((System.currentTimeMillis() - memoryCache.getLastWholeCoinConversionUpdateTime(altCoin, fixed)) > Constants.Time.GENERAL_CACHE_UPDATE_TIME_SHORT)
             || !memoryCache.hasWholeCoinConversion(altCoin, fixed)) {
             val range = getCurrencyRangeLimit(BTC_TICKER, altCoin, fixed)
 

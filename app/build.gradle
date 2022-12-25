@@ -149,8 +149,6 @@ dependencies {
 
     implementation 'com.diogobernardino:williamchart:3.11.0'
 
-    implementation 'com.jakewharton:process-phoenix:2.1.2'
-
     implementation "com.android.billingclient:billing-ktx:5.1.0"
 
 // Tooltips

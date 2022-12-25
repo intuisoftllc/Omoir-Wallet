@@ -23,7 +23,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/margin_28"
-                    android:text="@string/wallet_settings_passphrase_title"
+                    android:text="@string/wallet_settings_hidden_wallet_title"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
@@ -67,7 +67,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent">
                         <EditText
-                            android:id="@+id/passphrase"
+                            android:id="@+id/hidden_wallet"
                             style="@style/TextStyle.Medium.14"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
@@ -127,11 +127,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintBottom_toTopOf="@+id/save"
+                    app:layout_constraintBottom_toTopOf="@+id/account_number"
                     app:layout_constraintTop_toBottomOf="@id/name_container"
                     app:layout_constraintEnd_toEndOf="parent"
                     android:layout_marginTop="@dimen/margin_64"
-                    android:layout_marginBottom="@dimen/horizontal_padding_size_large"
                     app:cardCornerRadius="@dimen/card_corner_radius"
                     android:layout_marginHorizontal="@dimen/margin_20"
                     app:layout_constraintVertical_bias="0.25">
@@ -163,6 +162,23 @@
                     app:layout_constraintBottom_toTopOf="@id/confirm_passphrase_container"
                     android:layout_marginBottom="@dimen/horizontal_padding_size"/>
 
+
+            <com.intuisoft.plaid.androidwrappers.SettingsItemView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:item_title="@string/wallet_settings_text_box_account"
+                app:item_subtitle="0 (Default)"
+                app:settings_variant="card"
+                app:show_chevron="true"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toTopOf="@+id/save"
+                app:layout_constraintTop_toBottomOf="@id/confirm_passphrase_container"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginTop="@dimen/margin_38"
+                android:layout_marginHorizontal="@dimen/margin_20"
+                android:layout_marginBottom="@dimen/horizontal_padding_size_large"
+                android:id="@+id/account_number"/>
+
                 <TextView
                     android:id="@+id/validation_error"
                     android:layout_width="wrap_content"
@@ -173,7 +189,7 @@
                     android:gravity="center"
                     android:visibility="gone"
                     style="@style/TextStyle.Regular.14"
-                    app:layout_constraintTop_toBottomOf="@id/confirm_passphrase_container"
+                    app:layout_constraintTop_toBottomOf="@id/account_number"
                     android:layout_marginTop="@dimen/margin_8"
                     android:textColor="@color/error_text_color"/>
 

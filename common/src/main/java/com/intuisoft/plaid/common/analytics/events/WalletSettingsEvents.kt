@@ -6,7 +6,7 @@ class EventWalletSettingsView: Event("wallet_settings_view", listOf())
 
 class EventWalletSettingsRenameWallet: Event("wallet_settings_rename_wallet", listOf())
 
-class EventWalletSettingsViewPassphrase: Event("wallet_settings_view_passphrase", listOf())
+class EventWalletSettingsViewHiddenWallet: Event("wallet_settings_view_hidden_wallet", listOf())
 
 class EventWalletSettingsSetPassphrase: Event("wallet_settings_set_passphrase", listOf())
 

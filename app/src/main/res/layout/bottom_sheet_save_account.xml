@@ -12,7 +12,7 @@
         android:id="@+id/bottom_sheet_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/save_address_title"
+        android:text="@string/saved_account_save_title"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -41,7 +41,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/white"
-            android:hint="@string/save_address_name_hint"
+            android:hint="@string/saved_account_bottom_sheet_info_hint_1"
             android:maxLength="25"
             android:maxLines="1"
             android:padding="@dimen/horizontal_padding_size"
@@ -56,7 +56,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/save_address_info_1"
+        android:text="@string/saved_account_bottom_sheet_info_1"
         style="@style/TextStyle.Semibold.12"
         app:layout_constraintStart_toStartOf="@id/name_container"
         app:layout_constraintBottom_toTopOf="@id/name_container"
@@ -88,12 +88,12 @@
         app:layout_constraintVertical_bias="0.25">
 
         <EditText
-            android:id="@+id/address"
+            android:id="@+id/account"
             style="@style/TextStyle.Medium.14"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/white"
-            android:hint="@string/withdraw_confirmation_address_suggestion"
+            android:hint="@string/saved_account_bottom_sheet_info_hint_2"
             android:maxLines="1"
             android:padding="@dimen/horizontal_padding_size"
             android:inputType="text"
@@ -101,15 +101,26 @@
             android:backgroundTint="@color/card_background_color"
             android:textColorHint="@color/edit_text_hint_color"
             android:textSize="14sp"
+            android:digits="0123456789"
+            android:maxLength="10"
             tools:ignore="TextContrastCheck,TouchTargetSizeCheck" />
     </androidx.cardview.widget.CardView>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/save_address_info_2"
+        android:text="@string/saved_account_bottom_sheet_info_2"
         style="@style/TextStyle.Semibold.12"
         app:layout_constraintStart_toStartOf="@id/address_container"
+        app:layout_constraintBottom_toTopOf="@id/address_container"
+        android:layout_marginBottom="@dimen/horizontal_padding_size"/>
+
+    <TextView
+        android:id="@+id/derivation_path"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/TextStyle.Semibold.12"
+        app:layout_constraintEnd_toEndOf="@id/address_container"
         app:layout_constraintBottom_toTopOf="@id/address_container"
         android:layout_marginBottom="@dimen/horizontal_padding_size"/>
 

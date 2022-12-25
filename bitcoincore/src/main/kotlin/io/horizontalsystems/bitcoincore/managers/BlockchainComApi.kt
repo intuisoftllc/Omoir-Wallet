@@ -26,8 +26,6 @@ class BlockchainComApi : IInitialSyncApi {
             if(BitcoinCore.loggingEnabled)  {
                 if(result.isNotEmpty())
                     Log.i(BlockchainComApi::class.java.simpleName,"Got transactions for requested address: $address")
-                else
-                    Log.e(BlockchainComApi::class.java.simpleName,"Failed to get transactions for requested address: $address")
             }
 
             result.forEach {

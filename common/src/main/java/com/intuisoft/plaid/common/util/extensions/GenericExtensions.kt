@@ -14,6 +14,8 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 import java.io.*
+import java.math.BigInteger
+import java.security.MessageDigest
 import java.security.SecureRandom
 import java.text.CharacterIterator
 import java.text.StringCharacterIterator
@@ -46,6 +48,35 @@ fun String.numOfCaseLetters(uppercase: Boolean): Int {
     }
 
     return letterCount
+}
+
+fun String.sha256(length: Int = 32): String {
+    val md = MessageDigest.getInstance("SHA-256")
+    return BigInteger(1, md.digest(toByteArray())).toString(16).padStart(length, '0')
+}
+
+fun String.charsAfter(ch: Char) : Int {
+    var charsFound = 0
+
+    this.forEachIndexed { index, c ->
+        if(c == ch) {
+            return this.length - (index + 1)
+        }
+    }
+
+    return 0
+}
+
+fun String.addChars(ch: Char, count: Int) : String {
+
+    var i = 0
+    var newStr = this
+    while(i < count) {
+        newStr += ch
+        i++
+    }
+
+    return newStr
 }
 
 fun Double.ignoreNan(): Double {

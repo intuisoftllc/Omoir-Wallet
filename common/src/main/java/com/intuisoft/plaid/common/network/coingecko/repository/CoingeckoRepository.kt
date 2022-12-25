@@ -152,6 +152,7 @@ interface CoingeckoRepository {
                     )
                 )
             } catch (t: Throwable) {
+                t.printStackTrace()
                 return Result.failure(t)
             }
         }
@@ -188,6 +189,7 @@ interface CoingeckoRepository {
                     data!!.prices.map { ChartDataModel(it[0].toLong(), it[1].toFloat()) }
                 )
             } catch (t: Throwable) {
+                t.printStackTrace()
                 return Result.failure(t)
             }
         }

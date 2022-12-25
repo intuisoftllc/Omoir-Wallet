@@ -29,42 +29,39 @@ class InitialSyncer(
     var listener: Listener? = null
 
     private val logger = Logger.getLogger("InitialSyncer")
-    private var syncJobs: CopyOnWriteArrayList<Job> = CopyOnWriteArrayList()
+    private var syncJob: Job? = null
 
     fun terminate() {
-        syncJobs.forEach {
-            it.cancel()
-        }
-
-        syncJobs.clear()
+        syncJob?.cancel()
+        syncJob = null
     }
 
     fun sync() {
-        val job = PlaidScope.IoScope.launch {
-            try {
-                blockDiscovery.discoverBlockHashes(this.coroutineContext.job).let { (publicKeys, blockHashes) ->
-                    val sortedUniqueBlockHashes = blockHashes.distinctBy { it.height }.sortedBy { it.height }
-                    handle(publicKeys, sortedUniqueBlockHashes)
-                }
-
-                syncJobs.remove { it == this.coroutineContext.job }
-            } catch (e: Throwable) {
-                handleError(e)
-                syncJobs.remove { it == this.coroutineContext.job }
-            }
+        syncJob = PlaidScope.IoScope.launch {
+            runDiscovery(this.coroutineContext.job)
+            syncJob = null
         }
-
-        syncJobs.add(job)
     }
 
-    private fun handle(keys: List<PublicKey>, blockHashes: List<BlockHash>) {
+    private suspend fun runDiscovery(job: Job) {
+        try {
+            blockDiscovery.discoverBlockHashes(job).let { (publicKeys, blockHashes) ->
+                val sortedUniqueBlockHashes = blockHashes.distinctBy { it.height }.sortedBy { it.height }
+                handle(job, publicKeys, sortedUniqueBlockHashes)
+            }
+        } catch (e: Throwable) {
+            handleError(e)
+        }
+    }
+
+    private suspend fun handle(job: Job, keys: List<PublicKey>, blockHashes: List<BlockHash>) {
         publicKeyManager.addKeys(keys)
 
         if (multiAccountPublicKeyFetcher != null) {
             if (blockHashes.isNotEmpty()) {
                 storage.addBlockHashes(blockHashes)
                 multiAccountPublicKeyFetcher.increaseAccount()
-                sync()
+                runDiscovery(job)
             } else {
                 handleSuccess()
             }

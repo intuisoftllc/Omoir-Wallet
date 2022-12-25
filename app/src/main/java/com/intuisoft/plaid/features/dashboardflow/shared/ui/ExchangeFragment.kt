@@ -333,7 +333,7 @@ class ExchangeFragment : ConfigurableFragment<FragmentExchangeBinding>(pinProtec
 
         bottomSheetDialog.setOnCancelListener {
             removeFromStack(bottomSheetDialog)
-            binding.confirm.enableButton(true)
+            binding?.confirm?.enableButton(true)
         }
 
         cancel.onClick {

@@ -7,7 +7,7 @@ import com.intuisoft.plaid.features.dashboardflow.pro.ui.HowDoesAtpWorkFragment
 import com.intuisoft.plaid.features.dashboardflow.pro.ui.WhatIsAtpFragment
 import com.intuisoft.plaid.features.dashboardflow.pro.ui.YourInFullControlFragment
 
-class AtpInfoAdapter(fa: FragmentActivity) : FragmentStateAdapter(fa) {
+class AtpInfoAdapter(frga: Fragment) : FragmentStateAdapter(frga) {
     // Returns total number of pages
     override fun getItemCount(): Int =  NUM_ITEMS
 

@@ -8,7 +8,7 @@ import com.intuisoft.plaid.features.createwallet.ui.NonCustodialWalletFragment
 import com.intuisoft.plaid.features.createwallet.ui.PrivateAndSecureWalletFragment
 import com.intuisoft.plaid.features.createwallet.ui.SwapCurrenciesWalletFragment
 
-class WalletBenefitsAdapter(fa: FragmentActivity) : FragmentStateAdapter(fa) {
+class WalletBenefitsAdapter(frag: Fragment) : FragmentStateAdapter(frag) {
     // Returns total number of pages
     override fun getItemCount(): Int =  NUM_ITEMS
 

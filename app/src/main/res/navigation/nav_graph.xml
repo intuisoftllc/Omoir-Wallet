@@ -308,6 +308,14 @@
     </fragment>
 
     <fragment
+        android:id="@+id/accountsFragment"
+        android:name="com.intuisoft.plaid.features.settings.ui.AccountsFragment"
+        android:label="@string/accounts_fragment_label"
+        tools:layout="@layout/fragment_accounts">
+
+    </fragment>
+
+    <fragment
         android:id="@+id/withdrawalTypeFragment"
         android:name="com.intuisoft.plaid.features.dashboardflow.shared.ui.WithdrawalTypeFragment"
         android:label="@string/withdrawal_type_fragment_label"

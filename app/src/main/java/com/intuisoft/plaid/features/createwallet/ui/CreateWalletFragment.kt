@@ -56,7 +56,7 @@ class CreateWalletFragment : ConfigurableFragment<FragmentCreateImportWalletBind
         }
 
         val adapter = WalletBenefitsAdapter(
-            requireActivity()
+           this
         )
 
         binding.importWallet.onClick {

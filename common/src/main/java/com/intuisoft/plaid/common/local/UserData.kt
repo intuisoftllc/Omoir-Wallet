@@ -36,6 +36,61 @@ class UserData {
             save()
         }
 
+    var savedAccountInfo: SavedAccountInfo =
+        SavedAccountInfo(
+            mutableListOf( // set initial pre-loaded account options
+                SavedAccountModel(
+                    accountName = "Default",
+                    account = 0,
+                    canDelete = false
+                ),
+                SavedAccountModel(
+                    accountName = "Passport H.W. - Post Mix",
+                    account = 2147483646,
+                    canDelete = true
+                ),
+                SavedAccountModel(
+                    accountName = "Samourai - Pre Mix",
+                    account = 2147483645,
+                    canDelete = true
+                ),
+                SavedAccountModel(
+                    accountName = "Samourai - Post Mix",
+                    account = 2147483646,
+                    canDelete = true
+                ),
+                SavedAccountModel(
+                    accountName = "Samourai - Bad Bank",
+                    account = 2147483644,
+                    canDelete = true
+                ),
+                SavedAccountModel(
+                    accountName = "Samourai - Ricochet",
+                    account = 2147483647,
+                    canDelete = true
+                ),
+                SavedAccountModel(
+                    accountName = "Sparrow Wallet - Pre Mix",
+                    account = 2147483645,
+                    canDelete = true
+                ),
+                SavedAccountModel(
+                    accountName = "Sparrow Wallet - Post Mix",
+                    account = 2147483646,
+                    canDelete = true
+                ),
+                SavedAccountModel(
+                    accountName = "Sparrow Wallet - Bad Bank",
+                    account = 2147483644,
+                    canDelete = true
+                )
+            )
+        )
+        set(value) {
+            field = value
+            save()
+        }
+
     var lastCheckPin: Long = 0
         set(value) {
             field = value

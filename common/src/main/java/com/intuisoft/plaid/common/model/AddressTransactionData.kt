@@ -7,7 +7,7 @@ data class AddressTransactionData(
 
 data class TxOutput(
     val script: String,
-    val address: String,
+    val address: String?,
 )
 
 data class TxStatus(

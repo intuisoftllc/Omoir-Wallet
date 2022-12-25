@@ -8,6 +8,7 @@ import com.intuisoft.plaid.features.dashboardflow.shared.viewModel.*
 import com.intuisoft.plaid.features.homescreen.shared.viewmodel.HomeScreenViewModel
 import com.intuisoft.plaid.features.onboarding.viewmodel.OnboardingViewModel
 import com.intuisoft.plaid.features.pin.viewmodel.PinViewModel
+import com.intuisoft.plaid.features.settings.viewmodel.AccountsViewModel
 import com.intuisoft.plaid.features.settings.viewmodel.AddressBookViewModel
 import com.intuisoft.plaid.features.settings.viewmodel.SettingsViewModel
 import com.intuisoft.plaid.features.splash.viewmodel.SplashViewModel
@@ -110,5 +111,9 @@ val viewModelModule = module {
 
     viewModel {
         ExportOptionsViewModel(get(), get(), get(), get())
+    }
+
+    viewModel {
+        AccountsViewModel(get(), get(), get(), get())
     }
 }

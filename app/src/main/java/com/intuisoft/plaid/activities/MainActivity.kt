@@ -3,7 +3,6 @@ package com.intuisoft.plaid.activities
 import android.app.Activity
 import android.content.Intent
 import android.content.IntentFilter
-import android.os.Build
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -15,15 +14,19 @@ import androidx.core.view.isVisible
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.*
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.navigateUp
+import com.google.gson.Gson
 import com.intuisoft.plaid.PlaidApp
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.*
 import com.intuisoft.plaid.common.CommonService
 import com.intuisoft.plaid.common.model.AppTheme
-import com.intuisoft.plaid.common.model.DevicePerformanceLevel
+import com.intuisoft.plaid.common.model.HiddenWalletModel
+import com.intuisoft.plaid.common.model.StoredHiddenWalletsModel
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.common.util.Constants
+import com.intuisoft.plaid.common.util.Constants.Navigation.PASSPHRASES
 import com.intuisoft.plaid.common.util.extensions.remove
 import com.intuisoft.plaid.common.util.extensions.toArrayList
 import com.intuisoft.plaid.databinding.ActivityMainBinding
@@ -83,6 +86,20 @@ class MainActivity : BindingActivity<ActivityMainBinding>(), ActionBarDelegate {
 
             if(supportFragmentManager.currentNavigationFragment !is SplashFragment) {
                 listener?.onNetworkStateChanged(it)
+            }
+        }
+
+        if (savedInstanceState == null) {
+            val extras = intent.extras
+            val passphrases: String? = extras?.getString(PASSPHRASES)
+            passphrases?.let {
+                val list: List<Pair<String, HiddenWalletModel?>> = Gson().fromJson(it, StoredHiddenWalletsModel::class.java).hiddenWallets
+                val map = mutableMapOf<String, HiddenWalletModel?>()
+                list.forEach {
+                    map.put(it.first, it.second)
+                }
+
+                walletManager.setInitialHiddenWallets(map)
             }
         }
 

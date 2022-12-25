@@ -160,7 +160,7 @@ class AddressBookFragment : ConfigurableFragment<FragmentAddressBookBinding>(
     }
 
     override fun navigationId(): Int {
-        return R.id.appearanceFragment
+        return R.id.addressBookFragment
     }
 
     companion object {

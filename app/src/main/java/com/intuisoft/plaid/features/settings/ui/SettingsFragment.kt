@@ -174,7 +174,7 @@ class SettingsFragment : ConfigurableFragment<FragmentSettingsBinding>(
                                 context = requireContext(),
                                 title = getString(R.string.low_pin_entry_title),
                                 subtitle = getString(R.string.low_pin_entry_subtitle),
-                                positive = getString(R.string.low_pin_entry_positive_button),
+                                positive = getString(R.string.i_understand_the_risks),
                                 negative = getString(R.string.cancel),
                                 positiveTint = 0,
                                 onPositive = {
@@ -384,6 +384,14 @@ class SettingsFragment : ConfigurableFragment<FragmentSettingsBinding>(
             eventTracker.log(EventSettingsViewAddressBook())
             navigate(
                 R.id.addressBookFragment,
+                Constants.Navigation.ANIMATED_ENTER_EXIT_RIGHT_NAV_OPTION
+            )
+        }
+
+        binding.accounts.onClick {
+            eventTracker.log(EventSettingsViewAccounts())
+            navigate(
+                R.id.accountsFragment,
                 Constants.Navigation.ANIMATED_ENTER_EXIT_RIGHT_NAV_OPTION
             )
         }

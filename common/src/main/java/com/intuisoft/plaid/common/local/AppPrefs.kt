@@ -19,6 +19,7 @@ class AppPrefs(
         const val ALIAS_KEY = "ALIAS_KEY"
         const val APP_THEME = "APP_THEME"
         const val HIDE_HIDDEN_WALLETS = "HIDE_HIDDEN_WALLETS"
+        const val DERIVATION_PATH_CHANGE_WARNING = "DERIVATION_PATH_CHANGE_WARNING"
     }
 
     var onboardingFinished: Boolean
@@ -60,6 +61,14 @@ class AppPrefs(
         }
         set(enable) {
             putBool(HIDE_HIDDEN_WALLETS, enable)
+        }
+
+    var showDerivationPathChangeWarning: Boolean
+        get() {
+            return getBool(DERIVATION_PATH_CHANGE_WARNING, true)
+        }
+        set(enable) {
+            putBool(DERIVATION_PATH_CHANGE_WARNING, enable)
         }
 
     var incorrectPinAttempts: Int

@@ -160,6 +160,34 @@ class LocalStoreRepository_Impl(
         CommonService.getUserData()!!.savedAddressInfo = SavedAddressInfo(addressess)
     }
 
+    override fun getSavedAccounts(): List<SavedAccountModel> {
+        return CommonService.getUserData()!!.savedAccountInfo.savedAccounts
+    }
+
+    override fun deleteSavedAccount(name: String) {
+        val accounts = CommonService.getUserData()!!.savedAccountInfo.savedAccounts
+        accounts.remove { it.accountName == name }
+
+        CommonService.getUserData()!!.savedAccountInfo = SavedAccountInfo(accounts)
+    }
+
+    override fun updateSavedAccount(oldName: String, account: Int, name: String) {
+        val accounts = CommonService.getUserData()!!.savedAccountInfo.savedAccounts
+        accounts.find { it.accountName == oldName }?.let {
+            it.account = account
+            it.accountName = name
+        }
+
+        CommonService.getUserData()!!.savedAccountInfo = SavedAccountInfo(accounts)
+    }
+
+    override fun saveAccount(name: String, account: Int) {
+        val accounts = CommonService.getUserData()!!.savedAccountInfo.savedAccounts
+        accounts.add(SavedAccountModel(name, account, true))
+
+        CommonService.getUserData()!!.savedAccountInfo = SavedAccountInfo(accounts)
+    }
+
     override fun saveBaseWalletSeed(words: List<String>) {
         CommonService.getUserData()!!.baseWalletSeed = words.joinToString(" ")
     }
@@ -317,6 +345,14 @@ class LocalStoreRepository_Impl(
 
     override fun setFingerprintEnabled(enabled: Boolean) {
         appPrefs.fingerprintSecurity = enabled
+    }
+
+    override fun showDerivationPathChangeWarning(): Boolean {
+        return appPrefs.showDerivationPathChangeWarning
+    }
+
+    override fun setShowDerivationPathChangeWarning(show: Boolean) {
+        appPrefs.showDerivationPathChangeWarning = show
     }
 
     override fun isFingerprintEnabled(): Boolean {

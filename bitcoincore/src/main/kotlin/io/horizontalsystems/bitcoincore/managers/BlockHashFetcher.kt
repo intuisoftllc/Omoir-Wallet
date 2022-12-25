@@ -68,4 +68,4 @@ class BlockHashFetcherHelper {
 }
 
 data class TransactionItem(val blockHash: String, val blockHeight: Int, val txOutputs: List<TransactionOutputItem>)
-data class TransactionOutputItem(val script: String, val address: String)
+data class TransactionOutputItem(val script: String, val address: String?)

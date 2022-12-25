@@ -600,7 +600,8 @@ class BitcoinCore(
     }
 
     fun receiveAddress(): String {
-        return addressConverter.convert(publicKeyManager.receivePublicKey(), purpose.scriptType).string
+        val key = publicKeyManager.receivePublicKey()
+        return addressConverter.convert(key, purpose.scriptType).string + " : " + key.index
     }
 
     fun receiveAddresses(): List<String> {

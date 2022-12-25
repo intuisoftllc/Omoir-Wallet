@@ -196,7 +196,7 @@ class SyncManager(
                 var resync = false
 
                 _wallets
-                    .splitIntoGroupOf(3) // sync 3 wallets at the same time
+                    .splitIntoGroupOf(2) // sync 2 wallets at the same time
                     .forEach { group ->
                         group.items.forEach {
                             syncInternal(it)

@@ -3,9 +3,10 @@ package com.intuisoft.plaid.model
 import android.content.Context
 import android.widget.TextView
 import com.intuisoft.plaid.R
+import com.intuisoft.plaid.common.model.HiddenWalletModel
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.common.util.SimpleCoinNumberFormat
-import com.intuisoft.plaid.util.entensions.sha256
+import com.intuisoft.plaid.common.util.extensions.sha256
 import com.intuisoft.plaid.walletmanager.WalletIdentifier
 import io.horizontalsystems.bitcoincore.storage.UnspentOutput
 import io.horizontalsystems.bitcoinkit.BitcoinKit
@@ -34,6 +35,8 @@ data class LocalWalletModel(
 
     val syncPercentage: Int
         get() = (walletKit!!.syncState.syncPercentage() * 100).toInt()
+
+    var lastSyncPercentage = -1
 
     fun walletStateOrType(
         walletState: TextView,
@@ -125,11 +128,11 @@ data class LocalWalletModel(
 
     companion object {
 
-        fun consume(walletIdentifier: WalletIdentifier, passphrase: String): LocalWalletModel =
+        fun consume(walletIdentifier: WalletIdentifier, hiddenWallet: HiddenWalletModel?): LocalWalletModel =
             LocalWalletModel(
                 name = walletIdentifier.name,
                 uuid = walletIdentifier.walletUUID,
-                hashId = (walletIdentifier.walletUUID + passphrase).sha256(),
+                hashId = hiddenWallet?.uuid ?: walletIdentifier.walletUUID.sha256(),
                 testNetWallet = walletIdentifier.isTestNet,
             )
     }

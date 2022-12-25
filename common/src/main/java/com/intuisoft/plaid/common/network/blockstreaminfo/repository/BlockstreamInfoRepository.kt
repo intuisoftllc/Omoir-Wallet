@@ -46,7 +46,7 @@ interface BlockstreamInfoRepository {
                     if(txs!!.isEmpty()) break
                     lastTxId = txs.last().txid
 
-                    txs.map {
+                    txs.forEach {
                         data.add(
                             AddressTransactionData(
                                 status = TxStatus(
@@ -62,8 +62,13 @@ interface BlockstreamInfoRepository {
                             )
                         )
                     }
+
+                    val confirmed = txs.count { it.status.block_height != null }
+                    if(confirmed < 25) break
                 }
-            } catch (t: Throwable) {}
+            } catch (t: Throwable) {
+                t.printStackTrace()
+            }
 
             return Result.success(data)
         }

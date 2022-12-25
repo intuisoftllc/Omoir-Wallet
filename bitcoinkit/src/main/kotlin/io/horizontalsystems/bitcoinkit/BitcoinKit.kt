@@ -76,6 +76,33 @@ class BitcoinKit : AbstractKit {
         purpose: Purpose = Purpose.BIP44
     ) : this(context, Mnemonic().toSeed(words, passphrase), walletId, networkType, peerSize, gapLimit, syncMode, confirmationsThreshold, purpose)
 
+    /**
+     * @constructor Creates and initializes the BitcoinKit
+     * @param context The Android context.
+     * @param words A list of words of type String.
+     * @param walletAccount Specified account number of the wallet.
+     * @param passphrase The passphrase to the wallet.
+     * @param walletId an arbitrary ID of type String.
+     * @param networkType The network type. The default is MainNet
+     * @param peerSize The # of peer-nodes required. The default is 10 peers.
+     * @param syncMode How the kit syncs with the blockchain. Default is SyncMode.Api().
+     * @param confirmationsThreshold How many confirmations required to be considered confirmed. Default is 6 confirmations.
+     * @param purpose which BIP algorithm to use for wallet generation. Default is BIP44.
+     */
+    constructor(
+        context: Context,
+        words: List<String>,
+        walletAccount: Int = 0,
+        passphrase: String,
+        walletId: String,
+        networkType: NetworkType = NetworkType.MainNet,
+        peerSize: Int = 10,
+        gapLimit: Int = 20,
+        syncMode: SyncMode = SyncMode.Api(),
+        confirmationsThreshold: Int = 6,
+        purpose: Purpose = Purpose.BIP44
+    ) : this(context, HDExtendedKey(Mnemonic().toSeed(words, passphrase), "m/${purpose.value}'/0'/$walletAccount'", purpose), walletId, networkType, peerSize, gapLimit, syncMode, confirmationsThreshold)
+
 
     /**
      * @constructor Creates and initializes the BitcoinKit

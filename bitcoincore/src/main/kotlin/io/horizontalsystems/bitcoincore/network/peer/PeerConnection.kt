@@ -11,6 +11,7 @@ import io.horizontalsystems.bitcoincore.utils.NetworkUtils
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.yield
 import java.io.InputStream
 import java.io.OutputStream
 import java.net.InetAddress
@@ -94,9 +95,8 @@ class PeerConnection(
         }
     }
 
-    @OptIn(DelicateCoroutinesApi::class)
     fun sendMessage(message: IMessage) {
-        PlaidScope.GlobalScope.launch {
+        PlaidScope.IoScope.launch {
             synchronized(this@PeerConnection) {
                 if (isRunning.get()) {
                     try {

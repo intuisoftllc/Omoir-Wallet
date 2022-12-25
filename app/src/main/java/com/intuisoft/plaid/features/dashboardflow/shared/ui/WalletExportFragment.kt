@@ -28,11 +28,11 @@ import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.common.util.RateConverter
 import com.intuisoft.plaid.common.util.SimpleCurrencyFormat
+import com.intuisoft.plaid.common.util.extensions.charsAfter
 import com.intuisoft.plaid.common.util.extensions.containsNumbers
 import com.intuisoft.plaid.common.util.extensions.deleteAt
 import com.intuisoft.plaid.databinding.FragmentWalletExportBinding
 import com.intuisoft.plaid.features.dashboardflow.shared.viewModel.WalletExportViewModel
-import com.intuisoft.plaid.util.entensions.charsAfter
 import com.intuisoft.plaid.util.fragmentconfig.ConfigQrDisplayData
 import io.horizontalsystems.bitcoincore.models.BitcoinPaymentData
 import org.koin.android.ext.android.inject
