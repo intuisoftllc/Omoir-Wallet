@@ -1,13 +1,14 @@
 package com.intuisoft.plaid.common.repositories
 
+import com.intuisoft.plaid.common.local.db.SupportedCurrency
 import com.intuisoft.plaid.common.local.memorycache.MemoryCache
 import com.intuisoft.plaid.common.model.*
 import com.intuisoft.plaid.common.network.blockchair.repository.*
 import com.intuisoft.plaid.common.network.blockstreaminfo.repository.BlockstreamInfoRepository
 import com.intuisoft.plaid.common.network.blockchair.response.SupportedCurrencyModel
 import com.intuisoft.plaid.common.util.Constants
-import com.intuisoft.plaid.common.util.Constants.Strings.BTC_TICKER
 import kotlinx.coroutines.runBlocking
+import java.time.Instant
 
 
 class ApiRepository_Impl(
@@ -16,7 +17,7 @@ class ApiRepository_Impl(
     private val testNetBlockchairRepository: BlockchairRepository,
     private val blockchainInfoRepository: BlockchainInfoRepository,
     private val coingeckoRepository: CoingeckoRepository,
-    private val simpleSwapRepository: SimpleSwapRepository,
+    private val changeNowRepository: ChangeNowRepository,
     private val blockstreamInfoRepository: BlockstreamInfoRepository,
     private val blockstreamInfoTestNetRepository: BlockstreamInfoRepository,
     private val memoryCache: MemoryCache
@@ -32,28 +33,20 @@ class ApiRepository_Impl(
     }
 
     override suspend fun getRateFor(currencyCode: String): BasicPriceDataModel {
-        val rate = localStoreRepository.getRateFor(currencyCode)
-
-        if(rate == null) {
-            updateBasicPriceData()
-            return localStoreRepository.getRateFor(currencyCode)
-                ?: BasicPriceDataModel(0.0, 0.0, 0.0, localStoreRepository.getLocalCurrency())
-        } else return rate
+        updateBasicPriceData()
+        return localStoreRepository.getRateFor(currencyCode)
+            ?: BasicPriceDataModel(0.0, 0.0, 0.0, localStoreRepository.getLocalCurrency())
     }
 
-    override suspend fun getSupportedCurrencies(fixed: Boolean): List<SupportedCurrencyModel> {
-        val supportedCurrencies = localStoreRepository.getSupportedCurrenciesData(fixed)
-
-        if(supportedCurrencies.isEmpty()) {
-            updateSupportedCurrenciesData()
-            return localStoreRepository.getSupportedCurrenciesData(fixed)
-        } else return supportedCurrencies
+    override suspend fun getSupportedCurrencies(): List<SupportedCurrencyModel> {
+        updateSupportedCurrenciesData()
+        return localStoreRepository.getSupportedCurrenciesData()
     }
 
     /* On-Demand Call */
-    override suspend fun getCurrencyRangeLimit(from: String, to: String, fixed: Boolean): CurrencyRangeLimitModel? {
-        updateCurrencyRangeLimitData(from, to, fixed)
-        return memoryCache.getCurrencySwapRangeLimit(from, to, fixed)
+    override suspend fun getCurrencyRangeLimit(from: SupportedCurrencyModel, to: SupportedCurrencyModel): CurrencyRangeLimitModel? {
+        updateCurrencyRangeLimitData(from, to)
+        return memoryCache.getCurrencySwapRangeLimit(from, to)
     }
 
     /* On-Demand Call */
@@ -100,10 +93,17 @@ class ApiRepository_Impl(
     }
 
     /* On-Demand Call */
+    override fun isAddressValid(currency: SupportedCurrencyModel, address: String): Boolean {
+        return runBlocking {
+            return@runBlocking changeNowRepository.isAddressValid(currency, address).getOrNull() ?: false
+        }
+    }
+
+    /* On-Demand Call */
     override suspend fun createExchange(
-        fixed: Boolean,
-        from: String,
-        to: String,
+        from: SupportedCurrencyModel,
+        to: SupportedCurrencyModel,
+        rateId: String?,
         receiveAddress: String,
         receiveAddressMemo: String,
         refundAddress: String,
@@ -112,11 +112,12 @@ class ApiRepository_Impl(
         walletId: String
     ): ExchangeInfoDataModel? {
         updateSupportedCurrenciesData()
-        val supportedCurrencies = localStoreRepository.getSupportedCurrenciesData(false) +
-                localStoreRepository.getSupportedCurrenciesData(true)
+        val supportedCurrencies = localStoreRepository.getSupportedCurrenciesData() +
+                localStoreRepository.getSupportedCurrenciesData()
 
         if(supportedCurrencies.isNotEmpty()) {
-            val result = simpleSwapRepository.createExchange(fixed, from, to, receiveAddress, receiveAddressMemo, refundAddress, refundAddressMemo, amount)
+            val result = changeNowRepository.createExchange(
+                from, to, rateId, receiveAddress, receiveAddressMemo, refundAddress, refundAddressMemo, amount)
 
             if(result.isSuccess) {
                 val data = result.getOrThrow()
@@ -141,33 +142,47 @@ class ApiRepository_Impl(
         walletId: String
     ): ExchangeInfoDataModel? {
         updateSupportedCurrenciesData()
-        val supportedCurrencies = localStoreRepository.getSupportedCurrenciesData(false) +
-                localStoreRepository.getSupportedCurrenciesData(true)
+        val supportedCurrencies = localStoreRepository.getSupportedCurrenciesData() +
+                localStoreRepository.getSupportedCurrenciesData()
 
-        if(supportedCurrencies.isNotEmpty()) {
+        val data = localStoreRepository.getExchangeById(id)
+
+        if(data != null
+            && (data.status != "failed" && data.status != "finished" && data.status != "refunded") // this is really bad need a better way than this
+            && supportedCurrencies.isNotEmpty()) {
             updateExchangeData(id, walletId)
-            val data = localStoreRepository.getExchangeById(id)
 
-            if(data != null) {
-                val toCurrency = supportedCurrencies.find { it.ticker == data.toShort.lowercase() }
-                val fromCurrency = supportedCurrencies.find { it.ticker == data.fromShort.lowercase() }
+            if (data != null) {
+                val toCurrency =
+                    supportedCurrencies.find { it.ticker == data.toShort.lowercase() }
+                val fromCurrency =
+                    supportedCurrencies.find { it.ticker == data.fromShort.lowercase() }
 
                 if (toCurrency != null && fromCurrency != null) {
                     data.to = toCurrency.name + " (${data.toShort})"
                     data.from = fromCurrency.name + " (${data.fromShort})"
                     localStoreRepository.saveExchangeData(data, walletId)
-                    return data
                 }
             }
         }
 
-        return null
+        return data
     }
 
     /* On-Demand Call */
-    override suspend fun getConversion(from: String, to: String, fixed: Boolean): Double {
-        updateWholeCoinConversionData(if(from == BTC_TICKER) to else from, fixed)
-        return memoryCache.getWholeCoinConversion(if(from == BTC_TICKER) to else from, from == BTC_TICKER, fixed) ?: 0.0
+    override suspend fun getEstimatedAmount(
+        from: SupportedCurrencyModel,
+        to: SupportedCurrencyModel,
+        sendAmount: Double
+    ): EstimatedReceiveAmountModel {
+        if(sendAmount == 0.0) return EstimatedReceiveAmountModel("", Instant.now(), 0.0)
+        val amount = changeNowRepository.getEstimatedReceiveAmount(from, to, sendAmount)
+
+        return if(amount.isSuccess) {
+            amount.getOrThrow()
+        } else {
+            EstimatedReceiveAmountModel("", Instant.now(), 0.0)
+        }
     }
 
     /* On-Demand Call */ // testnet only!!!
@@ -250,22 +265,11 @@ class ApiRepository_Impl(
 
     private suspend fun updateSupportedCurrenciesData() {
         if((System.currentTimeMillis() - localStoreRepository.getLastSupportedCurrenciesUpdateTime()) > Constants.Time.GENERAL_CACHE_UPDATE_TIME) {
-            val supportedCurrencies = simpleSwapRepository.getAllSupportedCurrencies()
-            val fixedPairs = simpleSwapRepository.getAllPairs(true)
-            val floatingPairs = simpleSwapRepository.getAllPairs(false)
+            val supportedCurrencies = changeNowRepository.getAllSupportedCurrencies()
 
-            if(supportedCurrencies.isSuccess && fixedPairs.isSuccess && floatingPairs.isSuccess) {
+            if(supportedCurrencies.isSuccess) {
                 localStoreRepository.setSupportedCurrenciesData(
-                    supportedCurrencies!!.getOrThrow().filter { supportedCurrency ->
-                        fixedPairs.getOrThrow().find { it == supportedCurrency.ticker } != null
-                    },
-                    true
-                )
-                localStoreRepository.setSupportedCurrenciesData(
-                    supportedCurrencies!!.getOrThrow().filter { supportedCurrency ->
-                        floatingPairs.getOrThrow().find { it == supportedCurrency.ticker } != null
-                    },
-                    false
+                    supportedCurrencies.getOrThrow()
                 )
                 localStoreRepository.setLastSupportedCurrenciesUpdate(System.currentTimeMillis())
             }
@@ -274,7 +278,7 @@ class ApiRepository_Impl(
 
     private suspend fun updateExchangeData(id: String, walletId: String) {
         if((System.currentTimeMillis() - memoryCache.getLastExchangeUpdateTime(id)) > Constants.Time.GENERAL_CACHE_UPDATE_TIME_XTRA_SHORT) {
-            val exchange = simpleSwapRepository.getExchange(id)
+            val exchange = changeNowRepository.getExchange(id)
 
             if(exchange.isSuccess) {
                 localStoreRepository.saveExchangeData(exchange.getOrThrow(), walletId)
@@ -283,12 +287,12 @@ class ApiRepository_Impl(
         }
     }
 
-    private suspend fun updateCurrencyRangeLimitData(from: String, to: String, fixed: Boolean) {
-        if((System.currentTimeMillis() - (memoryCache.getLastCurrencySwapRangeLimitUpdateTime(from, to, fixed) ?: 0)) > Constants.Time.GENERAL_CACHE_UPDATE_TIME_SHORT) {
-            val rangeLimit = simpleSwapRepository.getRangeFor(fixed, from, to)
+    private suspend fun updateCurrencyRangeLimitData(from: SupportedCurrencyModel, to: SupportedCurrencyModel) {
+        if((System.currentTimeMillis() - (memoryCache.getLastCurrencySwapRangeLimitUpdateTime(from, to) ?: 0)) > Constants.Time.GENERAL_CACHE_UPDATE_TIME_SHORT) {
+            val rangeLimit = changeNowRepository.getRangeFor(from, to)
 
             if(rangeLimit.isSuccess) {
-                memoryCache.setCurrencySwapRangeLimit(from, to, fixed, System.currentTimeMillis(), rangeLimit.getOrThrow())
+                memoryCache.setCurrencySwapRangeLimit(from, to, System.currentTimeMillis(), rangeLimit.getOrThrow())
             }
         }
     }
@@ -362,31 +366,6 @@ class ApiRepository_Impl(
                 )
 
                 memoryCache.setChartPriceUpdateTime(intervalType, System.currentTimeMillis())
-            }
-        }
-    }
-
-    private suspend fun updateWholeCoinConversionData(altCoin: String, fixed: Boolean) {
-        if(((System.currentTimeMillis() - memoryCache.getLastWholeCoinConversionUpdateTime(altCoin, fixed)) > Constants.Time.GENERAL_CACHE_UPDATE_TIME_SHORT)
-            || !memoryCache.hasWholeCoinConversion(altCoin, fixed)) {
-            val range = getCurrencyRangeLimit(BTC_TICKER, altCoin, fixed)
-
-            if(range != null) {
-                val max = range.max?.toDouble()
-
-                if(max == null || max >= 1.0) {
-                    val amount = simpleSwapRepository.getEstimatedReceiveAmount(fixed, BTC_TICKER, altCoin, 1.0)
-
-                    if(amount.isSuccess) {
-                        memoryCache.setWholeCoinConversion(altCoin, amount.getOrThrow(), fixed, System.currentTimeMillis())
-                    }
-                } else {
-                    val amount = simpleSwapRepository.getEstimatedReceiveAmount(fixed, BTC_TICKER, altCoin, max)
-
-                    if(amount.isSuccess) {
-                        memoryCache.setWholeCoinConversion(altCoin, amount.getOrThrow() * (100 / (max * 100)), fixed, System.currentTimeMillis())
-                    }
-                }
             }
         }
     }

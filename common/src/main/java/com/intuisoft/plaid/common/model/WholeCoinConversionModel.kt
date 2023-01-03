@@ -1,6 +1,7 @@
 package com.intuisoft.plaid.common.model
 
 data class WholeCoinConversionModel(
-    val altCoin: String,
+    val from: String,
+    val to: String,
     val conversion: Double
 )

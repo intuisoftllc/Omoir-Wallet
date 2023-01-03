@@ -43,6 +43,7 @@
             android:backgroundTint="@color/card_background_color"
             android:maxLines="1"
             android:padding="@dimen/horizontal_padding_size"
+            android:hint="@string/swap_deposit_address_entry_hint"
             android:inputType="text"
             android:textColorHint="@color/edit_text_hint_color"
             android:textSize="14sp"
@@ -83,6 +84,7 @@
             android:maxLines="1"
             android:padding="@dimen/horizontal_padding_size"
             android:inputType="text"
+            android:hint="@string/swap_deposit_address_entry_hint"
             android:textColorHint="@color/edit_text_hint_color"
             android:textSize="14sp"
             tools:ignore="TextContrastCheck,TouchTargetSizeCheck" />

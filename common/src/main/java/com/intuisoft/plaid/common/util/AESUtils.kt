@@ -11,16 +11,17 @@ object AESUtils {
         if(password.isEmpty() || password.isBlank())
             return mutableListOf()
 
+        val keySize = 32
         val salted = password + salt
-        val paddingByte = (salted[0].code + 24).toByte()
+        val paddingByte = (salted[password.length / 2].code + 24).toByte()
         var passwordKey = mutableListOf<Byte>()
 
         var x = 0
-        var y = 0
-        while(x < 16) {
+        var y: Int
+        while(x < keySize) {
             if(x > 0 && (x % salted.length) == 0 && passwordKey.last() != paddingByte) {
                 y = 0
-                while(y < salted.length && x < 16) {
+                while(y < salted.length && x < keySize) {
                     passwordKey.add(paddingByte)
                     y++
                     x++

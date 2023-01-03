@@ -65,7 +65,7 @@ abstract class BindingFragment<T: ViewBinding> : Fragment(), FragmentActionBarDe
 
     override fun onNetworkStateChanged(hasNetwork: Boolean) {
         if(!hasNetwork) {
-            Toast.makeText(requireContext(), getString(R.string.no_connection), Toast.LENGTH_LONG).show()
+            Toast.makeText(requireContext(), getString(R.string.no_connection), Toast.LENGTH_SHORT).show()
         }
     }
 

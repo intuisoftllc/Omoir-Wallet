@@ -26,14 +26,14 @@ class PlaidApp : Application(), Application.ActivityLifecycleCallbacks, KoinComp
         CommonService.create(
             this,
             BuildConfig.BLOCKCHAIR_CLIENT_SECRET,
-            BuildConfig.SIMPLE_SWAP_CLIENT_SECRET,
+            BuildConfig.CHANGE_NOW_CLIENT_SECRET,
             BuildConfig.BLOCKSTREAM_INFO_SERVER_URL,
             BuildConfig.BLOCKSTREAM_INFO_TEST_NET_SERVER_URL,
             BuildConfig.BLOCKCHAIR_SERVER_URL,
             BuildConfig.BLOCKCHAIR_TESTNET_SERVER_URL,
             BuildConfig.BLOCKCHAIN_INFO_SERVER_URL,
             BuildConfig.COIN_GECKO_SERVER_URL,
-            BuildConfig.SIMPLE_SWAP_SERVER_URL,
+            BuildConfig.CHANGE_NOW_SERVER_URL,
             BuildConfig.WALLET_SECRET
         )
 
@@ -74,6 +74,7 @@ class PlaidApp : Application(), Application.ActivityLifecycleCallbacks, KoinComp
             if(!ignorePinCheck &&
                 (preferences?.pinTimeout == Constants.Time.INSTANT_TIME_OFFSET
                         || (CommonService.getUserData() != null && (time - CommonService.getUserData()!!.lastCheckPin) > CommonService.getUserData()!!.pinTimeout))) {
+                preferences?.lastCheckPin = 0
                 preferences?.lastCheckPin = 0
             }
         }

@@ -1,6 +1,7 @@
 package com.intuisoft.plaid.walletmanager
 
 import android.app.Application
+import androidx.work.Operation.State.IN_PROGRESS
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.common.model.*
 import com.intuisoft.plaid.common.repositories.ApiRepository
@@ -78,20 +79,28 @@ class AtpManager(
         job: Job?
     ): Boolean {
         if(!NetworkUtil.hasInternet(application)) return false
-
         if(transfer.status != AssetTransferStatus.CANCELLED &&
                 (lastBatch == null || (lastBatch.status.id in AssetTransferStatus.IN_PROGRESS.id..AssetTransferStatus.CANCELLED.id))) {
 
-            if(lastBatch != null && (transfer.batchGap > 0 && lastBatch.completionHeight == 0 || ((wallet.walletKit!!.lastBlockInfo?.height ?: 0) < (transfer.batchGap + lastBatch.completionHeight)))) {
-                    if(lastBatch.status.id in AssetTransferStatus.PARTIALLY_COMPLETED.id..AssetTransferStatus.CANCELLED.id) {
-                        batch.status = AssetTransferStatus.WAITING
-                        batch.blocksRemaining = (transfer.batchGap + lastBatch.completionHeight) - (wallet.walletKit!!.lastBlockInfo?.height ?: 0)
-                        localStoreRepository.setBatchData(batch)
+            lastBatch?.apply {
+                when {
+                    transfer.batchGap == 0 ||
+                    status !in AssetTransferStatus.PARTIALLY_COMPLETED .. AssetTransferStatus.COMPLETED -> {
+                        batch.blocksRemaining = 0
                     }
 
+                    else -> {
+                        batch.blocksRemaining = (transfer.batchGap + completionHeight) - (wallet.walletKit!!.lastBlockInfo?.height ?: 0)
+                    }
+                }
+
+                if(batch.blocksRemaining > 0) {
+                    batch.status = AssetTransferStatus.WAITING
+                    localStoreRepository.setBatchData(batch)
                     return false
-            } else if(lastBatch?.status == AssetTransferStatus.IN_PROGRESS) {
-                return false
+                } else if(status == AssetTransferStatus.IN_PROGRESS) {
+                    return false
+                }
             }
 
             when (batch.status) {
@@ -270,7 +279,7 @@ class AtpManager(
         val transfers = localStoreRepository.getAllAssetTransfers(wallet.uuid)
         var utxoSent = false
 
-        transfers.firstOrNull {
+        transfers.lastOrNull {
             it.status == AssetTransferStatus.WAITING
                     || it.status == AssetTransferStatus.IN_PROGRESS || it.status == AssetTransferStatus.NOT_STARTED
         }?.let { // run the most recent executing transfer to prevent "hacking" the protocol by creating many 50 utxo single batch transfers

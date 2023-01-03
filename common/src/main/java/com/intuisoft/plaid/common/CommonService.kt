@@ -45,7 +45,7 @@ object CommonService {
     private var coingeckoRepository: CoingeckoRepository? = null
     private var testNetBlockchairRepository: BlockchairRepository? = null
     private var databaseRepository: DatabaseRepository? = null
-    private var simpleSwapRepository: SimpleSwapRepository? = null
+    private var changeNowRepository: ChangeNowRepository? = null
     private var memoryCache: MemoryCache? = null
     private var eventTracker: EventTracker? = null
     private var application: Application? = null
@@ -56,8 +56,8 @@ object CommonService {
     private var blockstreamInfoApiUrl: String? = ""
     private var blockstreamInfoTestNetApiUrl: String? = ""
     private var coingeckoApiUrl: String? = ""
-    private var simpleSwapApiUrl: String? = ""
-    private var simpleSwapClientSecret: String? = ""
+    private var changeNowApiUrl: String? = ""
+    private var changeNowSecret: String? = ""
     private var localPin: String = ""
     private var walletSecret: String = ""
 
@@ -113,7 +113,7 @@ object CommonService {
                 getBlockstreamInfoRepositoryInstance(),
                 getBlockstreamInfoTestNetRepositoryInstance(),
                 getCoingeckoRepositoryInstance(),
-                getSimpleSwapRepositoryInstance(),
+                getChangeNowRepositoryInstance(),
                 getMemoryCacheInstance()
             )
         }
@@ -208,22 +208,28 @@ object CommonService {
         return blockstreamInfoTestNetRepository!!
     }
 
-    fun getSimpleSwapRepositoryInstance(): SimpleSwapRepository {
-        if(simpleSwapRepository == null) {
-            simpleSwapRepository = SimpleSwapRepository.create(
-                provideSimpleSwapApi(
-                    provideSimpleSwapRetrofit(
-                        provideBaseHttpClient(
-                            provideConnectivityInterceptor()
+    fun getChangeNowRepositoryInstance(): ChangeNowRepository {
+        if(changeNowRepository == null) {
+            changeNowRepository = ChangeNowRepository.create(
+                provideChangeNowApi(
+                    provideChangeNowRetrofit(
+                        provideAuthenticatedHttpClient(
+                            provideBaseHttpClient(
+                                provideConnectivityInterceptor()
+                            ),
+                            provideApiKeyInterceptor(
+                                changeNowSecret!!,
+                                "x-changenow-api-key"
+                            )
                         ),
                         getGsonInstance()
                     )
                 ),
-                simpleSwapClientSecret!!
+                getLocalStoreInstance()
             )
         }
 
-        return simpleSwapRepository!!
+        return changeNowRepository!!
     }
 
     fun getCoingeckoRepositoryInstance(): CoingeckoRepository {
@@ -306,26 +312,26 @@ object CommonService {
     fun create(
         application: Application,
         blockchairSecret: String?,
-        simpleSwapSecret: String,
+        changeNowSecret: String,
         blockstreamInfoURL: String,
         blockstreamInfoTestNetURL: String,
         blockchairApiUrl: String,
         testNetBlockchairApiUrl: String,
         blockchainInfoApiUrl: String,
         coingeckoApiUrl: String,
-        simpleSwapApiUrl: String,
+        changeNowApiUrl: String,
         walletSecret: String
     ) {
         provideApplication(application)
         provideBlockchairSecret(blockchairSecret)
-        provideSimpleSwapSecret(simpleSwapSecret)
+        provideChangeNowSecret(changeNowSecret)
         provideBlockstreamInfoApiApiUrl(blockstreamInfoURL)
         provideBlockstreamInfoTestNetApiUrl(blockstreamInfoTestNetURL)
         provideNowNodesNodeApiUrl(blockchairApiUrl)
         provideNowNodesTestNetNodeApiUrl(testNetBlockchairApiUrl)
         provideBlockchainInfoApiUrl(blockchainInfoApiUrl)
         provideCoingeckoApiUrl(coingeckoApiUrl)
-        provideSimpleSwapApiUrl(simpleSwapApiUrl)
+        provideChangeNowApiUrl(changeNowApiUrl)
         provideWalletSecret(walletSecret)
 
         // create singleton instance of all classes
@@ -338,7 +344,7 @@ object CommonService {
         getDatabaseRepositoryInstance()
         getBlockchainInfoRepositoryInstance()
         getCoingeckoRepositoryInstance()
-        getSimpleSwapRepositoryInstance()
+        getChangeNowRepositoryInstance()
         getEventTrackerInstance()
     }
 
@@ -363,8 +369,8 @@ object CommonService {
         this.blockchairClientSecret = secret
     }
 
-    private fun provideSimpleSwapSecret(secret: String) {
-        this.simpleSwapClientSecret = secret
+    private fun provideChangeNowSecret(secret: String) {
+        this.changeNowSecret = secret
     }
 
     private fun provideBlockstreamInfoApiApiUrl(url: String) {
@@ -395,8 +401,8 @@ object CommonService {
         this.coingeckoApiUrl = url
     }
 
-    private fun provideSimpleSwapApiUrl(url: String) {
-        this.simpleSwapApiUrl = url
+    private fun provideChangeNowApiUrl(url: String) {
+        this.changeNowApiUrl = url
     }
 
     private fun provideDatabase(
@@ -515,8 +521,10 @@ object CommonService {
         )
     }
 
-    private fun provideApiKeyInterceptor(apiKey: String) =
-        ApiKeyInterceptor(apiKey)
+    private fun provideApiKeyInterceptor(
+        apiKey: String,
+        apiKeyHeaderName: String = "api-key"
+    ) = ApiKeyInterceptor(apiKey, apiKeyHeaderName)
 
     private fun provideConnectivityInterceptor() =
         ConnectivityInterceptor(provideConnectionMonitor(application!!), application!!)
@@ -549,7 +557,7 @@ object CommonService {
         blockstreamInfoRepository: BlockstreamInfoRepository,
         blockstreamInfoTestNetRepository: BlockstreamInfoRepository,
         coingeckoRepository: CoingeckoRepository,
-        simpleSwapRepository: SimpleSwapRepository,
+        changeNowRepository: ChangeNowRepository,
         memoryCache: MemoryCache
     ): ApiRepository {
         return ApiRepository_Impl(
@@ -558,7 +566,7 @@ object CommonService {
             testNetBlockchairRepository,
             blockchainInfoRepository,
             coingeckoRepository,
-            simpleSwapRepository,
+            changeNowRepository,
             blockstreamInfoRepository,
             blockstreamInfoTestNetRepository,
             memoryCache
@@ -641,7 +649,7 @@ object CommonService {
             .build()
     }
 
-    private fun provideSimpleSwapRetrofit(
+    private fun provideChangeNowRetrofit(
         okHttpClient: OkHttpClient,
         gson: Gson
     ): Retrofit {
@@ -652,7 +660,7 @@ object CommonService {
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create(gson))
             .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
-            .baseUrl(simpleSwapApiUrl!!)
+            .baseUrl(changeNowApiUrl!!)
 //        .addConverterFactory(NullOnEmptyBodyConverterFactory())
             .addConverterFactory(GsonConverterFactory.create(gson))
             .build()
@@ -713,8 +721,8 @@ object CommonService {
     private fun provideBlockstreamInfoApi(manager: Retrofit): BlockStreamInfoApi =
         manager.create(BlockStreamInfoApi::class.java)
 
-    private fun provideSimpleSwapApi(manager: Retrofit): SimpleSwapApi =
-        manager.create(SimpleSwapApi::class.java)
+    private fun provideChangeNowApi(manager: Retrofit): ChangeNowApi =
+        manager.create(ChangeNowApi::class.java)
 
     private fun provideCoingeckoApi(manager: Retrofit): CoingeckoApi =
         manager.create(CoingeckoApi::class.java)

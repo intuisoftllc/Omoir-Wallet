@@ -58,7 +58,7 @@ class AccountsFragment : ConfigurableFragment<FragmentAccountsBinding>(
     private fun onAccountSelected(account: SavedAccountModel) {
         if(account.canDelete) {
             WalletSettingsFragment.showSaveAccountDialog(
-                context = requireContext(),
+                activity = requireActivity(),
                 titleText = getString(R.string.update_account_update_title),
                 saveButtonText = getString(R.string.update),
                 cancelButtonText = getString(R.string.delete),
@@ -135,7 +135,7 @@ class AccountsFragment : ConfigurableFragment<FragmentAccountsBinding>(
 
     override fun onActionRight() {
         WalletSettingsFragment.showSaveAccountDialog(
-            context = requireContext(),
+            activity = requireActivity(),
             titleText = getString(R.string.saved_account_save_title),
             saveButtonText = getString(R.string.save),
             getDerivaitionPath = {

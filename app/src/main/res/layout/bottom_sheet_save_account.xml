@@ -96,7 +96,7 @@
             android:hint="@string/saved_account_bottom_sheet_info_hint_2"
             android:maxLines="1"
             android:padding="@dimen/horizontal_padding_size"
-            android:inputType="text"
+            android:inputType="number"
             android:imeOptions="actionDone"
             android:backgroundTint="@color/card_background_color"
             android:textColorHint="@color/edit_text_hint_color"

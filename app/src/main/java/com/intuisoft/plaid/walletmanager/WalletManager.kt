@@ -110,8 +110,8 @@ class WalletManager(
     }
 
     override fun updateWalletName(localWallet: LocalWalletModel, newName: String) {
-        findStoredWallet(localWallet.uuid)?.let {
-            it.name = newName
+        findAndUpdateBaseWallet(localWallet.uuid) {
+            name = newName
             localWallet.name = newName
             localStoreRepository.setStoredWalletInfo(localStoreRepository.getStoredWalletInfo())
         }
@@ -122,13 +122,14 @@ class WalletManager(
     }
 
     private fun setCurrentHiddenWallet(walletId: String, passphrase: String, account: SavedAccountModel) {
+        val baseWalletId = findAndUpdateBaseWallet(walletId)!!.walletUUID
         if(passphrase.isBlank() && account.account == 0) {
-            hiddenWallets.put(walletId, null)
+            hiddenWallets.put(baseWalletId, null)
         } else {
             hiddenWallets.put(
-                walletId,
+                baseWalletId,
                 HiddenWalletModel(
-                    walletUUID = walletId,
+                    walletUUID = baseWalletId,
                     passphrase = passphrase,
                     account = account
                 )
@@ -211,7 +212,9 @@ class WalletManager(
     ) {
         stop()
         deleteWalletFromDatabase(localWallet)
-        localStoreRepository.getStoredWalletInfo().walletIdentifiers.remove { it.walletUUID == localWallet.uuid }
+        localStoreRepository.getStoredWalletInfo().walletIdentifiers.remove(
+            findAndUpdateBaseWallet(localWallet.uuid)
+        )
         localStoreRepository.setStoredWalletInfo(localStoreRepository.getStoredWalletInfo())
 
         hiddenWallets.remove(localWallet.uuid)
@@ -284,7 +287,7 @@ class WalletManager(
        syncer.getWallets().find { it.uuid == uuid }
 
    override fun findStoredWallet(uuid: String): WalletIdentifier? =
-       localStoreRepository.getStoredWalletInfo().walletIdentifiers.find { it.walletUUID == uuid }
+       findAndUpdateBaseWallet(uuid)
 
    private fun saveWallet(wallet: WalletIdentifier) {
        localStoreRepository.getStoredWalletInfo().walletIdentifiers.add(wallet)
@@ -362,6 +365,17 @@ class WalletManager(
        return uuid
    }
 
+    fun findAndUpdateBaseWallet(walletId: String, block: (WalletIdentifier.() -> Unit)? = null): WalletIdentifier? {
+        localStoreRepository.getStoredWalletInfo().walletIdentifiers.find { walletIdentifier ->
+            walletIdentifier.walletUUID == walletId || walletIdentifier.walletHashIds.find { it == walletId } != null
+        }?.let {
+            block?.invoke(it)
+            return it
+        }
+
+        return null
+    }
+
    private fun updateWallets() {
        syncer.stopAllWallets()
        syncer.clearWallets()
@@ -375,9 +389,11 @@ class WalletManager(
                )
 
                // Store wallet hashes for passphrases
-               if (identifier.walletHashIds?.find { it == model.hashId } == null) {
-                   identifier.walletHashIds!!.add(model.hashId)
-                   localStoreRepository.setStoredWalletInfo(localStoreRepository.getStoredWalletInfo())
+               findAndUpdateBaseWallet(identifier.walletUUID) {
+                   if (walletHashIds.find { it == model.uuid } == null) {
+                       walletHashIds.add(model.uuid)
+                       localStoreRepository.setStoredWalletInfo(localStoreRepository.getStoredWalletInfo())
+                   }
                }
 
 
@@ -385,7 +401,7 @@ class WalletManager(
                    model.walletKit = BitcoinKit(
                        context = application,
                        extendedKey = HDExtendedKey(identifier.pubKey),
-                       walletId = model.hashId,
+                       walletId = model.uuid,
                        networkType = getWalletNetwork(model),
                        peerSize = Constants.Limit.MAX_PEERS,
                        gapLimit = 50,
@@ -399,7 +415,7 @@ class WalletManager(
                            words = identifier.seedPhrase,
                            passphrase = hiddenWallet.passphrase,
                            walletAccount = hiddenWallet.account.account,
-                           walletId = model.hashId,
+                           walletId = model.uuid,
                            networkType = getWalletNetwork(model),
                            peerSize = Constants.Limit.MAX_PEERS,
                            gapLimit = 50,
@@ -414,7 +430,7 @@ class WalletManager(
                            context = application,
                            words = identifier.seedPhrase,
                            passphrase = "",
-                           walletId = model.hashId,
+                           walletId = model.uuid,
                            networkType = getWalletNetwork(model),
                            peerSize = Constants.Limit.MAX_PEERS,
                            gapLimit = 50,

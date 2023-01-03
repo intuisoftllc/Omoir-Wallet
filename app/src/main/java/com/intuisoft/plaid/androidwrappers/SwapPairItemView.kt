@@ -143,6 +143,10 @@ class SwapPairItemView(context: Context, attrs: AttributeSet?) : LinearLayout(co
         else ticker_symbol_iv?.setImageDrawable(null)
     }
 
+    fun setLoading() {
+        show_value_tv?.text = "..."
+    }
+
     fun setValue(value: Double) {
         this.value = value
         var valueStr = if(value == 0.0) " ?" else SimpleCoinNumberFormat.formatCrypto(value) ?: ""

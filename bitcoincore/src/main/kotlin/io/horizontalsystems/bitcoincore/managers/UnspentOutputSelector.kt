@@ -100,7 +100,7 @@ class UnspentOutputSelector(private val calculator: TransactionSizeCalculator, p
             throw SendValueErrors.InsufficientUnspentOutputs
         }
 
-        if(totalValue != maxValue) {
+        if(totalValue != maxValue || (totalValue - sentValue) > dust) {
             val feeWithChangeAddress = calculator.transactionSize(
                 selectedOutputs.map { it.output },
                 listOf(outputType, changeType),

@@ -7,7 +7,7 @@ class Constants {
 
     object Database {
         const val DB_NAME = "plaid.db"
-        const val DB_VERSION = 1
+        const val DB_VERSION = 5
     }
 
     object Files {
@@ -84,6 +84,8 @@ class Constants {
         const val TEST_WALLET_4 = "walk north lazy coffee uncle isolate super shoulder flat accident shy deposit"
         const val BASE_WALLET = "BASE_WALLET_ID"
         const val BTC_TICKER = "btc"
+        const val SUPPORT_EMAIL = "support@plaidcryptowallet.com"
+        const val DEFAULT_EXCHANGE_FLOW = "standard"
     }
 
     object ServerStrings {
@@ -114,6 +116,7 @@ class Constants {
         const val GENERAL_CACHE_UPDATE_TIME_MED: Long = (MILLS_PER_SEC * FIVE_MINUTES).toLong()
         const val GENERAL_CACHE_UPDATE_TIME_SHORT: Long = (MILLS_PER_SEC * TWO_MINUTES).toLong()
         const val GENERAL_CACHE_UPDATE_TIME_XTRA_SHORT: Long = (MILLS_PER_SEC * ONE_MINUTE).toLong()
+        const val ESTIMATED_RECEIVE_AMOUNT_UPDATE_TIME: Long = (MILLS_PER_SEC * 2.5).toLong()
     }
 
     object ActivityResult {

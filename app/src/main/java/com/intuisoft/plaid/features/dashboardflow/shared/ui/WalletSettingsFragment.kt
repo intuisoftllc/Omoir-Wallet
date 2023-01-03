@@ -1,6 +1,7 @@
 package com.intuisoft.plaid.features.dashboardflow.shared.ui
 
 import WalletSettingsViewModel
+import android.app.Activity
 import android.app.ProgressDialog
 import android.content.Context
 import android.os.Bundle
@@ -331,9 +332,12 @@ class WalletSettingsFragment : ConfigurableFragment<FragmentWalletSettingsBindin
         }
 
         save.onClick {
-            if(passphrase.text.toString() == confirmPassphrase.text.toString()) {
-                if(viewModel.canCreatePassphrase(passphrase.text.toString(), HiddenWallet.account)) {
-                    viewModel.setHiddenWalletParams(passphrase.text.toString(), HiddenWallet.account) {
+            val Passphrase = passphrase.text.toString().trim()
+            val ConfirmPassphrase = confirmPassphrase.text.toString().trim()
+
+            if(Passphrase == ConfirmPassphrase) {
+                if(viewModel.canCreatePassphrase(Passphrase, HiddenWallet.account)) {
+                    viewModel.setHiddenWalletParams(Passphrase, HiddenWallet.account) {
                         eventTracker.log(EventWalletSettingsSetPassphrase())
                         appSettingsViewModel.appRestartNeeded = true
                     }
@@ -392,7 +396,7 @@ class WalletSettingsFragment : ConfigurableFragment<FragmentWalletSettingsBindin
             doNotRecreate = true
             bottomSheetDialog.cancel()
             showSaveAccountDialog(
-                context = requireContext(),
+                activity = requireActivity(),
                 titleText = getString(R.string.saved_account_save_title),
                 saveButtonText = getString(R.string.save),
                 cancelButtonText = getString(R.string.cancel),
@@ -465,7 +469,7 @@ class WalletSettingsFragment : ConfigurableFragment<FragmentWalletSettingsBindin
     companion object {
 
         fun showSaveAccountDialog(
-            context: Context,
+            activity: Activity,
             titleText: String,
             saveButtonText: String,
             cancelButtonText: String,
@@ -477,7 +481,7 @@ class WalletSettingsFragment : ConfigurableFragment<FragmentWalletSettingsBindin
             addToStack: (AppCompatDialog) -> Unit,
             removeFromStack: (AppCompatDialog) -> Unit
         ) {
-            val bottomSheetDialog = BottomSheetDialog(context)
+            val bottomSheetDialog = BottomSheetDialog(activity)
             addToStack(bottomSheetDialog)
             bottomSheetDialog.setContentView(R.layout.bottom_sheet_save_account)
             val title = bottomSheetDialog.findViewById<TextView>(R.id.bottom_sheet_title)!!
@@ -506,6 +510,22 @@ class WalletSettingsFragment : ConfigurableFragment<FragmentWalletSettingsBindin
                 save.enableButton(text?.isNotBlank() ?: false && name.text.isNotBlank())
             }
 
+            account.setOnKeyListener(object : View.OnKeyListener {
+                override fun onKey(v: View?, keyCode: Int, event: KeyEvent): Boolean {
+                    // if the event is a key down event on the enter button
+                    if (event.action == KeyEvent.ACTION_DOWN &&
+                        keyCode == KeyEvent.KEYCODE_ENTER
+                    ) {
+                        activity.hideSoftKeyboard()
+                        account.clearFocus()
+                        account.isCursorVisible = false
+
+                        return true
+                    }
+                    return false
+                }
+            })
+
             save.onClick {
                 val accountNumber =
                     try {
@@ -519,7 +539,7 @@ class WalletSettingsFragment : ConfigurableFragment<FragmentWalletSettingsBindin
                     saveAccount(name.text.toString(), accountNumber.toInt())
                 } else {
                     errorMessage.isVisible = true
-                    errorMessage.setText(context.getString(R.string.saved_account_validation_error_invalid_account))
+                    errorMessage.setText(activity.baseContext.getString(R.string.saved_account_validation_error_invalid_account))
                 }
             }
 

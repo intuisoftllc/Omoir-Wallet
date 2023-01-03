@@ -13,32 +13,6 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:paddingHorizontal="@dimen/margin_10">
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:paddingHorizontal="@dimen/margin_10">
-
-                <com.intuisoft.plaid.androidwrappers.RoundedButtonView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:btn_text="@string/swap_type_fixed"
-                    android:id="@+id/fixed"
-                    app:text_position="center"
-                    app:button_style="outlined"
-                    android:layout_weight="1"
-                    android:paddingHorizontal="@dimen/margin_6"/>
-
-                <com.intuisoft.plaid.androidwrappers.RoundedButtonView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:btn_text="@string/swap_type_floating"
-                    android:id="@+id/floating"
-                    app:text_position="center"
-                    android:layout_weight="1"
-                    app:button_style="rounded"
-                    android:paddingHorizontal="@dimen/margin_6"/>
-            </LinearLayout>
 
             <com.intuisoft.plaid.androidwrappers.SwapPairItemView
                 android:id="@+id/swap_pair_send"
@@ -86,6 +60,14 @@
                 app:preview_item="true"
                 app:pair_preview="show_value_variant_1"/>
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_marginRight="@dimen/horizontal_padding_size"
+                android:layout_marginTop="@dimen/margin_6"
+                android:text="@string/swap_fees_disclaimer"/>
+
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
@@ -94,7 +76,7 @@
                     android:id="@+id/min_max_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Min/Max"
+                    android:text="@string/swap_min_max"
                     android:gravity="center_vertical"
                     android:visibility="gone"
                     app:layout_constraintStart_toStartOf="parent"

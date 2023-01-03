@@ -50,28 +50,35 @@ class ExchangeDetailsFragment : ConfigurableFragment<FragmentExchangeDetailsBind
     override fun onConfiguration(configuration: FragmentConfiguration?) {
         val swapData = configuration!!.configData as BasicConfigData
         val data = Gson().fromJson(swapData.payload, ExchangeInfoDataModel::class.java)
+        val status = ExchangeStatus.values().find { it.type == data.status }!!
 
         eventTracker.log(EventExchangeDetailsView())
         binding.status.text = data.status
         binding.status.setTextColor(
             resources.getColor(
-            ExchangeStatus.values().find { it.type == data.status }?.color ?: R.color.description_text_color
+                status.color
             )
         )
         binding.from.text = data.from
         binding.to.text = data.to
-        binding.sendAmount.text = "${SimpleCoinNumberFormat.formatCrypto(data.sendAmount)} ${data.fromShort}"
-        binding.receiveAmount.text = "~${SimpleCoinNumberFormat.formatCrypto(data.receiveAmount)} ${data.toShort}"
+        binding.exchangeId.text = data.id
+        if(status.isFinalState()) {
+            binding.sendAmount.text =
+                "${SimpleCoinNumberFormat.formatCrypto(data.sendAmount)} ${data.fromShort}"
+            binding.receiveAmount.text =
+                "~${SimpleCoinNumberFormat.formatCrypto(data.expectedReceiveAmount)} ${data.toShort}"
+        } else {
+            binding.sendAmount.text =
+                "${SimpleCoinNumberFormat.formatCrypto(data.expectedSendAmount)} ${data.fromShort}"
+            binding.receiveAmount.text =
+                "~${SimpleCoinNumberFormat.formatCrypto(data.expectedReceiveAmount)} ${data.toShort}"
+        }
         binding.fiatConversionContainer.isVisible = data.toShort.lowercase() == Constants.Strings.BTC_TICKER
-        binding.sendAmount2.text = "${SimpleCoinNumberFormat.formatCrypto(data.sendAmount)} ${data.fromShort}"
-        binding.paymentAddress.text = data.paymentAddress
+        binding.sendAmount2.text = "${SimpleCoinNumberFormat.formatCrypto(data.expectedSendAmount)} ${data.fromShort}"
         binding.paymentAddressContainer.setOnSingleClickListener {
             viewModel.copyDataItemClicked(
                 binding.copyPaymentAddress, data.paymentAddress
             )
-        }
-        binding.viewFullDetails.setOnSingleClickListener {
-            openLink(getString(R.string.swap_view_full_details_link, data.id))
         }
         binding.transactionIdContainer.setOnSingleClickListener {
             if(data.receiveTxId?.isNotEmpty() == true) {
@@ -104,9 +111,12 @@ class ExchangeDetailsFragment : ConfigurableFragment<FragmentExchangeDetailsBind
             binding.fiatConversion.text = it
         })
 
+        binding.paymentAddress.text = data.paymentAddress
         if(data.receiveTxId?.isNotEmpty() == true) {
+            binding.txIdType.text = getString(R.string.swap_details_tx_id_type_1)
             binding.transactionId.text = data.receiveTxId
         } else if(data.paymentTxId?.isNotEmpty() == true) {
+            binding.txIdType.text = getString(R.string.swap_details_tx_id_type_2)
             binding.transactionId.text = data.paymentTxId
         } else {
             binding.transactionId.text = getString(R.string.not_applicable)
@@ -116,7 +126,7 @@ class ExchangeDetailsFragment : ConfigurableFragment<FragmentExchangeDetailsBind
         binding.memo.text = data.paymentAddressMemo
         binding.smartPay.enableButton(
             data.fromShort.lowercase() == Constants.Strings.BTC_TICKER
-                    && data.paymentTxId == null
+                    && data.paymentTxId == null && status == ExchangeStatus.WAITING
         )
 
         binding.smartPay.onClick {

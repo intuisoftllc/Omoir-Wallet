@@ -7,11 +7,12 @@ import okhttp3.Interceptor
 import okhttp3.Response
 
 class ApiKeyInterceptor(
-    private val apiKey: String
+    private val apiKey: String,
+    private val apiKeyHeaderName: String
 ) : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         val authenticatedRequest = chain.request().newBuilder()
-            .addHeader("api-key", apiKey)
+            .addHeader(apiKeyHeaderName, apiKey)
             .build()
         return chain.proceed(authenticatedRequest)
     }

@@ -134,13 +134,13 @@ class DatabaseRepository_Impl(
         return exchangeInfoDao.getExchangeById(exchangeId)?.from()
     }
 
-    override suspend fun setSupportedCurrenciesData(data: List<SupportedCurrencyModel>, fixed: Boolean) {
-        supportedCurrencyDao.insert(data.map { SupportedCurrency.consume(it.ticker, it.name, it.image, fixed, it.validAddressRegex, it.validMemoRegex) })
+    override suspend fun setSupportedCurrenciesData(data: List<SupportedCurrencyModel>) {
+        supportedCurrencyDao.insert(data.map { SupportedCurrency.consume(it.ticker, it.name, it.image, it.network, it.needsMemo) })
         database.onUpdate(supportedCurrencyDao)
     }
 
-    override suspend fun getSupportedCurrencies(fixed: Boolean): List<SupportedCurrencyModel> {
-        return supportedCurrencyDao.getAllSupportedCurrencies(fixed).map { it.from() }
+    override suspend fun getSupportedCurrencies(): List<SupportedCurrencyModel> {
+        return supportedCurrencyDao.getAllSupportedCurrencies().map { it.from() }
     }
 
     override suspend fun getRateFor(currencyCode: String): BasicPriceDataModel? {
@@ -170,6 +170,7 @@ class DatabaseRepository_Impl(
         extendedNetworkDataDao.deleteTable()
         tickerCharPriceChartDataDao.deleteTable()
         supportedCurrencyDao.deleteTable()
+        exchangeInfoDao.deleteTable()
         batchDao.deleteTable()
         transferDao.deleteTable()
         transactionBlacklistDao.deleteTable()

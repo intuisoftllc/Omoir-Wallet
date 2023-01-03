@@ -95,8 +95,9 @@ class PeerConnection(
         }
     }
 
+    @OptIn(DelicateCoroutinesApi::class)
     fun sendMessage(message: IMessage) {
-        PlaidScope.IoScope.launch {
+        PlaidScope.GlobalScope.launch {
             synchronized(this@PeerConnection) {
                 if (isRunning.get()) {
                     try {

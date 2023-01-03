@@ -11,30 +11,29 @@ data class SupportedCurrency(
     @ColumnInfo(name = "ticker") var ticker: String,
     @ColumnInfo(name = "name") var name: String,
     @ColumnInfo(name = "image") var image: String,
-    @ColumnInfo(name = "fixed") var fixed: Boolean,
-    @ColumnInfo(name = "validation_address") var validAddressRegex: String,
-    @ColumnInfo(name = "validation_memo") var validMemoRegex: String?
+    @ColumnInfo(name = "needs_memo") var needsMemo: Boolean,
+    @ColumnInfo(name = "network") var network: String
 ) {
     fun from() =
         SupportedCurrencyModel(
             ticker = ticker,
+            id = id,
             name = name,
             image = image,
-            validAddressRegex = validAddressRegex,
-            validMemoRegex = validMemoRegex
+            network = network,
+            needsMemo = needsMemo
         )
 
     companion object {
 
-        fun consume(ticker: String, name: String, image: String, fixed: Boolean, addressRegex: String, memoRegex: String?) =
+        fun consume(ticker: String, name: String, image: String, network: String, needsMemo: Boolean) =
             SupportedCurrency(
-                id = ticker + if(fixed) 1 else 0,
+                id = "$ticker:$name",
                 ticker = ticker,
                 name = name,
                 image = image,
-                fixed = fixed,
-                validAddressRegex = addressRegex,
-                validMemoRegex = memoRegex
+                network = network,
+                needsMemo = needsMemo
             )
     }
 }

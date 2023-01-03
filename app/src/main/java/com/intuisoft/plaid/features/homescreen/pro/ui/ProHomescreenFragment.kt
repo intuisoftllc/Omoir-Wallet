@@ -20,6 +20,7 @@ import com.intuisoft.plaid.model.LocalWalletModel
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.common.util.SimpleCoinNumberFormat
+import com.intuisoft.plaid.common.util.extensions.safeWalletScope
 import com.intuisoft.plaid.common.util.extensions.toArrayList
 import com.intuisoft.plaid.databinding.FragmentProHomescreenBinding
 import com.intuisoft.plaid.features.homescreen.pro.adapters.ProWalletDataAdapter
@@ -69,7 +70,7 @@ class ProHomescreenFragment : ConfigurableFragment<FragmentProHomescreenBinding>
 
         binding.swipeContainer.setOnRefreshListener {
             if(binding.swipeContainer.isRefreshing) {
-                walletManager.synchronizeAll(false)
+                walletManager.synchronizeAll(true)
             }
         }
 
@@ -125,7 +126,8 @@ class ProHomescreenFragment : ConfigurableFragment<FragmentProHomescreenBinding>
     }
 
     fun showTotalBalance(totalBalance: Long) {
-        binding.totalBalance.text = SimpleCoinNumberFormat.format(localStoreRepository, totalBalance, false)
+        binding.totalBalance.text =
+            SimpleCoinNumberFormat.format(localStoreRepository, totalBalance, false)
     }
 
     override fun onWalletStateUpdated(wallet: LocalWalletModel) {

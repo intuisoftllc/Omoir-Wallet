@@ -21,7 +21,8 @@ import org.koin.android.ext.android.inject
 
 class PinFragment: ConfigurableFragment<FragmentPinBinding>(
     secureScreen = true,
-    requiresWallet = false
+    requiresWallet = false,
+    requiresUsrData = false
 ) {
     private val localStoreRepository: LocalStoreRepository by inject()
 

@@ -1,5 +1,6 @@
 package com.intuisoft.plaid.common.repositories
 
+import com.intuisoft.plaid.common.local.db.SupportedCurrency
 import com.intuisoft.plaid.common.model.*
 import com.intuisoft.plaid.common.network.blockchair.response.SupportedCurrencyModel
 
@@ -9,11 +10,11 @@ interface ApiRepository {
 
     suspend fun getRateFor(currencyCode: String): BasicPriceDataModel
 
-    suspend fun getSupportedCurrencies(fixed: Boolean): List<SupportedCurrencyModel>
+    suspend fun getSupportedCurrencies(): List<SupportedCurrencyModel>
 
     suspend fun getBasicTickerData(): BasicTickerDataModel
 
-    suspend fun getCurrencyRangeLimit(from: String, to: String, fixed: Boolean): CurrencyRangeLimitModel?
+    suspend fun getCurrencyRangeLimit(from: SupportedCurrencyModel, to: SupportedCurrencyModel): CurrencyRangeLimitModel?
 
     suspend fun getExtendedNetworkData(testNetWallet: Boolean): ExtendedNetworkDataModel?
 
@@ -21,10 +22,18 @@ interface ApiRepository {
 
     suspend fun getMarketHistoryData(currencyCode: String, from: Long, to: Long): List<MarketHistoryDataModel>?
 
+    fun isAddressValid(currency: SupportedCurrencyModel, address: String): Boolean
+
     suspend fun createExchange(
-        fixed: Boolean, from: String, to: String, receiveAddress: String,
-        receiveAddressMemo: String, refundAddress: String, refundAddressMemo: String,
-        amount: Double, walletId: String
+        from: SupportedCurrencyModel,
+        to: SupportedCurrencyModel,
+        rateId: String?,
+        receiveAddress: String,
+        receiveAddressMemo: String,
+        refundAddress: String,
+        refundAddressMemo: String,
+        amount: Double,
+        walletId: String
     ): ExchangeInfoDataModel?
 
     suspend fun updateExchange(
@@ -32,7 +41,7 @@ interface ApiRepository {
         walletId: String
     ): ExchangeInfoDataModel?
 
-    suspend fun getConversion(from: String, to: String, fixed: Boolean): Double
+    suspend fun getEstimatedAmount(from: SupportedCurrencyModel, to: SupportedCurrencyModel, sendAmount: Double): EstimatedReceiveAmountModel
 
     fun getAddressTransactions(address: String, testNetWallet: Boolean): List<AddressTransactionData>
 

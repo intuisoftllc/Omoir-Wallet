@@ -5,6 +5,6 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class CurrencyRangeLimitResponse(
-    val min: String,
-    val max: String
+    val minAmount: String,
+    val maxAmount: String?
 ): Parcelable

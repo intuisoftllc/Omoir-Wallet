@@ -103,7 +103,7 @@ class AssetTransferDetailsFragment : ConfigurableFragment<FragmentAssetTransferD
                 binding.cancel.isVisible = false
             }
 
-            binding.recipient.setSubTitleText(viewModel.getWalletName(transfer.walletId))
+            binding.recipient.setSubTitleText(viewModel.getWalletName(transfer.recipientWallet))
             binding.createdAt.setSubTitleText(SimpleTimeFormat.getDateByLocale(transfer.createdAt, Locale.US) ?: getString(R.string.not_applicable))
             binding.batchGap.setSubTitleText(Plural.of("Block", transfer.batchGap.toLong()))
             binding.batchSize.setSubTitleText(Plural.of("Utxo", transfer.batchSize.toLong()))

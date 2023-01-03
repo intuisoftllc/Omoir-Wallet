@@ -17,6 +17,7 @@ import com.intuisoft.plaid.activities.MainActivity
 import com.intuisoft.plaid.common.model.StoredHiddenWalletsModel
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.common.util.Constants
+import com.intuisoft.plaid.common.util.errors.ClosedWalletErr
 import com.intuisoft.plaid.common.util.extensions.safeWalletScope
 import com.intuisoft.plaid.walletmanager.AbstractWalletManager
 import kotlinx.coroutines.*

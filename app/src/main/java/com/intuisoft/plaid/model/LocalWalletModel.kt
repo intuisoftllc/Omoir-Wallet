@@ -15,7 +15,6 @@ import io.horizontalsystems.hdwalletkit.HDWallet
 
 data class LocalWalletModel(
     var name: String,
-    var hashId: String,
     var uuid: String,
     var testNetWallet: Boolean
 ) {
@@ -131,8 +130,7 @@ data class LocalWalletModel(
         fun consume(walletIdentifier: WalletIdentifier, hiddenWallet: HiddenWalletModel?): LocalWalletModel =
             LocalWalletModel(
                 name = walletIdentifier.name,
-                uuid = walletIdentifier.walletUUID,
-                hashId = hiddenWallet?.uuid ?: walletIdentifier.walletUUID.sha256(),
+                uuid = hiddenWallet?.uuid ?: walletIdentifier.walletUUID.sha256(),
                 testNetWallet = walletIdentifier.isTestNet,
             )
     }

@@ -285,6 +285,15 @@ open class WalletViewModel(
         }
     }
 
+    fun canSendToAddress(address: String): Boolean {
+        try {
+            localWallet!!.walletKit!!.isAddressValid(address)
+            return true
+        } catch(err: ClosedWalletErr) {
+            return false
+        }
+    }
+
     fun isPublicKeyAddressValid(address: String) : Boolean {
         try {
             HDExtendedKey.validate(address, true)

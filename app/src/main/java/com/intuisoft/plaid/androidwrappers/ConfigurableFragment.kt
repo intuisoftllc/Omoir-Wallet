@@ -21,7 +21,8 @@ import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 abstract class ConfigurableFragment<T: ViewBinding>(
     private val pinProtection: Boolean = false,
     private val secureScreen: Boolean = false,
-    private var requiresWallet: Boolean = true
+    private var requiresWallet: Boolean = true,
+    private var requiresUsrData: Boolean = true
 ) : BindingFragment<T>() {
     protected var baseVM: BaseViewModel? = null
     private var configTypes = listOf<FragmentConfigurationType>()
@@ -47,6 +48,10 @@ abstract class ConfigurableFragment<T: ViewBinding>(
         } else {
             super.onViewCreated(view, savedInstanceState)
             onConfiguration(baseVM?.currentConfig)
+        }
+
+        if(requiresUsrData) {
+            requireUsrData()
         }
     }
 
@@ -105,7 +110,7 @@ abstract class ConfigurableFragment<T: ViewBinding>(
         }
     }
 
-    private fun requireUsrData(): UserData? {
+    fun requireUsrData(): UserData? {
         if(CommonService.getUserData() != null) {
             return CommonService.getUserData()
         } else {

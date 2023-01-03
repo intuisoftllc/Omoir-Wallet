@@ -37,7 +37,7 @@ class PeerGroup(
     var peerTaskHandler: IPeerTaskHandler? = null
 
     private val acceptableBlockHeightDifference = 50_000
-    private var peerCountToConnectMax = 8
+    private var peerCountToConnectMax = 10
     private var peerCountToConnect: Int? = null // number of peers to connect to
     private val peerCountToHold = peerSize      // number of peers held
     private var peerCountConnected = 0          // number of peers connected to

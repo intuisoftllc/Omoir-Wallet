@@ -25,11 +25,18 @@ class BasicExchangeDetail(
                 onClick(info)
             }
 
-            from.text = formatValue(info.sendAmount, info.fromShort)
-            to.text = formatValue(info.receiveAmount, info.toShort)
+            val exchangeStatus = ExchangeStatus.from(info.status)
+            if(exchangeStatus.isFinalState()) {
+                from.text = formatValue(info.sendAmount, info.fromShort)
+                to.text = formatValue(info.expectedReceiveAmount, info.toShort)
+            } else {
+                from.text = formatValue(info.expectedSendAmount, info.fromShort)
+                to.text = formatValue(info.expectedReceiveAmount, info.toShort)
+            }
+
             exchange.text = context.getString(R.string.exchange_history_id, info.id)
             status.text = info.status
-            status.setTextColor(context.getColor(ExchangeStatus.values().find { it.type == info.status }?.color ?: R.color.description_text_color))
+            status.setTextColor(context.getColor(exchangeStatus.color))
         }
     }
 

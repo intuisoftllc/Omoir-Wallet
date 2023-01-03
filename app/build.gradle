@@ -59,11 +59,11 @@ android {
             buildConfigField("String", "BLOCKCHAIR_TESTNET_SERVER_URL", "\"https://api.blockchair.com/bitcoin/testnet/\"")
             buildConfigField("String", "BLOCKCHAIN_INFO_SERVER_URL", "\"https://api.blockchain.info/\"")
             buildConfigField("String", "COIN_GECKO_SERVER_URL", "\"https://api.coingecko.com/api/v3/\"")
-            buildConfigField("String", "SIMPLE_SWAP_SERVER_URL", "\"https://api.simpleswap.io/\"")
+            buildConfigField("String", "CHANGE_NOW_SERVER_URL", "\"https://api.changenow.io/v2/\"")
             buildConfigField("String", "BLOCKSTREAM_INFO_SERVER_URL", "\"https://blockstream.info/api/\"")
             buildConfigField("String", "BLOCKSTREAM_INFO_TEST_NET_SERVER_URL", "\"https://blockstream.info/testnet/api/\"")
             buildConfigField("String", "BLOCKCHAIR_CLIENT_SECRET", "null")
-            buildConfigField("String", "SIMPLE_SWAP_CLIENT_SECRET", "\"${properties['SIMPLE_SWAP_TEST_CLIENT_SECRET']}\"")
+            buildConfigField("String", "CHANGE_NOW_CLIENT_SECRET", "\"${properties['CHANGE_NOW_CLIENT_SECRET']}\"")
 
             /**
              * Wallet Secret
@@ -83,11 +83,11 @@ android {
             buildConfigField("String", "BLOCKCHAIR_TESTNET_SERVER_URL", "\"https://api.blockchair.com/bitcoin/testnet/\"")
             buildConfigField("String", "BLOCKCHAIN_INFO_SERVER_URL", "\"https://api.blockchain.info/\"")
             buildConfigField("String", "COIN_GECKO_SERVER_URL", "\"https://pro-api.coingecko.com/api/v3/\"")
-            buildConfigField("String", "SIMPLE_SWAP_SERVER_URL", "\"https://api.simpleswap.io/\"")
+            buildConfigField("String", "CHANGE_NOW_SERVER_URL", "\"https://api.changenow.io/v2/\"")
             buildConfigField("String", "BLOCKSTREAM_INFO_SERVER_URL", "\"https://blockstream.info/api/\"")
             buildConfigField("String", "BLOCKSTREAM_INFO_TEST_NET_SERVER_URL", "\"https://blockstream.info/testnet/api/\"")
             buildConfigField("String", "BLOCKCHAIR_CLIENT_SECRET", "\"${properties['BLOCKCHAIR_CLIENT_SECRET']}\"")
-            buildConfigField("String", "SIMPLE_SWAP_CLIENT_SECRET", "\"${properties['SIMPLE_SWAP_CLIENT_SECRET']}\"")
+            buildConfigField("String", "CHANGE_NOW_CLIENT_SECRET", "\"${properties['CHANGE_NOW_CLIENT_SECRET']}\"")
             buildConfigField("String", "WALLET_SECRET", "\"${properties['WALLET_SECRET']}\"")
         }
     }

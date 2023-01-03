@@ -102,9 +102,9 @@ interface LocalStoreRepository {
 
     fun getLastSupportedCurrenciesUpdateTime(): Long
 
-    fun setLastExchangeTicker(ticker: String)
+    fun setLastExchangeCurrency(ticker: String)
 
-    fun getLastExchangeTicker(): String
+    fun getLastExchangeCurrency(): String
 
     fun isSendingBTC(): Boolean
 
@@ -158,9 +158,9 @@ interface LocalStoreRepository {
 
     suspend fun setExtendedNetworkData(testnetWallet: Boolean, extendedData: ExtendedNetworkDataModel)
 
-    fun getSupportedCurrenciesData(fixed: Boolean): List<SupportedCurrencyModel>
+    fun getSupportedCurrenciesData(): List<SupportedCurrencyModel>
 
-    suspend fun setSupportedCurrenciesData(data: List<SupportedCurrencyModel>, fixed: Boolean)
+    suspend fun setSupportedCurrenciesData(data: List<SupportedCurrencyModel>)
 
     suspend fun setTransactionMemo(txId: String, memo: String)
 

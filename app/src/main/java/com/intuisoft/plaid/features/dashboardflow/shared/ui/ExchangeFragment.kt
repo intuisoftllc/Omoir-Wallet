@@ -33,7 +33,6 @@ import com.intuisoft.plaid.features.dashboardflow.shared.viewModel.ExchangeViewM
 import com.intuisoft.plaid.features.homescreen.adapters.SupportedCryptoCurrenciesAdapter
 import com.intuisoft.plaid.util.NetworkUtil
 import com.intuisoft.plaid.util.fragmentconfig.BasicConfigData
-import com.mifmif.common.regex.Generex
 import io.horizontalsystems.bitcoinkit.BitcoinKit
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -66,7 +65,7 @@ class ExchangeFragment : ConfigurableFragment<FragmentExchangeBinding>(pinProtec
         binding.swapPairSend.setOnTextChangedListener {
             viewModel.validateSendAmount(
                 if(it?.isNotEmpty() == true && it.containsNumbers())
-                    it.toDouble()
+                    it.replace(",", "").toDouble()
                 else 0.0
             )
         }
@@ -90,6 +89,11 @@ class ExchangeFragment : ConfigurableFragment<FragmentExchangeBinding>(pinProtec
 
         viewModel.onDisplayExplanation.observe(viewLifecycleOwner, Observer {
             styledSnackBar(requireView(), it, true)
+        })
+
+        viewModel.estimatedReceiveAmount.observe(viewLifecycleOwner, Observer {
+            if(it == null) binding.swapPairReceive.setLoading()
+            else binding.swapPairReceive.setValue(it)
         })
 
         viewModel.disableBtcSeding.observe(viewLifecycleOwner, Observer {
@@ -123,25 +127,9 @@ class ExchangeFragment : ConfigurableFragment<FragmentExchangeBinding>(pinProtec
             activateAnimatedLoading(it, getString(R.string.swap_create_message))
         })
 
-        binding.fixed.onClick {
-            viewModel.setFixed(true)
-        }
-
-        viewModel.fixedRange.observe(viewLifecycleOwner, Observer {
+        viewModel.range.observe(viewLifecycleOwner, Observer {
             setMinMax(it)
-            binding.fixed.setButtonStyle(RoundedButtonView.ButtonStyle.ROUNDED_STYLE)
-            binding.floating.setButtonStyle(RoundedButtonView.ButtonStyle.OUTLINED_STYLE)
         })
-        
-        viewModel.floatingRange.observe(viewLifecycleOwner, Observer {
-            setMinMax(it)
-            binding.fixed.setButtonStyle(RoundedButtonView.ButtonStyle.OUTLINED_STYLE)
-            binding.floating.setButtonStyle(RoundedButtonView.ButtonStyle.ROUNDED_STYLE)
-        })
-
-        binding.floating.onClick {
-            viewModel.setFixed(false)
-        }
 
         binding.swapPairSend.onTickerClicked {
             supportedCurrenciesDialog(true)
@@ -154,8 +142,6 @@ class ExchangeFragment : ConfigurableFragment<FragmentExchangeBinding>(pinProtec
         viewModel.screenFunctionsEnabled.observe(viewLifecycleOwner, Observer {
             binding.swapSendReceive.isVisible = it
             binding.loading.isVisible = !it
-            binding.fixed.enableButton(it)
-            binding.floating.enableButton(it)
             binding.swapPairSend.setTickerClickable(it)
             binding.swapPairReceive.setTickerClickable(it)
         })
@@ -165,11 +151,11 @@ class ExchangeFragment : ConfigurableFragment<FragmentExchangeBinding>(pinProtec
         })
 
         viewModel.getReceiveAddress.observe(viewLifecycleOwner, Observer {
-            onGetReceiveAddress(it.first, it.second)
+            onGetReceiveAddress(it)
         })
 
         viewModel.getRefundAddress.observe(viewLifecycleOwner, Observer {
-            onGetRefundAddress(it.first, it.second)
+            onGetRefundAddress(it)
         })
 
         viewModel.showContent.observe(viewLifecycleOwner, Observer {
@@ -226,38 +212,39 @@ class ExchangeFragment : ConfigurableFragment<FragmentExchangeBinding>(pinProtec
         viewModel.setRefundAddress(address, memo)
     }
 
-    private fun onGetReceiveAddress(ticker: String, validationRegex: Pair<String, String?>) {
+    private fun checkAddress(address: String, ticker: SupportedCurrencyModel, onResult: (Boolean) -> Unit) {
+        viewModel.checkAddress(ticker, address, onResult)
+    }
+
+    private fun onGetReceiveAddress(currency: SupportedCurrencyModel) {
         enterAddressDialog(
             context = requireContext(),
             title = getString(R.string.swap_deposit_address_title),
-            ticker = ticker,
-            depositAddressTitle = getString(R.string.swap_deposit_address_entry_title, ticker),
-            addressValidationRegex = validationRegex.first,
-            memoValidationRegex = validationRegex.second,
-            setAddress = ::setReceiveAddress
+            currency = currency,
+            depositAddressTitle = getString(R.string.swap_deposit_address_entry_title, currency.ticker),
+            setAddress = ::setReceiveAddress,
+            checkAddress = ::checkAddress
         )
     }
 
-    private fun onGetRefundAddress(ticker: String, validationRegex: Pair<String, String?>) {
+    private fun onGetRefundAddress(currency: SupportedCurrencyModel) {
         enterAddressDialog(
             context = requireContext(),
             title = getString(R.string.swap_refund_address_title),
-            ticker = ticker,
-            depositAddressTitle = getString(R.string.swap_refund_address_entry_title, ticker),
-            addressValidationRegex = validationRegex.first,
-            memoValidationRegex = validationRegex.second,
-            setAddress = ::setRefundAddress
+            currency = currency,
+            depositAddressTitle = getString(R.string.swap_refund_address_entry_title, currency.ticker),
+            setAddress = ::setRefundAddress,
+            checkAddress = ::checkAddress
         )
     }
 
     fun enterAddressDialog(
         context: Context,
         title: String,
-        ticker: String,
+        currency: SupportedCurrencyModel,
         depositAddressTitle: String,
-        addressValidationRegex: String,
-        memoValidationRegex: String?,
-        setAddress: (address: String, memo: String) -> Unit
+        setAddress: (address: String, memo: String) -> Unit,
+        checkAddress: (address: String, ticker: SupportedCurrencyModel, onResult: (Boolean) -> Unit) -> Unit
     ) {
         val bottomSheetDialog = BottomSheetDialog(context)
         addToStack(bottomSheetDialog)
@@ -277,28 +264,8 @@ class ExchangeFragment : ConfigurableFragment<FragmentExchangeBinding>(pinProtec
         bottomSheetDialog.setCancelable(false)
         sheetTitle.text = title
         depositAddrTitle.text = depositAddressTitle
-        memoTitle.isVisible = memoValidationRegex != null
-        memoContainer.isVisible = memoValidationRegex != null
-
-        var generex = Generex(addressValidationRegex)
-        var addr = generex.random().drop(1)
-
-        address.hint =
-            if(addr.length <= Constants.Limit.ADDRESS_HINT_LENGTH)
-                getString(R.string.swap_deposit_address_entry_hint_full, addr)
-            else
-                getString(R.string.swap_deposit_address_entry_hint_partial, addr.substring(0..Constants.Limit.ADDRESS_HINT_LENGTH))
-
-        memoValidationRegex?.let {
-            generex = Generex(it)
-            addr = generex.random().drop(1)
-
-            memo.hint =
-                if(addr.length <= Constants.Limit.ADDRESS_HINT_LENGTH)
-                    getString(R.string.swap_deposit_address_entry_hint_full, addr)
-                else
-                    getString(R.string.swap_deposit_address_entry_hint_partial, addr.substring(0..Constants.Limit.ADDRESS_HINT_LENGTH))
-        }
+        memoTitle.isVisible = currency.needsMemo
+        memoContainer.isVisible = currency.needsMemo
 
         address.doOnTextChanged { text, start, before, count ->
             validationError.isVisible = false
@@ -309,31 +276,36 @@ class ExchangeFragment : ConfigurableFragment<FragmentExchangeBinding>(pinProtec
         }
 
         confirm.onClick {
-            if(address.text.toString().isEmpty() ||
-                !address.text.toString().matches(Regex(addressValidationRegex))) {
+            if(address.text.toString().isEmpty()) {
                 validationError.isVisible = true
-                validationError.text = getString(R.string.swap_deposit_address_dialog_invalid_address_error, ticker.lowercase())
+                validationError.text = getString(R.string.swap_deposit_address_dialog_invalid_address_error, currency.ticker.lowercase())
             } else {
-
-                if(!NetworkUtil.hasInternet(requireContext())) {
-                    validationError.isVisible = true
-                    validationError.text = getString(R.string.no_internet_connection)
-                } else if(memoValidationRegex != null && (memo.text.toString().isEmpty() ||
-                            !memo.text.toString().matches(Regex(memoValidationRegex)))) {
-                    validationError.isVisible = true
-                    validationError.text = getString(R.string.swap_deposit_address_dialog_invalid_memo_error, ticker.lowercase())
-                } else {
-                    // good to go check if there is no internet if so just cancel the dialog
-                    setAddress(address.text.toString(), memo.text.toString())
-                    bottomSheetDialog.cancel()
-                    viewModel.confirmExchange()
+                checkAddress(address.text.toString(), currency) { isValid ->
+                    if(!isValid) {
+                        validationError.isVisible = true
+                        validationError.text = getString(R.string.swap_deposit_address_dialog_invalid_address_error, currency.ticker.lowercase())
+                    } else if (!NetworkUtil.hasInternet(requireContext())) {
+                        validationError.isVisible = true
+                        validationError.text = getString(R.string.no_internet_connection)
+                    } else if (currency.needsMemo && memo.text.toString().isEmpty()) {
+                        validationError.isVisible = true
+                        validationError.text = getString(
+                            R.string.swap_deposit_address_dialog_invalid_memo_error,
+                            currency.ticker.lowercase()
+                        )
+                    } else {
+                        // good to go check if there is no internet if so just cancel the dialog
+                        setAddress(address.text.toString(), memo.text.toString())
+                        bottomSheetDialog.cancel()
+                        viewModel.confirmExchange()
+                    }
                 }
             }
         }
 
         bottomSheetDialog.setOnCancelListener {
             removeFromStack(bottomSheetDialog)
-            binding?.confirm?.enableButton(true)
+            _binding?.confirm?.enableButton(true)
         }
 
         cancel.onClick {
@@ -355,9 +327,9 @@ class ExchangeFragment : ConfigurableFragment<FragmentExchangeBinding>(pinProtec
                 bottomSheetDialog.cancel()
                 binding.swapPairSend.setValue(0.0)
                 if(sending) {
-                    viewModel.setSendCurrency(it.ticker)
+                    viewModel.setOutboundCurrency(it)
                 }
-                else viewModel.setReceiveCurrency(it.ticker)
+                else viewModel.setInboundCurrency(it)
             }
         )
 
@@ -390,7 +362,6 @@ class ExchangeFragment : ConfigurableFragment<FragmentExchangeBinding>(pinProtec
         val sender = bottomSheetDialog.findViewById<SettingsItemView>(R.id.sender)!!
         val refundAddress = bottomSheetDialog.findViewById<SettingsItemView>(R.id.refund_address)!!
         val memo = bottomSheetDialog.findViewById<SettingsItemView>(R.id.memo)!!
-        val exchangeType = bottomSheetDialog.findViewById<SettingsItemView>(R.id.exchange_type)!!
         val amountSent = bottomSheetDialog.findViewById<SettingsItemView>(R.id.amount_sent)!!
         val amountReceived = bottomSheetDialog.findViewById<SettingsItemView>(R.id.amount_received)!!
         val cancel = bottomSheetDialog.findViewById<RoundedButtonView>(R.id.cancel)!!
@@ -399,7 +370,6 @@ class ExchangeFragment : ConfigurableFragment<FragmentExchangeBinding>(pinProtec
         recipient.setSubTitleText(info.recipient)
         sender.setSubTitleText(info.sender)
         memo.setSubTitleText(info.memo)
-        exchangeType.setSubTitleText(info.exchangeType)
         recipient.setSubTitleText(info.recipient)
         amountSent.setSubTitleText(info.amountSent)
         amountReceived.setSubTitleText(info.amountReceived)

@@ -13,6 +13,8 @@ data class ExchangeInfoDataModel(
     val toShort: String,
     val sendAmount: Double,
     val receiveAmount: Double,
+    val expectedSendAmount: Double,
+    val expectedReceiveAmount: Double,
     val paymentAddress: String,
     val paymentAddressMemo: String?,
     val receiveAddressMemo: String?,
@@ -20,5 +22,5 @@ data class ExchangeInfoDataModel(
     val refundAddressMemo: String?,
     val paymentTxId: String?,
     val receiveTxId: String?,
-    val status: String
+    var status: String
 )

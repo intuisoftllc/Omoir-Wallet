@@ -169,7 +169,7 @@ class UserData {
             save()
         }
 
-    var lastExchangeTicker: String = "eth"
+    var lastExchangeCurrency: String = "eth"
         set(value) {
             field = value
             save()

@@ -300,7 +300,9 @@ class WithdrawConfirmationFragment : ConfigurableFragment<FragmentWithdrawConfir
         val addAddress = bottomSheetDialog.findViewById<RoundedButtonView>(R.id.add_address)!!
         val noAddresses = bottomSheetDialog.findViewById<TextView>(R.id.no_addresses)!!
         val addresses = bottomSheetDialog.findViewById<RecyclerView>(R.id.addresses)!!
-        val savedAddresses = localStoreRepository.getSavedAddresses()
+        val savedAddresses = localStoreRepository.getSavedAddresses().filter {
+            viewModel.canSendToAddress(it.address)
+        }
 
         if(savedAddresses.isEmpty()) {
             noAddresses.isVisible = true

@@ -1,6 +1,5 @@
 package com.intuisoft.plaid.common.repositories
 
-import androidx.room.Database
 import com.intuisoft.plaid.common.CommonService
 import com.intuisoft.plaid.common.util.extensions.remove
 import com.intuisoft.plaid.common.listeners.WipeDataListener
@@ -8,7 +7,6 @@ import com.intuisoft.plaid.common.local.AppPrefs
 import com.intuisoft.plaid.common.local.UserData
 import com.intuisoft.plaid.common.local.db.AddressBlacklistDao
 import com.intuisoft.plaid.common.local.db.BasicPriceDataDao
-import com.intuisoft.plaid.common.local.db.BatchData
 import com.intuisoft.plaid.common.local.db.TransactionBlacklistDao
 import com.intuisoft.plaid.common.local.db.listeners.DatabaseListener
 import com.intuisoft.plaid.common.local.memorycache.MemoryCache
@@ -260,10 +258,6 @@ class LocalStoreRepository_Impl(
         CommonService.getUserData()!!.lastBaseMarketDataUpdateTime = time
     }
 
-    override fun getLastExchangeTicker(): String {
-        return CommonService.getUserData()!!.lastExchangeTicker
-    }
-
     override fun setIsSendingBTC(sending: Boolean) {
         CommonService.getUserData()!!.exchangeSendBTC = sending
     }
@@ -276,8 +270,12 @@ class LocalStoreRepository_Impl(
         return CommonService.getUserData()!!.lastCheckPin
     }
 
-    override fun setLastExchangeTicker(ticker: String) {
-        CommonService.getUserData()!!.lastExchangeTicker = ticker
+    override fun setLastExchangeCurrency(id: String) {
+        CommonService.getUserData()!!.lastExchangeCurrency = id
+    }
+
+    override fun getLastExchangeCurrency(): String {
+        return CommonService.getUserData()!!.lastExchangeCurrency
     }
 
     override fun getLastBasicNetworkDataUpdateTime(): Long {
@@ -400,17 +398,16 @@ class LocalStoreRepository_Impl(
         databaseRepository.setExtendedNetworkData(extendedData, testnetWallet)
     }
 
-    override fun getSupportedCurrenciesData(fixed: Boolean): List<SupportedCurrencyModel> {
+    override fun getSupportedCurrenciesData(): List<SupportedCurrencyModel> {
         return runBlocking {
-            return@runBlocking databaseRepository.getSupportedCurrencies(fixed)
+            return@runBlocking databaseRepository.getSupportedCurrencies()
         }
     }
 
     override suspend fun setSupportedCurrenciesData(
-        data: List<SupportedCurrencyModel>,
-        fixed: Boolean
+        data: List<SupportedCurrencyModel>
     ) {
-        databaseRepository.setSupportedCurrenciesData(data, fixed)
+        databaseRepository.setSupportedCurrenciesData(data)
     }
 
     override suspend fun setTransactionMemo(txId: String, memo: String) {

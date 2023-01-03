@@ -52,7 +52,7 @@ interface DatabaseRepository {
 
     suspend fun getMemoForTransaction(txid: String): TransactionMemoModel?
 
-    suspend fun setSupportedCurrenciesData(data: List<SupportedCurrencyModel>, fixed: Boolean)
+    suspend fun setSupportedCurrenciesData(data: List<SupportedCurrencyModel>)
 
     suspend fun saveExchangeData(data: ExchangeInfoDataModel, walletId: String)
 
@@ -60,7 +60,7 @@ interface DatabaseRepository {
 
     suspend fun getExchangeById(exchangeId: String): ExchangeInfoDataModel?
 
-    suspend fun getSupportedCurrencies(fixed: Boolean): List<SupportedCurrencyModel>
+    suspend fun getSupportedCurrencies(): List<SupportedCurrencyModel>
 
     suspend fun setRates(rates: List<BasicPriceDataModel>)
 

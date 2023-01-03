@@ -457,10 +457,12 @@ class SettingsFragment : ConfigurableFragment<FragmentSettingsBinding>(
 
         viewModel.showEasterEgg.observe(viewLifecycleOwner, Observer {
             styledSnackBar(requireView(), getString(R.string.settings_meme_message)) {
-                navigate(
-                    R.id.memeFragment,
-                    Constants.Navigation.ANIMATED_ENTER_EXIT_RIGHT_NAV_OPTION
-                )
+                try {
+                    navigate(
+                        R.id.memeFragment,
+                        Constants.Navigation.ANIMATED_ENTER_EXIT_RIGHT_NAV_OPTION
+                    )
+                } catch (t: Throwable) {}
             }
         })
 

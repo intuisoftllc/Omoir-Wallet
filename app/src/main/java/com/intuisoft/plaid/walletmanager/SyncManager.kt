@@ -59,7 +59,8 @@ class SyncManager(
     }
 
     fun closeWallet() {
-        openedWallet?.walletKit?.onEnterBackground()
+        if(openedWallet?.isSyncing == false)
+            openedWallet?.walletKit?.onEnterBackground()
         openedWallet = null
     }
 

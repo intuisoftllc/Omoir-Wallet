@@ -628,8 +628,8 @@
     <string name="swap_type_floating">Floating</string>
     <string name="swap_enter_btc_hint">1</string>
     <string name="swap_send_variant_1">You Send %1$s</string>
-    <string name="swap_send_variant_2">You Send %1$s (from external wallet)</string>
-    <string name="swap_receive_variant_1">You Get %1$s (to external wallet)</string>
+    <string name="swap_send_variant_2">You Send %1$s\n(from external wallet)</string>
+    <string name="swap_receive_variant_1">You Get %1$s\n(to external wallet)</string>
     <string name="swap_receive_variant_2">You Get %1$s</string>
     <string name="swap_bitcoin_amount_limit_error">You cannot send/receive more than the bitcoin supply cap.</string>
     <string name="swap_limit_reached_error">You cannot enter more that the max swappable amount of %1$s (%2$s).</string>
@@ -647,8 +647,7 @@
     <string name="swap_refund_address_title">Refund Address</string>
     <string name="swap_deposit_address_entry_title">Deposit Address For %1$s</string>
     <string name="swap_refund_address_entry_title">Refund Address For %1$s</string>
-    <string name="swap_deposit_address_entry_hint_partial">%1$s…</string>
-    <string name="swap_deposit_address_entry_hint_full">%1$s</string>
+    <string name="swap_deposit_address_entry_hint">Enter your address here</string>
     <string name="swap_deposit_address_entry_memo_title">Memo</string>
     <string name="swap_deposit_address_entry_memo_hint">coffee</string>
     <string name="swap_deposit_address_dialog_invalid_address_error">Invalid %1$s address</string>
@@ -658,15 +657,17 @@
     <string name="swap_external_wallet_sender">External %1$s wallet (pay instructions are provided in the next screen)</string>
     <string name="swap_failed_error">Failed to create exchange</string>
     <string name="swap_create_message">Creating exchange</string>
+    <string name="swap_min_max">Min/Max</string>
+    <string name="swap_fees_disclaimer">(All Fees Included)</string>
 <!--    Swap Strings End -->
 
 <!--    Swap Details Strings -->
     <string name="swap_details_smart_pay">Smart Pay</string>
     <string name="swap_details_instructions_part_1">Complete the exchange by sending</string>
     <string name="swap_details_instructions_part_2">To this address below</string>
-    <string name="swap_details_instructions_part_3">Click to see full details on Simple Swap</string>
     <string name="swap_details_with_memo">With Memo:</string>
-    <string name="swap_view_full_details_link">https://simpleswap.io/exchange?id=%1$s</string>
+    <string name="swap_details_tx_id_type_1">payment</string>
+    <string name="swap_details_tx_id_type_2">payout</string>
 <!--    Swap Details Strings End -->
 
 <!--    Report Details Strings -->
@@ -761,6 +762,7 @@
     <string name="you_send">You Send</string>
     <string name="you_receive">You Receive</string>
     <string name="to">To</string>
+    <string name="exchange_id">Exchange ID</string>
     <string name="reports">Reports</string>
     <string name="proceed_anyway">Proceed Anyway</string>
     <string name="i_understand_the_risks">I Understand The Risks</string>

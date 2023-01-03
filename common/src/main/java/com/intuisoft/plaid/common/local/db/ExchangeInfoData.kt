@@ -22,6 +22,8 @@ data class ExchangeInfoData(
     @ColumnInfo(name = "currency_to_short") val toShort: String,
     @ColumnInfo(name = "send_amount") val sendAmount: Double,
     @ColumnInfo(name = "receive_amount") val receiveAmount: Double,
+    @ColumnInfo(name = "expected_send_amount") val expectedSendAmount: Double,
+    @ColumnInfo(name = "expected_receive_amount") val expectedReceiveAmount: Double,
     @ColumnInfo(name = "payment_address") val paymentAddress: String,
     @ColumnInfo(name = "payment_address_memo") val paymentAddressMemo: String?,
     @ColumnInfo(name = "receive_address_memo") val receiveAddressMemo: String?,
@@ -43,6 +45,8 @@ data class ExchangeInfoData(
             toShort = toShort,
             sendAmount = sendAmount,
             receiveAmount = receiveAmount,
+            expectedSendAmount = expectedSendAmount,
+            expectedReceiveAmount = expectedReceiveAmount,
             paymentAddress = paymentAddress,
             paymentAddressMemo = paymentAddressMemo,
             receiveAddressMemo = receiveAddressMemo,
@@ -50,7 +54,7 @@ data class ExchangeInfoData(
             refundAddressMemo = refundAddressMemo,
             paymentTxId = paymentTxId,
             receiveTxId = receiveTxId,
-            status = status
+            status = status,
         )
 
     companion object {
@@ -68,6 +72,8 @@ data class ExchangeInfoData(
                 toShort = data.toShort,
                 sendAmount = data.sendAmount,
                 receiveAmount = data.receiveAmount,
+                expectedSendAmount = data.expectedSendAmount,
+                expectedReceiveAmount = data.expectedReceiveAmount,
                 paymentAddress = data.paymentAddress,
                 paymentAddressMemo = data.paymentAddressMemo,
                 receiveAddressMemo = data.receiveAddressMemo,

@@ -48,7 +48,7 @@ class Peer(
 
     @OptIn(DelicateCoroutinesApi::class)
     fun start() {
-        PlaidScope.IoScope.launch {
+        PlaidScope.GlobalScope.launch {
             peerConnection.run {
                 connectStartTime = System.currentTimeMillis()
             }

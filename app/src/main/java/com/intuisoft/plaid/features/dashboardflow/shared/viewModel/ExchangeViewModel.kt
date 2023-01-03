@@ -8,6 +8,9 @@ import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.SingleLiveData
 import com.intuisoft.plaid.androidwrappers.SwapPairItemView
 import com.intuisoft.plaid.androidwrappers.WalletViewModel
+import com.intuisoft.plaid.common.coroutines.PlaidScope
+import com.intuisoft.plaid.common.local.db.SupportedCurrency
+import com.intuisoft.plaid.common.model.EstimatedReceiveAmountModel
 import com.intuisoft.plaid.common.model.ExchangeInfoDataModel
 import com.intuisoft.plaid.common.network.blockchair.response.SupportedCurrencyModel
 import com.intuisoft.plaid.common.repositories.ApiRepository
@@ -15,10 +18,12 @@ import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.common.util.Constants.Strings.BTC_TICKER
 import com.intuisoft.plaid.common.util.SimpleCoinNumberFormat
+import com.intuisoft.plaid.common.util.extensions.roundTo
 import com.intuisoft.plaid.common.util.extensions.safeWalletScope
 import com.intuisoft.plaid.util.NetworkUtil
 import com.intuisoft.plaid.walletmanager.AbstractWalletManager
 import kotlinx.coroutines.*
+import java.time.Instant
 import java.util.*
 
 
@@ -38,11 +43,8 @@ class ExchangeViewModel(
     protected val _conversionAmount = SingleLiveData<Double>()
     val conversionAmount: LiveData<Double> = _conversionAmount
 
-    protected val _fixedRange = SingleLiveData<Pair<String, String>?>()
-    val fixedRange: LiveData<Pair<String, String>?> = _fixedRange
-
-    protected val _floatingRange = SingleLiveData<Pair<String, String>?>()
-    val floatingRange: LiveData<Pair<String, String>?> = _floatingRange
+    protected val _range = SingleLiveData<Pair<String, String>?>()
+    val range: LiveData<Pair<String, String>?> = _range
 
     protected val _screenFunctionsEnabled = SingleLiveData<Boolean>()
     val screenFunctionsEnabled: LiveData<Boolean> = _screenFunctionsEnabled
@@ -62,11 +64,11 @@ class ExchangeViewModel(
     protected val _creatingExchange = SingleLiveData<Boolean>()
     val creatingExchange: LiveData<Boolean> = _creatingExchange
 
-    protected val _getReceiveAddress = SingleLiveData<Pair<String, Pair<String, String?>>>()
-    val getReceiveAddress: LiveData<Pair<String, Pair<String, String?>>> = _getReceiveAddress
+    protected val _getReceiveAddress = SingleLiveData<SupportedCurrencyModel>()
+    val getReceiveAddress: LiveData<SupportedCurrencyModel> = _getReceiveAddress
 
-    protected val _getRefundAddress = SingleLiveData<Pair<String, Pair<String, String?>>>()
-    val getRefundAddress: LiveData<Pair<String, Pair<String, String?>>> = _getRefundAddress
+    protected val _getRefundAddress = SingleLiveData<SupportedCurrencyModel>()
+    val getRefundAddress: LiveData<SupportedCurrencyModel> = _getRefundAddress
 
     protected val _exchangeInfoDisplay = SingleLiveData<ExchangeInfoDisplay>()
     val exchangeInfoDisplay: LiveData<ExchangeInfoDisplay> = _exchangeInfoDisplay
@@ -74,9 +76,11 @@ class ExchangeViewModel(
     protected val _onNext = SingleLiveData<ExchangeInfoDataModel>()
     val onNext: LiveData<ExchangeInfoDataModel> = _onNext
 
-    private var fixed: Boolean = false
-    private var sendTicker = ""
-    private var receiveTicker = ""
+    protected val _estimatedReceiveAmount = SingleLiveData<Double?>()
+    val estimatedReceiveAmount: LiveData<Double?> = _estimatedReceiveAmount
+
+    private var outboundCurrency: SupportedCurrencyModel? = null
+    private var inboundCurrency: SupportedCurrencyModel? = null
     private var receiveAddress = ""
     private var receiveAddressMemo = ""
     private var refundAddress = ""
@@ -84,32 +88,35 @@ class ExchangeViewModel(
     private var min: Double = 0.0
     private var max: Double? = null
     private var sendAmount: Double = 0.0
-    private var receiveAmount: Double = 0.0
+    private var receiveEstimate: EstimatedReceiveAmountModel = EstimatedReceiveAmountModel("", Instant.now(), 0.0)
     private var wholeCoinConversion: Double = 0.0
     private var bitcoinAmountLimitErrors = 0
     private var maxSwapErrors = 0
     private var ignoreNoNetwork = false
     private var searchValue = ""
-
-    fun setFixed(fixed: Boolean) {
-        viewModelScope.launch {
-            withContext(Dispatchers.IO) {
-                safeWalletScope {
-                    _screenFunctionsEnabled.postValue(false)
-                    this@ExchangeViewModel.fixed = fixed
-                    setFixedFloatingRange().join()
-                    wholeCoinConversion = 0.0
-                    updateWholeCoinConversion(sendTicker, receiveTicker)
-                    validateSendAmount(sendAmount)
-                    _screenFunctionsEnabled.postValue(true)
-                }
+    private var estimatedReceiveAmountJob: Job? = null
+        set(value) {
+            synchronized(this) {
+                field = value
             }
         }
-    }
 
     fun updateSearchValue(search: String, onResult: (Pair<List<SupportedCurrencyModel>, List<SupportedCurrencyModel>>) -> Unit) {
         searchValue = search.trim()
         performSearch(onResult)
+    }
+
+    fun updateEstimatedReceiveAmount() {
+        estimatedReceiveAmountJob?.cancel()
+        estimatedReceiveAmountJob = PlaidScope.IoScope.launch {
+            _estimatedReceiveAmount.postValue(null)
+            if(sendAmount != 0.0) delay(Constants.Time.ESTIMATED_RECEIVE_AMOUNT_UPDATE_TIME)
+            if(outboundCurrency != null && inboundCurrency != null)
+                receiveEstimate = apiRepository.getEstimatedAmount(outboundCurrency!!, inboundCurrency!!, sendAmount)
+            else receiveEstimate = EstimatedReceiveAmountModel("", Instant.now(), 0.0)
+            _estimatedReceiveAmount.postValue(receiveEstimate.toAmount)
+            estimatedReceiveAmountJob = null
+        }
     }
 
     private fun performSearch(onResult: (Pair<List<SupportedCurrencyModel>, List<SupportedCurrencyModel>>) -> Unit) {
@@ -128,7 +135,7 @@ class ExchangeViewModel(
                         timesUsed.add(item to Collections.frequency(exchangedCurrencies, item))
                     }
 
-                    val supportedCurrencies = apiRepository.getSupportedCurrencies(fixed)
+                    val supportedCurrencies = apiRepository.getSupportedCurrencies()
                         .filter {
                             it.ticker != BTC_TICKER
                         }
@@ -166,20 +173,9 @@ class ExchangeViewModel(
     }
 
     fun validateSendAmount(sending: Double?) : Boolean {
-        viewModelScope.launch {
-            withContext(Dispatchers.IO) {
-                safeWalletScope {
-                    updateWholeCoinConversion(
-                        sendTicker,
-                        receiveTicker
-                    ) // refresh the value when needed
-                }
-            }
-        }
-
         sending?.let { it ->
-            if(sendTicker.lowercase() == BTC_TICKER && it > Constants.Limit.BITCOIN_SUPPLY_CAP
-                || (sendTicker.lowercase() != BTC_TICKER && (it * wholeCoinConversion) > Constants.Limit.BITCOIN_SUPPLY_CAP)) {
+            if(outboundCurrency?.ticker?.lowercase() == BTC_TICKER && it > Constants.Limit.BITCOIN_SUPPLY_CAP
+                || (outboundCurrency?.ticker?.lowercase() != BTC_TICKER && (it * wholeCoinConversion) > Constants.Limit.BITCOIN_SUPPLY_CAP)) {
                 onBitcoinAmountLimitError()
                 return false
             }
@@ -193,8 +189,8 @@ class ExchangeViewModel(
         }
 
         sendAmount = sending ?: 0.0
-        receiveAmount = sendAmount * wholeCoinConversion
-        _conversionAmount.postValue(receiveAmount)
+        updateEstimatedReceiveAmount()
+        _conversionAmount.postValue(receiveEstimate.toAmount)
         _confirmButtonEnabled.postValue(min != 0.0 && sendAmount >= min)
         return true
     }
@@ -208,8 +204,8 @@ class ExchangeViewModel(
                             _showContent.postValue(false)
                         } else {
                             _showContent.postValue(true)
-                            if (sendTicker.isNotEmpty() && receiveTicker.isNotEmpty())
-                                modifySendReceive(sendTicker, receiveTicker)
+                            if (outboundCurrency != null && inboundCurrency != null)
+                                modifySendReceive(outboundCurrency!!, inboundCurrency!!)
                             else setInitialValues()
                         }
                     }
@@ -223,13 +219,22 @@ class ExchangeViewModel(
         refundAddressMemo = memo
     }
 
+    fun checkAddress(currency: SupportedCurrencyModel, address: String, onResult: (Boolean) -> Unit) {
+        PlaidScope.IoScope.launch {
+            val result = apiRepository.isAddressValid(currency, address)
+            PlaidScope.MainScope.launch {
+                onResult(result)
+            }
+        }
+    }
+
     fun setReceiveAddress(address: String, memo: String) {
         receiveAddress = address
         receiveAddressMemo = memo
     }
 
     fun getMemo(): String {
-        val isBitcoin = receiveTicker.lowercase() == BTC_TICKER
+        val isBitcoin = inboundCurrency?.ticker?.lowercase() == BTC_TICKER
 
         if(isBitcoin) {
             if(refundAddressMemo.isNotEmpty()) return refundAddressMemo
@@ -241,8 +246,8 @@ class ExchangeViewModel(
     }
 
     fun confirmExchange() {
-        val sendingBitcoin = sendTicker.lowercase() == BTC_TICKER
-        val receivingBitcoin = receiveTicker.lowercase() == BTC_TICKER
+        val sendingBitcoin = outboundCurrency?.ticker?.lowercase() == BTC_TICKER
+        val receivingBitcoin = inboundCurrency?.ticker?.lowercase() == BTC_TICKER
 
         _exchangeInfoDisplay.postValue(
             ExchangeInfoDisplay(
@@ -251,14 +256,13 @@ class ExchangeViewModel(
                     else  receiveAddress,
                 sender =
                     if(sendingBitcoin) getApplication<PlaidApp>().getString(R.string.swap_bitcoin_sender)
-                    else getApplication<PlaidApp>().getString(R.string.swap_external_wallet_sender, sendTicker.uppercase()),
+                    else getApplication<PlaidApp>().getString(R.string.swap_external_wallet_sender, outboundCurrency?.ticker?.uppercase()),
                 refundAddress =
                     if(receivingBitcoin) refundAddress
                     else getApplication<PlaidApp>().getString(R.string.swap_auto_generated_recipient_address, refundAddress),
                 memo = getMemo(),
-                exchangeType = if(fixed) getApplication<PlaidApp>().getString(R.string.swap_type_fixed) else getApplication<PlaidApp>().getString(R.string.swap_type_floating),
-                amountSent = "${SimpleCoinNumberFormat.format(sendAmount)} $sendTicker",
-                amountReceived = "~${if(receiveAmount == 0.0) " ?" else SimpleCoinNumberFormat.format(receiveAmount)} $receiveTicker"
+                amountSent = "${SimpleCoinNumberFormat.format(sendAmount)} ${outboundCurrency!!.ticker}",
+                amountReceived = "~${if(receiveEstimate.toAmount == 0.0) " ?" else SimpleCoinNumberFormat.format(receiveEstimate.toAmount)} ${inboundCurrency!!.ticker}"
             )
         )
     }
@@ -269,10 +273,15 @@ class ExchangeViewModel(
                 safeWalletScope {
                     ignoreNoNetwork = true
                     _creatingExchange.postValue(true)
+                    val rateId =
+                        if(receiveEstimate.rateId.isNotBlank() && Instant.now().isBefore(receiveEstimate.validUntil))
+                            receiveEstimate.rateId
+                        else null
+
                     val exchangeData = apiRepository.createExchange(
-                        fixed = fixed,
-                        from = sendTicker,
-                        to = receiveTicker,
+                        from = outboundCurrency!!,
+                        to = inboundCurrency!!,
+                        rateId = rateId,
                         receiveAddress = receiveAddress,
                         receiveAddressMemo = receiveAddressMemo,
                         refundAddress = refundAddress,
@@ -295,49 +304,70 @@ class ExchangeViewModel(
     }
 
     private fun saveLastTicker() {
-        if(sendTicker.lowercase() != BTC_TICKER) {
-            localStoreRepository.setLastExchangeTicker(sendTicker.lowercase())
+        if(outboundCurrency!!.ticker.lowercase() != BTC_TICKER) {
+            localStoreRepository.setLastExchangeCurrency(outboundCurrency!!.ticker.lowercase())
         } else {
-            localStoreRepository.setLastExchangeTicker(receiveTicker.lowercase())
+            localStoreRepository.setLastExchangeCurrency(inboundCurrency!!.ticker.lowercase())
         }
     }
 
     fun setInitialValues() {
-        if(NetworkUtil.hasInternet(getApplication<PlaidApp>())) {
-            this.fixed = false
-            sendAmount = 0.0
-            receiveAmount = 0.0
-            min = 0.0
-            max = null
-            wholeCoinConversion = 0.0
-            clearAddresses()
-            _showContent.postValue(true)
-            _confirmButtonEnabled.postValue(false)
+        PlaidScope.IoScope.launch {
+            if (NetworkUtil.hasInternet(getApplication<PlaidApp>())) {
+                sendAmount = 0.0
+                receiveEstimate = EstimatedReceiveAmountModel("", Instant.now(), 0.0)
+                min = 0.0
+                max = null
+                wholeCoinConversion = 0.0
+                clearAddresses()
+                _showContent.postValue(true)
+                _confirmButtonEnabled.postValue(false)
+                val lastCurrencyId = localStoreRepository.getLastExchangeCurrency()
+                var lastCurrency: SupportedCurrencyModel? = null
+                var supportedCurrencies = apiRepository.getSupportedCurrencies()
+                lastCurrency = supportedCurrencies.find { it.id == lastCurrencyId }
 
-            if(isReadOnly()) {
-                _disableBtcSeding.postValue(Unit)
-                modifySendReceive(localStoreRepository.getLastExchangeTicker(), BTC_TICKER)
-            } else {
-                if(localStoreRepository.isSendingBTC()) {
-                    modifySendReceive(BTC_TICKER, localStoreRepository.getLastExchangeTicker())
-                } else {
-                    modifySendReceive(localStoreRepository.getLastExchangeTicker(), BTC_TICKER)
+                if(lastCurrency == null) {
+                    lastCurrency = getCurrencyByTicker("eth")
                 }
+
+                if (isReadOnly()) {
+                    _disableBtcSeding.postValue(Unit)
+                    modifySendReceive(lastCurrency!!, getCurrencyByTicker(BTC_TICKER)!!)
+                } else {
+                    if (localStoreRepository.isSendingBTC()) {
+                        modifySendReceive(
+                            getCurrencyByTicker(BTC_TICKER)!!,
+                            lastCurrency!!
+                        )
+                    } else {
+                        modifySendReceive(
+                            lastCurrency!!,
+                            getCurrencyByTicker(BTC_TICKER)!!
+                        )
+                    }
+                }
+            } else {
+                onNoInternet(false)
             }
-        } else {
-            onNoInternet(false)
         }
     }
 
-    fun setSendCurrency(sender: String) {
-        modifySendReceive(sender, receiveTicker)
+    private suspend fun getCurrencyByTicker(ticker: String): SupportedCurrencyModel? {
+        var supportedCurrencies = apiRepository.getSupportedCurrencies()
+        var currency: SupportedCurrencyModel? = supportedCurrencies.find { it.ticker == ticker }
+        return currency
     }
 
-    fun setReceiveCurrency(recipient: String) {
-        modifySendReceive(sendTicker, recipient)
+    fun setOutboundCurrency(outbound: SupportedCurrencyModel) {
+        modifySendReceive(outbound, inboundCurrency!!)
     }
 
-    private fun modifySendReceive(from: String, to: String) {
+    fun setInboundCurrency(inbound: SupportedCurrencyModel) {
+        modifySendReceive(outboundCurrency!!, inbound)
+    }
+
+    private fun modifySendReceive(from: SupportedCurrencyModel, to: SupportedCurrencyModel) {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
                 safeWalletScope {
@@ -346,17 +376,12 @@ class ExchangeViewModel(
                     setReceiveCurrencyInternal(to).join()
                     setFixedFloatingRange().join()
                     wholeCoinConversion = 0.0
-                    updateWholeCoinConversion(from, to)
+                    updateEstimatedReceiveAmount()
                     saveLastTicker()
                     _screenFunctionsEnabled.postValue(true)
                 }
             }
         }
-    }
-
-    private suspend fun updateWholeCoinConversion(from: String, to: String) {
-        if(wholeCoinConversion == 0.0)
-            wholeCoinConversion =  apiRepository.getConversion(from, to, fixed)
     }
 
     private fun onBitcoinAmountLimitError() {
@@ -371,15 +396,15 @@ class ExchangeViewModel(
         maxSwapErrors++
 
         if(maxSwapErrors % errorThreshold == 0) {
-            _onDisplayExplanation.postValue(getApplication<PlaidApp>().getString(R.string.swap_limit_reached_error, sendTicker.uppercase(), max?.toString() ?: "0"))
+            _onDisplayExplanation.postValue(getApplication<PlaidApp>().getString(R.string.swap_limit_reached_error, outboundCurrency!!.ticker.uppercase(), max?.toString() ?: "0"))
         }
     }
 
     fun swapSendReceive() {
-        val newSend = receiveTicker
-        val newRecipient = sendTicker
+        val newSend = inboundCurrency!!
+        val newRecipient = outboundCurrency!!
         sendAmount = 0.0
-        receiveAmount = 0.0
+        receiveEstimate = EstimatedReceiveAmountModel("", Instant.now(), 0.0)
         clearAddresses()
         modifySendReceive(newSend, newRecipient)
     }
@@ -396,29 +421,29 @@ class ExchangeViewModel(
             withContext(Dispatchers.IO) {
                 safeWalletScope {
                     if (max == null || sendAmount <= (max ?: 0.0)) {
-                        val isBitcoin = sendTicker.lowercase() == BTC_TICKER
+                        val isBitcoin = outboundCurrency!!.ticker.lowercase() == BTC_TICKER
                         clearAddresses()
 
                         if (isBitcoin) {
                             refundAddress = getRecieveAddress()
-                            val currency = apiRepository.getSupportedCurrencies(fixed)
-                                .filter { it.ticker.lowercase() == receiveTicker.lowercase() }
+                            val currency = apiRepository.getSupportedCurrencies()
+                                .filter { it.ticker.lowercase() == inboundCurrency!!.ticker.lowercase() }
                             val recipient = currency.first()
 
-                            _getReceiveAddress.postValue(recipient.ticker to (recipient.validAddressRegex to recipient.validMemoRegex))
+                            _getReceiveAddress.postValue(recipient)
                         } else {
                             receiveAddress = getRecieveAddress()
-                            val currency = apiRepository.getSupportedCurrencies(fixed)
-                                .filter { it.ticker.lowercase() == sendTicker.lowercase() }
+                            val currency = apiRepository.getSupportedCurrencies()
+                                .filter { it.ticker.lowercase() == outboundCurrency!!.ticker.lowercase() }
                             val sender = currency.first()
 
-                            _getRefundAddress.postValue(sender.ticker to (sender.validAddressRegex to sender.validMemoRegex))
+                            _getRefundAddress.postValue(sender)
                         }
                     } else {
                         _onDisplayExplanation.postValue(
                             getApplication<PlaidApp>().getString(
                                 R.string.swap_limit_reached_error,
-                                sendTicker.uppercase(),
+                                outboundCurrency!!.ticker.uppercase(),
                                 max?.toString() ?: "0"
                             )
                         )
@@ -429,23 +454,23 @@ class ExchangeViewModel(
         }
     }
 
-    private fun setSendCurrencyInternal(ticker: String): Job {
-        sendTicker = ticker
+    private fun setSendCurrencyInternal(currency: SupportedCurrencyModel): Job {
+        outboundCurrency = currency
 
         return viewModelScope.launch {
             withContext(Dispatchers.IO) {
                 safeWalletScope {
-                    val currency = apiRepository.getSupportedCurrencies(fixed)
-                        .filter { it.ticker.lowercase() == ticker.lowercase() }
+                    val currency = apiRepository.getSupportedCurrencies()
+                        .filter { it.ticker.lowercase() == currency.ticker.lowercase() }
 
                     if (currency.isNotEmpty()) {
                         val crypto = currency.first()
-                        val isBitcoin = ticker.lowercase() == BTC_TICKER
+                        val isBitcoin = outboundCurrency!!.ticker.lowercase() == BTC_TICKER
                         localStoreRepository.setIsSendingBTC(isBitcoin)
 
                         _sendPairInfo.postValue(
                             SwapPairInfo(
-                                ticker.uppercase(),
+                                outboundCurrency!!.ticker.uppercase(),
                                 if (isBitcoin) null else crypto.image,
                                 sendAmount,
                                 getApplication<PlaidApp>().getString(
@@ -459,7 +484,7 @@ class ExchangeViewModel(
                         _onDisplayExplanation.postValue(
                             getApplication<PlaidApp>().getString(
                                 R.string.swap_could_not_find_crypto_error,
-                                ticker
+                                outboundCurrency!!.ticker
                             )
                         )
                     }
@@ -468,24 +493,24 @@ class ExchangeViewModel(
         }
     }
 
-    private fun setReceiveCurrencyInternal(ticker: String) : Job {
-        receiveTicker = ticker
+    private fun setReceiveCurrencyInternal(currency: SupportedCurrencyModel) : Job {
+        inboundCurrency = currency
 
         return viewModelScope.launch {
             withContext(Dispatchers.IO) {
                 safeWalletScope {
-                    val currency = apiRepository.getSupportedCurrencies(fixed)
-                        .filter { it.ticker.lowercase() == ticker.lowercase() }
+                    val currency = apiRepository.getSupportedCurrencies()
+                        .filter { it.ticker.lowercase() == currency.ticker.lowercase() }
 
                     if (currency.isNotEmpty()) {
                         val crypto = currency.first()
-                        val isBitcoin = ticker.lowercase() == BTC_TICKER
+                        val isBitcoin = inboundCurrency!!.ticker.lowercase() == BTC_TICKER
 
                         _recievePairInfo.postValue(
                             SwapPairInfo(
-                                ticker.uppercase(),
+                                inboundCurrency!!.ticker.uppercase(),
                                 if (isBitcoin) null else crypto.image,
-                                receiveAmount,
+                                receiveEstimate.toAmount,
                                 getApplication<PlaidApp>().getString(
                                     if (isBitcoin) R.string.swap_receive_variant_2 else R.string.swap_receive_variant_1,
                                     crypto.name
@@ -497,7 +522,7 @@ class ExchangeViewModel(
                         _onDisplayExplanation.postValue(
                             getApplication<PlaidApp>().getString(
                                 R.string.swap_could_not_find_crypto_error,
-                                ticker
+                                inboundCurrency!!.ticker
                             )
                         )
                     }
@@ -511,22 +536,20 @@ class ExchangeViewModel(
             withContext(Dispatchers.IO) {
                 safeWalletScope {
                     val range =
-                        apiRepository.getCurrencyRangeLimit(sendTicker, receiveTicker, fixed)
+                        apiRepository.getCurrencyRangeLimit(outboundCurrency!!, inboundCurrency!!)
                     if (range != null) {
-                        min = range.min.toDouble()
-                        max = range.max?.toDouble()
-                        if (fixed) _fixedRange.postValue(range.min to (range.max ?: "∞"))
-                        else _floatingRange.postValue(range.min to (range.max ?: "∞"))
+                        min = range.min.toDouble().roundTo(8)
+                        max = range.max?.toDouble()?.roundTo(8)
+                        _range.postValue(range.min to (range.max ?: "∞"))
                     } else {
                         min = 0.0
                         max = 0.0
-                        if (fixed) _fixedRange.postValue(null)
-                        else _floatingRange.postValue(null)
+                        _range.postValue(null)
                         _onDisplayExplanation.postValue(
                             getApplication<PlaidApp>().getString(
                                 R.string.swap_could_not_load_min_max_error,
-                                sendTicker,
-                                receiveTicker
+                                outboundCurrency,
+                                inboundCurrency
                             )
                         )
                     }
@@ -548,7 +571,6 @@ class ExchangeViewModel(
         val sender: String,
         val refundAddress: String,
         val memo: String,
-        val exchangeType: String,
         val amountSent: String,
         val amountReceived: String
     )
