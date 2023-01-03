@@ -220,11 +220,6 @@ class WithdrawalFragment : ConfigurableFragment<FragmentWithdrawBinding>(pinProt
         viewModel.onNextStep.observe(viewLifecycleOwner, Observer {
             var bundle = bundleOf(
                 Constants.Navigation.FRAGMENT_CONFIG to FragmentConfiguration(
-                    actionBarTitle = 0,
-                    actionBarSubtitle = 0,
-                    actionBarVariant = 0,
-                    actionLeft = 0,
-                    actionRight = 0,
                     configurationType = FragmentConfigurationType.CONFIGURATION_WITHDRAW,
                     configData = SendFundsData(
                         amountToSend = viewModel.getSatsToSpend(),

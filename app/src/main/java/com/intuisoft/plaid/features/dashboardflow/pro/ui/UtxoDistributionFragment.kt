@@ -119,11 +119,6 @@ class UtxoDistributionFragment : ConfigurableFragment<FragmentUtxoDistroReportBi
             onSpendCoin = {
                 var bundle = bundleOf(
                     Constants.Navigation.FRAGMENT_CONFIG to FragmentConfiguration(
-                        actionBarTitle = 0,
-                        actionBarSubtitle = 0,
-                        actionBarVariant = 0,
-                        actionLeft = 0,
-                        actionRight = 0,
                         configurationType = FragmentConfigurationType.CONFIGURATION_SPEND_COIN,
                         configData = BasicConfigData(
                             payload = it.output.address!!

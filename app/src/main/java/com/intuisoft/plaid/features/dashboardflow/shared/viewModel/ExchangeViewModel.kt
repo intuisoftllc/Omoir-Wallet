@@ -305,9 +305,9 @@ class ExchangeViewModel(
 
     private fun saveLastTicker() {
         if(outboundCurrency!!.ticker.lowercase() != BTC_TICKER) {
-            localStoreRepository.setLastExchangeCurrency(outboundCurrency!!.ticker.lowercase())
+            localStoreRepository.setLastExchangeCurrency(outboundCurrency!!.id)
         } else {
-            localStoreRepository.setLastExchangeCurrency(inboundCurrency!!.ticker.lowercase())
+            localStoreRepository.setLastExchangeCurrency(inboundCurrency!!.id)
         }
     }
 

@@ -79,6 +79,7 @@ class WithdrawConfirmationFragment : ConfigurableFragment<FragmentWithdrawConfir
         viewModel.updateSendAmount(data.amountToSend)
         viewModel.setNetworkFeeRate()
         viewModel.setInvoiceSend(data.invoiceSend)
+        viewModel.setExchangeId(data.exchangeId)
 
         if(data.invoiceSend) {
             binding.address.setText(data.address)
@@ -239,7 +240,7 @@ class WithdrawConfirmationFragment : ConfigurableFragment<FragmentWithdrawConfir
                                 bottomSheetDialog.dismiss()
                                 if(memo.isNotEmpty() && memo.isNotBlank())
                                     viewModel.setMemoForTx(transaction.header.hash.toReversedHex(), memo)
-                                showFundsSentDialog(feePaid)
+                                showFundsSentDialog(feePaid, transaction.header.hash.toReversedHex())
                             }
                         }
                     )
@@ -248,7 +249,7 @@ class WithdrawConfirmationFragment : ConfigurableFragment<FragmentWithdrawConfir
                         bottomSheetDialog.dismiss()
                         if(memo.isNotEmpty() && memo.isNotBlank())
                             viewModel.setMemoForTx(transaction.header.hash.toReversedHex(), memo)
-                        showFundsSentDialog(feePaid)
+                        showFundsSentDialog(feePaid, transaction.header.hash.toReversedHex())
                     }
                 }
             }
@@ -261,7 +262,7 @@ class WithdrawConfirmationFragment : ConfigurableFragment<FragmentWithdrawConfir
         }
     }
 
-    fun showFundsSentDialog(feePaid: Long) {
+    fun showFundsSentDialog(feePaid: Long, txId: String) {
         val dialog = Dialog(requireActivity())
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setCancelable(false)
@@ -283,11 +284,19 @@ class WithdrawConfirmationFragment : ConfigurableFragment<FragmentWithdrawConfir
         viewModel.animateSentAmount(800)
         done.onClick {
             dialog.cancel()
-            findNavController().popBackStack(
-                if(localStoreRepository.isProEnabled()) R.id.walletProDashboardFragment
-                else R.id.walletDashboardFragment,
-                false
-            )
+            if(viewModel.getExchangeId() != null) {
+                viewModel.updateExchangeStatus(txId)
+                findNavController().popBackStack(
+                    R.id.exchangeFragment,
+                    false
+                )
+            } else {
+                findNavController().popBackStack(
+                    if (localStoreRepository.isProEnabled()) R.id.walletProDashboardFragment
+                    else R.id.walletDashboardFragment,
+                    false
+                )
+            }
         }
 
         dialog.show()

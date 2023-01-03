@@ -102,7 +102,7 @@ interface LocalStoreRepository {
 
     fun getLastSupportedCurrenciesUpdateTime(): Long
 
-    fun setLastExchangeCurrency(ticker: String)
+    fun setLastExchangeCurrency(id: String)
 
     fun getLastExchangeCurrency(): String
 

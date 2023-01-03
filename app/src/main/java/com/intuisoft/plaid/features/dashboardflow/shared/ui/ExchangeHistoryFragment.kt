@@ -94,11 +94,6 @@ class ExchangeHistoryFragment : ConfigurableFragment<FragmentExchangeHistoryBind
     fun onExchangeSelected(exchange: ExchangeInfoDataModel) {
         var bundle = bundleOf(
             Constants.Navigation.FRAGMENT_CONFIG to FragmentConfiguration(
-                actionBarTitle = 0,
-                actionBarSubtitle = 0,
-                actionBarVariant = 0,
-                actionLeft = 0,
-                actionRight = 0,
                 configurationType = FragmentConfigurationType.CONFIGURATION_SWAP_DATA,
                 configData = BasicConfigData(
                     payload = Gson().toJson(exchange, ExchangeInfoDataModel::class.java)

@@ -21,7 +21,8 @@ import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.common.util.SimpleCoinNumberFormat
 import com.intuisoft.plaid.databinding.FragmentExchangeDetailsBinding
 import com.intuisoft.plaid.features.dashboardflow.shared.viewModel.SwapDetailsViewModel
-import com.intuisoft.plaid.model.ExchangeStatus
+import com.intuisoft.plaid.common.model.ExchangeStatus
+import com.intuisoft.plaid.model.ExchangeStatusColors
 import com.intuisoft.plaid.util.fragmentconfig.BasicConfigData
 import com.intuisoft.plaid.util.fragmentconfig.ConfigInvoiceData
 import org.koin.android.ext.android.inject
@@ -56,7 +57,7 @@ class ExchangeDetailsFragment : ConfigurableFragment<FragmentExchangeDetailsBind
         binding.status.text = data.status
         binding.status.setTextColor(
             resources.getColor(
-                status.color
+                ExchangeStatusColors.getColor(status)
             )
         )
         binding.from.text = data.from
@@ -133,16 +134,12 @@ class ExchangeDetailsFragment : ConfigurableFragment<FragmentExchangeDetailsBind
             eventTracker.log(EventExchangeDetailsSmartPay())
             var bundle = bundleOf(
                 Constants.Navigation.FRAGMENT_CONFIG to FragmentConfiguration(
-                    actionBarTitle = 0,
-                    actionBarSubtitle = 0,
-                    actionBarVariant = 0,
-                    actionLeft = 0,
-                    actionRight = 0,
                     configurationType = FragmentConfigurationType.CONFIGURATION_INVOICE,
                     configData = ConfigInvoiceData(
-                        amountToSend = data.sendAmount,
+                        amountToSend = if(status.isFinalState()) data.sendAmount else data.expectedSendAmount,
                         address = data.paymentAddress,
-                        memo = getString(R.string.exchange_assets_invoice_description, data.fromShort.lowercase(), data.toShort.lowercase())
+                        memo = getString(R.string.exchange_assets_invoice_description, data.fromShort.lowercase(), data.toShort.lowercase()),
+                        exchangeId = data.id
                     )
                 )
             )

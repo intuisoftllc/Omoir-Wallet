@@ -94,12 +94,7 @@ class NameYourWalletFragment : ConfigurableFragment<FragmentNameWalletBinding>(
             walletManager.openWallet(walletManager.findLocalWallet(it)!!)
 
             var bundle = bundleOf(
-                Constants.Navigation.FRAGMENT_CONFIG to FragmentConfiguration( // todo: check for pro here for home screen destination and on all other places as well
-                    actionBarTitle = 0,
-                    actionBarSubtitle = 0,
-                    actionBarVariant = 0,
-                    actionLeft = 0,
-                    actionRight = 0,
+                Constants.Navigation.FRAGMENT_CONFIG to FragmentConfiguration(
                     configurationType = FragmentConfigurationType.CONFIGURATION_All_SET,
                     configData = AllSetData(
                         title = getString(R.string.create_wallet_success_title),

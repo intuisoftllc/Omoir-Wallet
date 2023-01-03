@@ -42,11 +42,6 @@ class ReportsFragment : ConfigurableFragment<FragmentReportsBinding>(pinProtecti
         binding.inflow.onClick {
             var bundle = bundleOf(
                 Constants.Navigation.FRAGMENT_CONFIG to FragmentConfiguration(
-                    actionBarTitle = 0,
-                    actionBarSubtitle = 0,
-                    actionBarVariant = 0,
-                    actionLeft = 0,
-                    actionRight = 0,
                     configurationType = FragmentConfigurationType.CONFIGURATION_INFLOW_REPORT,
                     configData = null
                 )
@@ -62,11 +57,6 @@ class ReportsFragment : ConfigurableFragment<FragmentReportsBinding>(pinProtecti
             eventTracker.log(EventReportSelected(ReportType.INFLOW_REPORT))
             var bundle = bundleOf(
                 Constants.Navigation.FRAGMENT_CONFIG to FragmentConfiguration(
-                    actionBarTitle = 0,
-                    actionBarSubtitle = 0,
-                    actionBarVariant = 0,
-                    actionLeft = 0,
-                    actionRight = 0,
                     configurationType = FragmentConfigurationType.CONFIGURATION_INFLOW_REPORT,
                     configData = null
                 )
@@ -82,11 +72,6 @@ class ReportsFragment : ConfigurableFragment<FragmentReportsBinding>(pinProtecti
             eventTracker.log(EventReportSelected(ReportType.OUTFLOW_REPORT))
             var bundle = bundleOf(
                 Constants.Navigation.FRAGMENT_CONFIG to FragmentConfiguration(
-                    actionBarTitle = 0,
-                    actionBarSubtitle = 0,
-                    actionBarVariant = 0,
-                    actionLeft = 0,
-                    actionRight = 0,
                     configurationType = FragmentConfigurationType.CONFIGURATION_OUTFLOW_REPORT,
                     configData = null
                 )
@@ -102,11 +87,6 @@ class ReportsFragment : ConfigurableFragment<FragmentReportsBinding>(pinProtecti
             eventTracker.log(EventReportSelected(ReportType.TXFEE_REPORT))
             var bundle = bundleOf(
                 Constants.Navigation.FRAGMENT_CONFIG to FragmentConfiguration(
-                    actionBarTitle = 0,
-                    actionBarSubtitle = 0,
-                    actionBarVariant = 0,
-                    actionLeft = 0,
-                    actionRight = 0,
                     configurationType = FragmentConfigurationType.CONFIGURATION_FEE_REPORT,
                     configData = null
                 )

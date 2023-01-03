@@ -666,8 +666,8 @@
     <string name="swap_details_instructions_part_1">Complete the exchange by sending</string>
     <string name="swap_details_instructions_part_2">To this address below</string>
     <string name="swap_details_with_memo">With Memo:</string>
-    <string name="swap_details_tx_id_type_1">payment</string>
-    <string name="swap_details_tx_id_type_2">payout</string>
+    <string name="swap_details_tx_id_type_1">(payment)</string>
+    <string name="swap_details_tx_id_type_2">(payout)</string>
 <!--    Swap Details Strings End -->
 
 <!--    Report Details Strings -->

@@ -7,7 +7,8 @@ import com.intuisoft.plaid.androidwrappers.setOnSingleClickListener
 import com.intuisoft.plaid.common.model.ExchangeInfoDataModel
 import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.common.util.SimpleCoinNumberFormat
-import com.intuisoft.plaid.model.ExchangeStatus
+import com.intuisoft.plaid.common.model.ExchangeStatus
+import com.intuisoft.plaid.model.ExchangeStatusColors
 import kotlinx.android.synthetic.main.list_item_basic_exchange_details.view.*
 
 
@@ -36,7 +37,7 @@ class BasicExchangeDetail(
 
             exchange.text = context.getString(R.string.exchange_history_id, info.id)
             status.text = info.status
-            status.setTextColor(context.getColor(exchangeStatus.color))
+            status.setTextColor(context.getColor(ExchangeStatusColors.getColor(exchangeStatus)))
         }
     }
 

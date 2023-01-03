@@ -7,6 +7,7 @@ import com.intuisoft.plaid.PlaidApp
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.SingleLiveData
 import com.intuisoft.plaid.androidwrappers.WalletViewModel
+import com.intuisoft.plaid.common.coroutines.PlaidScope
 import com.intuisoft.plaid.common.model.FeeType
 import com.intuisoft.plaid.common.model.NetworkFeeRate
 import com.intuisoft.plaid.common.repositories.ApiRepository
@@ -14,6 +15,7 @@ import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.util.NetworkUtil
 import com.intuisoft.plaid.common.util.RateConverter
 import com.intuisoft.plaid.common.util.extensions.safeWalletScope
+import com.intuisoft.plaid.common.model.ExchangeStatus
 import com.intuisoft.plaid.walletmanager.AbstractWalletManager
 import io.horizontalsystems.bitcoincore.models.TransactionDataSortType
 import io.horizontalsystems.bitcoincore.storage.FullTransaction
@@ -52,6 +54,7 @@ class WithdrawConfirmationViewModel(
     private var invoiceSend: Boolean = false
     private var feeRate: Int = 0
     private var address: String? = null
+    private var exchangeId: String? = null
     private var invalidAddressErrors = 0
     private var amountToSpend: RateConverter = RateConverter(localStoreRepository.getRateFor(localStoreRepository.getLocalCurrency())?.currentPrice ?: 0.0)
     private var networkFeeRate: NetworkFeeRate = NetworkFeeRate(1, 2, 6)
@@ -66,8 +69,29 @@ class WithdrawConfirmationViewModel(
 
     fun isInvoiceSend() = invoiceSend
 
+    fun getExchangeId() = exchangeId
+
+    fun updateExchangeStatus(txId: String) {
+        localStoreRepository.getExchangeById(exchangeId!!)?.let {
+            if(ExchangeStatus.from(it.status) == ExchangeStatus.WAITING) {
+                it.status = ExchangeStatus.CONFIRMING.type
+                it.paymentTxId = txId
+                it.receiveAmount = it.expectedReceiveAmount
+                it.expectedReceiveAmount = 0.0
+
+                PlaidScope.IoScope.launch {
+                    localStoreRepository.saveExchangeData(it, getWalletId())
+                }
+            }
+        }
+    }
+
     fun setInvoiceSend(fromInvoice: Boolean) {
         invoiceSend = fromInvoice
+    }
+
+    fun setExchangeId(id: String?) {
+        exchangeId = id
     }
 
     fun setNetworkFeeRate() {

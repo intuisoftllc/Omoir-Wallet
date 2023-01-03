@@ -114,11 +114,6 @@ class DashboardFragment : ConfigurableFragment<FragmentWalletDashboardBinding>(p
             eventTracker.log(EventDashboardDeposit())
             var bundle = bundleOf(
                 Constants.Navigation.FRAGMENT_CONFIG to FragmentConfiguration(
-                    actionBarTitle = 0,
-                    actionBarSubtitle = 0,
-                    actionBarVariant = 0,
-                    actionLeft = 0,
-                    actionRight = 0,
                     configurationType = FragmentConfigurationType.CONFIGURATION_DISPLAY_SHAREABLE_QR,
                     configData = ConfigQrDisplayData(
                         payload = viewModel.getRecieveAddress(),

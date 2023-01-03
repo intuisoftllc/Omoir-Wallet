@@ -8,5 +8,6 @@ import kotlinx.android.parcel.Parcelize
 data class ConfigInvoiceData(
     val amountToSend: Double,
     val address: String,
-    val memo: String? = null
+    val memo: String? = null,
+    val exchangeId: String? = null
 ): Parcelable

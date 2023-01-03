@@ -145,12 +145,14 @@ class ApiRepository_Impl(
         val supportedCurrencies = localStoreRepository.getSupportedCurrenciesData() +
                 localStoreRepository.getSupportedCurrenciesData()
 
-        val data = localStoreRepository.getExchangeById(id)
+        var data = localStoreRepository.getExchangeById(id)
+        val status = ExchangeStatus.from(data?.status ?: ExchangeStatus.NEW.type)
 
         if(data != null
-            && (data.status != "failed" && data.status != "finished" && data.status != "refunded") // this is really bad need a better way than this
+            && (status != ExchangeStatus.FAILED && status != ExchangeStatus.FINISHED && status != ExchangeStatus.REFUNDED)
             && supportedCurrencies.isNotEmpty()) {
             updateExchangeData(id, walletId)
+            data = localStoreRepository.getExchangeById(id)
 
             if (data != null) {
                 val toCurrency =
@@ -279,10 +281,16 @@ class ApiRepository_Impl(
     private suspend fun updateExchangeData(id: String, walletId: String) {
         if((System.currentTimeMillis() - memoryCache.getLastExchangeUpdateTime(id)) > Constants.Time.GENERAL_CACHE_UPDATE_TIME_XTRA_SHORT) {
             val exchange = changeNowRepository.getExchange(id)
+            var oldData = localStoreRepository.getExchangeById(id)
 
             if(exchange.isSuccess) {
-                localStoreRepository.saveExchangeData(exchange.getOrThrow(), walletId)
-                memoryCache.setLastExchangeUpdateTime(id, System.currentTimeMillis())
+                val newStatus = ExchangeStatus.from(exchange.getOrThrow().status)
+                val oldStatus = ExchangeStatus.from(oldData?.status ?: ExchangeStatus.NEW.type)
+
+                if(newStatus == ExchangeStatus.VERIFYING || newStatus >= oldStatus) {
+                    localStoreRepository.saveExchangeData(exchange.getOrThrow(), walletId)
+                    memoryCache.setLastExchangeUpdateTime(id, System.currentTimeMillis())
+                }
             }
         }
     }

@@ -54,6 +54,7 @@ class InvoiceFragment : ConfigurableFragment<FragmentInvoiceBinding>(pinProtecti
                 ).uriPaymentAddress
             )
 
+            viewModel.setExchangeId(data.exchangeId)
             binding.scanInvoice.enableButton(false)
         }
 
@@ -79,16 +80,12 @@ class InvoiceFragment : ConfigurableFragment<FragmentInvoiceBinding>(pinProtecti
         viewModel.onNextStep.observe(viewLifecycleOwner, Observer {
             var bundle = bundleOf(
                 Constants.Navigation.FRAGMENT_CONFIG to FragmentConfiguration(
-                    actionBarTitle = 0,
-                    actionBarSubtitle = 0,
-                    actionBarVariant = 0,
-                    actionLeft = 0,
-                    actionRight = 0,
                     configurationType = FragmentConfigurationType.CONFIGURATION_WITHDRAW,
                     configData = SendFundsData(
                         amountToSend = viewModel.getSatsToSpend(),
                         spendFrom = viewModel.selectedUTXOs.map { it.output.address!! },
                         address = it.address,
+                        exchangeId = it.exchangeId,
                         memo = it.description,
                         invoiceSend = true
                     )

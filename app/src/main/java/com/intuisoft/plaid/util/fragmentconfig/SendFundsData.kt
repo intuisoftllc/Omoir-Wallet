@@ -10,5 +10,6 @@ data class SendFundsData(
     val spendFrom: List<String>,
     val address: String? = null,
     val memo: String? = null,
+    val exchangeId: String? = null,
     val invoiceSend: Boolean = false,
 ): Parcelable

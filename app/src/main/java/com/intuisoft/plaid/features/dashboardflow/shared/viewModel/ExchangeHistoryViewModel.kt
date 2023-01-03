@@ -9,7 +9,7 @@ import com.intuisoft.plaid.common.model.ExchangeHistoryFilter
 import com.intuisoft.plaid.common.model.ExchangeInfoDataModel
 import com.intuisoft.plaid.common.repositories.ApiRepository
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
-import com.intuisoft.plaid.model.ExchangeStatus
+import com.intuisoft.plaid.common.model.ExchangeStatus
 import com.intuisoft.plaid.walletmanager.AbstractWalletManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

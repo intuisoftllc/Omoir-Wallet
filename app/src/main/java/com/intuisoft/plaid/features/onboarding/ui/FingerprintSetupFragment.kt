@@ -118,11 +118,6 @@ class FingerprintSetupFragment : BindingFragment<FragmentOnboardingFingerprintRe
 
         var bundle = bundleOf(
             Constants.Navigation.FRAGMENT_CONFIG to FragmentConfiguration(
-                actionBarTitle = 0,
-                actionBarSubtitle = 0,
-                actionBarVariant = 0,
-                actionLeft = 0,
-                actionRight = 0,
                 configurationType = FragmentConfigurationType.CONFIGURATION_ONBOARDING_All_SET,
                 configData = AllSetData(
                     title = getString(R.string.all_set_title),

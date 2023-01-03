@@ -38,6 +38,7 @@ class InvoiceViewModel(
     private var amountToSpend: RateConverter = RateConverter(localStoreRepository.getRateFor(localStoreRepository.getLocalCurrency())?.currentPrice ?: 0.0)
     private var description: String = ""
     private var address: String = ""
+    private var exchangeId: String? = null
 
     fun getSatsToSpend() = amountToSpend.getRawRate()
 
@@ -53,10 +54,15 @@ class InvoiceViewModel(
                 address,
                 if(description.isNotEmpty() && description.isNotBlank())
                     description
-                else getApplication<PlaidApp>().getString(R.string.not_applicable)
+                else getApplication<PlaidApp>().getString(R.string.not_applicable),
+                exchangeId
             )
         )
         _enableNext.postValue(Unit)
+    }
+
+    fun setExchangeId(id: String?) {
+        exchangeId = id
     }
 
     fun updateAvailableBalance() {
@@ -113,7 +119,8 @@ class InvoiceViewModel(
                             InvoiceDetails(
                                 amountToSpend.from(localStoreRepository.getBitcoinDisplayUnit().toRateType(), localStoreRepository.getLocalCurrency()).second,
                                 address,
-                                description
+                                description,
+                                exchangeId
                             )
                         )
                     }
@@ -145,6 +152,7 @@ class InvoiceViewModel(
     data class InvoiceDetails(
         val amount: String,
         val address: String,
-        val description: String
+        val description: String,
+        val exchangeId: String?
     )
 }

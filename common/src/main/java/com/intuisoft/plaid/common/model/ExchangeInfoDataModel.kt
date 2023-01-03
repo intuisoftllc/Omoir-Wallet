@@ -12,15 +12,15 @@ data class ExchangeInfoDataModel(
     var to: String,
     val toShort: String,
     val sendAmount: Double,
-    val receiveAmount: Double,
+    var receiveAmount: Double,
     val expectedSendAmount: Double,
-    val expectedReceiveAmount: Double,
+    var expectedReceiveAmount: Double,
     val paymentAddress: String,
     val paymentAddressMemo: String?,
     val receiveAddressMemo: String?,
     val refundAddress: String,
     val refundAddressMemo: String?,
-    val paymentTxId: String?,
+    var paymentTxId: String?,
     val receiveTxId: String?,
     var status: String
 )
