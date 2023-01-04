@@ -50,10 +50,6 @@ class AtpFragment : ConfigurableFragment<FragmentAtpBinding>(pinProtection = tru
     }
 
     override fun onConfiguration(configuration: FragmentConfiguration?) {
-        onBackPressedCallback {
-            onNavigateBottomBarSecondaryFragmentBackwards(localStoreRepository)
-        }
-
         eventTracker.log(EventAtpView())
         viewModel.getInitialWallet()
         viewModel.updateValues()
@@ -184,6 +180,10 @@ class AtpFragment : ConfigurableFragment<FragmentAtpBinding>(pinProtection = tru
         binding.batchSize.onClick {
             displayBatchSizeInfo()
         }
+    }
+
+    override fun onBackPressed() {
+        onNavigateBottomBarSecondaryFragmentBackwards(localStoreRepository)
     }
 
     fun utxoTransfersDialog(items: List<AtpViewModel.UtxoData>, onCancel: ()-> Unit) {

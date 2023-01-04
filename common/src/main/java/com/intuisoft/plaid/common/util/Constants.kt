@@ -78,7 +78,6 @@ class Constants {
         const val COPIED_TO_CLIPBOARD = "Copied To Clipboard!"
         const val BLOCKCHAIN_COM_TX_URL = "https://www.blockchain.com/btc/tx/"
         const val BLOCK_CYPHER_TX_URL = "https://live.blockcypher.com/btc-testnet/tx/"
-        const val TEST_WALLET_1 = "yard impulse luxury drive today throw farm pepper survey wreck glass federal"
         const val TEST_WALLET_2 = "wrong cousin spell stadium snake enact author piano venue outer question chair"
         const val TEST_WALLET_3 = "patient sort can island cute saddle shield crunch knock tourist butter budget"
         const val TEST_WALLET_4 = "walk north lazy coffee uncle isolate super shoulder flat accident shy deposit"

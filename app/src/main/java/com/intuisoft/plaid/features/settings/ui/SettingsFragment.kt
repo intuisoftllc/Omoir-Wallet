@@ -53,11 +53,6 @@ class SettingsFragment : ConfigurableFragment<FragmentSettingsBinding>(
     }
 
     override fun onConfiguration(configuration: FragmentConfiguration?) {
-
-        onBackPressedCallback {
-            onNavigateBack()
-        }
-
         eventTracker.log(EventSettingsView())
         viewModel.bitcoinDisplayUnitSetting.observe(viewLifecycleOwner, Observer {
             when(it) {
@@ -136,10 +131,7 @@ class SettingsFragment : ConfigurableFragment<FragmentSettingsBinding>(
         })
 
         binding.updatePin.onClick {
-            navigate(
-                R.id.pinFragment,
-                bundleOf(Constants.Navigation.PIN_SETUP to true)
-            )
+            activatePin(true, false)
         }
 
         binding.maxAttempts.onClick {

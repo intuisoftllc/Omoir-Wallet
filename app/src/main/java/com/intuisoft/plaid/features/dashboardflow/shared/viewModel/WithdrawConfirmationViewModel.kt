@@ -76,8 +76,6 @@ class WithdrawConfirmationViewModel(
             if(ExchangeStatus.from(it.status) == ExchangeStatus.WAITING) {
                 it.status = ExchangeStatus.CONFIRMING.type
                 it.paymentTxId = txId
-                it.receiveAmount = it.expectedReceiveAmount
-                it.expectedReceiveAmount = 0.0
 
                 PlaidScope.IoScope.launch {
                     localStoreRepository.saveExchangeData(it, getWalletId())

@@ -63,10 +63,6 @@ class ProDashboardFragment : ConfigurableFragment<FragmentProWalletDashboardBind
     }
 
     override fun onConfiguration(configuration: FragmentConfiguration?) {
-        onBackPressedCallback {
-            onNavigateBottomBarPrimaryFragmentBackwards(localStoreRepository)
-        }
-
         eventTracker.log(EventDashboardView())
         viewModel.getTransactions()
         viewModel.displayCurrentWallet()
@@ -327,6 +323,10 @@ class ProDashboardFragment : ConfigurableFragment<FragmentProWalletDashboardBind
                 Constants.Navigation.ANIMATED_SLIDE_UP_OPTION
             )
         }
+    }
+
+    override fun onBackPressed() {
+        onNavigateBottomBarPrimaryFragmentBackwards(localStoreRepository)
     }
 
     companion object {

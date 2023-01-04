@@ -94,26 +94,6 @@ fun Fragment.openLink(url: String) {
     startActivity(browserIntent)
 }
 
-fun Fragment.ignoreOnBackPressed() {
-    requireActivity().onBackPressedDispatcher.addCallback(
-        viewLifecycleOwner,
-        object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                // ignore back presses
-            }
-        })
-}
-
-fun Fragment.onBackPressedCallback(onBackPressed: () -> Unit) {
-    requireActivity().onBackPressedDispatcher.addCallback ( viewLifecycleOwner,
-        object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                onBackPressed()
-            }
-        }
-    )
-}
-
 fun Context.doOnUiMode(
     onNightMode: (() -> Unit)? = null,
     onDayMode: (() -> Unit)? = null,

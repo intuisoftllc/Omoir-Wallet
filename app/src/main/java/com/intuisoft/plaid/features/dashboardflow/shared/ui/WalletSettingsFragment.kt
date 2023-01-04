@@ -82,10 +82,6 @@ class WalletSettingsFragment : ConfigurableFragment<FragmentWalletSettingsBindin
             }
         })
 
-        onBackPressedCallback {
-            onNavigateBack()
-        }
-
         viewModel.upgradeToPro.observe(viewLifecycleOwner, Observer {
             if(it) {
                 binding.exportWalletTx.setTitleText(getString(R.string.wallet_settings_export_tx_data_without_pro))

@@ -45,10 +45,6 @@ class MarketFragment : ConfigurableFragment<FragmentMarketBinding>(pinProtection
     }
 
     override fun onConfiguration(configuration: FragmentConfiguration?) {
-        onBackPressedCallback {
-            onNavigateBottomBarSecondaryFragmentBackwards(localStore)
-        }
-
         eventTracker.log(EventMarketView())
         binding.sparkview.setAdapter(adapter)
         binding.sparkview.isScrubEnabled = true
@@ -305,6 +301,10 @@ class MarketFragment : ConfigurableFragment<FragmentMarketBinding>(pinProtection
         viewModel.showContent.observe(viewLifecycleOwner, Observer {
             activateNoInternet(!it)
         })
+    }
+
+    override fun onBackPressed() {
+        onNavigateBottomBarSecondaryFragmentBackwards(localStore)
     }
 
     override fun onResume() {

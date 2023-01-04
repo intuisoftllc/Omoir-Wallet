@@ -54,11 +54,6 @@ class ProHomescreenFragment : ConfigurableFragment<FragmentProHomescreenBinding>
     }
 
     override fun onConfiguration(configuration: FragmentConfiguration?) {
-
-        onBackPressedCallback {
-            requireActivity().finish()
-        }
-
         eventTracker.log(EventHomescreenView())
         (activity as? MainActivity)?.performSetup()
         viewModel.updateGreeting()
@@ -123,6 +118,10 @@ class ProHomescreenFragment : ConfigurableFragment<FragmentProHomescreenBinding>
 
         walletManager.synchronizeAll(false)
         walletVM.addWalletStateListener(this)
+    }
+
+    override fun onBackPressed() {
+        requireActivity().finish()
     }
 
     fun showTotalBalance(totalBalance: Long) {

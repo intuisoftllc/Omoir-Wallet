@@ -13,7 +13,6 @@ import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.BindingFragment
 import com.intuisoft.plaid.androidwrappers.TopBarView
 import com.intuisoft.plaid.androidwrappers.hideSoftKeyboard
-import com.intuisoft.plaid.androidwrappers.ignoreOnBackPressed
 import com.intuisoft.plaid.common.analytics.EventTracker
 import com.intuisoft.plaid.common.analytics.events.EventOnboardingStart
 import com.intuisoft.plaid.databinding.FragmentOnboardingWelcomeBinding
@@ -81,8 +80,6 @@ class WelcomeFragment : BindingFragment<FragmentOnboardingWelcomeBinding>() {
         viewModel.advanceAllowed.observe(viewLifecycleOwner, Observer {
             binding.next.enableButton(it)
         })
-
-        ignoreOnBackPressed()
     }
     override fun actionBarTitle(): Int {
         return 0

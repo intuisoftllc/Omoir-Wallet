@@ -51,11 +51,6 @@ class HomescreenFragment : ConfigurableFragment<FragmentHomescreenBinding>(
     }
 
     override fun onConfiguration(configuration: FragmentConfiguration?) {
-
-        onBackPressedCallback {
-            requireActivity().finish()
-        }
-
         eventTracker.log(EventHomescreenView())
         (activity as? MainActivity)?.performSetup()
         viewModel.updateGreeting()
@@ -94,6 +89,10 @@ class HomescreenFragment : ConfigurableFragment<FragmentHomescreenBinding>(
                 styledSnackBar(requireView(), getString(R.string.homescreen_wallet_limit_reached, Constants.Limit.FREE_MAX_WALLETS.toString()))
             }
         }
+    }
+
+    override fun onBackPressed() {
+        requireActivity().finish()
     }
 
     override fun onWalletStateUpdated(wallet: LocalWalletModel) {

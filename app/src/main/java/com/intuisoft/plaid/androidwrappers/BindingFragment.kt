@@ -6,6 +6,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatDialog
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.viewbinding.ViewBinding
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.activities.MainActivity
@@ -25,6 +26,14 @@ abstract class BindingFragment<T: ViewBinding> : Fragment(), FragmentActionBarDe
         (activity as? MainActivity)?.setActionBarActionLeft(actionBarActionLeft())
         (activity as? MainActivity)?.setActionBarActionRight(actionBarActionRight())
         activateAnimatedLoading(false, "")
+    }
+
+    override fun onBackPressed() {
+        findNavController().popBackStack()
+    }
+
+    fun activatePin(setupPin: Boolean, loadingUserData: Boolean) {
+        (activity as? MainActivity)?.activatePin(setupPin, loadingUserData)
     }
 
     fun addToStack(dialog: AppCompatDialog, onCancel: (() -> Unit)? = null) {

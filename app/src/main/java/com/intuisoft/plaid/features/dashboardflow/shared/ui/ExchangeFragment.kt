@@ -55,11 +55,6 @@ class ExchangeFragment : ConfigurableFragment<FragmentExchangeBinding>(pinProtec
 
 
     override fun onConfiguration(configuration: FragmentConfiguration?) {
-
-        onBackPressedCallback {
-            onNavigateBottomBarSecondaryFragmentBackwards(localStore)
-        }
-
         eventTracker.log(EventExchangeView())
         viewModel.setInitialValues()
         binding.swapPairSend.setOnTextChangedListener {
@@ -187,6 +182,10 @@ class ExchangeFragment : ConfigurableFragment<FragmentExchangeBinding>(pinProtec
                 Constants.Navigation.ANIMATED_ENTER_EXIT_RIGHT_NAV_OPTION
             )
         })
+    }
+
+    override fun onBackPressed() {
+        onNavigateBottomBarSecondaryFragmentBackwards(localStore)
     }
 
     private fun setMinMax(minMax: Pair<String, String>?) {

@@ -140,4 +140,32 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
+
+
+    <com.intuisoft.plaid.androidwrappers.PasscodeView
+        android:id="@+id/pin"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintVertical_bias="1"
+        android:paddingTop="20dp"
+        android:paddingBottom="20dp"
+        app:trackIncorrectAttempts="true"
+        app:firstInputTip="@string/enter_pin_to_unlock_message"
+        app:wrongLengthTip="@string/incorrect_pin_length_tip_message"
+        app:secondInputTip="@string/re_enter_pin_tip_message"
+        app:wrongInputTip="@string/wrong_input_tip_message"
+        app:correctInputTip="@string/pin_check_success_tip_message"
+        app:correctStateColor="@color/success_color"
+        app:wrongStateColor="@color/error_color"
+        app:normalStateColor="?attr/colorPrimary"
+        app:numberTextColor="@color/subtitle_text_color"
+        app:tipTextColor="@color/subtitle_text_color"
+        android:background="@color/background_color"
+        app:passcodeLength="8"
+        app:passcodeViewType="set_passcode"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

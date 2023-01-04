@@ -15,6 +15,7 @@ import com.intuisoft.plaid.databinding.FragmentSplashBinding
 import com.intuisoft.plaid.features.splash.viewmodel.SplashViewModel
 import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.util.fragmentconfig.ConfigQrDisplayData
+import com.mifmif.common.regex.Main
 import org.koin.android.ext.android.inject
 
 class SplashFragment : BindingFragment<FragmentSplashBinding>() {
@@ -34,7 +35,6 @@ class SplashFragment : BindingFragment<FragmentSplashBinding>() {
 
         (activity as? MainActivity)?.setAppTheme()
         animateLogo()
-        ignoreOnBackPressed()
         viewModel.nextScreen()
 
         viewModel.nextDestination.observe(viewLifecycleOwner, Observer {
@@ -42,10 +42,7 @@ class SplashFragment : BindingFragment<FragmentSplashBinding>() {
         })
 
         viewModel.goHome.observe(viewLifecycleOwner, Observer {
-            navigate(
-                R.id.pinFragment,
-                bundleOf(Constants.Navigation.HOME_PASS_THROUGH to true)
-            )
+            activatePin(false, true)
         })
     }
 

@@ -114,10 +114,10 @@ class ExchangeDetailsFragment : ConfigurableFragment<FragmentExchangeDetailsBind
 
         binding.paymentAddress.text = data.paymentAddress
         if(data.receiveTxId?.isNotEmpty() == true) {
-            binding.txIdType.text = getString(R.string.swap_details_tx_id_type_1)
+            binding.txIdType.text = getString(R.string.swap_details_tx_id_type_2)
             binding.transactionId.text = data.receiveTxId
         } else if(data.paymentTxId?.isNotEmpty() == true) {
-            binding.txIdType.text = getString(R.string.swap_details_tx_id_type_2)
+            binding.txIdType.text = getString(R.string.swap_details_tx_id_type_1)
             binding.transactionId.text = data.paymentTxId
         } else {
             binding.transactionId.text = getString(R.string.not_applicable)

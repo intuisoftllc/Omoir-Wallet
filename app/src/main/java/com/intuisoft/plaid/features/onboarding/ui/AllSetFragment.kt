@@ -53,7 +53,6 @@ class AllSetFragment : ConfigurableFragment<FragmentOnboardingAllSetBinding>(
                 val data = configuration!!.configData as AllSetData
 
                 binding.successIcon.animate().alpha(1f).scaleX(1f).scaleY(1f).setDuration(800)
-                ignoreOnBackPressed()
 
                 binding.allSetTitle.text = data.title
                 binding.allSetDescription.text = data.subtitle

@@ -64,6 +64,7 @@ class PasscodeView @JvmOverloads constructor(
     private var iv_ok: ImageView? = null
     private var iv_fingerprint: ImageView? = null
     private var cursor: View? = null
+    var isUnlocked: Boolean = false
     var firstInputTip: String? = "Enter a passcode of 4 digits"
         private set
     var secondInputTip: String? = "Re-enter new passcode"
@@ -100,6 +101,7 @@ class PasscodeView @JvmOverloads constructor(
             throw RuntimeException("must set a passcode of at least $minPasscodeLength numbers")
         }
 
+        isUnlocked = false
         maxAttempts = prefs.maxPinAttempts
         layout_psd = findViewById<View>(R.id.layout_psd) as ViewGroup
         tv_input_tip = findViewById<View>(R.id.tv_input_tip) as TextView
@@ -345,6 +347,7 @@ class PasscodeView @JvmOverloads constructor(
             clearChar()
             secondInput = true
             disableEverything(false)
+            isUnlocked = false
             return
         }
 
@@ -354,8 +357,10 @@ class PasscodeView @JvmOverloads constructor(
             CommonService.provideLocalPin(psd)
             CommonService.loadOrSaveUserData()
             pinValidationSuccess = true
+            isUnlocked = true
             runOkAnimation()
         } else {
+            isUnlocked = false
             runWrongAnimation()
         }
     }

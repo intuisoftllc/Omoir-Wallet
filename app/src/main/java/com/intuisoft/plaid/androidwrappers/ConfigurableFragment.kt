@@ -11,10 +11,10 @@ import com.intuisoft.plaid.common.CommonService
 import com.intuisoft.plaid.common.local.UserData
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.common.util.Constants
-import com.intuisoft.plaid.features.pin.viewmodel.PinViewModel
 import com.intuisoft.plaid.model.LocalWalletModel
 import com.intuisoft.plaid.common.util.errors.ClosedWalletErr
 import com.mifmif.common.regex.Main
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 
@@ -26,7 +26,6 @@ abstract class ConfigurableFragment<T: ViewBinding>(
 ) : BindingFragment<T>() {
     protected var baseVM: BaseViewModel? = null
     private var configTypes = listOf<FragmentConfigurationType>()
-    protected val pinViewModel: PinViewModel by sharedViewModel()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         if(secureScreen) {
@@ -122,18 +121,12 @@ abstract class ConfigurableFragment<T: ViewBinding>(
     private fun checkPin() {
         if(pinProtection) {
             requireUsrData()?.let {
-                pinViewModel.checkPinStatus {
-                    (activity as? MainActivity)?.apply {
-                        val fragment =
-                            supportFragmentManager.currentNavigationFragment as? FragmentBottomBarBarDelegate
-
-                        if (fragment?.navigationId() != R.id.pinFragment) { // do not request pin twice
-                            clearDialogStack()
-                            navigate(
-                                R.id.pinFragment,
-                                Constants.Navigation.ANIMATED_FADE_IN_EXIT_NAV_OPTION
-                            )
-                        }
+                (activity as? MainActivity)?.apply {
+                    if (CommonService.getLocalStoreInstance().getLastCheckedPinTime() == 0L) {
+                        clearDialogStack()
+                        activatePin(false, false)
+                    } else {
+                        hidePinIfNeeded()
                     }
                 }
             }

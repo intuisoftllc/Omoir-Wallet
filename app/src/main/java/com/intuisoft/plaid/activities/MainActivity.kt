@@ -1,11 +1,13 @@
 package com.intuisoft.plaid.activities
 
 import android.app.Activity
+import android.app.ProgressDialog
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.DrawableRes
 import androidx.appcompat.app.AppCompatDelegate
@@ -14,13 +16,17 @@ import androidx.core.view.isVisible
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.navOptions
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import com.google.gson.Gson
 import com.intuisoft.plaid.PlaidApp
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.*
+import com.intuisoft.plaid.androidwrappers.PasscodeView.PasscodeViewType.Companion.TYPE_CHECK_PASSCODE
 import com.intuisoft.plaid.common.CommonService
+import com.intuisoft.plaid.common.coroutines.PlaidScope
 import com.intuisoft.plaid.common.model.AppTheme
 import com.intuisoft.plaid.common.model.HiddenWalletModel
 import com.intuisoft.plaid.common.model.StoredHiddenWalletsModel
@@ -28,6 +34,7 @@ import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.common.util.Constants.Navigation.PASSPHRASES
 import com.intuisoft.plaid.common.util.extensions.remove
+import com.intuisoft.plaid.common.util.extensions.safeWalletScope
 import com.intuisoft.plaid.common.util.extensions.toArrayList
 import com.intuisoft.plaid.databinding.ActivityMainBinding
 import com.intuisoft.plaid.features.splash.ui.SplashFragment
@@ -35,6 +42,7 @@ import com.intuisoft.plaid.listeners.BarcodeResultListener
 import com.intuisoft.plaid.listeners.NetworkStateChangeListener
 import com.intuisoft.plaid.recievers.NetworkChangeReceiver
 import com.intuisoft.plaid.walletmanager.AbstractWalletManager
+import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 
 
@@ -59,6 +67,12 @@ class MainActivity : BindingActivity<ActivityMainBinding>(), ActionBarDelegate {
             R.id.marketFragment,
             R.id.atpFragment,
             R.id.reportsFragment
+        )
+
+        private val IGNORE_BACK_PRESSED_DESTINATIONS = setOf(
+            R.id.splashFragment,
+            R.id.welcomeFragment,
+            R.id.allSetFragment
         )
     }
 
@@ -104,6 +118,19 @@ class MainActivity : BindingActivity<ActivityMainBinding>(), ActionBarDelegate {
         }
 
         intentFilter = IntentFilter("android.net.conn.CONNECTIVITY_CHANGE")
+
+        onBackPressedDispatcher.addCallback(
+            this,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    val listener = supportFragmentManager.currentNavigationFragment as? FragmentBottomBarBarDelegate
+
+                    if(!IGNORE_BACK_PRESSED_DESTINATIONS.contains(listener?.navigationId() ?: 0)
+                        && !binding.pin.isVisible) {
+                        listener?.onBackPressed()
+                    }
+                }
+            })
     }
 
     fun setAppTheme() {
@@ -143,6 +170,103 @@ class MainActivity : BindingActivity<ActivityMainBinding>(), ActionBarDelegate {
                 it.first.cancel()
             }
         dialogStack.clear()
+    }
+
+    fun hidePinIfNeeded() {
+        if(binding.pin.isUnlocked) {
+            binding.pin.isVisible = false
+        }
+    }
+
+    fun activatePin(setupPin: Boolean, loadingUserData: Boolean) {
+        if(binding.pin.isVisible) return
+
+        var SetupPin = setupPin
+        binding.pin.isVisible = true
+        binding.pin.setPasscodeType(TYPE_CHECK_PASSCODE)
+        if(SetupPin) {
+            binding.pin.setFirstInputTip(getString(R.string.enter_pin_to_reset_message))
+            binding.pin.resetView()
+        } else {
+            binding.pin.setFirstInputTip(getString(R.string.enter_pin_to_unlock_message))
+            binding.pin.resetView()
+        }
+
+        if(SetupPin || loadingUserData || CommonService.getUserPin().isEmpty()) {
+            binding.pin.disableFingerprint()
+        }
+
+        binding.pin.setListener(object: PasscodeView.PasscodeViewListener {
+            override fun onFail(wrongNumber: String?) {
+                // do nothing
+            }
+
+            override fun onSuccess(number: String?) {
+                localStoreRepository.updatePinCheckedTime()
+
+                if(SetupPin) {
+                    SetupPin = false
+                    binding.pin.setPasscodeType(PasscodeView.PasscodeViewType.TYPE_SET_PASSCODE)
+                    binding.pin.setFirstInputTip(getString(R.string.create_pin_tip_message))
+                    binding.pin.setSecondInputTip(getString(R.string.re_enter_pin_tip_message))
+                    binding.pin.resetView()
+                    binding.pin.disablePinAttemptTracking()
+                } else {
+                    walletManager.start()
+
+                    if(loadingUserData) {
+                        if(localStoreRepository.isProEnabled()) {
+                            getNavController().navigate(R.id.proHomescreenFragment, null, Constants.Navigation.ANIMATED_FADE_IN_EXIT_NAV_OPTION)
+                        } else {
+                            getNavController().navigate(R.id.homescreenFragment, null, Constants.Navigation.ANIMATED_FADE_IN_EXIT_NAV_OPTION)
+                        }
+                    } else binding.pin.isVisible = false // only hide if a frag is showing or after it has been shown
+                }
+            }
+
+            override fun onMaxAttempts() {
+                val progressDialog = ProgressDialog.show(baseContext, getString(R.string.wiping_data_title), getString(R.string.wiping_data_message))
+                progressDialog.setCancelable(false)
+
+                PlaidScope.IoScope.launch {
+                    localStoreRepository.wipeAllData {
+                        PlaidScope.MainScope.launch {
+                            safeWalletScope {
+                                progressDialog.cancel()
+
+                                getNavController().navigate(
+                                    R.id.splashFragment,
+                                    null,
+                                    navOptions {
+                                        popUpTo(R.id.pinFragment) {
+                                            inclusive = true
+                                        }
+                                    }
+                                )
+
+                                binding.pin.isVisible = false
+                            }
+                        }
+                    }
+                }
+            }
+
+            override fun onScanFingerprint(listener: FingerprintScanResponse) {
+                supportFragmentManager.currentNavigationFragment!!.validateFingerprint(
+                    onSuccess = {
+                        listener.onScanSuccess()
+                    },
+
+                    onError = {
+                        listener.onScanFail()
+                    },
+
+                    subTitle = Constants.Strings.USE_BIOMETRIC_REASON_2,
+                    negativeText = Constants.Strings.USE_PIN
+                )
+            }
+
+        })
     }
 
     fun activateAnimatedLoading(activate: Boolean, message: String) {

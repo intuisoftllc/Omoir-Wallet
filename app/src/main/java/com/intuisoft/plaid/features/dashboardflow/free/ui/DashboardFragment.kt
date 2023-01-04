@@ -64,10 +64,6 @@ class DashboardFragment : ConfigurableFragment<FragmentWalletDashboardBinding>(p
     }
 
     override fun onConfiguration(configuration: FragmentConfiguration?) {
-        onBackPressedCallback {
-            onNavigateBottomBarPrimaryFragmentBackwards(localStoreRepository)
-        }
-
         eventTracker.log(EventDashboardView())
         viewModel.getTransactions()
         viewModel.displayCurrentWallet()
@@ -158,6 +154,10 @@ class DashboardFragment : ConfigurableFragment<FragmentWalletDashboardBinding>(p
             bundle,
             Constants.Navigation.ANIMATED_FADE_IN_NAV_OPTION
         )
+    }
+
+    override fun onBackPressed() {
+        onNavigateBottomBarPrimaryFragmentBackwards(localStoreRepository)
     }
 
     override fun onWalletStateUpdated(wallet: LocalWalletModel) {

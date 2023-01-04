@@ -34,10 +34,6 @@ class ReportsFragment : ConfigurableFragment<FragmentReportsBinding>(pinProtecti
     }
 
     override fun onConfiguration(configuration: FragmentConfiguration?) {
-        onBackPressedCallback {
-            onNavigateBottomBarSecondaryFragmentBackwards(localStoreRepository)
-        }
-
         eventTracker.log(EventReportsView())
         binding.inflow.onClick {
             var bundle = bundleOf(
@@ -104,6 +100,10 @@ class ReportsFragment : ConfigurableFragment<FragmentReportsBinding>(pinProtecti
                 R.id.utxoDistroFragment
             )
         }
+    }
+
+    override fun onBackPressed() {
+        onNavigateBottomBarSecondaryFragmentBackwards(localStoreRepository)
     }
 
     override fun onNavigateTo(destination: Int) {

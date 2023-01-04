@@ -24,18 +24,6 @@
             app:destination="@+id/proHomescreenFragment" />
     </fragment>
 
-
-    <fragment
-        android:id="@+id/pinFragment"
-        android:name="com.intuisoft.plaid.features.pin.ui.PinFragment"
-        android:label="@string/pin_fragment_label"
-        tools:layout="@layout/fragment_pin">
-
-        <action
-            android:id="@+id/action_PinFragment_to_SplashFragment"
-            app:destination="@+id/splashFragment" />
-    </fragment>
-
     <fragment
         android:id="@+id/homescreenFragment"
         android:name="com.intuisoft.plaid.features.homescreen.free.ui.HomescreenFragment"
