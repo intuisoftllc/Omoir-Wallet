@@ -447,8 +447,4 @@
         tools:layout="@layout/fragment_market">
     </fragment>
 
-    <action
-        android:id="@+id/action_global_pinFragment"
-        app:destination="@+id/pinFragment" />
-
 </navigation>

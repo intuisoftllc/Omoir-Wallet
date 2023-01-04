@@ -1,5 +1,6 @@
 package com.intuisoft.plaid.androidwrappers
 
+import android.animation.ValueAnimator
 import android.app.Activity
 import android.content.ClipData
 import android.content.ClipboardManager
@@ -14,6 +15,7 @@ import android.os.Bundle
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.View
+import android.view.animation.LinearInterpolator
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.activity.OnBackPressedCallback
@@ -113,6 +115,20 @@ fun Context.doOnUiMode(
             onAutoMode?.invoke()
         }
     }
+}
+
+fun View.animateDown(duration: Long = 1000, onFinished: (() -> Unit)? = null) {
+    val y = Resources.getSystem().getDisplayMetrics().heightPixels.toFloat()
+    val valueAnimator = ValueAnimator.ofFloat(0f, y)
+    valueAnimator.addUpdateListener {
+        val value = it.animatedValue as Float
+        translationY = value
+        if(value == y) onFinished?.invoke()
+    }
+
+    valueAnimator.interpolator = LinearInterpolator()
+    valueAnimator.duration = duration
+    valueAnimator.start()
 }
 
 fun Fragment.validateFingerprint(

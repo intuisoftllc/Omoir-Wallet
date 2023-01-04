@@ -365,6 +365,10 @@ class PasscodeView @JvmOverloads constructor(
         }
     }
 
+    fun setUnlocked() {
+        isUnlocked = true
+    }
+
     private fun addChar(number: Int) {
         if (layout_psd!!.childCount >= passcodeLength) {
             return

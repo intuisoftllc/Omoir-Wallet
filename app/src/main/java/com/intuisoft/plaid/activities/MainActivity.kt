@@ -1,12 +1,17 @@
 package com.intuisoft.plaid.activities
 
+import android.animation.ValueAnimator
 import android.app.Activity
 import android.app.ProgressDialog
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.res.Resources
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
+import android.view.animation.LinearInterpolator
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.DrawableRes
@@ -16,7 +21,6 @@ import androidx.core.view.isVisible
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.fragment.findNavController
 import androidx.navigation.navOptions
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
@@ -174,7 +178,10 @@ class MainActivity : BindingActivity<ActivityMainBinding>(), ActionBarDelegate {
 
     fun hidePinIfNeeded() {
         if(binding.pin.isUnlocked) {
-            binding.pin.isVisible = false
+            binding.pin.animateDown {
+                binding.pin.isVisible = false
+                binding.pin.translationY = 0f
+            }
         }
     }
 
@@ -220,7 +227,7 @@ class MainActivity : BindingActivity<ActivityMainBinding>(), ActionBarDelegate {
                         } else {
                             getNavController().navigate(R.id.homescreenFragment, null, Constants.Navigation.ANIMATED_FADE_IN_EXIT_NAV_OPTION)
                         }
-                    } else binding.pin.isVisible = false // only hide if a frag is showing or after it has been shown
+                    } else hidePinIfNeeded() // only hide if a frag is showing or after it has been shown
                 }
             }
 
@@ -235,13 +242,7 @@ class MainActivity : BindingActivity<ActivityMainBinding>(), ActionBarDelegate {
                                 progressDialog.cancel()
 
                                 getNavController().navigate(
-                                    R.id.splashFragment,
-                                    null,
-                                    navOptions {
-                                        popUpTo(R.id.pinFragment) {
-                                            inclusive = true
-                                        }
-                                    }
+                                    R.id.splashFragment
                                 )
 
                                 binding.pin.isVisible = false
@@ -254,6 +255,7 @@ class MainActivity : BindingActivity<ActivityMainBinding>(), ActionBarDelegate {
             override fun onScanFingerprint(listener: FingerprintScanResponse) {
                 supportFragmentManager.currentNavigationFragment!!.validateFingerprint(
                     onSuccess = {
+                        binding.pin.setUnlocked()
                         listener.onScanSuccess()
                     },
 
