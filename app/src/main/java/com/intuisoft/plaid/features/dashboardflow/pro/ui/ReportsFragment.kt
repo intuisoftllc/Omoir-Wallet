@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.*
+import com.intuisoft.plaid.androidwrappers.delegates.FragmentConfiguration
 import com.intuisoft.plaid.common.analytics.EventTracker
 import com.intuisoft.plaid.common.analytics.events.EventReportSelected
 import com.intuisoft.plaid.common.analytics.events.EventReportsView
@@ -14,7 +15,6 @@ import com.intuisoft.plaid.common.analytics.events.ReportType
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.databinding.FragmentReportsBinding
-import com.intuisoft.plaid.features.dashboardflow.shared.viewModel.SwapDetailsViewModel
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -108,6 +108,10 @@ class ReportsFragment : ConfigurableFragment<FragmentReportsBinding>(pinProtecti
 
     override fun onNavigateTo(destination: Int) {
         navigate(destination)
+    }
+
+    override fun showBottomBar(): Boolean {
+        return true
     }
 
     override fun actionBarVariant(): Int {

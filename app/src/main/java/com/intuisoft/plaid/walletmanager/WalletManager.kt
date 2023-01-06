@@ -138,7 +138,7 @@ class WalletManager(
     }
 
     override fun getCurrentHiddenWallet(localWallet: LocalWalletModel): HiddenWalletModel? {
-        return getCurrentHiddenWallet(localWallet.uuid)
+        return getCurrentHiddenWallet(findAndUpdateBaseWallet(localWallet.uuid)!!.walletUUID)
     }
 
     override fun setCurrentHiddenWallet(localWallet: LocalWalletModel, passphrase: String, account: SavedAccountModel) {

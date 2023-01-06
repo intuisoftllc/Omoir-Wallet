@@ -12,6 +12,7 @@ import androidx.navigation.fragment.findNavController
 import com.google.gson.Gson
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.*
+import com.intuisoft.plaid.androidwrappers.delegates.FragmentConfiguration
 import com.intuisoft.plaid.common.analytics.EventTracker
 import com.intuisoft.plaid.common.analytics.events.EventExchangeDetailsSmartPay
 import com.intuisoft.plaid.common.analytics.events.EventExchangeDetailsView

@@ -125,8 +125,6 @@ class ApiRepository_Impl(
                 val fromCurrency = supportedCurrencies.find { it.ticker == data.fromShort.lowercase() }
 
                 if (toCurrency != null && fromCurrency != null) {
-                    data.to = toCurrency.name + " (${data.toShort})"
-                    data.from = fromCurrency.name + " (${data.fromShort})"
                     localStoreRepository.saveExchangeData(data, walletId)
                     return data
                 }
@@ -161,8 +159,8 @@ class ApiRepository_Impl(
                     supportedCurrencies.find { it.ticker == data.fromShort.lowercase() }
 
                 if (toCurrency != null && fromCurrency != null) {
-                    data.to = toCurrency.name + " (${data.toShort})"
-                    data.from = fromCurrency.name + " (${data.fromShort})"
+                    data.to = toCurrency.name
+                    data.from = fromCurrency.name
                     localStoreRepository.saveExchangeData(data, walletId)
                 }
             }

@@ -8,6 +8,7 @@ import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.*
+import com.intuisoft.plaid.androidwrappers.delegates.FragmentConfiguration
 import com.intuisoft.plaid.common.analytics.EventTracker
 import com.intuisoft.plaid.common.analytics.events.EventMarketView
 import com.intuisoft.plaid.common.model.ChartDataModel
@@ -318,6 +319,10 @@ class MarketFragment : ConfigurableFragment<FragmentMarketBinding>(pinProtection
 
     override fun onNavigateTo(destination: Int) {
         navigate(destination)
+    }
+
+    override fun showBottomBar(): Boolean {
+        return true
     }
 
     override fun onDestroyView() {

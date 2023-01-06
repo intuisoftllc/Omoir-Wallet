@@ -3,7 +3,6 @@ package com.intuisoft.plaid.features.dashboardflow.shared.ui
 import WalletSettingsViewModel
 import android.app.Activity
 import android.app.ProgressDialog
-import android.content.Context
 import android.os.Bundle
 import android.text.method.PasswordTransformationMethod
 import android.view.KeyEvent
@@ -24,6 +23,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.*
+import com.intuisoft.plaid.androidwrappers.delegates.FragmentConfiguration
 import com.intuisoft.plaid.common.analytics.EventTracker
 import com.intuisoft.plaid.common.analytics.events.*
 import com.intuisoft.plaid.common.model.HiddenWalletModel
@@ -32,9 +32,7 @@ import com.intuisoft.plaid.features.settings.ui.SettingsFragment
 import com.intuisoft.plaid.features.settings.viewmodel.SettingsViewModel
 import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.common.util.extensions.toArrayList
-import com.intuisoft.plaid.features.dashboardflow.shared.adapters.AddressBookAdapter
 import com.intuisoft.plaid.features.dashboardflow.shared.adapters.SavedAccountsAdapter
-import com.intuisoft.plaid.features.settings.ui.AddressBookFragment
 import com.intuisoft.plaid.util.fragmentconfig.ConfigQrDisplayData
 import com.intuisoft.plaid.util.fragmentconfig.ConfigSeedData
 import io.horizontalsystems.bitcoinkit.BitcoinKit
@@ -225,7 +223,7 @@ class WalletSettingsFragment : ConfigurableFragment<FragmentWalletSettingsBindin
         }
     }
 
-    fun onNavigateBack() {
+    override fun onBackPressed() {
         if(appSettingsViewModel.appRestartNeeded && !viewModel.fromSettings) {
             SettingsFragment.warningDialog(
                 context = requireContext(),
@@ -430,7 +428,7 @@ class WalletSettingsFragment : ConfigurableFragment<FragmentWalletSettingsBindin
             progressDialog.cancel()
             if(viewModel.fromSettings) {
                 appSettingsViewModel.appRestartNeeded = true
-                onNavigateBack()
+                onBackPressed()
             } else {
                 navigate(R.id.splashFragment)
             }
@@ -451,7 +449,7 @@ class WalletSettingsFragment : ConfigurableFragment<FragmentWalletSettingsBindin
     }
 
     override fun onActionLeft() {
-        onNavigateBack()
+        onBackPressed()
     }
 
     override fun actionBarTitle(): Int {

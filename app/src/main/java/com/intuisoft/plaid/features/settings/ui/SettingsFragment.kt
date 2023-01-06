@@ -7,13 +7,11 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.app.AppCompatDialog
-import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
 import androidx.lifecycle.Observer
@@ -23,9 +21,9 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.intuisoft.plaid.PlaidApp
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.*
+import com.intuisoft.plaid.androidwrappers.delegates.FragmentConfiguration
 import com.intuisoft.plaid.common.analytics.EventTracker
 import com.intuisoft.plaid.common.analytics.events.*
-import com.intuisoft.plaid.common.model.AppMode
 import com.intuisoft.plaid.common.model.AppTheme
 import com.intuisoft.plaid.databinding.FragmentSettingsBinding
 import com.intuisoft.plaid.features.settings.viewmodel.SettingsViewModel
@@ -546,7 +544,7 @@ class SettingsFragment : ConfigurableFragment<FragmentSettingsBinding>(
         )
     }
 
-    fun onNavigateBack() {
+    override fun onBackPressed() {
         if(viewModel.appRestartNeeded) {
             warningDialog(
                 context = requireContext(),
@@ -591,7 +589,7 @@ class SettingsFragment : ConfigurableFragment<FragmentSettingsBinding>(
     }
 
     override fun onActionLeft() {
-        onNavigateBack()
+        onBackPressed()
     }
 
     override fun navigationId(): Int {

@@ -15,6 +15,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.activities.MainActivity
 import com.intuisoft.plaid.androidwrappers.*
+import com.intuisoft.plaid.androidwrappers.delegates.FragmentConfiguration
 import com.intuisoft.plaid.common.analytics.EventTracker
 import com.intuisoft.plaid.common.analytics.events.EventDashboardDeposit
 import com.intuisoft.plaid.common.analytics.events.EventDashboardOpenSettingsOpen
@@ -395,6 +396,10 @@ class ProDashboardFragment : ConfigurableFragment<FragmentProWalletDashboardBind
 
     override fun onNavigateTo(destination: Int) {
         navigate(destination)
+    }
+
+    override fun showBottomBar(): Boolean {
+        return true
     }
 
     override fun actionBarVariant(): Int {

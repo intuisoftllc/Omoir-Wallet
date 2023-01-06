@@ -7,12 +7,10 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.*
+import com.intuisoft.plaid.androidwrappers.delegates.FragmentConfiguration
 import com.intuisoft.plaid.common.analytics.EventTracker
 import com.intuisoft.plaid.common.analytics.events.EventWalletSettingsExportCsv
-import com.intuisoft.plaid.common.analytics.events.EventWalletSettingsView
-import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.databinding.FragmentExportOptionsBinding
-import com.intuisoft.plaid.databinding.FragmentWithdrawalTypeBinding
 import com.intuisoft.plaid.features.dashboardflow.pro.viewmodel.ExportOptionsViewModel
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel

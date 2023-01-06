@@ -124,10 +124,11 @@ class ExchangeViewModel(
             withContext(Dispatchers.IO) {
                 safeWalletScope {
                     val exchangedCurrencies = localStoreRepository.getAllExchanges(getWalletId())
-                        .takeLast(20).map {
+                        .takeLast(20)
+                        .map {
                             if (it.fromShort.lowercase() == BTC_TICKER)
-                                it.toShort
-                            else it.fromShort
+                                it.to
+                            else it.from
                         }
                     val timesUsed = mutableListOf<Pair<String, Int>>()
 
@@ -142,9 +143,9 @@ class ExchangeViewModel(
 
                     val sorted = timesUsed.sortedByDescending { it.second }.take(3)
                         .filter { frequent ->
-                            supportedCurrencies.find { it.ticker == frequent.first.lowercase() } != null
+                            supportedCurrencies.find { it.name == frequent.first } != null
                         }.map { frequent ->
-                            supportedCurrencies.find { frequent.first.lowercase() == it.ticker }!!
+                            supportedCurrencies.find { frequent.first == it.name }!!
                         }
 
                     if (searchValue.isBlank()) {
@@ -313,42 +314,44 @@ class ExchangeViewModel(
 
     fun setInitialValues() {
         PlaidScope.IoScope.launch {
-            if (NetworkUtil.hasInternet(getApplication<PlaidApp>())) {
-                sendAmount = 0.0
-                receiveEstimate = EstimatedReceiveAmountModel("", Instant.now(), 0.0)
-                min = 0.0
-                max = null
-                wholeCoinConversion = 0.0
-                clearAddresses()
-                _showContent.postValue(true)
-                _confirmButtonEnabled.postValue(false)
-                val lastCurrencyId = localStoreRepository.getLastExchangeCurrency()
-                var lastCurrency: SupportedCurrencyModel? = null
-                var supportedCurrencies = apiRepository.getSupportedCurrencies()
-                lastCurrency = supportedCurrencies.find { it.id == lastCurrencyId }
+            safeWalletScope {
+                if (NetworkUtil.hasInternet(getApplication<PlaidApp>())) {
+                    sendAmount = 0.0
+                    receiveEstimate = EstimatedReceiveAmountModel("", Instant.now(), 0.0)
+                    min = 0.0
+                    max = null
+                    wholeCoinConversion = 0.0
+                    clearAddresses()
+                    _showContent.postValue(true)
+                    _confirmButtonEnabled.postValue(false)
+                    val lastCurrencyId = localStoreRepository.getLastExchangeCurrency()
+                    var lastCurrency: SupportedCurrencyModel? = null
+                    var supportedCurrencies = apiRepository.getSupportedCurrencies()
+                    lastCurrency = supportedCurrencies.find { it.id == lastCurrencyId }
 
-                if(lastCurrency == null) {
-                    lastCurrency = getCurrencyByTicker("eth")
-                }
-
-                if (isReadOnly()) {
-                    _disableBtcSeding.postValue(Unit)
-                    modifySendReceive(lastCurrency!!, getCurrencyByTicker(BTC_TICKER)!!)
-                } else {
-                    if (localStoreRepository.isSendingBTC()) {
-                        modifySendReceive(
-                            getCurrencyByTicker(BTC_TICKER)!!,
-                            lastCurrency!!
-                        )
-                    } else {
-                        modifySendReceive(
-                            lastCurrency!!,
-                            getCurrencyByTicker(BTC_TICKER)!!
-                        )
+                    if (lastCurrency == null) {
+                        lastCurrency = getCurrencyByTicker("eth")
                     }
+
+                    if (isReadOnly()) {
+                        _disableBtcSeding.postValue(Unit)
+                        modifySendReceive(lastCurrency!!, getCurrencyByTicker(BTC_TICKER)!!)
+                    } else {
+                        if (localStoreRepository.isSendingBTC()) {
+                            modifySendReceive(
+                                getCurrencyByTicker(BTC_TICKER)!!,
+                                lastCurrency!!
+                            )
+                        } else {
+                            modifySendReceive(
+                                lastCurrency!!,
+                                getCurrencyByTicker(BTC_TICKER)!!
+                            )
+                        }
+                    }
+                } else {
+                    onNoInternet(false)
                 }
-            } else {
-                onNoInternet(false)
             }
         }
     }
@@ -461,7 +464,7 @@ class ExchangeViewModel(
             withContext(Dispatchers.IO) {
                 safeWalletScope {
                     val currency = apiRepository.getSupportedCurrencies()
-                        .filter { it.ticker.lowercase() == currency.ticker.lowercase() }
+                        .filter { it.id == currency.id }
 
                     if (currency.isNotEmpty()) {
                         val crypto = currency.first()
@@ -500,7 +503,7 @@ class ExchangeViewModel(
             withContext(Dispatchers.IO) {
                 safeWalletScope {
                     val currency = apiRepository.getSupportedCurrencies()
-                        .filter { it.ticker.lowercase() == currency.ticker.lowercase() }
+                        .filter { it.id == currency.id }
 
                     if (currency.isNotEmpty()) {
                         val crypto = currency.first()

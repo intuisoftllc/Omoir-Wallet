@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.activities.MainActivity
 import com.intuisoft.plaid.androidwrappers.*
+import com.intuisoft.plaid.androidwrappers.delegates.FragmentConfiguration
 import com.intuisoft.plaid.common.analytics.EventTracker
 import com.intuisoft.plaid.common.analytics.events.EventHomescreenCreateWallet
 import com.intuisoft.plaid.common.analytics.events.EventHomescreenView
@@ -20,7 +21,6 @@ import com.intuisoft.plaid.model.LocalWalletModel
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.common.util.SimpleCoinNumberFormat
-import com.intuisoft.plaid.common.util.extensions.safeWalletScope
 import com.intuisoft.plaid.common.util.extensions.toArrayList
 import com.intuisoft.plaid.databinding.FragmentProHomescreenBinding
 import com.intuisoft.plaid.features.homescreen.pro.adapters.ProWalletDataAdapter

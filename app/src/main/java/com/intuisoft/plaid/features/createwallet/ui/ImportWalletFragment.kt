@@ -7,8 +7,8 @@ import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.*
+import com.intuisoft.plaid.androidwrappers.delegates.FragmentConfiguration
 import com.intuisoft.plaid.common.analytics.EventTracker
-import com.intuisoft.plaid.common.analytics.events.EventCreateWalletAdvancedOptions
 import com.intuisoft.plaid.common.analytics.events.EventPublicKeyImport
 import com.intuisoft.plaid.common.analytics.events.EventRecoveryPhraseImport
 import com.intuisoft.plaid.databinding.FragmentImportWalletBinding

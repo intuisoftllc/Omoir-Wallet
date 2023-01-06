@@ -1,4 +1,4 @@
-package com.intuisoft.plaid.androidwrappers
+package com.intuisoft.plaid.androidwrappers.delegates
 
 interface FragmentActionBarDelegate {
     fun actionBarVariant() : Int

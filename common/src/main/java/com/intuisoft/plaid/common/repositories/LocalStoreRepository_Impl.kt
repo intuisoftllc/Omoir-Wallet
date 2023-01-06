@@ -14,6 +14,7 @@ import com.intuisoft.plaid.common.model.*
 import com.intuisoft.plaid.common.network.blockchair.response.SupportedCurrencyModel
 import com.intuisoft.plaid.common.repositories.db.DatabaseRepository
 import com.intuisoft.plaid.common.util.Constants
+import com.intuisoft.plaid.common.util.errors.EmptyUsrDataErr
 import com.intuisoft.plaid.common.util.extensions.safeWalletScope
 import kotlinx.coroutines.*
 
@@ -43,52 +44,52 @@ class LocalStoreRepository_Impl(
     }
 
     override fun getMinimumConfirmations(): Int {
-        return CommonService.getUserData()!!.minConfirmations
+        return getUserData().minConfirmations
     }
 
     override fun setMinConfirmations(minConfirmations: Int) {
-        CommonService.getUserData()!!.minConfirmations = minConfirmations
+        getUserData().minConfirmations = minConfirmations
     }
 
     override fun getLocalCurrency(): String {
-        return CommonService.getUserData()!!.localCurrency
+        return getUserData().localCurrency
     }
 
     override fun setLocalCurrency(localCurrency: String) {
-        CommonService.getUserData()!!.localCurrency = localCurrency
+        getUserData().localCurrency = localCurrency
     }
 
     override fun getBatchGap(): Int {
-        return CommonService.getUserData()!!.batchGap
+        return getUserData().batchGap
     }
 
     override fun setBatchGap(gap: Int) {
-        CommonService.getUserData()!!.batchGap = gap
+        getUserData().batchGap = gap
     }
 
     override fun getBatchSize(): Int {
-        return CommonService.getUserData()!!.batchSize
+        return getUserData().batchSize
     }
 
     override fun setBatchSize(size: Int) {
-        CommonService.getUserData()!!.batchSize = size
+        getUserData().batchSize = size
     }
 
     override fun getFeeSpread(): IntRange {
-        return CommonService.getUserData()!!.feeSpreadLow .. CommonService.getUserData()!!.feeSpreadHigh
+        return getUserData().feeSpreadLow .. getUserData().feeSpreadHigh
     }
 
     override fun setFeeSpread(spread: IntRange) {
-        CommonService.getUserData()!!.feeSpreadLow = spread.first
-        CommonService.getUserData()!!.feeSpreadHigh = spread.last
+        getUserData().feeSpreadLow = spread.first
+        getUserData().feeSpreadHigh = spread.last
     }
 
     override fun isUsingDynamicBatchNetworkFee(): Boolean {
-        return CommonService.getUserData()!!.dynamicBatchNetworkFee
+        return getUserData().dynamicBatchNetworkFee
     }
 
     override fun setUseDynamicBatchNetworkFee(use: Boolean) {
-        CommonService.getUserData()!!.dynamicBatchNetworkFee = use
+        getUserData().dynamicBatchNetworkFee = use
     }
 
     override suspend fun blacklistAddress(
@@ -106,11 +107,11 @@ class LocalStoreRepository_Impl(
     }
 
     override fun isProEnabled(): Boolean {
-        return true//CommonService.getUserData()!!.isProEnabled
+        return true//getUserData().isProEnabled
     }
 
     override fun setProEnabled(enable: Boolean) {
-        CommonService.getUserData()!!.isProEnabled = enable
+        getUserData().isProEnabled = enable
     }
 
     override fun setMaxPinEntryLimit(limit: Int) {
@@ -122,11 +123,11 @@ class LocalStoreRepository_Impl(
     }
 
     override fun getDefaultFeeType(): FeeType {
-        return CommonService.getUserData()!!.defaultFeeType
+        return getUserData().defaultFeeType
     }
 
     override fun setDefaultFeeType(type: FeeType) {
-        CommonService.getUserData()!!.defaultFeeType = type
+        getUserData().defaultFeeType = type
     }
 
     override fun setOnWipeDataListener(listener: WipeDataListener) {
@@ -134,75 +135,75 @@ class LocalStoreRepository_Impl(
     }
 
     override fun updateBitcoinDisplayUnit(displayUnit: BitcoinDisplayUnit) {
-        CommonService.getUserData()!!.bitcoinDisplayUnit = displayUnit
+        getUserData().bitcoinDisplayUnit = displayUnit
     }
 
     override fun getSavedAddresses(): List<SavedAddressModel> {
-        return CommonService.getUserData()!!.savedAddressInfo.savedAddresses
+        return getUserData().savedAddressInfo.savedAddresses
     }
 
     override fun deleteSavedAddress(name: String) {
-        val addressess = CommonService.getUserData()!!.savedAddressInfo.savedAddresses
+        val addressess = getUserData().savedAddressInfo.savedAddresses
         addressess.remove { it.addressName == name }
 
-        CommonService.getUserData()!!.savedAddressInfo = SavedAddressInfo(addressess)
+        getUserData().savedAddressInfo = SavedAddressInfo(addressess)
     }
 
     override fun updateSavedAddress(oldName: String, name: String, address: String) {
-        val addressess = CommonService.getUserData()!!.savedAddressInfo.savedAddresses
+        val addressess = getUserData().savedAddressInfo.savedAddresses
         addressess.find { it.addressName == oldName }?.let {
             it.addressName = name
             it.address = address
         }
 
-        CommonService.getUserData()!!.savedAddressInfo = SavedAddressInfo(addressess)
+        getUserData().savedAddressInfo = SavedAddressInfo(addressess)
     }
 
     override fun getSavedAccounts(): List<SavedAccountModel> {
-        return CommonService.getUserData()!!.savedAccountInfo.savedAccounts
+        return getUserData().savedAccountInfo.savedAccounts
     }
 
     override fun deleteSavedAccount(name: String) {
-        val accounts = CommonService.getUserData()!!.savedAccountInfo.savedAccounts
+        val accounts = getUserData().savedAccountInfo.savedAccounts
         accounts.remove { it.accountName == name }
 
-        CommonService.getUserData()!!.savedAccountInfo = SavedAccountInfo(accounts)
+        getUserData().savedAccountInfo = SavedAccountInfo(accounts)
     }
 
     override fun updateSavedAccount(oldName: String, account: Int, name: String) {
-        val accounts = CommonService.getUserData()!!.savedAccountInfo.savedAccounts
+        val accounts = getUserData().savedAccountInfo.savedAccounts
         accounts.find { it.accountName == oldName }?.let {
             it.account = account
             it.accountName = name
         }
 
-        CommonService.getUserData()!!.savedAccountInfo = SavedAccountInfo(accounts)
+        getUserData().savedAccountInfo = SavedAccountInfo(accounts)
     }
 
     override fun saveAccount(name: String, account: Int) {
-        val accounts = CommonService.getUserData()!!.savedAccountInfo.savedAccounts
+        val accounts = getUserData().savedAccountInfo.savedAccounts
         accounts.add(SavedAccountModel(name, account, true))
 
-        CommonService.getUserData()!!.savedAccountInfo = SavedAccountInfo(accounts)
+        getUserData().savedAccountInfo = SavedAccountInfo(accounts)
     }
 
     override fun saveBaseWalletSeed(words: List<String>) {
-        CommonService.getUserData()!!.baseWalletSeed = words.joinToString(" ")
+        getUserData().baseWalletSeed = words.joinToString(" ")
     }
 
     override fun getBaseWalletSeed(): List<String> {
-        return CommonService.getUserData()!!.baseWalletSeed?.split(" ") ?: listOf()
+        return getUserData().baseWalletSeed?.split(" ") ?: listOf()
     }
 
     override fun saveAddress(name: String, address: String) {
-        val addressess = CommonService.getUserData()!!.savedAddressInfo.savedAddresses
+        val addressess = getUserData().savedAddressInfo.savedAddresses
         addressess.add(SavedAddressModel(name, address))
 
-        CommonService.getUserData()!!.savedAddressInfo = SavedAddressInfo(addressess)
+        getUserData().savedAddressInfo = SavedAddressInfo(addressess)
     }
 
     override fun getBitcoinDisplayUnit(): BitcoinDisplayUnit {
-        return CommonService.getUserData()!!.bitcoinDisplayUnit
+        return getUserData().bitcoinDisplayUnit
     }
 
     override fun updateAppTheme(theme: AppTheme) {
@@ -214,94 +215,98 @@ class LocalStoreRepository_Impl(
     }
 
     override fun updatePinCheckedTime() {
-        CommonService.getUserData()!!.lastCheckPin =
+        getUserData().lastCheckPin =
             System.currentTimeMillis()
     }
 
     override fun resetPinCheckedTime() {
-        CommonService.getUserData()!!.lastCheckPin = 0
+        getUserData().lastCheckPin = 0
     }
 
     override fun updatePinTimeout(timeout: Int) {
         if(timeout == Constants.Time.INSTANT) {
-            CommonService.getUserData()!!.pinTimeout = Constants.Time.INSTANT_TIME_OFFSET
+            getUserData().pinTimeout = Constants.Time.INSTANT_TIME_OFFSET
         } else {
-            CommonService.getUserData()!!.pinTimeout = timeout
+            getUserData().pinTimeout = timeout
         }
     }
 
+    private fun getUserData(): UserData {
+        return CommonService.getUserData() ?: throw EmptyUsrDataErr("")
+    }
+
     override fun setLastFeeRateUpdate(time: Long) {
-        CommonService.getUserData()!!.lastFeeRateUpdateTime = time
+        getUserData().lastFeeRateUpdateTime = time
     }
 
     override fun getLastFeeRateUpdateTime(): Long {
-        return CommonService.getUserData()!!.lastFeeRateUpdateTime
+        return getUserData().lastFeeRateUpdateTime
     }
 
     override fun setLastCurrencyRateUpdate(time: Long) {
-        CommonService.getUserData()!!.lastCurrencyRateUpdateTime = time
+        getUserData().lastCurrencyRateUpdateTime = time
     }
 
     override fun getLastCurrencyRateUpdateTime(): Long {
-        return CommonService.getUserData()!!.lastCurrencyRateUpdateTime
+        return getUserData().lastCurrencyRateUpdateTime
     }
 
     override fun setLastSupportedCurrenciesUpdate(time: Long) {
-        CommonService.getUserData()!!.lastSupportedCurrenciesUpdateTime = time
+        getUserData().lastSupportedCurrenciesUpdateTime = time
     }
 
     override fun getLastSupportedCurrenciesUpdateTime(): Long {
-        return CommonService.getUserData()!!.lastSupportedCurrenciesUpdateTime
+        return getUserData().lastSupportedCurrenciesUpdateTime
     }
 
     override fun setLastBasicNetworkDataUpdate(time: Long) {
-        CommonService.getUserData()!!.lastBaseMarketDataUpdateTime = time
+        getUserData().lastBaseMarketDataUpdateTime = time
     }
 
     override fun setIsSendingBTC(sending: Boolean) {
-        CommonService.getUserData()!!.exchangeSendBTC = sending
+        getUserData().exchangeSendBTC = sending
     }
 
     override fun isSendingBTC(): Boolean {
-        return CommonService.getUserData()!!.exchangeSendBTC
+        return getUserData().exchangeSendBTC
     }
 
     override fun getLastCheckedPinTime(): Long {
-        return CommonService.getUserData()!!.lastCheckPin
+        return getUserData().lastCheckPin
     }
 
     override fun setLastExchangeCurrency(id: String) {
-        CommonService.getUserData()!!.lastExchangeCurrency = id
+        getUserData().lastExchangeCurrency = id
     }
 
     override fun getLastExchangeCurrency(): String {
-        return CommonService.getUserData()!!.lastExchangeCurrency
+        return getUserData().lastExchangeCurrency
     }
 
     override fun getLastBasicNetworkDataUpdateTime(): Long {
-        return CommonService.getUserData()!!.lastBaseMarketDataUpdateTime
+        return getUserData().lastBaseMarketDataUpdateTime
     }
 
     override fun setLastExtendedMarketDataUpdate(time: Long) {
-        CommonService.getUserData()!!.lastExtendedMarketDataUpdateTime = time
+        getUserData().lastExtendedMarketDataUpdateTime = time
     }
 
     override fun getLastExtendedMarketDataUpdateTime(): Long {
-        return CommonService.getUserData()!!.lastExtendedMarketDataUpdateTime
+        return getUserData().lastExtendedMarketDataUpdateTime
     }
 
     override fun getPinTimeout(): Int {
-        return CommonService.getUserData()!!.pinTimeout
+        return getUserData().pinTimeout
     }
 
     override fun updateVersionTappedCount() {
-        if(CommonService.getUserData()!!.versionTappedCount < Constants.Limit.VERSION_CODE_TAPPED_LIMIT) {
-            CommonService.getUserData()!!.versionTappedCount = CommonService.getUserData()!!.versionTappedCount + 1
+        if(getUserData().versionTappedCount < Constants.Limit.VERSION_CODE_TAPPED_LIMIT) {
+            getUserData().versionTappedCount = getUserData().versionTappedCount + 1
         }
     }
 
     override fun versionTapLimitReached(): Boolean {
-        return CommonService.getUserData()!!.versionTappedCount == Constants.Limit.VERSION_CODE_TAPPED_LIMIT
+        return getUserData().versionTappedCount == Constants.Limit.VERSION_CODE_TAPPED_LIMIT
     }
 
     override fun updateUserAlias(alias: String) {
@@ -322,14 +327,14 @@ class LocalStoreRepository_Impl(
 
     override fun getStoredWalletInfo(): StoredWalletInfo {
         if(memoryCache.getStoredWalletInfo() == null)
-            memoryCache.setStoredWalletInfo(CommonService.getUserData()!!.storedWalletInfo)
+            memoryCache.setStoredWalletInfo(getUserData().storedWalletInfo)
 
         return memoryCache.getStoredWalletInfo()!!
     }
 
     override fun setStoredWalletInfo(storedWalletInfo: StoredWalletInfo?) {
         memoryCache.setStoredWalletInfo(storedWalletInfo)
-        CommonService.getUserData()!!.storedWalletInfo =
+        getUserData().storedWalletInfo =
             storedWalletInfo ?: StoredWalletInfo(mutableListOf())
     }
 
@@ -460,7 +465,7 @@ class LocalStoreRepository_Impl(
 
     override fun getAllExchanges(walletId: String): List<ExchangeInfoDataModel> {
         return runBlocking {
-            return@runBlocking databaseRepository.getAllExchanges(walletId)
+            return@runBlocking databaseRepository.getAllExchanges(walletId).sortedBy { it.timestamp.epochSecond }
         }
     }
 

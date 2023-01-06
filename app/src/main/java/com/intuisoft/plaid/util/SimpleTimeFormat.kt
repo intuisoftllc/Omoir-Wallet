@@ -65,7 +65,7 @@ object SimpleTimeFormat {
         val dateDays = (mills / Constants.Time.MILLS_PER_SEC) / Constants.Time.SECONDS_PER_DAY
         val currentDay = (System.currentTimeMillis() / Constants.Time.MILLS_PER_SEC) / Constants.Time.SECONDS_PER_DAY
 
-        return (dateDays - 1) == (currentDay - 1)
+        return (dateDays) == (currentDay - 1)
     }
 
     fun isSameYear(mills: Long): Boolean {

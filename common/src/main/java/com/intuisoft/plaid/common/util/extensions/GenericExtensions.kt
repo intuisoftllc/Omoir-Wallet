@@ -7,6 +7,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import com.intuisoft.plaid.common.util.Group
 import com.intuisoft.plaid.common.util.errors.ClosedWalletErr
+import com.intuisoft.plaid.common.util.errors.EmptyUsrDataErr
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
@@ -30,6 +31,7 @@ suspend fun safeWalletScope(block: suspend () -> Unit) {
     try {
         block()
     } catch(_: ClosedWalletErr) {}
+      catch(_: EmptyUsrDataErr) {}
 }
 
 fun String.numOfCaseLetters(uppercase: Boolean): Int {

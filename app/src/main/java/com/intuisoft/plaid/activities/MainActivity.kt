@@ -1,17 +1,12 @@
 package com.intuisoft.plaid.activities
 
-import android.animation.ValueAnimator
 import android.app.Activity
 import android.app.ProgressDialog
 import android.content.Intent
 import android.content.IntentFilter
-import android.content.res.Resources
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.view.animation.Animation
-import android.view.animation.AnimationUtils
-import android.view.animation.LinearInterpolator
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.DrawableRes
@@ -21,7 +16,6 @@ import androidx.core.view.isVisible
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.navOptions
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import com.google.gson.Gson
@@ -29,6 +23,9 @@ import com.intuisoft.plaid.PlaidApp
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.*
 import com.intuisoft.plaid.androidwrappers.PasscodeView.PasscodeViewType.Companion.TYPE_CHECK_PASSCODE
+import com.intuisoft.plaid.androidwrappers.delegates.ActionBarDelegate
+import com.intuisoft.plaid.androidwrappers.delegates.FragmentActionBarDelegate
+import com.intuisoft.plaid.androidwrappers.delegates.FragmentBottomBarBarDelegate
 import com.intuisoft.plaid.common.CommonService
 import com.intuisoft.plaid.common.coroutines.PlaidScope
 import com.intuisoft.plaid.common.model.AppTheme
@@ -62,15 +59,6 @@ class MainActivity : BindingActivity<ActivityMainBinding>(), ActionBarDelegate {
         private val TOP_LEVEL_DESTINATIONS = setOf(
             R.id.homescreenFragment,
             R.id.proHomescreenFragment
-        )
-
-        private val TOP_LEVEL_BOTTOM_BAR_DESTINATIONS = setOf(
-            R.id.walletDashboardFragment,
-            R.id.walletProDashboardFragment,
-            R.id.exchangeFragment,
-            R.id.marketFragment,
-            R.id.atpFragment,
-            R.id.reportsFragment
         )
 
         private val IGNORE_BACK_PRESSED_DESTINATIONS = setOf(
@@ -271,6 +259,10 @@ class MainActivity : BindingActivity<ActivityMainBinding>(), ActionBarDelegate {
         })
     }
 
+    fun showBottomBar(show: Boolean) {
+        binding.bottomBar.isVisible = show
+    }
+
     fun activateAnimatedLoading(activate: Boolean, message: String) {
         binding.animatedLoadingContainer.isVisible = activate
         binding.loadingMessage.text = message
@@ -373,12 +365,7 @@ class MainActivity : BindingActivity<ActivityMainBinding>(), ActionBarDelegate {
     private fun setBottomNavVisibility(navController: NavController) {
         navController.addOnDestinationChangedListener { _, destination, _ ->
             binding.bottomBar.onDestinationChanged(destination.id)
-            binding.bottomBar.isVisible = TOP_LEVEL_BOTTOM_BAR_DESTINATIONS.contains(destination.id)
         }
-    }
-
-    fun onDestinationResumed(id: Int) {
-        binding.bottomBar.isVisible = TOP_LEVEL_BOTTOM_BAR_DESTINATIONS.contains(id)
     }
 
     override fun onResume() {

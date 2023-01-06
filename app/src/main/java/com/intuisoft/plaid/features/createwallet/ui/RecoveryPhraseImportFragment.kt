@@ -13,11 +13,11 @@ import androidx.core.widget.doOnTextChanged
 import androidx.lifecycle.Observer
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.*
+import com.intuisoft.plaid.androidwrappers.delegates.FragmentConfiguration
 import com.intuisoft.plaid.databinding.FragmentRecoveryPhraseImportBinding
 import com.intuisoft.plaid.features.createwallet.viewmodel.CreateWalletViewModel
 import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.util.fragmentconfig.WalletConfigurationData
-import kotlinx.android.synthetic.main.fragment_public_key_import.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 

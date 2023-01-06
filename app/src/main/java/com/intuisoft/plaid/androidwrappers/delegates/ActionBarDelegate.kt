@@ -1,4 +1,4 @@
-package com.intuisoft.plaid.androidwrappers
+package com.intuisoft.plaid.androidwrappers.delegates
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes

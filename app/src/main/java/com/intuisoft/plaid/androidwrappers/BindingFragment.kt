@@ -10,9 +10,12 @@ import androidx.navigation.fragment.findNavController
 import androidx.viewbinding.ViewBinding
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.activities.MainActivity
+import com.intuisoft.plaid.androidwrappers.delegates.FragmentActionBarDelegate
+import com.intuisoft.plaid.androidwrappers.delegates.FragmentBottomBarBarDelegate
 import com.intuisoft.plaid.listeners.NetworkStateChangeListener
 
-abstract class BindingFragment<T: ViewBinding> : Fragment(), FragmentActionBarDelegate, NetworkStateChangeListener, FragmentBottomBarBarDelegate {
+abstract class BindingFragment<T: ViewBinding> : Fragment(), FragmentActionBarDelegate, NetworkStateChangeListener,
+    FragmentBottomBarBarDelegate {
 
     protected var _binding: T? = null
     protected val binding get() = _binding!!
@@ -25,7 +28,12 @@ abstract class BindingFragment<T: ViewBinding> : Fragment(), FragmentActionBarDe
         (activity as? MainActivity)?.setActionBarSubTitle(if(actionBarSubtitle() == 0) "" else resources.getString(actionBarSubtitle()))
         (activity as? MainActivity)?.setActionBarActionLeft(actionBarActionLeft())
         (activity as? MainActivity)?.setActionBarActionRight(actionBarActionRight())
+        (activity as? MainActivity)?.showBottomBar(showBottomBar())
         activateAnimatedLoading(false, "")
+    }
+
+    override fun showBottomBar(): Boolean {
+        return false
     }
 
     override fun onBackPressed() {

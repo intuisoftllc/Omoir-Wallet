@@ -1,6 +1,7 @@
-package com.intuisoft.plaid.androidwrappers
+package com.intuisoft.plaid.androidwrappers.delegates
 
 import android.os.Parcelable
+import com.intuisoft.plaid.androidwrappers.FragmentConfigurationType
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize

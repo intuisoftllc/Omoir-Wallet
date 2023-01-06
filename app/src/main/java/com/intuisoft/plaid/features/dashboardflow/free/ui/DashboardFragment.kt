@@ -10,24 +10,20 @@ import androidx.lifecycle.Observer
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.activities.MainActivity
 import com.intuisoft.plaid.androidwrappers.*
+import com.intuisoft.plaid.androidwrappers.delegates.FragmentConfiguration
 import com.intuisoft.plaid.common.CommonService
 import com.intuisoft.plaid.common.analytics.EventTracker
 import com.intuisoft.plaid.common.analytics.events.*
-import com.intuisoft.plaid.common.model.BitcoinDisplayUnit
-import com.intuisoft.plaid.common.model.ChartDataModel
-import com.intuisoft.plaid.common.model.ChartIntervalType
 import com.intuisoft.plaid.databinding.FragmentWalletDashboardBinding
 import com.intuisoft.plaid.features.homescreen.adapters.BasicTransactionAdapter
 import com.intuisoft.plaid.listeners.StateListener
 import com.intuisoft.plaid.model.LocalWalletModel
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.common.util.Constants
-import com.intuisoft.plaid.common.util.SimpleCoinNumberFormat
 import com.intuisoft.plaid.common.util.extensions.safeWalletScope
 import com.intuisoft.plaid.common.util.extensions.toArrayList
 import com.intuisoft.plaid.features.dashboardflow.shared.adapters.BasicLineChartAdapter
 import com.intuisoft.plaid.features.dashboardflow.shared.viewModel.DashboardViewModel
-import com.intuisoft.plaid.util.SimpleTimeFormat
 import com.intuisoft.plaid.util.fragmentconfig.ConfigQrDisplayData
 import com.intuisoft.plaid.util.fragmentconfig.BasicConfigData
 import com.intuisoft.plaid.walletmanager.AbstractWalletManager
@@ -36,7 +32,6 @@ import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import java.util.*
 
 class DashboardFragment : ConfigurableFragment<FragmentWalletDashboardBinding>(pinProtection = true), StateListener {
     protected val viewModel: DashboardViewModel by viewModel()
@@ -193,6 +188,10 @@ class DashboardFragment : ConfigurableFragment<FragmentWalletDashboardBinding>(p
 
     override fun onNavigateTo(destination: Int) {
         navigate(destination)
+    }
+
+    override fun showBottomBar(): Boolean {
+        return true
     }
 
     override fun actionBarVariant(): Int {

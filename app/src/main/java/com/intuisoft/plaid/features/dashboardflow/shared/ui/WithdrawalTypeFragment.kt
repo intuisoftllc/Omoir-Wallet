@@ -6,8 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.*
+import com.intuisoft.plaid.androidwrappers.delegates.FragmentConfiguration
 import com.intuisoft.plaid.common.analytics.EventTracker
-import com.intuisoft.plaid.common.analytics.events.EventWalletSettingsExportCsv
 import com.intuisoft.plaid.common.analytics.events.EventWithdrawTypeInvoice
 import com.intuisoft.plaid.common.analytics.events.EventWithdrawTypeStandard
 import com.intuisoft.plaid.common.util.Constants

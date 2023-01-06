@@ -10,6 +10,7 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.*
+import com.intuisoft.plaid.androidwrappers.delegates.FragmentConfiguration
 import com.intuisoft.plaid.common.CommonService
 import com.intuisoft.plaid.databinding.FragmentTransactionDetailsBinding
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository

@@ -18,6 +18,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.gson.Gson
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.*
+import com.intuisoft.plaid.androidwrappers.delegates.FragmentConfiguration
 import com.intuisoft.plaid.common.analytics.EventTracker
 import com.intuisoft.plaid.common.analytics.events.EventExchangeCreate
 import com.intuisoft.plaid.common.analytics.events.EventExchangeHistoryView
@@ -391,6 +392,10 @@ class ExchangeFragment : ConfigurableFragment<FragmentExchangeBinding>(pinProtec
 
     override fun onNavigateTo(destination: Int) {
         navigate(destination)
+    }
+
+    override fun showBottomBar(): Boolean {
+        return true
     }
 
     override fun onDestroyView() {

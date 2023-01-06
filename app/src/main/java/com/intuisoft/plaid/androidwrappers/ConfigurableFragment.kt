@@ -7,15 +7,13 @@ import androidx.navigation.fragment.findNavController
 import androidx.viewbinding.ViewBinding
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.activities.MainActivity
+import com.intuisoft.plaid.androidwrappers.delegates.FragmentConfiguration
 import com.intuisoft.plaid.common.CommonService
 import com.intuisoft.plaid.common.local.UserData
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.model.LocalWalletModel
 import com.intuisoft.plaid.common.util.errors.ClosedWalletErr
-import com.mifmif.common.regex.Main
-import org.koin.android.ext.android.inject
-import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 
 abstract class ConfigurableFragment<T: ViewBinding>(
@@ -93,7 +91,6 @@ abstract class ConfigurableFragment<T: ViewBinding>(
     override fun onResume() {
         super.onResume()
         checkPin()
-        (activity as MainActivity).onDestinationResumed(navigationId())
     }
 
     private fun requireWallet(): LocalWalletModel? {
