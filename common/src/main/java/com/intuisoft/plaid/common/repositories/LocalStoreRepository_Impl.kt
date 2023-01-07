@@ -1,6 +1,7 @@
 package com.intuisoft.plaid.common.repositories
 
 import com.intuisoft.plaid.common.CommonService
+import com.intuisoft.plaid.common.coroutines.PlaidScope
 import com.intuisoft.plaid.common.util.extensions.remove
 import com.intuisoft.plaid.common.listeners.WipeDataListener
 import com.intuisoft.plaid.common.local.AppPrefs
@@ -506,6 +507,10 @@ class LocalStoreRepository_Impl(
     }
 
     override fun clearCache() {
+        setLastCurrencyRateUpdate(0)
+        setLastFeeRateUpdate(0)
+        setLastSupportedCurrenciesUpdate(0)
+        setLastSupportedCurrenciesUpdate(0)
         memoryCache.clear()
     }
 
@@ -524,7 +529,7 @@ class LocalStoreRepository_Impl(
     }
 
     override fun onDatabaseUpdated(dao: Any?) {
-        CoroutineScope(Dispatchers.IO).launch {
+        PlaidScope.IoScope.launch {
             when(dao) {
                 is AddressBlacklistDao -> {
                     memoryCache.setBlacklistedAddresses(databaseRepository.getAllBlacklistedAddresses())

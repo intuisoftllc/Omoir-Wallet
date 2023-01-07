@@ -220,7 +220,7 @@ class MainActivity : BindingActivity<ActivityMainBinding>(), ActionBarDelegate {
             }
 
             override fun onMaxAttempts() {
-                val progressDialog = ProgressDialog.show(baseContext, getString(R.string.wiping_data_title), getString(R.string.wiping_data_message))
+                val progressDialog = ProgressDialog.show(this@MainActivity, getString(R.string.wiping_data_title), getString(R.string.wiping_data_message))
                 progressDialog.setCancelable(false)
 
                 PlaidScope.IoScope.launch {

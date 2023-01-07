@@ -2,6 +2,7 @@ package com.intuisoft.plaid.walletmanager
 
 import android.app.Application
 import android.util.Log
+import com.intuisoft.plaid.common.coroutines.PlaidScope
 import com.intuisoft.plaid.common.listeners.WipeDataListener
 import com.intuisoft.plaid.common.local.db.listeners.DatabaseListener
 import com.intuisoft.plaid.common.model.HiddenWalletModel
@@ -39,7 +40,7 @@ class WalletManager(
     open class BitcoinEventListener: BitcoinKit.Listener {}
 
     override fun start() {
-        CoroutineScope(Dispatchers.IO).launch {
+        PlaidScope.IoScope.launch {
             if(!syncer.isRunning()) {
                 _baseMainNetWallet =
                     createBaseWallet(_baseMainNetWallet, BitcoinKit.NetworkType.MainNet)

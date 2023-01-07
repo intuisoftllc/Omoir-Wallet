@@ -1,5 +1,6 @@
 package io.horizontalsystems.bitcoincore.network.peer
 
+import com.intuisoft.plaid.common.coroutines.PlaidScope
 import io.horizontalsystems.bitcoincore.BitcoinCore
 import io.horizontalsystems.bitcoincore.core.IPeerAddressManager
 import kotlinx.coroutines.*
@@ -15,8 +16,7 @@ class PeerDiscover(private val peerAddressManager: IPeerAddressManager) {
     fun lookup(dnsList: List<String>) {
         if(BitcoinCore.loggingEnabled)  logger.info("Lookup peers from DNS seed...")
 
-        // todo: launch coroutines for each dns resolve
-        CoroutineScope(Dispatchers.IO).launch {
+        PlaidScope.IoScope.launch {
             dnsList.forEach { host ->
                 try {
                     val ips = InetAddress

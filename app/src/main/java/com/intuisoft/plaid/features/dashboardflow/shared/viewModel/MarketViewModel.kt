@@ -7,6 +7,7 @@ import com.intuisoft.plaid.PlaidApp
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.SingleLiveData
 import com.intuisoft.plaid.androidwrappers.WalletViewModel
+import com.intuisoft.plaid.common.coroutines.PlaidScope
 import com.intuisoft.plaid.common.model.ChartDataModel
 import com.intuisoft.plaid.common.model.ChartIntervalType
 import com.intuisoft.plaid.common.model.CongestionRating
@@ -117,7 +118,7 @@ class MarketViewModel(
     }
 
     fun onNoInternet(hasInternet: Boolean) {
-        CoroutineScope(Dispatchers.IO).launch {
+        PlaidScope.IoScope.launch {
 
             val basicData = apiRepository.getBasicTickerData()
             val extendedData = apiRepository.getExtendedNetworkData(getWalletNetwork() == BitcoinKit.NetworkType.TestNet)

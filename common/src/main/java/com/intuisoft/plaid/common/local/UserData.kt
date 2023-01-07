@@ -2,6 +2,7 @@ package com.intuisoft.plaid.common.local
 
 import com.google.gson.Gson
 import com.intuisoft.plaid.common.CommonService
+import com.intuisoft.plaid.common.coroutines.PlaidScope
 import com.intuisoft.plaid.common.model.*
 import com.intuisoft.plaid.common.util.AESUtils
 import com.intuisoft.plaid.common.util.Constants
@@ -206,7 +207,7 @@ class UserData {
         }
 
     fun save() {
-        CoroutineScope(Dispatchers.IO).launch {
+        PlaidScope.IoScope.launch {
             synchronized(this@UserData::class.java) {
                 val json = Gson().toJson(this@UserData, UserData::class.java)
                 AESUtils.encrypt(json, CommonService.getUserPin(), CommonService.getWalletSecret())?.let { usrData ->

@@ -7,6 +7,7 @@ import com.intuisoft.plaid.PlaidApp
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.SingleLiveData
 import com.intuisoft.plaid.androidwrappers.WalletViewModel
+import com.intuisoft.plaid.common.coroutines.PlaidScope
 import com.intuisoft.plaid.common.model.*
 import com.intuisoft.plaid.common.repositories.ApiRepository
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
@@ -467,7 +468,7 @@ class DashboardViewModel(
 
 
     fun onNoInternet(hasInternet: Boolean) {
-        CoroutineScope(Dispatchers.IO).launch {
+        PlaidScope.IoScope.launch {
 
             val data = apiRepository.getTickerPriceChartData(intervalType)
 

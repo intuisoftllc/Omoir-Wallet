@@ -2,6 +2,7 @@ package com.intuisoft.plaid.walletmanager
 
 import android.app.Application
 import android.util.Log
+import com.intuisoft.plaid.common.coroutines.PlaidScope
 import com.intuisoft.plaid.common.model.DevicePerformanceLevel
 import com.intuisoft.plaid.common.repositories.ApiRepository
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
@@ -178,7 +179,7 @@ class SyncManager(
     }
 
     fun cancelTransfer(id: String) {
-        CoroutineScope(Dispatchers.IO).launch {
+        PlaidScope.IoScope.launch {
             atp.cancelTransfer(id, openedWallet!!)
             syncWallets(force = true)
         }

@@ -17,6 +17,7 @@ import com.intuisoft.plaid.databinding.FragmentOnboardingPinBinding
 import com.intuisoft.plaid.features.onboarding.viewmodel.OnboardingViewModel
 import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.util.fragmentconfig.AllSetData
+import com.intuisoft.plaid.walletmanager.AbstractWalletManager
 import com.intuisoft.plaid.walletmanager.WalletManager
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
@@ -26,7 +27,7 @@ class OnboardingPinFragment : BindingFragment<FragmentOnboardingPinBinding>() {
     private val viewModel: OnboardingViewModel by sharedViewModel()
     private val localStoreRepository: LocalStoreRepository by inject()
     protected val eventTracker: EventTracker by inject()
-    protected val walletManager: WalletManager by inject()
+    protected val walletManager: AbstractWalletManager by inject()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

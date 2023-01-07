@@ -130,7 +130,7 @@ data class LocalWalletModel(
         fun consume(walletIdentifier: WalletIdentifier, hiddenWallet: HiddenWalletModel?): LocalWalletModel =
             LocalWalletModel(
                 name = walletIdentifier.name,
-                uuid = hiddenWallet?.uuid ?: walletIdentifier.walletUUID.sha256(),
+                uuid = hiddenWallet?.uuid ?: walletIdentifier.walletUUID,
                 testNetWallet = walletIdentifier.isTestNet,
             )
     }

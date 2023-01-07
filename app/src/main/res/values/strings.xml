@@ -14,7 +14,7 @@
 <!--    On-boarding All Set Strings -->
     <string name="goto_homescreen">Go to Home Screen</string>
     <string name="all_set_title">Your All Set!</string>
-    <string name="all_set_description">Congratulations on taking the first step towards your financial sovernty.\n\nPlaid Crypto Wallet™ gives you the tools you need to take your cryptocurrency journey to the next level. Get started by creating a new wallet or navigating to the main screen.</string>
+    <string name="all_set_description">Congratulations on taking the first step towards your financial sovernty.\n\nPlaid Crypto Wallet™ gives you the tools you need to take your self-custody journey to the next level. Get started by creating a new wallet or navigating to the main screen.</string>
 <!--    On-boarding All Set Strings End -->
 
 <!--    Homescreen Strings -->

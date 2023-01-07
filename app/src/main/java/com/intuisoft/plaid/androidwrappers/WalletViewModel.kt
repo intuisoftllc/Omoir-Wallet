@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
 import com.intuisoft.plaid.PlaidApp
 import com.intuisoft.plaid.R
+import com.intuisoft.plaid.common.coroutines.PlaidScope
 import com.intuisoft.plaid.common.model.BitcoinDisplayUnit
 import com.intuisoft.plaid.common.model.SavedAccountModel
 import com.intuisoft.plaid.common.model.TransactionMemoModel
@@ -243,7 +244,7 @@ open class WalletViewModel(
     }
 
     fun refreshLocalCache() {
-        CoroutineScope(Dispatchers.IO).launch {
+        PlaidScope.IoScope.launch {
             // go to network and get fee rates if we have passed the cache time
             apiRepository.refreshLocalCache()
         }
@@ -405,7 +406,7 @@ open class WalletViewModel(
         bip: HDWallet.Purpose,
         testNetWallet: Boolean
     ) {
-        CoroutineScope(Dispatchers.IO).launch {
+        PlaidScope.IoScope.launch {
             try{
                 val walletId = walletManager.createWallet(
                     name = walletName,
@@ -445,7 +446,7 @@ open class WalletViewModel(
         walletName: String,
         pubKey: String
     ) {
-        CoroutineScope(Dispatchers.IO).launch {
+        PlaidScope.IoScope.launch {
             try {
                 val walletId = walletManager.createWallet(
                     name = walletName,
@@ -461,7 +462,7 @@ open class WalletViewModel(
 
 
     fun deleteWallet(onDeleteFinished: () -> Unit) {
-        CoroutineScope(Dispatchers.IO).launch {
+        PlaidScope.IoScope.launch {
           walletManager.deleteWallet(localWallet!!) {
               withContext(Dispatchers.Main) {
                   safeWalletScope {

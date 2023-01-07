@@ -9,5 +9,5 @@ data class HiddenWalletModel(
     val account: SavedAccountModel
 ) {
     val uuid: String
-        get() = "$walletUUID: $passphrase - ${account.account}".sha256()
+        get() = "$walletUUID: $passphrase - ${account.account}".sha256(16)
 }

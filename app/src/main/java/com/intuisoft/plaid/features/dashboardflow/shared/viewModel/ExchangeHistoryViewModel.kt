@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
 import com.intuisoft.plaid.androidwrappers.SingleLiveData
 import com.intuisoft.plaid.androidwrappers.WalletViewModel
+import com.intuisoft.plaid.common.coroutines.PlaidScope
 import com.intuisoft.plaid.common.model.ExchangeHistoryFilter
 import com.intuisoft.plaid.common.model.ExchangeInfoDataModel
 import com.intuisoft.plaid.common.repositories.ApiRepository
@@ -33,7 +34,7 @@ class ExchangeHistoryViewModel(
     private var refreshing = false
 
     fun refreshExchanges() {
-        CoroutineScope(Dispatchers.IO).launch {
+        PlaidScope.IoScope.launch {
             if(!refreshing) {
                 refreshing = true
                 _refreshingExchanges.postValue(refreshing)
