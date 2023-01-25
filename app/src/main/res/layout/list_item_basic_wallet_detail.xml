@@ -37,7 +37,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 style="@style/TextStyle.Medium.12"
                 android:layout_marginRight="@dimen/margin_26"
-                android:textColor="?attr/colorPrimaryVariant"/>
+                android:textColor="@color/time_period_indicator_color"/>
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -68,7 +68,7 @@
                     android:layout_marginTop="@dimen/card_corner_radius"
                     style="@style/TextStyle.Semibold.16"
                     android:textStyle="bold"
-                    android:textColor="?attr/colorPrimary"
+                    android:textColor="@color/homescreen_wallet_status_color"
                     tools:text="Testnet, Watch-Only"/>
             </LinearLayout>
 

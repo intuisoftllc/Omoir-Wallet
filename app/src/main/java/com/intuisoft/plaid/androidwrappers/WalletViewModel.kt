@@ -262,6 +262,8 @@ open class WalletViewModel(
         if(isReadOnly()) _readOnlyWallet.postValue(Unit)
     }
 
+    fun getWalletStatus() = localWallet!!.walletKit!!.statusInfo()
+
     fun displayCurrentWallet() {
         localWallet?.let {
             _displayWallet.postValue(it)
@@ -320,7 +322,7 @@ open class WalletViewModel(
         if(localWallet!!.walletKit!!.watchAccount) {
             return walletManager.findStoredWallet(localWallet!!.uuid)!!.pubKey
         } else {
-            return localWallet!!.walletKit!!.getMasterPublicKey(!localWallet!!.testNetWallet)
+            return localWallet!!.walletKit!!.getMasterPublicKey(!localWallet!!.testNetWallet, localWallet!!.hiddenWallet)
         }
     }
 
@@ -454,7 +456,7 @@ open class WalletViewModel(
                 )
 
                 _walletCreated.postValue(walletId)
-            } catch(e: ExistingWalletErr) {
+            } catch(e: Throwable) {
                 _walletCreationError.postValue(Unit)
             }
         }

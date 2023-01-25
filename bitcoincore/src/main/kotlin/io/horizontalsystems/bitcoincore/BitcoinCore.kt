@@ -2,6 +2,16 @@ package io.horizontalsystems.bitcoincore
 
 import android.content.Context
 import com.intuisoft.plaid.common.coroutines.PlaidScope
+import com.intuisoft.plaid.common.util.Constants.Strings.PEER_STATUS_INFO_1
+import com.intuisoft.plaid.common.util.Constants.Strings.PEER_STATUS_INFO_2
+import com.intuisoft.plaid.common.util.Constants.Strings.PEER_STATUS_INFO_3
+import com.intuisoft.plaid.common.util.Constants.Strings.PEER_STATUS_INFO_4
+import com.intuisoft.plaid.common.util.Constants.Strings.STATUS_INFO_1
+import com.intuisoft.plaid.common.util.Constants.Strings.STATUS_INFO_2
+import com.intuisoft.plaid.common.util.Constants.Strings.STATUS_INFO_3
+import com.intuisoft.plaid.common.util.Constants.Strings.STATUS_INFO_4
+import com.intuisoft.plaid.common.util.Constants.Strings.STATUS_INFO_5
+import com.intuisoft.plaid.common.util.Constants.Strings.STATUS_INFO_6
 import io.horizontalsystems.bitcoincore.blocks.*
 import io.horizontalsystems.bitcoincore.blocks.validators.IBlockValidator
 import io.horizontalsystems.bitcoincore.core.*
@@ -456,8 +466,8 @@ class BitcoinCore(
     val inventoryItemsHandlerChain = InventoryItemsHandlerChain()
     val peerTaskHandlerChain = PeerTaskHandlerChain()
 
-    fun getMasterPublicKey(mainNet: Boolean)
-        = publicKeyManager.masterPublicKey(purpose, mainNet)
+    fun getMasterPublicKey(mainNet: Boolean, passphraseWallet: Boolean)
+        = publicKeyManager.masterPublicKey(purpose, mainNet, passphraseWallet)
 
     fun getPurpose() = purpose
 
@@ -659,36 +669,41 @@ class BitcoinCore(
         }
     }
 
+    fun getConnectedPeersCount() = peerManager.connected().size
+
+    fun getPeersCount() = peerManager.connected().size
+
     fun statusInfo(): Map<String, Any> {
         val statusInfo = LinkedHashMap<String, Any>()
 
-        statusInfo["Synced Until"] = lastBlockInfo?.timestamp?.let { Date(it * 1000) } ?: "N/A"
-        statusInfo["Syncing Peer"] = initialBlockDownload.syncPeer?.host ?: "N/A"
-        statusInfo["Derivation"] = purpose.description
-        statusInfo["Sync State"] = syncState.toString()
-        statusInfo["Last Block Height"] = lastBlockInfo?.height ?: "N/A"
+        statusInfo[STATUS_INFO_1] = lastBlockInfo?.timestamp?.let { Date(it * 1000) } ?: "N/A"
+        statusInfo[STATUS_INFO_2] = initialBlockDownload.syncPeer?.host ?: "N/A"
+        statusInfo[STATUS_INFO_3] = purpose.description
+        statusInfo[STATUS_INFO_4] = syncState.toString()
+        statusInfo[STATUS_INFO_5] = lastBlockInfo?.height ?: "N/A"
 
         val peers = LinkedHashMap<String, Any>()
         peerManager.connected().forEachIndexed { index, peer ->
 
-            val peerStatus = LinkedHashMap<String, Any>()
-            peerStatus["Status"] = if (peer.synced) "Synced" else "Not Synced"
-            peerStatus["Host"] = peer.host
-            peerStatus["Best Block"] = peer.announcedLastBlockHeight
+            val peerStatus = HashMap<String, String>()
+            peerStatus[PEER_STATUS_INFO_1] = if (peer.synced) "Synced" else "Not Synced"
+            peerStatus[PEER_STATUS_INFO_2] = peer.host
+            peerStatus[PEER_STATUS_INFO_3] = peer.announcedLastBlockHeight.toString()
 
             peer.tasks.let { peerTasks ->
                 if (peerTasks.isEmpty()) {
-                    peerStatus["tasks"] = "no tasks"
+                    peerStatus[PEER_STATUS_INFO_4] = "no tasks"
                 } else {
-                    val tasks = LinkedHashMap<String, Any>()
+                    val tasks = mutableListOf<String>()
                     peerTasks.forEach { task ->
-                        tasks[task.javaClass.simpleName] = "[${task.state}]"
+//                        tasks.add("${task.javaClass.simpleName} - [${task.state}]")
+                        tasks.add(task.javaClass.simpleName)
                     }
-                    peerStatus["tasks"] = tasks
+                    peerStatus[PEER_STATUS_INFO_4] = tasks.joinToString(", ")
                 }
             }
 
-            peers["Peer ${index + 1}"] = peerStatus
+            peers["$STATUS_INFO_6${index + 1}"] = peerStatus
         }
 
         statusInfo.putAll(peers)
@@ -771,6 +786,16 @@ class BitcoinCore(
 
     fun getTransaction(hash: String): TransactionInfo? {
         return dataProvider.getTransaction(hash)
+    }
+
+    fun restartIfNoPeersFound() : Boolean {
+        if(peerManager.peersCount == 0) {
+            stop()
+            start()
+            return true
+        }
+
+        return false
     }
 
     sealed class KitState {

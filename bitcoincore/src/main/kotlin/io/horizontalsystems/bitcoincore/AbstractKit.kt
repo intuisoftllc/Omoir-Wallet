@@ -46,6 +46,10 @@ abstract class AbstractKit {
         bitcoinCore.refresh()
     }
 
+    fun restartIfNoPeersFound() : Boolean {
+        return bitcoinCore.restartIfNoPeersFound()
+    }
+
     fun onEnterForeground() {
         bitcoinCore.onEnterForeground()
     }
@@ -118,7 +122,7 @@ abstract class AbstractKit {
         bitcoinCore.fillGap()
     }
 
-    fun getMasterPublicKey(mainNet: Boolean = true) = bitcoinCore.getMasterPublicKey(mainNet)
+    fun getMasterPublicKey(mainNet: Boolean, passphraseWallet: Boolean) = bitcoinCore.getMasterPublicKey(mainNet, passphraseWallet)
 
     fun receivePublicKey(): PublicKey {
         return bitcoinCore.receivePublicKey()
@@ -149,6 +153,8 @@ abstract class AbstractKit {
     fun showDebugInfo() {
         bitcoinCore.showDebugInfo()
     }
+
+    fun getConnectedPeersCount() = bitcoinCore.getConnectedPeersCount()
 
     fun statusInfo(): Map<String, Any> {
         return bitcoinCore.statusInfo()

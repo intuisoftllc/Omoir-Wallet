@@ -12,4 +12,8 @@ abstract class BindingActivity<T: ViewBinding> : AppCompatActivity() {
         super.onDestroy()
         _binding = null
     }
+
+    fun withBinding(delegate: T.() -> Unit) {
+        _binding?.delegate()
+    }
 }

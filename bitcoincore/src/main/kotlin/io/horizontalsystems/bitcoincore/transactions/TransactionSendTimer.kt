@@ -16,11 +16,10 @@ class TransactionSendTimer(private val period: Long) {
     var listener: Listener? = null
     private var task: Job? = null
 
-    @OptIn(DelicateCoroutinesApi::class)
     @Synchronized
     fun startIfNotRunning() {
         if (task == null) {
-            task = PlaidScope.GlobalScope.launch {
+            task = PlaidScope.IoScope.launch {
                 while(true) {
                     this.ensureActive()
                     listener?.onTimePassed()

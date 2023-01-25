@@ -30,8 +30,10 @@ import com.intuisoft.plaid.features.settings.viewmodel.SettingsViewModel
 import com.intuisoft.plaid.common.model.BitcoinDisplayUnit
 import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.common.util.SimpleCurrencyFormat
+import com.intuisoft.plaid.common.util.extensions.mapToListOf
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import java.util.HashMap
 
 
 class SettingsFragment : ConfigurableFragment<FragmentSettingsBinding>(
@@ -461,35 +463,21 @@ class SettingsFragment : ConfigurableFragment<FragmentSettingsBinding>(
         }
 
         binding.help.onClick {
-            val emailIntent = Intent(Intent.ACTION_SEND);
-            emailIntent.setType("text/plain");
-            emailIntent.putExtra(Intent.EXTRA_EMAIL, arrayOf(getString(R.string.business_info_email)))
-            emailIntent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.business_info_support_request_subject))
-
             val release = Build.VERSION.RELEASE
             val sdkVersion = Build.VERSION.SDK_INT
-            emailIntent.putExtra(Intent.EXTRA_TEXT,
-                getString(R.string.business_info_support_request_message,
+
+            sendEmail(
+                to = getString(R.string.business_info_email),
+                subject = getString(R.string.business_info_support_request_subject_general),
+                message = getString(R.string.business_info_support_request_message,
                     Build.BRAND,
                     "Android SDK: $sdkVersion ($release)",
                     System.getProperty("os.version"),
                     Build.MODEL,
-                    Build.PRODUCT
+                    Build.PRODUCT,
+                    if(viewModel.isProEnabled()) Constants.Strings.PRO_SUBSCRIPTION_MARK else ""
                 )
-            );
-
-
-            emailIntent.setType("message/rfc822");
-
-            try {
-                (requireActivity().application as PlaidApp).ignorePinCheck = true
-                startActivity(
-                    Intent.createChooser(emailIntent, getString(R.string.settings_send_email_help_message)));
-            } catch (ex: ActivityNotFoundException) {
-                (requireActivity().application as PlaidApp).ignorePinCheck = false
-                styledSnackBar(requireView(), getString(R.string.settings_send_email_error))
-            }
-
+            )
         }
 
         binding.credits.onClick {

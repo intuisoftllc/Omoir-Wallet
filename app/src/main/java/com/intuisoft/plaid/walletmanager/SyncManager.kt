@@ -26,6 +26,7 @@ class SyncManager(
     private var masterSyncJob: Job? = null
     private var autoSyncJob: Job? = null
     private var listener: SyncEvent? = null
+    private var resync = false
     private var openedWallet: LocalWalletModel? = null
 
     private var _running = AtomicBoolean(false)
@@ -47,8 +48,7 @@ class SyncManager(
     private var lastSynced: Long = 0
 
     private fun runInBackground(run: suspend () -> Unit) =
-        @OptIn(DelicateCoroutinesApi::class)
-        GlobalScope.launch {
+        PlaidScope.IoScope.launch {
             run()
         }
 
@@ -121,6 +121,7 @@ class SyncManager(
     fun start() {
         if(!running) {
             running = true
+            resync = false
             syncWallets()
             startAutoSync()
         }
@@ -153,6 +154,7 @@ class SyncManager(
                 masterSyncJob?.cancelAndJoin()
                 stopAutoSyncer()
                 syncing = false
+                resync = false
             }
         }
     }
@@ -170,7 +172,7 @@ class SyncManager(
     }
 
     private suspend fun syncInternal(wallet: LocalWalletModel) {
-        if (!wallet.isSyncing && !wallet.isSynced) {
+        if (!wallet.walletKit!!.restartIfNoPeersFound() && !wallet.isSyncing && !wallet.isSynced) {
             wallet.walletKit!!.onEnterForeground()
             wallet.walletKit!!.refresh()
         } else {
@@ -181,6 +183,7 @@ class SyncManager(
     fun cancelTransfer(id: String) {
         PlaidScope.IoScope.launch {
             atp.cancelTransfer(id, openedWallet!!)
+            resync = true
             syncWallets(force = true)
         }
     }
@@ -195,8 +198,6 @@ class SyncManager(
             }
 
             masterSyncJob = runInBackground {
-                var resync = false
-
                 _wallets
                     .splitIntoGroupOf(2) // sync 2 wallets at the same time
                     .forEach { group ->
@@ -232,6 +233,7 @@ class SyncManager(
                 lastSynced = System.currentTimeMillis()
                 syncing = false
                 syncWallets(force = resync)
+                resync = false
             }
         }
     }

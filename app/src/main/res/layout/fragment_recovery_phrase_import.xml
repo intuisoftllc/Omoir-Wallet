@@ -87,7 +87,7 @@
                     android:maxLines="1"
                     android:imeOptions="actionDone"
                     android:padding="@dimen/horizontal_padding_size"
-                    android:inputType="text"
+                    android:inputType="textNoSuggestions|textVisiblePassword"
                     android:backgroundTint="@color/card_background_color"
                     android:textColorHint="@color/edit_text_hint_color"
                     android:textSize="14sp"

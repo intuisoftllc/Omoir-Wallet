@@ -52,7 +52,8 @@
     <color name="settings_category_text_color">@color/dark_grey</color>
     <color name="line_chart_card_background_color">@color/white</color>
     <color name="time_period_indicator_color">@color/brand_color_blue</color>
-    <color name="bar_chart_color">@color/brand_color_accent_3</color>
+    <color name="homescreen_wallet_status_color">@color/brand_color_blue</color>
+    <color name="bar_chart_color">@color/brand_color_accent_1</color>
     <color name="edit_text_hint_color">@color/grey</color>
     <color name="qr_code_whitespace_color">@color/white</color>
     <color name="qr_code_data_color">@color/black</color>

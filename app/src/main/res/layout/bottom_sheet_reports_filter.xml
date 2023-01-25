@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:paddingHorizontal="@dimen/margin_20"
+    android:paddingTop="@dimen/margin_28"
+    android:paddingBottom="@dimen/horizontal_padding_size"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <TextView
+        android:id="@+id/bottom_sheet_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/report_details_filter_title"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        style="@style/TextStyle.Semibold.24"
+        android:textStyle="bold"
+        android:textColor="?attr/colorPrimaryVariant"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/bottom_sheet_title"
+        android:layout_marginTop="@dimen/horizontal_padding_size"
+        android:orientation="vertical">
+
+        <com.intuisoft.plaid.androidwrappers.SettingsItemView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:item_title="@string/report_details_time_period_1"
+            android:id="@+id/last_week"
+            android:layout_marginTop="@dimen/horizontal_padding_size"
+            app:show_radio="true"
+            app:settings_variant="radio"
+            app:show_switch="false"/>
+
+        <com.intuisoft.plaid.androidwrappers.SettingsItemView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:item_title="@string/report_details_time_period_2"
+            android:id="@+id/last_month"
+            android:layout_marginTop="@dimen/horizontal_padding_size"
+            app:show_radio="true"
+            app:settings_variant="radio"
+            app:show_switch="false"/>
+
+        <com.intuisoft.plaid.androidwrappers.SettingsItemView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:item_title="@string/report_details_time_period_3"
+            android:id="@+id/last_6months"
+            android:layout_marginTop="@dimen/horizontal_padding_size"
+            app:show_radio="true"
+            app:settings_variant="radio"
+            app:show_switch="false"/>
+
+        <com.intuisoft.plaid.androidwrappers.SettingsItemView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:item_title="@string/report_details_time_period_4"
+            android:id="@+id/last_year"
+            android:layout_marginTop="@dimen/horizontal_padding_size"
+            app:show_radio="true"
+            app:settings_variant="radio"
+            app:show_switch="false"/>
+
+        <com.intuisoft.plaid.androidwrappers.SettingsItemView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:item_title="@string/report_details_time_period_5"
+            android:id="@+id/all_time"
+            android:layout_marginTop="@dimen/horizontal_padding_size"
+            app:show_radio="true"
+            app:settings_variant="radio"
+            app:show_switch="false"/>
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

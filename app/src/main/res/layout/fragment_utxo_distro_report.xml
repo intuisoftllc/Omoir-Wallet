@@ -34,14 +34,14 @@
     <com.intuisoft.plaid.androidwrappers.BarChartView
         android:id="@+id/chart"
         android:layout_width="0dp"
-        android:layout_height="180dp"
+        android:layout_height="200dp"
         app:chart_axis="y"
         android:layout_weight="1"
         app:chart_labelsSize="12sp"
         app:chart_barsColor="@color/bar_chart_color"
         app:chart_barsBackgroundColor="@color/background_color"
         app:chart_barsRadius="24dp"
-        app:chart_spacing="14dp"
+        app:chart_spacing="18dp"
         app:chart_isHorizontal="true"
         app:chart_emptyDataLabelColor="@android:color/darker_gray"
         app:chart_labelsColor="@color/subtitle_text_color"
@@ -60,7 +60,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:cardCornerRadius="4dp"
         android:layout_marginHorizontal="2dp"
-        android:layout_marginTop="@dimen/parent_top_margin_small"
+        android:layout_marginTop="@dimen/parent_top_margin_xsmall"
         android:backgroundTint="@color/card_background_color"
         app:layout_constraintHorizontal_bias="0">
         <LinearLayout

@@ -73,7 +73,7 @@ val viewModelModule = module {
     }
 
     viewModel {
-        SwapDetailsViewModel(get(), get(), get(), get())
+        ExchangeDetailsViewModel(get(), get(), get(), get())
     }
 
     viewModel {

@@ -223,7 +223,7 @@ class UserData {
 
     companion object {
         private const val FILE_NAME = "plaid_wallet_usr_data"
-        private const val SECONDARY_FILE_NAME = "plaid_wallet_data" // possible use for a "plausable-deniability" feature in the future
+        private const val SECONDARY_FILE_NAME = "plaid_wallet_data" // possible use for a "plausable-deniability" or "spaces" concept feature in the future
 
         fun load(pin: String): UserData? {
             synchronized(this::class.java) {

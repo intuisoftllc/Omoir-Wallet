@@ -16,7 +16,8 @@ import io.horizontalsystems.hdwalletkit.HDWallet
 data class LocalWalletModel(
     var name: String,
     var uuid: String,
-    var testNetWallet: Boolean
+    var testNetWallet: Boolean,
+    var hiddenWallet: Boolean,
 ) {
     var walletKit: BitcoinKit? = null
 
@@ -132,6 +133,7 @@ data class LocalWalletModel(
                 name = walletIdentifier.name,
                 uuid = hiddenWallet?.uuid ?: walletIdentifier.walletUUID,
                 testNetWallet = walletIdentifier.isTestNet,
+                hiddenWallet = hiddenWallet != null
             )
     }
 }

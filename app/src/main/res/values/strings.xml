@@ -216,6 +216,7 @@
     <string name="atp_status_completed">Completed</string>
     <string name="atp_status_failed">Failed</string>
     <string name="atp_status_cancelled">Cancelled</string>
+    <string name="atp_status_cancelling">Cancelling</string>
 <!--    ATP Status Strings End -->
 
 
@@ -415,6 +416,8 @@
 
 
 <!--    Wallet Settings Strings -->
+    <string name="wallet_settings_help">Help</string>
+    <string name="wallet_settings_help_description">Having trouble with this wallet? Drop us a line to get help.</string>
     <string name="wallet_settings_rename_wallet">Rename Wallet</string>
     <string name="wallet_settings_seed_phrase">Seed Phrase</string>
     <string name="wallet_settings_seed_phrase_description">Show seed phrase</string>
@@ -661,14 +664,15 @@
     <string name="swap_fees_disclaimer">(All Fees Included)</string>
 <!--    Swap Strings End -->
 
-<!--    Swap Details Strings -->
+<!--    Exchange Details Strings -->
     <string name="swap_details_smart_pay">Smart Pay</string>
     <string name="swap_details_instructions_part_1">Complete the exchange by sending</string>
     <string name="swap_details_instructions_part_2">To this address below</string>
     <string name="swap_details_with_memo">With Memo:</string>
     <string name="swap_details_tx_id_type_1">(payment)</string>
     <string name="swap_details_tx_id_type_2">(payout)</string>
-<!--    Swap Details Strings End -->
+    <string name="swap_details_need_help">Experiencing issues with this exchange? Shoot us a message.</string>
+<!--    Exchange Details Strings End -->
 
 <!--    Report Details Strings -->
     <string name="report_details_inflow_title">Inflow Report</string>
@@ -695,7 +699,8 @@
     <string name="report_details_utxo_range_5">1Mil – 10Mil</string>
     <string name="report_details_utxo_range_6">10Mil – 100Mil</string>
     <string name="report_details_utxo_range_7">> 1 BTC</string>
-<!--    Report Details Strings End -->
+    <string name="report_details_filter_title">Select A Time Period</string>
+    <!--    Report Details Strings End -->
 
 <!--    Reports Strings -->
     <string name="report_type_inflow_title">Inflow Report</string>
@@ -860,8 +865,12 @@
 
 
 <!--  Business Information -->
-    <string name="business_info_email">support@plaidcryptowallet.com</string>
-    <string name="business_info_support_request_subject">Plaid Crypto Wallet Support</string>
-    <string name="business_info_support_request_message">Device: %1$s\nApi Level: %2$s\nOS Version: %3$s\nModel: %4$s\nProduct: %5$s\n----------------------------------------\n\nHello Intuisoft team, I would like to request more information regarding your app.</string>
+    <string name="business_info_email" translatable="false">support@plaidcryptowallet.com</string>
+    <string name="business_info_support_request_subject_general" translatable="false">Help</string>
+    <string name="business_info_support_request_subject_wallet" translatable="false">Wallet Issues</string>
+    <string name="business_info_support_request_subject_exchange" translatable="false">Exchange Issue</string>
+    <string name="business_info_support_request_message" translatable="false">Hello Intuisoft team, I would like to request more information regarding your app.\n\n----------------------------------------\nDevice: %1$s\nApi Level: %2$s\nOS Version: %3$s\nModel: %4$s\nProduct: %5$s\n%6$s\n</string>
+    <string name="business_info_support_request_wallet_state_message" translatable="false">Hello Intuisoft team, I am having trouble using my wallet.\nDescription:\n\n\n\n----------------------------------------\n[This information helps our developers better understand how to fix your issue]\n\nWallet Status --\n\nTestnet Wallet: %1$s\nHidden Wallet: %2$s\nSynced Until: %3$s\nSyncing Peer: %4$s\nType: %5$s\nSync State: %6$s\nLast Seen Block Height: %7$s\n\nPeer Info --\n\n%8$s\n\n----------------------------------------\nDevice: %9$s\nApi Level: %10$s\nOS Version: %11$s\nModel: %12$s\nProduct: %13$s\n%14$s\n</string>
+    <string name="business_info_support_request_exchange_message" translatable="false">Hello Intuisoft team, I am having trouble with the following exchange: %1$s.\nDescription:\n\n\n\n----------------------------------------\n[This information helps our developers better understand how to fix your issue]\n\nWallet Status --\n\nTestnet Wallet: %2$s\nHidden Wallet: %3$s\nSynced Until: %4$s\nSyncing Peer: %5$s\nType: %6$s\nSync State: %7$s\nLast Seen Block Height: %8$s\n\nPeer Info --\n\n%9$s\n\n----------------------------------------\nDevice: %10$s\nApi Level: %11$s\nOS Version: %12$s\nModel: %13$s\nProduct: %14$s\n%15$s\n</string>
 <!--  Business Information End -->
 </resources>

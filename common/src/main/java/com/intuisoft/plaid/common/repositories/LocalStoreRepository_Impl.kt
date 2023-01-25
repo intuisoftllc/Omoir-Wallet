@@ -217,7 +217,7 @@ class LocalStoreRepository_Impl(
 
     override fun updatePinCheckedTime() {
         getUserData().lastCheckPin =
-            System.currentTimeMillis()
+            System.currentTimeMillis() / Constants.Time.MILLS_PER_SEC
     }
 
     override fun resetPinCheckedTime() {

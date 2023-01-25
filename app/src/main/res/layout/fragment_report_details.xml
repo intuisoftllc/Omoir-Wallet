@@ -242,11 +242,12 @@
         android:layout_weight="1"
         app:btn_text="@string/report_details_time_period_1"
         app:button_style="outlined"
+        app:text_size="14"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:right_icon="@drawable/ic_filter"
+        app:right_icon="@drawable/ic_chevron_right"
         app:text_position="center" />
 
 

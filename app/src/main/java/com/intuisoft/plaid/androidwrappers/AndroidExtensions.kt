@@ -2,15 +2,13 @@ package com.intuisoft.plaid.androidwrappers
 
 import android.animation.ValueAnimator
 import android.app.Activity
-import android.content.ClipData
-import android.content.ClipboardManager
-import android.content.Context
-import android.content.Intent
+import android.content.*
 import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.content.res.Resources
 import android.graphics.PorterDuff
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.util.TypedValue
 import android.view.Gravity
@@ -40,7 +38,9 @@ import com.intuisoft.plaid.activities.MainActivity
 import com.intuisoft.plaid.model.LocalWalletModel
 import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.common.util.errors.ClosedWalletErr
+import com.intuisoft.plaid.common.util.extensions.mapToListOf
 import com.intuisoft.plaid.util.entensions.getColorFromAttr
+import java.util.HashMap
 import java.util.concurrent.Executor
 
 
@@ -88,6 +88,30 @@ inline fun View.setOnSingleClickListener(
 fun Activity.hideSoftKeyboard(){
     (getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).apply {
         hideSoftInputFromWindow(currentFocus?.windowToken, 0)
+    }
+}
+
+fun Fragment.sendEmail(to: String, subject: String, message: String) {
+
+    val emailIntent = Intent(Intent.ACTION_SEND);
+    emailIntent.setType("text/plain");
+    emailIntent.putExtra(Intent.EXTRA_EMAIL, arrayOf(to))
+    emailIntent.putExtra(Intent.EXTRA_SUBJECT, subject)
+    emailIntent.putExtra(
+        Intent.EXTRA_TEXT,
+        message
+    )
+
+
+    emailIntent.setType("message/rfc822")
+
+    try {
+        (requireActivity().application as PlaidApp).ignorePinCheck = true
+        startActivity(
+            Intent.createChooser(emailIntent, getString(com.intuisoft.plaid.R.string.settings_send_email_help_message)));
+    } catch (ex: ActivityNotFoundException) {
+        (requireActivity().application as PlaidApp).ignorePinCheck = false
+        styledSnackBar(requireView(), getString(com.intuisoft.plaid.R.string.settings_send_email_error))
     }
 }
 

@@ -74,6 +74,7 @@ class Constants {
         const val USE_BIOMETRIC_REASON_6 = "Scan your fingerprint to send transaction."
         const val USE_BIOMETRIC_REASON_7 = "Scan your fingerprint to show/hide hidden wallet counts."
         const val SKIP_FOR_NOW = "Skip for now"
+        const val PRO_SUBSCRIPTION_MARK = "~~Pro"
         const val USE_PIN = "Use pin"
         const val COPIED_TO_CLIPBOARD = "Copied To Clipboard!"
         const val BLOCKCHAIN_COM_TX_URL = "https://www.blockchain.com/btc/tx/"
@@ -85,6 +86,16 @@ class Constants {
         const val BTC_TICKER = "btc"
         const val SUPPORT_EMAIL = "support@plaidcryptowallet.com"
         const val DEFAULT_EXCHANGE_FLOW = "standard"
+        const val STATUS_INFO_1 = "Synced Until"
+        const val STATUS_INFO_2 = "Syncing Peer"
+        const val STATUS_INFO_3 = "Derivation"
+        const val STATUS_INFO_4 = "Sync State"
+        const val STATUS_INFO_5 = "Last Block Height"
+        const val STATUS_INFO_6 = "Peer"
+        const val PEER_STATUS_INFO_1 = "Status"
+        const val PEER_STATUS_INFO_2 = "Host"
+        const val PEER_STATUS_INFO_3 = "Best Block"
+        const val PEER_STATUS_INFO_4 = "Tasks"
     }
 
     object ServerStrings {
@@ -96,7 +107,7 @@ class Constants {
     object Time {
         const val MILLS_PER_SEC = 1000
         const val ONE_MINUTE = 60
-        const val SECONDS_PER_DAY = 86400
+        const val SECONDS_PER_DAY = (ONE_MINUTE * 60) * 24
         const val DAYS_PER_WEEK = 7
         const val TWO_MINUTES = 2 * ONE_MINUTE
         const val FIVE_MINUTES = 5 * ONE_MINUTE
@@ -124,7 +135,7 @@ class Constants {
 
     object Limit {
         const val MAX_ALIAS_LENGTH = 25
-        const val DEFAULT_MAX_PIN_ATTEMPTS = 15
+        const val DEFAULT_MAX_PIN_ATTEMPTS = 25
         const val MIN_RECOMMENDED_PIN_ATTEMPTS = 4
         const val VERSION_CODE_TAPPED_LIMIT = 4
         const val SATS_PER_BTC = 100000000
@@ -169,7 +180,7 @@ class Constants {
         const val CLP = "CLP"
     }
 
-    object CongestionRating {
+    object UnconfirmedTxsCongestion {
         val LIGHT = (0..3500)
         val NORMAL = (3501..10000)
         val MED = (10001..15000)

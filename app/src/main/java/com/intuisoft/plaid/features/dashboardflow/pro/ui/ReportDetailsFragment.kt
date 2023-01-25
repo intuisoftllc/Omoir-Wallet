@@ -1,13 +1,18 @@
 package com.intuisoft.plaid.features.dashboardflow.pro.ui
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
+import androidx.appcompat.app.AppCompatDialog
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.*
 import com.intuisoft.plaid.androidwrappers.delegates.FragmentConfiguration
@@ -25,6 +30,8 @@ import com.intuisoft.plaid.util.Plural
 import com.intuisoft.plaid.util.SimpleTimeFormat
 import com.intuisoft.plaid.util.fragmentconfig.BasicConfigData
 import io.horizontalsystems.bitcoincore.models.TransactionInfo
+import kotlinx.android.synthetic.main.bottom_sheet_reports_filter.*
+import kotlinx.android.synthetic.main.fragment_exchange_history.*
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -136,7 +143,7 @@ class ReportDetailsFragment : ConfigurableFragment<FragmentReportDetailsBinding>
         })
 
         binding.timePeriod.onClick {
-            viewModel.changeTimePeriod()
+            showTimePeriodSelectionSheet()
         }
 
         viewModel.transactions.observe(viewLifecycleOwner, Observer {
@@ -185,6 +192,91 @@ class ReportDetailsFragment : ConfigurableFragment<FragmentReportDetailsBinding>
         viewModel.noData.observe(viewLifecycleOwner, Observer {
             binding.noData.isVisible = it
         })
+    }
+
+    private fun showTimePeriodSelectionSheet() {
+        val bottomSheetDialog = BottomSheetDialog(requireContext())
+        addToStack(bottomSheetDialog)
+        bottomSheetDialog.setContentView(R.layout.bottom_sheet_reports_filter)
+        val lastWeek = bottomSheetDialog.findViewById<SettingsItemView>(R.id.last_week)!!
+        val lastMonth = bottomSheetDialog.findViewById<SettingsItemView>(R.id.last_month)!!
+        val last6Months = bottomSheetDialog.findViewById<SettingsItemView>(R.id.last_6months)!!
+        val lastYear = bottomSheetDialog.findViewById<SettingsItemView>(R.id.last_year)!!
+        val allTime = bottomSheetDialog.findViewById<SettingsItemView>(R.id.all_time)!!
+
+        when(viewModel.getFilter()) {
+            ReportHistoryTimeFilter.LAST_WEEK -> {
+                lastWeek.checkRadio(true)
+            }
+            ReportHistoryTimeFilter.LAST_MONTH -> {
+                lastMonth.checkRadio(true)
+            }
+            ReportHistoryTimeFilter.LAST_6MONTHS -> {
+                last6Months.checkRadio(true)
+            }
+            ReportHistoryTimeFilter.LAST_YEAR -> {
+                lastYear.checkRadio(true)
+            }
+            ReportHistoryTimeFilter.ALL_TIME -> {
+                allTime.checkRadio(true)
+            }
+        }
+
+        lastWeek.onRadioClicked { view, clicked ->
+            if(clicked) {
+                viewModel.setFilter(ReportHistoryTimeFilter.LAST_WEEK)
+                lastMonth.checkRadio(false)
+                last6Months.checkRadio(false)
+                lastYear.checkRadio(false)
+                allTime.checkRadio(false)
+            }
+        }
+
+        lastMonth.onRadioClicked { view, clicked ->
+            if(clicked) {
+                viewModel.setFilter(ReportHistoryTimeFilter.LAST_MONTH)
+                lastWeek.checkRadio(false)
+                last6Months.checkRadio(false)
+                lastYear.checkRadio(false)
+                allTime.checkRadio(false)
+            }
+        }
+
+        last6Months.onRadioClicked { view, clicked ->
+            if(clicked) {
+                viewModel.setFilter(ReportHistoryTimeFilter.LAST_6MONTHS)
+                lastMonth.checkRadio(false)
+                lastWeek.checkRadio(false)
+                lastYear.checkRadio(false)
+                allTime.checkRadio(false)
+            }
+        }
+
+        lastYear.onRadioClicked { view, clicked ->
+            if(clicked) {
+                viewModel.setFilter(ReportHistoryTimeFilter.LAST_YEAR)
+                lastMonth.checkRadio(false)
+                last6Months.checkRadio(false)
+                lastWeek.checkRadio(false)
+                allTime.checkRadio(false)
+            }
+        }
+
+        allTime.onRadioClicked { view, clicked ->
+            if(clicked) {
+                viewModel.setFilter(ReportHistoryTimeFilter.ALL_TIME)
+                lastMonth.checkRadio(false)
+                last6Months.checkRadio(false)
+                lastYear.checkRadio(false)
+                lastWeek.checkRadio(false)
+            }
+        }
+
+        bottomSheetDialog.setOnCancelListener {
+            removeFromStack(bottomSheetDialog)
+        }
+        bottomSheetDialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
+        bottomSheetDialog.show()
     }
 
     fun getConfirmationsForTransaction(transaction: TransactionInfo) : Int {

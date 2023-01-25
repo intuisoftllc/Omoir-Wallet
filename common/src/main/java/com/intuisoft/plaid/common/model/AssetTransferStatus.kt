@@ -7,5 +7,6 @@ enum class AssetTransferStatus(val id: Int) {
     PARTIALLY_COMPLETED(3),
     COMPLETED(4),
     FAILED(5),
-    CANCELLED(6)
+    CANCELLING(6),
+    CANCELLED(7)
 }

@@ -165,6 +165,11 @@ class AssetTransferDetailsFragment : ConfigurableFragment<FragmentAssetTransferD
                     view.setTextColor(context.getColor(R.color.error_color))
                 }
 
+                AssetTransferStatus.CANCELLING -> {
+                    view.text = context.getString(R.string.atp_status_cancelling)
+                    view.setTextColor(context.getColor(R.color.warning_color))
+                }
+
                 AssetTransferStatus.CANCELLED -> {
                     view.text = context.getString(R.string.atp_status_cancelled)
                     view.setTextColor(context.getColor(R.color.error_color))

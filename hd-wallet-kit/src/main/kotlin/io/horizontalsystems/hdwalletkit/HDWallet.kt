@@ -83,8 +83,8 @@ class HDWallet(
         return hdKeychain.getKeyByPath(path)
     }
 
-    fun masterPublicKey(mainNet: Boolean = true): String {
-        return hdKeychain.getKeyByPath("m/${purpose}'/$coinType'/0'").serializePublic(getVersion(purpose, !mainNet).value)
+    fun masterPublicKey(mainNet: Boolean = true, passphraseWallet: Boolean): String {
+        return hdKeychain.getKeyByPath(if(passphraseWallet) "m" else "m/${purpose}'/$coinType'/0'").serializePublic(getVersion(purpose, !mainNet).value)
     }
 
 }

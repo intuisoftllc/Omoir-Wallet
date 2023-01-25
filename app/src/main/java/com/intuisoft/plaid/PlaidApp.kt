@@ -63,20 +63,24 @@ class PlaidApp : Application(), Application.ActivityLifecycleCallbacks, KoinComp
 
     override fun onActivityResumed(p0: Activity) {
         if(p0 is MainActivity) {
+            invalidatePinCheckTime()
             ignorePinCheck = false
         }
     }
 
     override fun onActivityPaused(p0: Activity) {
         if(p0 is MainActivity) {
-            val time = System.currentTimeMillis() / 1000
+            invalidatePinCheckTime()
+        }
+    }
 
-            if(!ignorePinCheck &&
-                (preferences?.pinTimeout == Constants.Time.INSTANT_TIME_OFFSET
-                        || (CommonService.getUserData() != null && (time - CommonService.getUserData()!!.lastCheckPin) > CommonService.getUserData()!!.pinTimeout))) {
-                preferences?.lastCheckPin = 0
-                preferences?.lastCheckPin = 0
-            }
+    fun invalidatePinCheckTime() {
+        val time = System.currentTimeMillis() / Constants.Time.MILLS_PER_SEC
+
+        if(!ignorePinCheck &&
+            (preferences?.pinTimeout == Constants.Time.INSTANT_TIME_OFFSET
+                    || (CommonService.getUserData() != null && (time - CommonService.getUserData()!!.lastCheckPin) > CommonService.getUserData()!!.pinTimeout))) {
+            preferences?.lastCheckPin = 0
         }
     }
 

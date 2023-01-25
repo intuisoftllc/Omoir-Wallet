@@ -16,6 +16,7 @@ import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.databinding.FragmentOnboardingAllSetBinding
 import com.intuisoft.plaid.features.onboarding.viewmodel.OnboardingViewModel
 import com.intuisoft.plaid.util.fragmentconfig.AllSetData
+import com.intuisoft.plaid.walletmanager.AbstractWalletManager
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
@@ -27,6 +28,7 @@ class AllSetFragment : ConfigurableFragment<FragmentOnboardingAllSetBinding>(
     private val viewModel: OnboardingViewModel by sharedViewModel()
     private val localStoreRepository: LocalStoreRepository by inject()
     protected val eventTracker: EventTracker by inject()
+    protected val walletManager: AbstractWalletManager by inject()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -64,6 +66,11 @@ class AllSetFragment : ConfigurableFragment<FragmentOnboardingAllSetBinding>(
                         && configuration.configurationType == FragmentConfigurationType.CONFIGURATION_ONBOARDING_All_SET) {
                         eventTracker.log(EventOnboardingCreateWallet())
                     }
+
+                    if(data.walletUUID.isNotBlank()) {
+                        walletManager.openWallet(walletManager.findLocalWallet(data.walletUUID)!!)
+                    }
+
                     navigate(
                         data.positiveDestination,
                         navOptions {

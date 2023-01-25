@@ -25,8 +25,8 @@ class AccountPublicKeyManager(
         return elements
     }
 
-    override fun masterPublicKey(purpose: HDWallet.Purpose, mainNet: Boolean) =
-        wallet.masterPublicKey(purpose, mainNet)
+    override fun masterPublicKey(purpose: HDWallet.Purpose, mainNet: Boolean, passphraseWallet: Boolean) =
+        wallet.masterPublicKey(purpose, mainNet, passphraseWallet)
 
     override fun fullPublicKeyPath(key: PublicKey): String =
         wallet.fullPublicKeyPath(key)

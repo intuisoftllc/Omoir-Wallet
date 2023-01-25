@@ -1,6 +1,7 @@
 package com.intuisoft.plaid.features.dashboardflow.shared.ui
 
 import android.annotation.SuppressLint
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -21,16 +22,18 @@ import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.common.util.SimpleCoinNumberFormat
 import com.intuisoft.plaid.databinding.FragmentExchangeDetailsBinding
-import com.intuisoft.plaid.features.dashboardflow.shared.viewModel.SwapDetailsViewModel
+import com.intuisoft.plaid.features.dashboardflow.shared.viewModel.ExchangeDetailsViewModel
 import com.intuisoft.plaid.common.model.ExchangeStatus
+import com.intuisoft.plaid.common.util.extensions.mapToListOf
 import com.intuisoft.plaid.model.ExchangeStatusColors
 import com.intuisoft.plaid.util.fragmentconfig.BasicConfigData
 import com.intuisoft.plaid.util.fragmentconfig.ConfigInvoiceData
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import java.util.HashMap
 
 class ExchangeDetailsFragment : ConfigurableFragment<FragmentExchangeDetailsBinding>(pinProtection = true) {
-    protected val viewModel: SwapDetailsViewModel by viewModel()
+    protected val viewModel: ExchangeDetailsViewModel by viewModel()
     protected val localStoreRepository: LocalStoreRepository by inject()
     protected val eventTracker: EventTracker by inject()
 
@@ -77,6 +80,55 @@ class ExchangeDetailsFragment : ConfigurableFragment<FragmentExchangeDetailsBind
         }
         binding.fiatConversionContainer.isVisible = data.toShort.lowercase() == Constants.Strings.BTC_TICKER
         binding.sendAmount2.text = "${SimpleCoinNumberFormat.formatCrypto(data.expectedSendAmount)} ${data.fromShort}"
+        binding.exchangeIssues.setOnSingleClickListener {
+            val status = viewModel.getWalletStatus()
+
+            val release = Build.VERSION.RELEASE
+            val sdkVersion = Build.VERSION.SDK_INT
+
+            sendEmail(
+                to = getString(R.string.business_info_email),
+                subject = getString(R.string.business_info_support_request_subject_exchange),
+                message = getString(R.string.business_info_support_request_exchange_message,
+                    data.id,
+                    viewModel.getWallet()!!.testNetWallet.toString(),
+                    viewModel.getWallet()!!.hiddenWallet.toString(),
+                    status[Constants.Strings.STATUS_INFO_1],
+                    status[Constants.Strings.STATUS_INFO_2],
+                    status[Constants.Strings.STATUS_INFO_3],
+                    status[Constants.Strings.STATUS_INFO_4],
+                    status[Constants.Strings.STATUS_INFO_5],
+                    viewModel.getWallet()!!.walletKit!!.getConnectedPeersCount()
+                        .toLong().mapToListOf {
+                            try {
+                                val peerInfo = status["${Constants.Strings.STATUS_INFO_6}${it + 1}"] as HashMap<String, String>
+
+                                """
+                                    Peer #${it + 1}
+                                    Status: ${peerInfo[Constants.Strings.PEER_STATUS_INFO_1]}
+                                    Host: ${peerInfo[Constants.Strings.PEER_STATUS_INFO_2]}
+                                    Best Block: ${peerInfo[Constants.Strings.PEER_STATUS_INFO_3]}
+                                    Tasks: ${peerInfo[Constants.Strings.PEER_STATUS_INFO_4]}
+                                """.trimIndent()
+                            } catch(t: Throwable) {
+                                ""
+                            }
+
+                        }.joinToString("\n~\n"),
+                    Build.BRAND,
+                    "Android SDK: $sdkVersion ($release)",
+                    System.getProperty("os.version"),
+                    Build.MODEL,
+                    Build.PRODUCT,
+                    if(viewModel.isProEnabled()) Constants.Strings.PRO_SUBSCRIPTION_MARK else ""
+                )
+            )
+        }
+        binding.exchangeId.setOnSingleClickListener {
+            viewModel.copyDataItemClicked(
+                binding.copyExchangeId, data.id
+            )
+        }
         binding.paymentAddressContainer.setOnSingleClickListener {
             viewModel.copyDataItemClicked(
                 binding.copyPaymentAddress, data.paymentAddress

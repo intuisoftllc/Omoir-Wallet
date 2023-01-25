@@ -14,6 +14,7 @@ import com.intuisoft.plaid.androidwrappers.delegates.FragmentConfiguration
 import com.intuisoft.plaid.common.analytics.EventTracker
 import com.intuisoft.plaid.common.analytics.events.EventHomescreenCreateWallet
 import com.intuisoft.plaid.common.analytics.events.EventHomescreenView
+import com.intuisoft.plaid.common.coroutines.PlaidScope
 import com.intuisoft.plaid.common.model.BitcoinDisplayUnit
 import com.intuisoft.plaid.features.homescreen.shared.viewmodel.HomeScreenViewModel
 import com.intuisoft.plaid.listeners.StateListener
@@ -21,10 +22,12 @@ import com.intuisoft.plaid.model.LocalWalletModel
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.common.util.SimpleCoinNumberFormat
+import com.intuisoft.plaid.common.util.extensions.safeWalletScope
 import com.intuisoft.plaid.common.util.extensions.toArrayList
 import com.intuisoft.plaid.databinding.FragmentProHomescreenBinding
 import com.intuisoft.plaid.features.homescreen.pro.adapters.ProWalletDataAdapter
 import com.intuisoft.plaid.walletmanager.AbstractWalletManager
+import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -125,8 +128,12 @@ class ProHomescreenFragment : ConfigurableFragment<FragmentProHomescreenBinding>
     }
 
     fun showTotalBalance(totalBalance: Long) {
-        binding.totalBalance.text =
-            SimpleCoinNumberFormat.format(localStoreRepository, totalBalance, false)
+        PlaidScope.MainScope.launch {
+            safeWalletScope {
+                binding.totalBalance.text =
+                    SimpleCoinNumberFormat.format(localStoreRepository, totalBalance, false)
+            }
+        }
     }
 
     override fun onWalletStateUpdated(wallet: LocalWalletModel) {

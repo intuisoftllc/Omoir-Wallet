@@ -92,8 +92,6 @@ class NameYourWalletFragment : ConfigurableFragment<FragmentNameWalletBinding>(
         })
 
         viewModel.walletCreated.observe(viewLifecycleOwner, Observer {
-            walletManager.openWallet(walletManager.findLocalWallet(it)!!)
-
             var bundle = bundleOf(
                 Constants.Navigation.FRAGMENT_CONFIG to FragmentConfiguration(
                     configurationType = FragmentConfigurationType.CONFIGURATION_All_SET,

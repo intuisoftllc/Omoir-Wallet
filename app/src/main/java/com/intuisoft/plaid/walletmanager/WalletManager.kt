@@ -180,9 +180,17 @@ class WalletManager(
     private fun getTotalBalance(): Long {
         var balance : Long = 0
 
-        syncer.getWallets().forEach {
-            balance += it.getWhitelistedBalance(localStoreRepository)
-        }
+        syncer.getWallets()
+            .distinctBy {
+                val storedWallet = findStoredWallet(it.uuid)
+
+                if(storedWallet?.readOnly == true)
+                    storedWallet.pubKey
+                else
+                    it.walletKit?.getMasterPublicKey(!it.testNetWallet, it.hiddenWallet)
+            }.forEach {
+                balance += it.getWhitelistedBalance(localStoreRepository)
+            }
 
         return balance
     }

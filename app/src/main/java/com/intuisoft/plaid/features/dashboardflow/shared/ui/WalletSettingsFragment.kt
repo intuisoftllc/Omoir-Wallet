@@ -3,6 +3,9 @@ package com.intuisoft.plaid.features.dashboardflow.shared.ui
 import WalletSettingsViewModel
 import android.app.Activity
 import android.app.ProgressDialog
+import android.content.ActivityNotFoundException
+import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.text.method.PasswordTransformationMethod
 import android.view.KeyEvent
@@ -21,6 +24,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.intuisoft.plaid.PlaidApp
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.*
 import com.intuisoft.plaid.androidwrappers.delegates.FragmentConfiguration
@@ -31,6 +35,7 @@ import com.intuisoft.plaid.databinding.FragmentWalletSettingsBinding
 import com.intuisoft.plaid.features.settings.ui.SettingsFragment
 import com.intuisoft.plaid.features.settings.viewmodel.SettingsViewModel
 import com.intuisoft.plaid.common.util.Constants
+import com.intuisoft.plaid.common.util.extensions.mapToListOf
 import com.intuisoft.plaid.common.util.extensions.toArrayList
 import com.intuisoft.plaid.features.dashboardflow.shared.adapters.SavedAccountsAdapter
 import com.intuisoft.plaid.util.fragmentconfig.ConfigQrDisplayData
@@ -40,6 +45,7 @@ import io.horizontalsystems.hdwalletkit.HDWallet
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import java.util.HashMap
 
 
 class WalletSettingsFragment : ConfigurableFragment<FragmentWalletSettingsBinding>(pinProtection = true) {
@@ -104,6 +110,50 @@ class WalletSettingsFragment : ConfigurableFragment<FragmentWalletSettingsBindin
                 }
             }
         })
+
+        binding.walletHelp.onClick {
+            val status = viewModel.getWalletStatus()
+
+            val release = Build.VERSION.RELEASE
+            val sdkVersion = Build.VERSION.SDK_INT
+
+            sendEmail(
+                to = getString(R.string.business_info_email),
+                subject = getString(R.string.business_info_support_request_subject_wallet),
+                message = getString(R.string.business_info_support_request_wallet_state_message,
+                    viewModel.getWallet()!!.testNetWallet.toString(),
+                    viewModel.getWallet()!!.hiddenWallet.toString(),
+                    status[Constants.Strings.STATUS_INFO_1],
+                    status[Constants.Strings.STATUS_INFO_2],
+                    status[Constants.Strings.STATUS_INFO_3],
+                    status[Constants.Strings.STATUS_INFO_4],
+                    status[Constants.Strings.STATUS_INFO_5],
+                    viewModel.getWallet()!!.walletKit!!.getConnectedPeersCount()
+                        .toLong().mapToListOf {
+                            try {
+                                val peerInfo = status["${Constants.Strings.STATUS_INFO_6}${it + 1}"] as HashMap<String, String>
+
+                                """
+                                    Peer #${it + 1}
+                                    Status: ${peerInfo[Constants.Strings.PEER_STATUS_INFO_1]}
+                                    Host: ${peerInfo[Constants.Strings.PEER_STATUS_INFO_2]}
+                                    Best Block: ${peerInfo[Constants.Strings.PEER_STATUS_INFO_3]}
+                                    Tasks: ${peerInfo[Constants.Strings.PEER_STATUS_INFO_4]}
+                                """.trimIndent()
+                            } catch(t: Throwable) {
+                                ""
+                            }
+
+                        }.joinToString("\n~\n"),
+                    Build.BRAND,
+                    "Android SDK: $sdkVersion ($release)",
+                    System.getProperty("os.version"),
+                    Build.MODEL,
+                    Build.PRODUCT,
+                    if(viewModel.isProEnabled()) Constants.Strings.PRO_SUBSCRIPTION_MARK else ""
+                )
+            )
+        }
 
         binding.exportWalletTx.onClick {
             eventTracker.log(EventWalletSettingsExportTransactions())

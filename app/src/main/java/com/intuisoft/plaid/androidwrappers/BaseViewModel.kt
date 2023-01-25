@@ -44,6 +44,8 @@ open class BaseViewModel(
         return currentConfig != null && currentConfig!!.configurationType == fragmentConfiguration
     }
 
+    fun isProEnabled() = localStoreRepository.isProEnabled()
+
     fun isFingerprintEnabled() = localStoreRepository.isFingerprintEnabled()
 
     fun checkFingerprintSupport(onEnroll: () -> Unit) {

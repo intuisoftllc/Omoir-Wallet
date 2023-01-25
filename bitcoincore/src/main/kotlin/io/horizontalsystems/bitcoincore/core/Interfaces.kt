@@ -1,5 +1,6 @@
 package io.horizontalsystems.bitcoincore.core
 
+import com.intuisoft.plaid.common.analytics.events.EventWalletSettingsSetPassphrase
 import io.horizontalsystems.bitcoincore.BitcoinCore
 import io.horizontalsystems.bitcoincore.managers.TransactionItem
 import io.horizontalsystems.bitcoincore.models.*
@@ -197,7 +198,7 @@ interface IAccountWallet {
 
     fun publicKey(index: Int, external: Boolean): PublicKey
     fun publicKeys(indices: IntRange, external: Boolean): List<PublicKey>
-    fun masterPublicKey(purpose: HDWallet.Purpose, mainNet: Boolean): String
+    fun masterPublicKey(purpose: HDWallet.Purpose, mainNet: Boolean, passphraseWallet: Boolean): String
     fun fullPublicKeyPath(key: PublicKey): String
 }
 
@@ -209,6 +210,6 @@ interface IPublicKeyManager {
     fun addKeys(keys: List<PublicKey>)
     fun gapShifts(): Boolean
     fun getPublicKeyByPath(path: String): PublicKey
-    fun masterPublicKey(purpose: HDWallet.Purpose, mainNet: Boolean): String
+    fun masterPublicKey(purpose: HDWallet.Purpose, mainNet: Boolean, passphraseWallet: Boolean): String
     fun fullPublicKeyPath(key: PublicKey): String
 }

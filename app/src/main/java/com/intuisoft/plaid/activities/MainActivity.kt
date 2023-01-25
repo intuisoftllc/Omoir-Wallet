@@ -115,11 +115,16 @@ class MainActivity : BindingActivity<ActivityMainBinding>(), ActionBarDelegate {
             this,
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
-                    val listener = supportFragmentManager.currentNavigationFragment as? FragmentBottomBarBarDelegate
+                    withBinding {
+                        val listener =
+                            supportFragmentManager.currentNavigationFragment as? FragmentBottomBarBarDelegate
 
-                    if(!IGNORE_BACK_PRESSED_DESTINATIONS.contains(listener?.navigationId() ?: 0)
-                        && !binding.pin.isVisible) {
-                        listener?.onBackPressed()
+                        if (
+                            !IGNORE_BACK_PRESSED_DESTINATIONS.contains(listener?.navigationId() ?: 0)
+                            && !pin.isVisible
+                        ) {
+                            listener?.onBackPressed()
+                        }
                     }
                 }
             })
@@ -165,122 +170,147 @@ class MainActivity : BindingActivity<ActivityMainBinding>(), ActionBarDelegate {
     }
 
     fun hidePinIfNeeded() {
-        if(binding.pin.isUnlocked) {
-            binding.pin.animateDown {
-                binding.pin.isVisible = false
-                binding.pin.translationY = 0f
+        withBinding {
+            if(pin.isUnlocked) {
+                pin.animateDown {
+                    pin.isVisible = false
+                    pin.translationY = 0f
+                }
             }
         }
     }
 
     fun activatePin(setupPin: Boolean, loadingUserData: Boolean) {
-        if(binding.pin.isVisible) return
+        withBinding {
+            if (pin.isVisible) return@withBinding
 
-        var SetupPin = setupPin
-        binding.pin.isVisible = true
-        binding.pin.setPasscodeType(TYPE_CHECK_PASSCODE)
-        if(SetupPin) {
-            binding.pin.setFirstInputTip(getString(R.string.enter_pin_to_reset_message))
-            binding.pin.resetView()
-        } else {
-            binding.pin.setFirstInputTip(getString(R.string.enter_pin_to_unlock_message))
-            binding.pin.resetView()
-        }
-
-        if(SetupPin || loadingUserData || CommonService.getUserPin().isEmpty()) {
-            binding.pin.disableFingerprint()
-        }
-
-        binding.pin.setListener(object: PasscodeView.PasscodeViewListener {
-            override fun onFail(wrongNumber: String?) {
-                // do nothing
+            var SetupPin = setupPin
+            pin.isVisible = true
+            pin.setPasscodeType(TYPE_CHECK_PASSCODE)
+            if (SetupPin) {
+                pin.setFirstInputTip(getString(R.string.enter_pin_to_reset_message))
+                pin.resetView()
+            } else {
+                pin.setFirstInputTip(getString(R.string.enter_pin_to_unlock_message))
+                pin.resetView()
             }
 
-            override fun onSuccess(number: String?) {
-                localStoreRepository.updatePinCheckedTime()
+            if (SetupPin || loadingUserData || CommonService.getUserPin().isEmpty()) {
+                pin.disableFingerprint()
+            }
 
-                if(SetupPin) {
-                    SetupPin = false
-                    binding.pin.setPasscodeType(PasscodeView.PasscodeViewType.TYPE_SET_PASSCODE)
-                    binding.pin.setFirstInputTip(getString(R.string.create_pin_tip_message))
-                    binding.pin.setSecondInputTip(getString(R.string.re_enter_pin_tip_message))
-                    binding.pin.resetView()
-                    binding.pin.disablePinAttemptTracking()
-                } else {
-                    walletManager.start()
-
-                    if(loadingUserData) {
-                        if(localStoreRepository.isProEnabled()) {
-                            getNavController().navigate(R.id.proHomescreenFragment, null, Constants.Navigation.ANIMATED_FADE_IN_EXIT_NAV_OPTION)
-                        } else {
-                            getNavController().navigate(R.id.homescreenFragment, null, Constants.Navigation.ANIMATED_FADE_IN_EXIT_NAV_OPTION)
-                        }
-                    } else hidePinIfNeeded() // only hide if a frag is showing or after it has been shown
+            pin.setListener(object : PasscodeView.PasscodeViewListener {
+                override fun onFail(wrongNumber: String?) {
+                    // do nothing
                 }
-            }
 
-            override fun onMaxAttempts() {
-                val progressDialog = ProgressDialog.show(this@MainActivity, getString(R.string.wiping_data_title), getString(R.string.wiping_data_message))
-                progressDialog.setCancelable(false)
+                override fun onSuccess(number: String?) {
+                    if (!pin.isVisible) return
+                    localStoreRepository.updatePinCheckedTime()
 
-                PlaidScope.IoScope.launch {
-                    localStoreRepository.wipeAllData {
-                        PlaidScope.MainScope.launch {
-                            safeWalletScope {
-                                progressDialog.cancel()
+                    if (SetupPin) {
+                        SetupPin = false
+                        pin.setPasscodeType(PasscodeView.PasscodeViewType.TYPE_SET_PASSCODE)
+                        pin.setFirstInputTip(getString(R.string.create_pin_tip_message))
+                        pin.setSecondInputTip(getString(R.string.re_enter_pin_tip_message))
+                        pin.resetView()
+                        pin.disablePinAttemptTracking()
+                    } else {
+                        walletManager.start()
 
+                        if (loadingUserData) {
+                            if (localStoreRepository.isProEnabled()) {
                                 getNavController().navigate(
-                                    R.id.splashFragment
+                                    R.id.proHomescreenFragment,
+                                    null,
+                                    Constants.Navigation.ANIMATED_FADE_IN_EXIT_NAV_OPTION
                                 )
+                            } else {
+                                getNavController().navigate(
+                                    R.id.homescreenFragment,
+                                    null,
+                                    Constants.Navigation.ANIMATED_FADE_IN_EXIT_NAV_OPTION
+                                )
+                            }
+                        } else hidePinIfNeeded() // only hide if a frag is showing or after it has been shown
+                    }
+                }
 
-                                binding.pin.isVisible = false
+                override fun onMaxAttempts() {
+                    val progressDialog = ProgressDialog.show(
+                        this@MainActivity,
+                        getString(R.string.wiping_data_title),
+                        getString(R.string.wiping_data_message)
+                    )
+                    progressDialog.setCancelable(false)
+
+                    PlaidScope.IoScope.launch {
+                        localStoreRepository.wipeAllData {
+                            PlaidScope.MainScope.launch {
+                                safeWalletScope {
+                                    progressDialog.cancel()
+
+                                    getNavController().navigate(
+                                        R.id.splashFragment
+                                    )
+
+                                    pin.isVisible = false
+                                }
                             }
                         }
                     }
                 }
-            }
 
-            override fun onScanFingerprint(listener: FingerprintScanResponse) {
-                supportFragmentManager.currentNavigationFragment!!.validateFingerprint(
-                    onSuccess = {
-                        binding.pin.setUnlocked()
-                        listener.onScanSuccess()
-                    },
+                override fun onScanFingerprint(listener: FingerprintScanResponse) {
+                    supportFragmentManager.currentNavigationFragment!!.validateFingerprint(
+                        onSuccess = {
+                            pin.setUnlocked()
+                            listener.onScanSuccess()
+                        },
 
-                    onError = {
-                        listener.onScanFail()
-                    },
+                        onError = {
+                            listener.onScanFail()
+                        },
 
-                    subTitle = Constants.Strings.USE_BIOMETRIC_REASON_2,
-                    negativeText = Constants.Strings.USE_PIN
-                )
-            }
+                        subTitle = Constants.Strings.USE_BIOMETRIC_REASON_2,
+                        negativeText = Constants.Strings.USE_PIN
+                    )
+                }
 
-        })
+            })
+        }
     }
 
     fun showBottomBar(show: Boolean) {
-        binding.bottomBar.isVisible = show
+        withBinding {
+            bottomBar.isVisible = show
+        }
     }
 
     fun activateAnimatedLoading(activate: Boolean, message: String) {
-        binding.animatedLoadingContainer.isVisible = activate
-        binding.loadingMessage.text = message
-        binding.noInternet.isVisible = false
-        binding.contentUnavailable.isVisible = false
+        withBinding {
+            animatedLoadingContainer.isVisible = activate
+            loadingMessage.text = message
+            noInternet.isVisible = false
+            contentUnavailable.isVisible = false
+        }
     }
 
     fun activateNoInternet(activate: Boolean) {
-        binding.noInternet.isVisible = activate
-        binding.animatedLoadingContainer.isVisible = false
-        binding.contentUnavailable.isVisible = false
+        withBinding {
+            noInternet.isVisible = activate
+            animatedLoadingContainer.isVisible = false
+            contentUnavailable.isVisible = false
+        }
     }
 
     fun activateContentUnavailable(activate: Boolean, message: String) {
-        binding.contentUnavailable.isVisible = activate
-        binding.contentUnavailableMessage.text = message
-        binding.noInternet.isVisible = false
-        binding.animatedLoadingContainer.isVisible = false
+        withBinding {
+            contentUnavailable.isVisible = activate
+            contentUnavailableMessage.text = message
+            noInternet.isVisible = false
+            animatedLoadingContainer.isVisible = false
+        }
     }
 
     fun performSetup() {
@@ -291,80 +321,85 @@ class MainActivity : BindingActivity<ActivityMainBinding>(), ActionBarDelegate {
     }
 
     private fun setupBottomNavigationBar() {
-        val navController = getNavController()
+        withBinding {
+            val navController = getNavController()
 
-        if (localStoreRepository.isProEnabled()) {
-            binding.bottomBar.setConfiguration(
-                getString(R.string.wallet),
-                R.drawable.ic_bottom_bar_wallet_selected,
-                R.drawable.ic_bottom_bar_wallet_unselected,
-                getString(R.string.market),
-                R.drawable.ic_bottom_bar_market_selected,
-                R.drawable.ic_bottom_bar_market_unselected,
-                R.drawable.ic_bottom_bar_swap_selected,
-                R.drawable.ic_bottom_bar_swap_unselected,
-                getString(R.string.atp),
-                R.drawable.ic_atp_selected,
-                R.drawable.ic_atp_unselected,
-                getString(R.string.reports),
-                R.drawable.ic_reports_selected,
-                R.drawable.ic_reports_unselected,
-                R.color.brand_color_dark_blue,
-                R.color.subtitle_text_color
-            )
+            if (localStoreRepository.isProEnabled()) {
+                bottomBar.setConfiguration(
+                    getString(R.string.wallet),
+                    R.drawable.ic_bottom_bar_wallet_selected,
+                    R.drawable.ic_bottom_bar_wallet_unselected,
+                    getString(R.string.market),
+                    R.drawable.ic_bottom_bar_market_selected,
+                    R.drawable.ic_bottom_bar_market_unselected,
+                    R.drawable.ic_bottom_bar_swap_selected,
+                    R.drawable.ic_bottom_bar_swap_unselected,
+                    getString(R.string.atp),
+                    R.drawable.ic_atp_selected,
+                    R.drawable.ic_atp_unselected,
+                    getString(R.string.reports),
+                    R.drawable.ic_reports_selected,
+                    R.drawable.ic_reports_unselected,
+                    R.color.brand_color_dark_blue,
+                    R.color.subtitle_text_color
+                )
 
-            binding.bottomBar.setupDestinations(
-                R.id.walletProDashboardFragment,
-                R.id.marketFragment,
-                R.id.exchangeFragment,
-                R.id.atpFragment,
-                R.id.reportsFragment
-            )
-        } else {
-            binding.bottomBar.setConfiguration(
-                getString(R.string.wallet),
-                R.drawable.ic_bottom_bar_wallet_selected,
-                R.drawable.ic_bottom_bar_wallet_unselected,
-                "",
-                0,
-                0,
-                R.drawable.ic_bottom_bar_swap_selected,
-                R.drawable.ic_bottom_bar_swap_unselected,
-                getString(R.string.market),
-                R.drawable.ic_bottom_bar_market_selected,
-                R.drawable.ic_bottom_bar_market_unselected,
-                "",
-                0,
-                0,
-                R.color.brand_color_dark_blue,
-                R.color.subtitle_text_color
-            )
+                bottomBar.setupDestinations(
+                    R.id.walletProDashboardFragment,
+                    R.id.marketFragment,
+                    R.id.exchangeFragment,
+                    R.id.atpFragment,
+                    R.id.reportsFragment
+                )
+            } else {
+                bottomBar.setConfiguration(
+                    getString(R.string.wallet),
+                    R.drawable.ic_bottom_bar_wallet_selected,
+                    R.drawable.ic_bottom_bar_wallet_unselected,
+                    "",
+                    0,
+                    0,
+                    R.drawable.ic_bottom_bar_swap_selected,
+                    R.drawable.ic_bottom_bar_swap_unselected,
+                    getString(R.string.market),
+                    R.drawable.ic_bottom_bar_market_selected,
+                    R.drawable.ic_bottom_bar_market_unselected,
+                    "",
+                    0,
+                    0,
+                    R.color.brand_color_dark_blue,
+                    R.color.subtitle_text_color
+                )
 
-            binding.bottomBar.setupDestinations(
-                R.id.walletDashboardFragment,
-                0,
-                R.id.exchangeFragment,
-                R.id.marketFragment,
-                0
-            )
-        }
+                bottomBar.setupDestinations(
+                    R.id.walletDashboardFragment,
+                    0,
+                    R.id.exchangeFragment,
+                    R.id.marketFragment,
+                    0
+                )
+            }
 
 
-        binding.bottomBar.onItemClicked { destination ->
-            val delegate = supportFragmentManager.currentNavigationFragment as? FragmentBottomBarBarDelegate
-            delegate?.let { fragment ->
-                if(delegate.navigationId() != destination && destination != 0) {
-                    delegate.onNavigateTo(destination)
+            bottomBar.onItemClicked { destination ->
+                val delegate =
+                    supportFragmentManager.currentNavigationFragment as? FragmentBottomBarBarDelegate
+                delegate?.let { fragment ->
+                    if (delegate.navigationId() != destination && destination != 0) {
+                        delegate.onNavigateTo(destination)
+                    }
                 }
             }
-        }
 
-        setBottomNavVisibility(navController)
+            setBottomNavVisibility(navController)
+        }
     }
 
     private fun setBottomNavVisibility(navController: NavController) {
         navController.addOnDestinationChangedListener { _, destination, _ ->
-            binding.bottomBar.onDestinationChanged(destination.id)
+            withBinding {
+                bottomBar.onDestinationChanged(destination.id)
+            }
         }
     }
 
@@ -394,56 +429,66 @@ class MainActivity : BindingActivity<ActivityMainBinding>(), ActionBarDelegate {
         get() = binding.toolbar?.variant != TopBarView.NO_BAR
 
     override fun setActionBarTitle(title: String) {
-        binding.toolbar.setPrimaryText(title)
+        withBinding {
+            toolbar.setPrimaryText(title)
+        }
     }
 
     override fun setActionBarSubTitle(title: String) {
-        binding.toolbar.setSecondaryText(title)
+        withBinding {
+            toolbar.setSecondaryText(title)
+        }
     }
 
     override fun setActionBarActionLeft(@DrawableRes action: Int) {
-        binding.toolbar.setActionLeft(action)
+        withBinding {
+            toolbar.setActionLeft(action)
+        }
     }
 
     override fun setActionBarActionRight(@DrawableRes action: Int) {
-        binding.toolbar.setActionRight(action)
+        withBinding {
+            toolbar.setActionRight(action)
+        }
     }
 
     override fun setActionBarVariant(variant: Int) {
-        binding.toolbar.setBarStyle(variant)
+        withBinding {
+            toolbar.setBarStyle(variant)
 
-        if(variant == TopBarView.CENTER_ALIGN_WHITE) {
-            isLightStatusBar = true
-            statusBarColor = getColor(R.color.background_color)
-        } else {
-            isLightStatusBar = false
-            statusBarColor = getColor(R.color.brand_color_dark_blue)
-        }
-
-        baseContext.doOnUiMode(
-            onNightMode = {
+            if (variant == TopBarView.CENTER_ALIGN_WHITE) {
+                isLightStatusBar = true
+                statusBarColor = getColor(R.color.background_color)
+            } else {
                 isLightStatusBar = false
+                statusBarColor = getColor(R.color.brand_color_dark_blue)
             }
-        )
 
-        binding.toolbar.setOnActionLeftClick {
-            if(supportFragmentManager.currentNavigationFragment is FragmentActionBarDelegate) {
-                (supportFragmentManager.currentNavigationFragment as? FragmentActionBarDelegate)
-                    ?.onActionLeft()
+            baseContext.doOnUiMode(
+                onNightMode = {
+                    isLightStatusBar = false
+                }
+            )
+
+            toolbar.setOnActionLeftClick {
+                if (supportFragmentManager.currentNavigationFragment is FragmentActionBarDelegate) {
+                    (supportFragmentManager.currentNavigationFragment as? FragmentActionBarDelegate)
+                        ?.onActionLeft()
+                }
             }
-        }
 
-        binding.toolbar.setOnActionRightClick {
-            if(supportFragmentManager.currentNavigationFragment is FragmentActionBarDelegate) {
-                (supportFragmentManager.currentNavigationFragment as? FragmentActionBarDelegate)
-                    ?.onActionRight()
+            toolbar.setOnActionRightClick {
+                if (supportFragmentManager.currentNavigationFragment is FragmentActionBarDelegate) {
+                    (supportFragmentManager.currentNavigationFragment as? FragmentActionBarDelegate)
+                        ?.onActionRight()
+                }
             }
-        }
 
-        binding.toolbar.setSecondaryTextOnClick {
-            if(supportFragmentManager.currentNavigationFragment is FragmentActionBarDelegate) {
-                (supportFragmentManager.currentNavigationFragment as? FragmentActionBarDelegate)
-                    ?.onSubtitleClicked()
+            toolbar.setSecondaryTextOnClick {
+                if (supportFragmentManager.currentNavigationFragment is FragmentActionBarDelegate) {
+                    (supportFragmentManager.currentNavigationFragment as? FragmentActionBarDelegate)
+                        ?.onSubtitleClicked()
+                }
             }
         }
     }

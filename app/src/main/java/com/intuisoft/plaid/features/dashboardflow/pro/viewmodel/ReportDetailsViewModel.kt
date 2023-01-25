@@ -57,6 +57,8 @@ class ReportDetailsViewModel(
     private var data: BarData? = null
     var type: ReportType = ReportType.FEE_REPORT
 
+    fun getFilter() = filter
+
     fun setFilter(filter: ReportHistoryTimeFilter) {
         viewModelScope.launch {
             this@ReportDetailsViewModel.filter = filter

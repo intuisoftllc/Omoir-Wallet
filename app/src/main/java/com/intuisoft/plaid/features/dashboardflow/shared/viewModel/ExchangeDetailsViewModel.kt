@@ -20,7 +20,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 
-class SwapDetailsViewModel(
+class ExchangeDetailsViewModel(
     application: Application,
     private val apiRepository: ApiRepository,
     private val localStoreRepository: LocalStoreRepository,

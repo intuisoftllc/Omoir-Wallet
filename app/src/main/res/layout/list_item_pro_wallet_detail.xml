@@ -15,7 +15,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:cardCornerRadius="@dimen/card_view_corner_radius"
-        android:layout_marginHorizontal="@dimen/margin_10"
+        android:layout_marginStart="@dimen/margin_10"
+        android:layout_marginEnd="@dimen/margin_2"
         android:layout_marginBottom="@dimen/horizontal_padding_size"
         android:layout_marginTop="@dimen/card_view_elevation"
         android:backgroundTint="@color/card_background_color"
@@ -55,7 +56,8 @@
                     android:maxLines="1"
                     android:layout_marginTop="@dimen/margin_24"
                     style="@style/TextStyle.Semibold.16"
-                    android:textColor="?attr/colorPrimary"
+                    android:textStyle="bold"
+                    android:textColor="@color/homescreen_wallet_status_color"
                     tools:text="Testnet, Watch-Only"/>
 
                 <TextView
@@ -66,7 +68,6 @@
                     android:maxLines="1"
                     android:layout_marginTop="@dimen/card_corner_radius"
                     style="@style/TextStyle.Semibold.16"
-                    android:textStyle="bold"
                     android:textColor="?attr/colorPrimary"
                     tools:text="64.5K Sats"/>
             </LinearLayout>

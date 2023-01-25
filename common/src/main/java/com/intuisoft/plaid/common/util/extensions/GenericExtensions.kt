@@ -5,6 +5,8 @@ import android.text.Editable
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
+import com.google.firebase.crashlytics.FirebaseCrashlytics
+import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.common.util.Group
 import com.intuisoft.plaid.common.util.errors.ClosedWalletErr
 import com.intuisoft.plaid.common.util.errors.EmptyUsrDataErr
@@ -50,6 +52,19 @@ fun String.numOfCaseLetters(uppercase: Boolean): Int {
     }
 
     return letterCount
+}
+
+fun <T> Long.mapToListOf(transform: (Long) -> T) : List<T> {
+    val list = mutableListOf<T>()
+    var pos : Long = 0
+    if(this <= 0) return list
+
+    while(pos < this) {
+        list.add(transform(pos))
+        pos++
+    }
+
+    return list
 }
 
 fun String.sha256(length: Int = 32): String {
@@ -225,6 +240,7 @@ fun File.writeToPrivateFile(data: String, context: Context): Boolean {
         outputStreamWriter.close()
         true
     } catch (e: IOException) {
+        FirebaseCrashlytics.getInstance().recordException(e)
         Log.e("FileWriter", "File write failed: " + e.toString())
         false
     }
@@ -238,6 +254,7 @@ fun File.writeToFile(data: String, context: Context): Boolean {
         outputStreamWriter.close()
         true
     } catch (e: IOException) {
+        FirebaseCrashlytics.getInstance().recordException(e)
         Log.e("FileWriter", "File write failed: " + e.toString())
         false
     }
@@ -259,8 +276,10 @@ fun File.readFromFile(context: Context): String? {
             ret = stringBuilder.toString()
         }
     } catch (e: FileNotFoundException) {
+        FirebaseCrashlytics.getInstance().recordException(e)
         Log.e("FileWriter", "File not found: " + e.toString())
     } catch (e: IOException) {
+        FirebaseCrashlytics.getInstance().recordException(e)
         Log.e("FileWriter", "Can not read file: $e")
     }
     return ret

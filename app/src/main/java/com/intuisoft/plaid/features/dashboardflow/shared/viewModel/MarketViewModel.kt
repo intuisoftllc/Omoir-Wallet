@@ -236,16 +236,16 @@ class MarketViewModel(
                             var points: Int
 
                             when {
-                                Constants.CongestionRating.LIGHT.contains(extendedData.unconfirmedTxs) -> {
+                                Constants.UnconfirmedTxsCongestion.LIGHT.contains(extendedData.unconfirmedTxs) -> {
                                     points = -1
                                 }
-                                Constants.CongestionRating.NORMAL.contains(extendedData.unconfirmedTxs) -> {
+                                Constants.UnconfirmedTxsCongestion.NORMAL.contains(extendedData.unconfirmedTxs) -> {
                                     points = 0
                                 }
-                                Constants.CongestionRating.MED.contains(extendedData.unconfirmedTxs) -> {
+                                Constants.UnconfirmedTxsCongestion.MED.contains(extendedData.unconfirmedTxs) -> {
                                     points = 1
                                 }
-                                Constants.CongestionRating.BUSY.contains(extendedData.unconfirmedTxs) -> {
+                                Constants.UnconfirmedTxsCongestion.BUSY.contains(extendedData.unconfirmedTxs) -> {
                                     points = 2
                                 }
                                 else -> {

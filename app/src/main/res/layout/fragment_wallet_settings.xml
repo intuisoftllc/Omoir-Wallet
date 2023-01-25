@@ -51,7 +51,16 @@
                         android:layout_height="wrap_content"
                         app:settings_variant="normal"
                         app:item_title="@string/wallet_settings_rename_wallet"
+                        android:layout_marginBottom="@dimen/horizontal_padding_size"
                         app:item_subtitle="My Wallet"/>
+
+                    <com.intuisoft.plaid.androidwrappers.SettingsItemView
+                        android:id="@+id/wallet_help"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:settings_variant="normal"
+                        app:item_title="@string/wallet_settings_help"
+                        app:item_subtitle="@string/wallet_settings_help_description"/>
                 </LinearLayout>
 
             </androidx.cardview.widget.CardView>
