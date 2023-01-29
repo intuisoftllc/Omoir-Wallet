@@ -118,7 +118,7 @@ class MarketViewModel(
     }
 
     fun onNoInternet(hasInternet: Boolean) {
-        PlaidScope.IoScope.launch {
+        PlaidScope.applicationScope.launch(Dispatchers.IO) {
 
             val basicData = apiRepository.getBasicTickerData()
             val extendedData = apiRepository.getExtendedNetworkData(getWalletNetwork() == BitcoinKit.NetworkType.TestNet)

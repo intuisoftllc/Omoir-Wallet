@@ -19,7 +19,7 @@ class TransactionSendTimer(private val period: Long) {
     @Synchronized
     fun startIfNotRunning() {
         if (task == null) {
-            task = PlaidScope.IoScope.launch {
+            task = PlaidScope.applicationScope.launch(Dispatchers.IO) {
                 while(true) {
                     this.ensureActive()
                     listener?.onTimePassed()

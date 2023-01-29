@@ -1,8 +1,13 @@
 package com.intuisoft.plaid.walletmanager
 
 import android.app.Application
+import androidx.work.Data
+import androidx.work.ExistingWorkPolicy
+import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.Operation.State.IN_PROGRESS
+import androidx.work.WorkManager
 import com.intuisoft.plaid.R
+import com.intuisoft.plaid.common.CommonService
 import com.intuisoft.plaid.common.model.*
 import com.intuisoft.plaid.common.repositories.ApiRepository
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
@@ -11,6 +16,7 @@ import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.common.util.extensions.nextInt
 import com.intuisoft.plaid.util.NetworkUtil
 import com.intuisoft.plaid.util.entensions.ensureActive
+import com.intuisoft.plaid.walletmanager.workers.AtpStatusWorker
 import io.horizontalsystems.bitcoincore.extensions.toReversedHex
 import io.horizontalsystems.bitcoincore.managers.SendValueErrors
 import io.horizontalsystems.bitcoincore.models.TransactionDataSortType
@@ -289,6 +295,7 @@ class AtpManager(
                     || it.status == AssetTransferStatus.IN_PROGRESS || it.status == AssetTransferStatus.NOT_STARTED
         }?.let { // run the most recent executing transfer to prevent "hacking" the protocol by creating many 50 utxo single batch transfers
             job?.ensureActive()
+            showStatusNotification(it.id, wallet.uuid)
             if (processTransfer(it, wallet, findWallet, job))
                 utxoSent = true
         }
@@ -301,6 +308,27 @@ class AtpManager(
         }
 
         return utxoSent
+    }
+
+    private fun showStatusNotification(transferId: String, walletId: String) {
+        val workManager = WorkManager.getInstance(CommonService.getApplication())
+        val notificationRequest =
+            OneTimeWorkRequestBuilder<AtpStatusWorker>()
+                .addTag("AtpStatusWorker")
+                .setInputData(
+                    Data.Builder()
+                        .putString(AtpStatusWorker.ATP_KEY, transferId)
+                        .putString(AtpStatusWorker.WALLET_KEY, walletId)
+                        .build()
+                )
+                .build()
+
+        workManager
+            .enqueueUniqueWork(
+                "AtpStatusWorker",
+                ExistingWorkPolicy.KEEP,
+                notificationRequest
+            )
     }
 
     suspend fun cancelTransfer(transferId: String, wallet: LocalWalletModel) {

@@ -468,7 +468,7 @@ class DashboardViewModel(
 
 
     fun onNoInternet(hasInternet: Boolean) {
-        PlaidScope.IoScope.launch {
+        PlaidScope.applicationScope.launch(Dispatchers.IO) {
 
             val data = apiRepository.getTickerPriceChartData(intervalType)
 

@@ -108,7 +108,7 @@ class ExchangeViewModel(
 
     fun updateEstimatedReceiveAmount() {
         estimatedReceiveAmountJob?.cancel()
-        estimatedReceiveAmountJob = PlaidScope.IoScope.launch {
+        estimatedReceiveAmountJob = PlaidScope.applicationScope.launch(Dispatchers.IO) {
             _estimatedReceiveAmount.postValue(null)
             if(sendAmount != 0.0) delay(Constants.Time.ESTIMATED_RECEIVE_AMOUNT_UPDATE_TIME)
             if(outboundCurrency != null && inboundCurrency != null)
@@ -221,7 +221,7 @@ class ExchangeViewModel(
     }
 
     fun checkAddress(currency: SupportedCurrencyModel, address: String, onResult: (Boolean) -> Unit) {
-        PlaidScope.IoScope.launch {
+        PlaidScope.applicationScope.launch(Dispatchers.IO) {
             val result = apiRepository.isAddressValid(currency, address)
             PlaidScope.MainScope.launch {
                 onResult(result)
@@ -313,7 +313,7 @@ class ExchangeViewModel(
     }
 
     fun setInitialValues() {
-        PlaidScope.IoScope.launch {
+        PlaidScope.applicationScope.launch(Dispatchers.IO) {
             safeWalletScope {
                 if (NetworkUtil.hasInternet(getApplication<PlaidApp>())) {
                     sendAmount = 0.0

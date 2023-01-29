@@ -8,6 +8,7 @@ import io.horizontalsystems.bitcoincore.models.BlockHash
 import io.horizontalsystems.bitcoincore.models.PublicKey
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.job
 import kotlinx.coroutines.launch
@@ -37,7 +38,7 @@ class InitialSyncer(
     }
 
     fun sync() {
-        syncJob = PlaidScope.IoScope.launch {
+        syncJob = PlaidScope.applicationScope.launch(Dispatchers.IO) {
             runDiscovery(this.coroutineContext.job)
             syncJob = null
         }

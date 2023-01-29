@@ -43,6 +43,7 @@ import com.intuisoft.plaid.listeners.BarcodeResultListener
 import com.intuisoft.plaid.listeners.NetworkStateChangeListener
 import com.intuisoft.plaid.recievers.NetworkChangeReceiver
 import com.intuisoft.plaid.walletmanager.AbstractWalletManager
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 
@@ -244,7 +245,7 @@ class MainActivity : BindingActivity<ActivityMainBinding>(), ActionBarDelegate {
                     )
                     progressDialog.setCancelable(false)
 
-                    PlaidScope.IoScope.launch {
+                    PlaidScope.applicationScope.launch(Dispatchers.IO) {
                         localStoreRepository.wipeAllData {
                             PlaidScope.MainScope.launch {
                                 safeWalletScope {

@@ -7,6 +7,7 @@ import androidx.lifecycle.LiveData
 import com.intuisoft.plaid.BuildConfig
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.BaseViewModel
+import com.intuisoft.plaid.androidwrappers.BindingFragment
 import com.intuisoft.plaid.androidwrappers.SingleLiveData
 import com.intuisoft.plaid.common.model.AppTheme
 import com.intuisoft.plaid.common.model.BitcoinDisplayUnit
@@ -58,7 +59,7 @@ class SettingsViewModel(
 
     fun restartApp(fragment: Fragment) {
         appRestartNeeded = false
-        softRestart(fragment)
+        (fragment as BindingFragment<*>).softRestart(walletManager, localStoreRepository)
     }
 
     fun saveMinimumConfirmation(min: Int) {

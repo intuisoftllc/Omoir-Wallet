@@ -244,7 +244,7 @@ open class WalletViewModel(
     }
 
     fun refreshLocalCache() {
-        PlaidScope.IoScope.launch {
+        PlaidScope.applicationScope.launch(Dispatchers.IO) {
             // go to network and get fee rates if we have passed the cache time
             apiRepository.refreshLocalCache()
         }
@@ -408,7 +408,7 @@ open class WalletViewModel(
         bip: HDWallet.Purpose,
         testNetWallet: Boolean
     ) {
-        PlaidScope.IoScope.launch {
+        PlaidScope.applicationScope.launch(Dispatchers.IO) {
             try{
                 val walletId = walletManager.createWallet(
                     name = walletName,
@@ -448,7 +448,7 @@ open class WalletViewModel(
         walletName: String,
         pubKey: String
     ) {
-        PlaidScope.IoScope.launch {
+        PlaidScope.applicationScope.launch(Dispatchers.IO) {
             try {
                 val walletId = walletManager.createWallet(
                     name = walletName,
@@ -464,7 +464,7 @@ open class WalletViewModel(
 
 
     fun deleteWallet(onDeleteFinished: () -> Unit) {
-        PlaidScope.IoScope.launch {
+        PlaidScope.applicationScope.launch(Dispatchers.IO) {
           walletManager.deleteWallet(localWallet!!) {
               withContext(Dispatchers.Main) {
                   safeWalletScope {

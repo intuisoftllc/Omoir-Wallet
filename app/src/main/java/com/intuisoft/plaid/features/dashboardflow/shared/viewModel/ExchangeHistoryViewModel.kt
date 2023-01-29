@@ -34,7 +34,7 @@ class ExchangeHistoryViewModel(
     private var refreshing = false
 
     fun refreshExchanges() {
-        PlaidScope.IoScope.launch {
+        PlaidScope.applicationScope.launch(Dispatchers.IO) {
             if(!refreshing) {
                 refreshing = true
                 _refreshingExchanges.postValue(refreshing)

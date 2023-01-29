@@ -48,7 +48,7 @@ class SyncManager(
     private var lastSynced: Long = 0
 
     private fun runInBackground(run: suspend () -> Unit) =
-        PlaidScope.IoScope.launch {
+        PlaidScope.applicationScope.launch(Dispatchers.IO) {
             run()
         }
 
@@ -178,10 +178,30 @@ class SyncManager(
         } else {
             listener?.onWalletAlreadySynced(wallet)
         }
+
+        while(!wallet.isSynced && NetworkUtil.hasInternet(application)) {
+            masterSyncJob?.ensureActive()
+            delay(100)
+        }
+
+        safeBackground(wallet)
+        if(wallet.isSynced && wallet.walletKit!!.canSendTransaction()) {
+            if(
+                atp.updateTransfers(
+                    wallet = wallet,
+                    findWallet = { walletId ->
+                        getWallets().find { it.uuid == walletId }
+                    },
+                    job = masterSyncJob
+                )
+            ) {
+                resync = true
+            }
+        }
     }
 
     fun cancelTransfer(id: String) {
-        PlaidScope.IoScope.launch {
+        PlaidScope.applicationScope.launch(Dispatchers.IO) {
             atp.cancelTransfer(id, openedWallet!!)
             resync = true
             syncWallets(force = true)
@@ -199,35 +219,8 @@ class SyncManager(
 
             masterSyncJob = runInBackground {
                 _wallets
-                    .splitIntoGroupOf(2) // sync 2 wallets at the same time
-                    .forEach { group ->
-                        group.items.forEach {
-                            syncInternal(it)
-                        }
-
-                        // wait for this group of wallets to sync
-                        while(!group.items.all { it.isSynced } && NetworkUtil.hasInternet(application)) {
-                            masterSyncJob?.ensureActive()
-                            delay(100)
-                        }
-
-                        group.items.forEach {
-                            safeBackground(it)
-
-                            if(it.isSynced && it.walletKit!!.canSendTransaction()) {
-                                if(
-                                    atp.updateTransfers(
-                                        wallet = it,
-                                        findWallet = { walletId ->
-                                            getWallets().find { it.uuid == walletId }
-                                        },
-                                        job = masterSyncJob
-                                    )
-                                ) {
-                                    resync = true
-                                }
-                            }
-                        }
+                    .forEach { wallet ->
+                        syncInternal(wallet)
                     }
 
                 lastSynced = System.currentTimeMillis()

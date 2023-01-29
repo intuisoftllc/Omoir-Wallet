@@ -16,7 +16,7 @@ class PeerDiscover(private val peerAddressManager: IPeerAddressManager) {
     fun lookup(dnsList: List<String>) {
         if(BitcoinCore.loggingEnabled)  logger.info("Lookup peers from DNS seed...")
 
-        PlaidScope.IoScope.launch {
+        PlaidScope.applicationScope.launch(Dispatchers.IO) {
             dnsList.forEach { host ->
                 try {
                     val ips = InetAddress

@@ -40,7 +40,7 @@ class WalletManager(
     open class BitcoinEventListener: BitcoinKit.Listener {}
 
     override fun start() {
-        PlaidScope.IoScope.launch {
+        PlaidScope.applicationScope.launch(Dispatchers.IO) {
             if(!syncer.isRunning()) {
                 _baseMainNetWallet =
                     createBaseWallet(_baseMainNetWallet, BitcoinKit.NetworkType.MainNet)

@@ -60,7 +60,7 @@ class BasicTransactionDetail(
                 }
             }
 
-            PlaidScope.IoScope.launch {
+            PlaidScope.applicationScope.launch(Dispatchers.IO) {
                 val memo = localStoreRepository.getTransactionMemo(transaction.transactionHash)
 
                 view?.apply {

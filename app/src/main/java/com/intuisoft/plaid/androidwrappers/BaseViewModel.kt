@@ -106,20 +106,4 @@ open class BaseViewModel(
     fun checkProStatus() {
         _upgradeToPro.postValue(!localStoreRepository.isProEnabled())
     }
-
-    fun softRestart(fragment: Fragment) {
-        (fragment as FragmentBottomBarBarDelegate).apply {
-            runBlocking {
-                walletManager.stop()
-                localStoreRepository.clearCache()
-
-                MainScope().launch {
-                    val intent = Intent(getApplication(), MainActivity::class.java)
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-                    intent.putExtra(Constants.Navigation.PASSPHRASES, Gson().toJson(StoredHiddenWalletsModel(walletManager.getHiddenWallets().entries.toList().map { it.key to it.value }), StoredHiddenWalletsModel::class.java))
-                    getApplication<PlaidApp>().startActivity(intent)
-                }
-            }
-        }
-    }
 }

@@ -9,6 +9,7 @@ import io.horizontalsystems.bitcoincore.network.peer.*
 import io.horizontalsystems.bitcoincore.network.peer.task.GetBlockHashesTask
 import io.horizontalsystems.bitcoincore.network.peer.task.GetMerkleBlocksTask
 import io.horizontalsystems.bitcoincore.network.peer.task.PeerTask
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.concurrent.CopyOnWriteArrayList
 import java.util.concurrent.Executors
@@ -120,7 +121,7 @@ class InitialBlockDownload(
     }
 
     private fun assignNextSyncPeer() {
-        PlaidScope.IoScope.launch {
+        PlaidScope.applicationScope.launch(Dispatchers.IO) {
             if (syncPeer == null) {
                 val notSyncedPeers = peerManager.sorted().filter { !it.synced }
                 if (notSyncedPeers.isEmpty()) {

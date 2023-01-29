@@ -507,10 +507,12 @@ class LocalStoreRepository_Impl(
     }
 
     override fun clearCache() {
-        setLastCurrencyRateUpdate(0)
-        setLastFeeRateUpdate(0)
-        setLastSupportedCurrenciesUpdate(0)
-        setLastSupportedCurrenciesUpdate(0)
+        try {
+            setLastCurrencyRateUpdate(0)
+            setLastFeeRateUpdate(0)
+            setLastSupportedCurrenciesUpdate(0)
+            setLastSupportedCurrenciesUpdate(0)
+        } catch(_: EmptyUsrDataErr) { }
         memoryCache.clear()
     }
 
@@ -529,7 +531,7 @@ class LocalStoreRepository_Impl(
     }
 
     override fun onDatabaseUpdated(dao: Any?) {
-        PlaidScope.IoScope.launch {
+        PlaidScope.applicationScope.launch(Dispatchers.IO) {
             when(dao) {
                 is AddressBlacklistDao -> {
                     memoryCache.setBlacklistedAddresses(databaseRepository.getAllBlacklistedAddresses())

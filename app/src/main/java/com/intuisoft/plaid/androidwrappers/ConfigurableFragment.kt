@@ -14,6 +14,13 @@ import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.model.LocalWalletModel
 import com.intuisoft.plaid.common.util.errors.ClosedWalletErr
+import com.intuisoft.plaid.di.localRepositoriesModule
+import com.intuisoft.plaid.di.walletManagerModule
+import com.intuisoft.plaid.walletmanager.AbstractWalletManager
+import org.koin.android.ext.android.get
+import org.koin.android.ext.android.inject
+import org.koin.core.context.loadKoinModules
+import org.koin.core.context.unloadKoinModules
 
 
 abstract class ConfigurableFragment<T: ViewBinding>(
@@ -24,6 +31,8 @@ abstract class ConfigurableFragment<T: ViewBinding>(
 ) : BindingFragment<T>() {
     protected var baseVM: BaseViewModel? = null
     private var configTypes = listOf<FragmentConfigurationType>()
+    private val _manager: AbstractWalletManager by inject()
+    private val _localStore: LocalStoreRepository by inject()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         if(secureScreen) {
@@ -39,16 +48,26 @@ abstract class ConfigurableFragment<T: ViewBinding>(
 
         if(requiresWallet) {
             requireWallet()?.let {
+                if(requiresUsrData) {
+                    requireUsrData()?.let {
+                        super.onViewCreated(view, savedInstanceState)
+                        onConfiguration(baseVM?.currentConfig)
+                    }
+                }else {
+                    super.onViewCreated(view, savedInstanceState)
+                    onConfiguration(baseVM?.currentConfig)
+                }
+            }
+        } else {
+            if(requiresUsrData) {
+                requireUsrData()?.let {
+                    super.onViewCreated(view, savedInstanceState)
+                    onConfiguration(baseVM?.currentConfig)
+                }
+            }else {
                 super.onViewCreated(view, savedInstanceState)
                 onConfiguration(baseVM?.currentConfig)
             }
-        } else {
-            super.onViewCreated(view, savedInstanceState)
-            onConfiguration(baseVM?.currentConfig)
-        }
-
-        if(requiresUsrData) {
-            requireUsrData()
         }
     }
 
@@ -98,7 +117,7 @@ abstract class ConfigurableFragment<T: ViewBinding>(
             try {
                 return (baseVM!! as WalletViewModel).getWallet()
             } catch(err: ClosedWalletErr) {
-                baseVM!!.softRestart(this)
+                softRestart(_manager, _localStore)
                 return null
             }
         } else {
@@ -110,7 +129,7 @@ abstract class ConfigurableFragment<T: ViewBinding>(
         if(CommonService.getUserData() != null) {
             return CommonService.getUserData()
         } else {
-            baseVM!!.softRestart(this)
+            softRestart(_manager, _localStore)
             return null
         }
     }
@@ -119,7 +138,7 @@ abstract class ConfigurableFragment<T: ViewBinding>(
         if(pinProtection) {
             requireUsrData()?.let {
                 (activity as? MainActivity)?.apply {
-                    if (CommonService.getLocalStoreInstance().getLastCheckedPinTime() == 0L) {
+                    if (_localStore.getLastCheckedPinTime() == 0L) {
                         clearDialogStack()
                         activatePin(false, false)
                     } else {

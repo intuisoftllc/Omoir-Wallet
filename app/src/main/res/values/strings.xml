@@ -713,6 +713,15 @@
     <string name="report_type_utx_distro_subtitle">See how your utxo\'s are distributed throughout the wallet</string>
 <!--    Reports Strings End -->
 
+<!--    ATP Notification Strings -->
+    <string name="atp_notification_subtitle_1">Starting transfer</string>
+    <string name="atp_notification_subtitle_2">Sending %1$s to %2$s.\nBatches %3$s of %4$s complete</string>
+    <string name="atp_notification_subtitle_3">Waiting for batch gap to close. Blocks left (%1$s) ~%2$s min</string>
+    <string name="atp_notification_title">Transfer</string>
+    <string name="atp_channel_name">Wallet Transfers (ATP)</string>
+    <string name="atp_channel_description">Show the progress of atp transactions</string>
+<!--    ATP Notification Strings End -->
+
 <!--    Generic Use Strings -->
     <string name="welcome">Welcome</string>
     <string name="name">Name</string>

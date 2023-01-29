@@ -3,12 +3,10 @@ package com.intuisoft.plaid.common.coroutines
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.SupervisorJob
 
 object PlaidScope {
+    val applicationScope = CoroutineScope(SupervisorJob())
 
-    val IoScope = CoroutineScope(Dispatchers.IO)
-
-    val MainScope = CoroutineScope(Dispatchers.Main)
-
-    val GlobalScope = kotlinx.coroutines.GlobalScope
+    val MainScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
 }
