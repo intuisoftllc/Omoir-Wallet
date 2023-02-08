@@ -107,12 +107,8 @@ class LocalStoreRepository_Impl(
         databaseRepository.blacklistTransaction(transaction, blacklist)
     }
 
-    override fun isProEnabled(): Boolean {
-        return true//getUserData().isProEnabled
-    }
-
-    override fun setProEnabled(enable: Boolean) {
-        getUserData().isProEnabled = enable
+    override fun isPremiumUser(): Boolean {
+        return appPrefs.isPremiumUser
     }
 
     override fun setMaxPinEntryLimit(limit: Int) {

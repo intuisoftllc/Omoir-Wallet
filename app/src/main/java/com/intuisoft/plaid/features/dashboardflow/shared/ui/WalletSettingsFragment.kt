@@ -447,6 +447,9 @@ class WalletSettingsFragment : ConfigurableFragment<FragmentWalletSettingsBindin
                 getDerivaitionPath = {
                     "m/${viewModel.getWalletBip().value}'/0'/$it'"
                 },
+                accountExists = { name ->
+                    viewModel.getSavedAccount(name) != null
+                },
                 saveAccount = { name, accountNumber ->
                     viewModel.saveAccount(name, accountNumber)
                     showSavedAccountsBottomSheet(hiddenWallet)
@@ -520,6 +523,7 @@ class WalletSettingsFragment : ConfigurableFragment<FragmentWalletSettingsBindin
             initialNameText: String = "",
             initialAccountText: String = "",
             saveAccount: (String, Int) -> Unit,
+            accountExists: (String) -> Boolean,
             getDerivaitionPath: (String) -> String,
             onCancel: (() -> Unit)? = null,
             addToStack: (AppCompatDialog) -> Unit,
@@ -579,8 +583,13 @@ class WalletSettingsFragment : ConfigurableFragment<FragmentWalletSettingsBindin
                     }
 
                 if(accountNumber <= Int.MAX_VALUE) {
-                    bottomSheetDialog.cancel()
-                    saveAccount(name.text.toString(), accountNumber.toInt())
+                    if(!accountExists(name.text.toString())) {
+                        bottomSheetDialog.cancel()
+                        saveAccount(name.text.toString(), accountNumber.toInt())
+                    } else {
+                        errorMessage.isVisible = true
+                        errorMessage.setText(activity.baseContext.getString(R.string.saved_account_validation_error_account_exists))
+                    }
                 } else {
                     errorMessage.isVisible = true
                     errorMessage.setText(activity.baseContext.getString(R.string.saved_account_validation_error_invalid_account))

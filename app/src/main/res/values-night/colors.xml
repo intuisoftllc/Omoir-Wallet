@@ -54,6 +54,7 @@
     <color name="qr_code_whitespace_color">@color/transparent</color>
     <color name="qr_code_data_color">@color/brand_color_accent_3</color>
     <color name="disabled_color">@color/dark_grey</color>
+    <color name="subscription_save_tag_color">@color/navy_blue</color>
 <!--    Component Colors End -->
 
 

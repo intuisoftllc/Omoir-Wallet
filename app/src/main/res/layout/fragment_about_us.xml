@@ -6,7 +6,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <com.intuisoft.plaid.androidwrappers.SettingsItemView
-        android:id="@+id/appearance_light"
+        android:id="@+id/security"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:settings_variant="card"
@@ -17,24 +17,24 @@
         app:show_chevron="true"/>
 
     <com.intuisoft.plaid.androidwrappers.SettingsItemView
-        android:id="@+id/appearance_dark"
+        android:id="@+id/privacy_policy"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:settings_variant="card"
         android:layout_marginTop="@dimen/horizontal_padding_size"
-        app:layout_constraintTop_toBottomOf="@id/appearance_light"
+        app:layout_constraintTop_toBottomOf="@id/security"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:item_title="@string/about_us_option_privacy_policy"
         app:show_chevron="true"/>
 
     <com.intuisoft.plaid.androidwrappers.SettingsItemView
-        android:id="@+id/appearance_auto"
+        android:id="@+id/terms_of_service"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:settings_variant="card"
         android:layout_marginTop="@dimen/horizontal_padding_size"
-        app:layout_constraintTop_toBottomOf="@id/appearance_dark"
+        app:layout_constraintTop_toBottomOf="@id/privacy_policy"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:item_title="@string/about_us_option_terms_of_service"

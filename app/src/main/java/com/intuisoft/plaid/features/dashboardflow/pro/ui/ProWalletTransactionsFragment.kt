@@ -32,7 +32,7 @@ import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class ProWalletTransactionsFragment : ConfigurableFragment<FragmentProWalletTrasactionsBinding>(pinProtection = true) {
+class ProWalletTransactionsFragment : ConfigurableFragment<FragmentProWalletTrasactionsBinding>(pinProtection = true, premiumContent = true) {
     protected val viewModel: DashboardViewModel by viewModel()
     protected val localStoreRepository: LocalStoreRepository by inject()
     protected val walletManager: AbstractWalletManager by inject()

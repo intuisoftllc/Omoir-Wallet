@@ -126,7 +126,7 @@ class FingerprintSetupFragment : BindingFragment<FragmentOnboardingFingerprintRe
                     positiveText = getString(R.string.create_new_wallet),
                     negativeText = getString(R.string.goto_homescreen),
                     positiveDestination = R.id.createWalletFragment,
-                    negativeDestination = if(localStoreRepository.isProEnabled()) R.id.proHomescreenFragment else R.id.homescreenFragment,
+                    negativeDestination = if(localStoreRepository.isPremiumUser()) R.id.proHomescreenFragment else R.id.homescreenFragment,
                     walletUUID = ""
                 )
             )

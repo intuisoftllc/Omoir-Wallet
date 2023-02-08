@@ -8,31 +8,29 @@ import androidx.viewbinding.ViewBinding
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.activities.MainActivity
 import com.intuisoft.plaid.androidwrappers.delegates.FragmentConfiguration
+import com.intuisoft.plaid.billing.BillingManager
 import com.intuisoft.plaid.common.CommonService
 import com.intuisoft.plaid.common.local.UserData
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.model.LocalWalletModel
 import com.intuisoft.plaid.common.util.errors.ClosedWalletErr
-import com.intuisoft.plaid.di.localRepositoriesModule
-import com.intuisoft.plaid.di.walletManagerModule
 import com.intuisoft.plaid.walletmanager.AbstractWalletManager
-import org.koin.android.ext.android.get
 import org.koin.android.ext.android.inject
-import org.koin.core.context.loadKoinModules
-import org.koin.core.context.unloadKoinModules
 
 
 abstract class ConfigurableFragment<T: ViewBinding>(
     private val pinProtection: Boolean = false,
     private val secureScreen: Boolean = false,
     private var requiresWallet: Boolean = true,
-    private var requiresUsrData: Boolean = true
+    private var requiresUsrData: Boolean = true,
+    private var premiumContent: Boolean = false
 ) : BindingFragment<T>() {
     protected var baseVM: BaseViewModel? = null
     private var configTypes = listOf<FragmentConfigurationType>()
     private val _manager: AbstractWalletManager by inject()
     private val _localStore: LocalStoreRepository by inject()
+    private val _billing: BillingManager by inject()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         if(secureScreen) {
@@ -53,7 +51,7 @@ abstract class ConfigurableFragment<T: ViewBinding>(
                         super.onViewCreated(view, savedInstanceState)
                         onConfiguration(baseVM?.currentConfig)
                     }
-                }else {
+                } else {
                     super.onViewCreated(view, savedInstanceState)
                     onConfiguration(baseVM?.currentConfig)
                 }
@@ -67,6 +65,15 @@ abstract class ConfigurableFragment<T: ViewBinding>(
             }else {
                 super.onViewCreated(view, savedInstanceState)
                 onConfiguration(baseVM?.currentConfig)
+            }
+        }
+
+        if(premiumContent) {
+            _billing.checkEntitlement {
+                if(!it) {
+                    styledSnackBar(requireView(), getString(R.string.premium_subscription_switch_to_free))
+                    softRestart(_manager, _localStore)
+                }
             }
         }
     }
@@ -134,11 +141,18 @@ abstract class ConfigurableFragment<T: ViewBinding>(
         }
     }
 
+    fun softRestart() {
+        softRestart(_manager, _localStore)
+    }
+
     private fun checkPin() {
         if(pinProtection) {
             requireUsrData()?.let {
                 (activity as? MainActivity)?.apply {
-                    if (_localStore.getLastCheckedPinTime() == 0L) {
+                    val time = System.currentTimeMillis() / Constants.Time.MILLS_PER_SEC
+
+                    if (_localStore.getLastCheckedPinTime() == 0L
+                        || (time - it.lastCheckPin) > it.pinTimeout) {
                         clearDialogStack()
                         activatePin(false, false)
                     } else {
@@ -154,14 +168,14 @@ abstract class ConfigurableFragment<T: ViewBinding>(
     }
 
     fun onNavigateBottomBarSecondaryFragmentBackwards(localStoreRepository: LocalStoreRepository) {
-        if(localStoreRepository.isProEnabled())
+        if(localStoreRepository.isPremiumUser())
             findNavController().popBackStack(R.id.walletProDashboardFragment, false)
         else
             findNavController().popBackStack(R.id.walletDashboardFragment, false)
     }
 
     fun onNavigateBottomBarPrimaryFragmentBackwards(localStoreRepository: LocalStoreRepository) {
-        if(localStoreRepository.isProEnabled())
+        if(localStoreRepository.isPremiumUser())
             findNavController().popBackStack(R.id.proHomescreenFragment, false)
         else
             findNavController().popBackStack(R.id.homescreenFragment, false)

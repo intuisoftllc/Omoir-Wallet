@@ -68,6 +68,9 @@ class AccountsFragment : ConfigurableFragment<FragmentAccountsBinding>(
                 getDerivaitionPath = {
                     "m/[84|44|49]'/0'/$it'"
                 },
+                accountExists = { name ->
+                    viewModel.getSavedAccount(name) != null
+                },
                 saveAccount = { name, accountNumber ->
                     eventTracker.log(EventSettingsUpdateAccount())
                     viewModel.updateAccount(account.accountName, name, accountNumber)
@@ -140,12 +143,16 @@ class AccountsFragment : ConfigurableFragment<FragmentAccountsBinding>(
             titleText = getString(R.string.saved_account_save_title),
             saveButtonText = getString(R.string.save),
             getDerivaitionPath = {
-                "m/${HDWallet.Purpose.BIP84.value}'/0'/$it'"
+                "m/[84|44|49]'/0'/$it'"
             },
             cancelButtonText = getString(R.string.cancel),
+            accountExists = { name ->
+                viewModel.getSavedAccount(name) != null
+            },
             saveAccount = { name, accountNumber ->
                 eventTracker.log(EventSettingsSaveAccount())
                 viewModel.saveAccount(name, accountNumber)
+                viewModel.showAccounts()
             },
             onCancel = {},
             addToStack = ::addToStack,

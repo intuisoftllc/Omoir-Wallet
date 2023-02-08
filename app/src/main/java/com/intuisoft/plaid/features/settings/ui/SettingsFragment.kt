@@ -22,6 +22,7 @@ import com.intuisoft.plaid.PlaidApp
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.*
 import com.intuisoft.plaid.androidwrappers.delegates.FragmentConfiguration
+import com.intuisoft.plaid.billing.BillingManager
 import com.intuisoft.plaid.common.analytics.EventTracker
 import com.intuisoft.plaid.common.analytics.events.*
 import com.intuisoft.plaid.common.model.AppTheme
@@ -42,6 +43,7 @@ class SettingsFragment : ConfigurableFragment<FragmentSettingsBinding>(
 ) {
     private val viewModel: SettingsViewModel by sharedViewModel()
     protected val eventTracker: EventTracker by inject()
+    protected val billing: BillingManager by inject()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -54,6 +56,7 @@ class SettingsFragment : ConfigurableFragment<FragmentSettingsBinding>(
 
     override fun onConfiguration(configuration: FragmentConfiguration?) {
         eventTracker.log(EventSettingsView())
+        billing.checkEntitlement()
         viewModel.bitcoinDisplayUnitSetting.observe(viewLifecycleOwner, Observer {
             when(it) {
                 BitcoinDisplayUnit.BTC -> {
@@ -132,6 +135,19 @@ class SettingsFragment : ConfigurableFragment<FragmentSettingsBinding>(
 
         binding.updatePin.onClick {
             activatePin(true, false)
+        }
+
+        binding.subscription.onClick(Constants.Time.MIN_CLICK_INTERVAL_LONG) {
+            billing.checkEntitlement { premiumUser ->
+                if(premiumUser) {
+
+                } else {
+                    navigate(
+                        R.id.premiumSubscriptionFragment,
+                        Constants.Navigation.ANIMATED_ENTER_EXIT_RIGHT_NAV_OPTION
+                    )
+                }
+            }
         }
 
         binding.maxAttempts.onClick {

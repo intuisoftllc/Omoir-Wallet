@@ -35,7 +35,7 @@ import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.Locale
 
-class UtxoDistributionFragment : ConfigurableFragment<FragmentUtxoDistroReportBinding>(pinProtection = true) {
+class UtxoDistributionFragment : ConfigurableFragment<FragmentUtxoDistroReportBinding>(pinProtection = true, premiumContent = true) {
     protected val viewModel: UtxoDistributionViewModel by viewModel()
     protected val localStoreRepository: LocalStoreRepository by inject()
     protected val walletManager: AbstractWalletManager by inject()

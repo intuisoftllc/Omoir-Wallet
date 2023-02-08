@@ -201,7 +201,7 @@ class MarketViewModel(
     }
 
     fun updateExtendedMarketData() {
-        if(!localStoreRepository.isProEnabled()) return
+        if(!localStoreRepository.isPremiumUser()) return
 
         viewModelScope.launch {
             withContext(Dispatchers.IO) {

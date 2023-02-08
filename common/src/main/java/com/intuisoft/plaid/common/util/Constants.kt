@@ -7,7 +7,7 @@ class Constants {
 
     object Database {
         const val DB_NAME = "plaid.db"
-        const val DB_VERSION = 5
+        const val DB_VERSION = 5 // todo: whenever this changes, create a migration
     }
 
     object Files {
@@ -112,6 +112,8 @@ class Constants {
         const val TWO_MINUTES = 2 * ONE_MINUTE
         const val FIVE_MINUTES = 5 * ONE_MINUTE
         const val TEN_MINUTES = 10 * ONE_MINUTE
+        const val TWENTY_MINUTES = TEN_MINUTES * 2
+        const val ONE_HOUR = TEN_MINUTES * 6
         const val MIN_SYNC_TIME = ONE_MINUTE * MILLS_PER_SEC
         const val INSTANT = -1
         const val INSTANT_TIME_OFFSET = (SECONDS_PER_DAY) * 10000
@@ -122,6 +124,8 @@ class Constants {
         const val MIN_CLICK_INTERVAL_SHORT = 200
         const val MIN_CLICK_INTERVAL_MED = 400
         const val MIN_CLICK_INTERVAL_LONG = 600
+        const val GENERAL_CACHE_UPDATE_TIME_XTRA_LONG: Long = (MILLS_PER_SEC * ONE_HOUR).toLong()
+        const val GENERAL_CACHE_UPDATE_TIME_LONG: Long = (MILLS_PER_SEC * TWENTY_MINUTES).toLong()
         const val GENERAL_CACHE_UPDATE_TIME: Long = (MILLS_PER_SEC * TEN_MINUTES).toLong()
         const val GENERAL_CACHE_UPDATE_TIME_MED: Long = (MILLS_PER_SEC * FIVE_MINUTES).toLong()
         const val GENERAL_CACHE_UPDATE_TIME_SHORT: Long = (MILLS_PER_SEC * TWO_MINUTES).toLong()
@@ -149,7 +153,7 @@ class Constants {
         const val MIN_CONFIRMATIONS = 3
         const val MIN_FEE = 1
         const val MAX_FEE = 999
-        const val FREE_MAX_WALLETS = 4
+        const val FREE_MAX_WALLETS = 3
         const val FREE_MAX_HIDDEN_WALLETS = 1
         const val PRO_MAX_WALLETS = 10
         const val ATP_MAX_RETRY_LIMIT = 3

@@ -6,19 +6,13 @@ import android.content.Intent
 import android.hardware.biometrics.BiometricManager
 import android.os.Build
 import android.provider.Settings
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.google.gson.Gson
 import com.intuisoft.plaid.PlaidApp
-import com.intuisoft.plaid.activities.MainActivity
-import com.intuisoft.plaid.androidwrappers.delegates.FragmentBottomBarBarDelegate
 import com.intuisoft.plaid.androidwrappers.delegates.FragmentConfiguration
-import com.intuisoft.plaid.common.model.StoredHiddenWalletsModel
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
-import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.common.util.extensions.safeWalletScope
 import com.intuisoft.plaid.walletmanager.AbstractWalletManager
 import kotlinx.coroutines.*
@@ -44,7 +38,7 @@ open class BaseViewModel(
         return currentConfig != null && currentConfig!!.configurationType == fragmentConfiguration
     }
 
-    fun isProEnabled() = localStoreRepository.isProEnabled()
+    fun isProEnabled() = localStoreRepository.isPremiumUser()
 
     fun isFingerprintEnabled() = localStoreRepository.isFingerprintEnabled()
 
@@ -104,6 +98,6 @@ open class BaseViewModel(
     }
 
     fun checkProStatus() {
-        _upgradeToPro.postValue(!localStoreRepository.isProEnabled())
+        _upgradeToPro.postValue(!localStoreRepository.isPremiumUser())
     }
 }

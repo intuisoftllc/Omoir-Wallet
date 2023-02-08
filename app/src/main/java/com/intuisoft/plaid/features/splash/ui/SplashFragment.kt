@@ -11,6 +11,7 @@ import androidx.navigation.fragment.findNavController
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.activities.MainActivity
 import com.intuisoft.plaid.androidwrappers.*
+import com.intuisoft.plaid.billing.BillingManager
 import com.intuisoft.plaid.databinding.FragmentSplashBinding
 import com.intuisoft.plaid.features.splash.viewmodel.SplashViewModel
 import com.intuisoft.plaid.common.util.Constants
@@ -20,6 +21,7 @@ import org.koin.android.ext.android.inject
 
 class SplashFragment : BindingFragment<FragmentSplashBinding>() {
     private val viewModel: SplashViewModel by inject()
+    private val billing: BillingManager by inject()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -34,6 +36,8 @@ class SplashFragment : BindingFragment<FragmentSplashBinding>() {
         super.onViewCreated(view, savedInstanceState)
 
         (activity as? MainActivity)?.setAppTheme()
+        billing.checkEntitlement()
+        billing.getProducts { }
         animateLogo()
         viewModel.nextScreen()
 

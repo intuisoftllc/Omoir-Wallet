@@ -92,6 +92,14 @@
     </fragment>
 
     <fragment
+        android:id="@+id/premiumSubscriptionFragment"
+        android:name="com.intuisoft.plaid.features.settings.ui.PremiumSubscriptionsFragment"
+        android:label="@string/fingerprint_premium_subscriptions_label"
+        tools:layout="@layout/fragment_premium_subscriptions">
+
+    </fragment>
+
+    <fragment
         android:id="@+id/importWalletFragment"
         android:name="com.intuisoft.plaid.features.createwallet.ui.ImportWalletFragment"
         android:label="@string/import_wallet_fragment_label"

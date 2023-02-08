@@ -44,7 +44,7 @@ import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.*
 
-class ProDashboardFragment : ConfigurableFragment<FragmentProWalletDashboardBinding>(pinProtection = true), StateListener {
+class ProDashboardFragment : ConfigurableFragment<FragmentProWalletDashboardBinding>(pinProtection = true, premiumContent = true), StateListener {
     protected val viewModel: DashboardViewModel by viewModel()
     protected val localStoreRepository: LocalStoreRepository by inject()
     protected val walletManager: AbstractWalletManager by inject()
@@ -75,7 +75,7 @@ class ProDashboardFragment : ConfigurableFragment<FragmentProWalletDashboardBind
         binding.sparkview.setAdapter(balanceHistoryAdapter)
         binding.sparkview.isScrubEnabled = true
 
-        binding.chartContainer.isVisible = localStoreRepository.isProEnabled()
+        binding.chartContainer.isVisible = localStoreRepository.isPremiumUser()
         binding.sparkview.setScrubListener {
 
             if(it != null) {
@@ -370,7 +370,7 @@ class ProDashboardFragment : ConfigurableFragment<FragmentProWalletDashboardBind
                         localStoreRepository
                     )
 
-                    if (localStoreRepository.isProEnabled()) {
+                    if (localStoreRepository.isPremiumUser()) {
                         binding.price.text = state
                     } else {
                         (activity as? MainActivity)?.setActionBarSubTitle(state)

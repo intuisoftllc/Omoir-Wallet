@@ -290,7 +290,7 @@ class AtpManager(
         val transfers = localStoreRepository.getAllAssetTransfers(wallet.uuid)
         var utxoSent = false
 
-        transfers.lastOrNull {
+        transfers.lastOrNull { // todo: cancel all transfers if user is not a premium user
             it.status == AssetTransferStatus.WAITING
                     || it.status == AssetTransferStatus.IN_PROGRESS || it.status == AssetTransferStatus.NOT_STARTED
         }?.let { // run the most recent executing transfer to prevent "hacking" the protocol by creating many 50 utxo single batch transfers
@@ -325,7 +325,7 @@ class AtpManager(
 
         workManager
             .enqueueUniqueWork(
-                "AtpStatusWorker",
+                transferId,
                 ExistingWorkPolicy.KEEP,
                 notificationRequest
             )

@@ -5,6 +5,7 @@ import android.app.ProgressDialog
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import androidx.activity.OnBackPressedCallback
@@ -43,6 +44,8 @@ import com.intuisoft.plaid.listeners.BarcodeResultListener
 import com.intuisoft.plaid.listeners.NetworkStateChangeListener
 import com.intuisoft.plaid.recievers.NetworkChangeReceiver
 import com.intuisoft.plaid.walletmanager.AbstractWalletManager
+import com.revenuecat.purchases.Purchases
+import com.revenuecat.purchases.getOfferingsWith
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
@@ -52,6 +55,7 @@ class MainActivity : BindingActivity<ActivityMainBinding>(), ActionBarDelegate {
     lateinit var receiver: NetworkChangeReceiver
     lateinit var intentFilter: IntentFilter
     protected val localStoreRepository: LocalStoreRepository by inject()
+//    protected val billingManager: BillingManager by inject()
     protected val walletManager: AbstractWalletManager by inject()
     private var configurationSetup = false
     private val dialogStack = mutableListOf<Pair<AppCompatDialog, (() -> Unit)?>>()
@@ -220,7 +224,7 @@ class MainActivity : BindingActivity<ActivityMainBinding>(), ActionBarDelegate {
                         walletManager.start()
 
                         if (loadingUserData) {
-                            if (localStoreRepository.isProEnabled()) {
+                            if (localStoreRepository.isPremiumUser()) {
                                 getNavController().navigate(
                                     R.id.proHomescreenFragment,
                                     null,
@@ -325,7 +329,7 @@ class MainActivity : BindingActivity<ActivityMainBinding>(), ActionBarDelegate {
         withBinding {
             val navController = getNavController()
 
-            if (localStoreRepository.isProEnabled()) {
+            if (localStoreRepository.isPremiumUser()) {
                 bottomBar.setConfiguration(
                     getString(R.string.wallet),
                     R.drawable.ic_bottom_bar_wallet_selected,
@@ -411,6 +415,7 @@ class MainActivity : BindingActivity<ActivityMainBinding>(), ActionBarDelegate {
 
     override fun onDestroy() {
         super.onDestroy()
+//        billingManager.stop()
         unregisterReceiver(receiver)
     }
 

@@ -18,7 +18,7 @@ import com.intuisoft.plaid.databinding.FragmentReportsBinding
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class ReportsFragment : ConfigurableFragment<FragmentReportsBinding>(pinProtection = true) {
+class ReportsFragment : ConfigurableFragment<FragmentReportsBinding>(pinProtection = true, premiumContent = true) {
     protected val viewModel: WalletViewModel by viewModel()
     protected val localStoreRepository: LocalStoreRepository by inject()
     protected val eventTracker: EventTracker by inject()

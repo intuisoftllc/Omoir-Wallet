@@ -95,7 +95,7 @@ class SettingsItemView(context: Context, attrs: AttributeSet?) : LinearLayout(co
                 check = findViewById(R.id.variant_normal_check)
                 chevron = findViewById(R.id.variant_normal_chevron)
                 copy = findViewById(R.id.variant_normal_copy)
-                radio = null
+                radio = findViewById(R.id.radio2)
             }
             RADIO_VARIANT -> {
                 container = findViewById(R.id.variant_radio_container)
@@ -258,8 +258,8 @@ class SettingsItemView(context: Context, attrs: AttributeSet?) : LinearLayout(co
         }
     }
 
-    fun onClick(click: (SettingsItemView) -> Unit) {
-        this.setOnSingleClickListener(Constants.Time.MIN_CLICK_INTERVAL_MED) {
+    fun onClick(interval: Int = Constants.Time.MIN_CLICK_INTERVAL_MED, click: (SettingsItemView) -> Unit) {
+        this.setOnSingleClickListener(interval) {
             click(this)
         }
     }

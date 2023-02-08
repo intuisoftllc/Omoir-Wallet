@@ -360,7 +360,24 @@ class ApiRepository_Impl(
     }
 
     private suspend fun updateTickerPriceChartData(intervalType: ChartIntervalType) {
-        if((System.currentTimeMillis() - memoryCache.getChartPriceUpdateTimes(intervalType)) > Constants.Time.GENERAL_CACHE_UPDATE_TIME_MED
+        var cacheLimit: Long
+
+        when(intervalType) { // update price values according to time intervals provided by coingecko
+            ChartIntervalType.INTERVAL_1DAY -> {
+                cacheLimit = Constants.Time.GENERAL_CACHE_UPDATE_TIME_MED
+            }
+
+            ChartIntervalType.INTERVAL_1WEEK,
+            ChartIntervalType.INTERVAL_1MONTH,
+            ChartIntervalType.INTERVAL_3MONTHS -> {
+                cacheLimit = Constants.Time.GENERAL_CACHE_UPDATE_TIME_LONG
+            }
+             else -> {
+                 cacheLimit = Constants.Time.GENERAL_CACHE_UPDATE_TIME_XTRA_LONG
+             }
+        }
+
+        if((System.currentTimeMillis() - memoryCache.getChartPriceUpdateTimes(intervalType)) > cacheLimit
             || localStoreRepository.getTickerPriceChartData(localStoreRepository.getLocalCurrency(), intervalType) == null) {
             val data = coingeckoRepository.getChartData(intervalType, localStoreRepository.getLocalCurrency())
 

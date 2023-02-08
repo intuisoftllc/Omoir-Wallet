@@ -3,13 +3,14 @@ package com.intuisoft.plaid
 import android.app.Activity
 import android.app.Application
 import android.os.Bundle
-import android.widget.Toast
-import androidx.core.performance.DevicePerformance
 import com.intuisoft.plaid.activities.MainActivity
 import com.intuisoft.plaid.common.CommonService
 import com.intuisoft.plaid.common.local.UserData
 import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.di.*
+import com.revenuecat.purchases.Purchases
+import com.revenuecat.purchases.PurchasesConfiguration
+import com.revenuecat.purchases.PurchasesError
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.component.KoinComponent
@@ -17,7 +18,7 @@ import org.koin.core.context.startKoin
 import org.koin.core.logger.Level
 
 class PlaidApp : Application(), Application.ActivityLifecycleCallbacks, KoinComponent {
-    private val preferences: UserData?
+    private val usrData: UserData?
         get() = CommonService.getUserData()
     var ignorePinCheck = false
 
@@ -47,12 +48,15 @@ class PlaidApp : Application(), Application.ActivityLifecycleCallbacks, KoinComp
                     localRepositoriesModule,
                     apiRepositoriesModule,
                     walletManagerModule,
-                    analyticsModule
+                    analyticsModule,
+                    billingModule
                 )
             )
         }
 
+        Purchases.debugLogsEnabled = BuildConfig.DEBUG
         registerActivityLifecycleCallbacks(this)
+        Purchases.configure(PurchasesConfiguration.Builder(this, BuildConfig.REVENUE_CAT_SECRET).build())
     }
 
     override fun onActivityCreated(p0: Activity, p1: Bundle?) {
@@ -78,9 +82,9 @@ class PlaidApp : Application(), Application.ActivityLifecycleCallbacks, KoinComp
         val time = System.currentTimeMillis() / Constants.Time.MILLS_PER_SEC
 
         if(!ignorePinCheck &&
-            (preferences?.pinTimeout == Constants.Time.INSTANT_TIME_OFFSET
+            (usrData?.pinTimeout == Constants.Time.INSTANT_TIME_OFFSET
                     || (CommonService.getUserData() != null && (time - CommonService.getUserData()!!.lastCheckPin) > CommonService.getUserData()!!.pinTimeout))) {
-            preferences?.lastCheckPin = 0
+            usrData?.lastCheckPin = 0
         }
     }
 

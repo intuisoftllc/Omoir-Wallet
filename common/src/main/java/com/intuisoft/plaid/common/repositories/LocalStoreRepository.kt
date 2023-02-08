@@ -38,9 +38,7 @@ interface LocalStoreRepository {
 
     fun setUseDynamicBatchNetworkFee(use: Boolean)
 
-    fun isProEnabled(): Boolean
-
-    fun setProEnabled(enable: Boolean)
+    fun isPremiumUser(): Boolean
 
     fun setMaxPinEntryLimit(limit: Int)
 

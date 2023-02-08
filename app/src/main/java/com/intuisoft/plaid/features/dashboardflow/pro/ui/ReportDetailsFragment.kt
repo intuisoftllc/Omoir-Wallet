@@ -35,7 +35,7 @@ import kotlinx.android.synthetic.main.fragment_exchange_history.*
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class ReportDetailsFragment : ConfigurableFragment<FragmentReportDetailsBinding>(pinProtection = true) {
+class ReportDetailsFragment : ConfigurableFragment<FragmentReportDetailsBinding>(pinProtection = true, premiumContent = true) {
     protected val viewModel: ReportDetailsViewModel by viewModel()
     protected val localStoreRepository: LocalStoreRepository by inject()
 

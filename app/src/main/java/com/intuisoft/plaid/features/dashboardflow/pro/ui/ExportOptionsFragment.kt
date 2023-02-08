@@ -15,7 +15,7 @@ import com.intuisoft.plaid.features.dashboardflow.pro.viewmodel.ExportOptionsVie
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class ExportOptionsFragment : ConfigurableFragment<FragmentExportOptionsBinding>(pinProtection = true) {
+class ExportOptionsFragment : ConfigurableFragment<FragmentExportOptionsBinding>(pinProtection = true, premiumContent = true) {
     protected val viewModel: ExportOptionsViewModel by viewModel()
     protected val eventTracker: EventTracker by inject()
 

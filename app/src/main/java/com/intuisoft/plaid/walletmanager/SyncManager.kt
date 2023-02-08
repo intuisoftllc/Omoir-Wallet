@@ -84,7 +84,6 @@ class SyncManager(
     }
 
     fun clearWallets() {
-        Log.e("LOOK", "wallets cleared")
         _wallets.clear()
         lastSynced = 0
     }

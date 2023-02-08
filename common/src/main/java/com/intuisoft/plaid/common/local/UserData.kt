@@ -158,12 +158,6 @@ class UserData {
             save()
         }
 
-    var isProEnabled: Boolean = false
-        set(value) {
-            field = value
-            save()
-        }
-
     var exchangeSendBTC: Boolean = true
         set(value) {
             field = value

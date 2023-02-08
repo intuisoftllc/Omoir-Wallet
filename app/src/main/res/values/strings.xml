@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="app_name">Plaid</string>
 
 <!--    On-boarding Welcome Strings -->
     <string name="welcome_setup_message">Let\’s get you setup\nWhat shall I call you?</string>
@@ -41,6 +42,33 @@
     <string name="enter_pin_to_unlock_message">Enter pin to unlock</string>
 <!--  Pin Screen Strings End -->
 
+
+<!--  Premium Subscription Strings -->
+    <string name="premium_subscriptions_benefits_title">Benefits of getting a pro subscription</string>
+    <string name="premium_subscriptions_benefits_1">Updated UI</string>
+    <string name="premium_subscriptions_benefits_2">Wallet Balance History</string>
+    <string name="premium_subscriptions_benefits_3">Extended Bitcoin Network Data</string>
+    <string name="premium_subscriptions_benefits_4">Asset Transfer Protocol</string>
+    <string name="premium_subscriptions_benefits_5">Transaction Exporting</string>
+    <string name="premium_subscriptions_benefits_6">Create up to 10 wallets</string>
+    <string name="premium_subscriptions_benefits_7">Unlimited Hidden Wallets</string>
+    <string name="premium_subscriptions_benefits_8">Wallet Usage Reports</string>
+    <string name="premium_subscriptions_restore">Restore Purchases</string>
+    <string name="premium_subscriptions_pricing_title">The Pricing Structure</string>
+    <string name="premium_subscriptions_subscribe">Upgrade to Pro</string>
+    <string name="premium_subscriptions_load_error">Failed to load subscription information, please try again.</string>
+    <string name="premium_subscriptions_success">Pro Subscription Enabled</string>
+    <string name="premium_subscriptions_cancelled_purchase">Purchase cancelled.</string>
+    <string name="premium_subscriptions_failed_purchase">Purchase Failed: %1$s</string>
+    <string name="premium_subscription_type_yearly">Annual</string>
+    <string name="premium_subscription_type_monthly">Monthly</string>
+    <string name="premium_subscription_annual_price">%1$s/year</string>
+    <string name="premium_subscription_monthly_price_conversion">or ~%1$s/month</string>
+    <string name="premium_subscription_monthly_price_savings">Save %1$s%%</string>
+    <string name="premium_subscription_monthly_price">%1$s/month</string>
+    <string name="premium_subscription_switch_to_free">Premium subscription not found, switching to free version.</string>
+<!--  Premium Subscription Strings End -->
+
 <!--    Settings Strings -->
     <string name="settings_category_general">General</string>
     <string name="settings_category_security">Security</string>
@@ -75,7 +103,7 @@
     <string name="settings_option_plaid_crypto_wallet_pro">Plaid Crypto Wallet<font color="#104686">™</font> Pro</string>
     <string name="settings_option_plaid_crypto_wallet_pro_description">Manage your subscription</string>
     <string name="settings_option_max_pin_timeout">Pin Code Timeout</string>
-    <string name="settings_option_max_pin_timeout_variant_1">Immediately, Once I Leave the app</string>
+    <string name="settings_option_max_pin_timeout_variant_1">Only when I leave the app</string>
     <string name="settings_option_max_pin_timeout_variant_2">1 minute</string>
     <string name="settings_option_max_pin_timeout_variant_3">2 minutes</string>
     <string name="settings_option_max_pin_timeout_variant_4">5 minutes</string>
@@ -490,6 +518,7 @@
     <string name="saved_account_bottom_sheet_info_hint_1">My Vault</string>
     <string name="saved_account_bottom_sheet_info_hint_2">0 to 2147483647</string>
     <string name="saved_account_validation_error_invalid_account">Account number is too large!</string>
+    <string name="saved_account_validation_error_account_exists">An account with that name already exists!</string>
 <!--    Saved Account Strings End -->
 
 <!--    Withdrawal Type Strings -->
@@ -870,10 +899,14 @@
     <string name="setup_pin_fragment_label">Onboarding Pin Setup</string>
     <string name="fingerprint_fragment_label">Setup Fingerprint</string>
     <string name="fingerprint_all_set_label">All Set</string>
+    <string name="fingerprint_premium_subscriptions_label">Premium Subscriptions</string>
 <!--  Fragment Labels End -->
 
 
 <!--  Business Information -->
+    <string name="business_security_model" translatable="false">https://plaidcryptowallet.com/security/</string>
+    <string name="business_terms_of_service" translatable="false">https://plaidcryptowallet.com/terms-of-service/</string>
+    <string name="business_privacy_policy" translatable="false">https://plaidcryptowallet.com/privacy-policy/</string>
     <string name="business_info_email" translatable="false">support@plaidcryptowallet.com</string>
     <string name="business_info_support_request_subject_general" translatable="false">Help</string>
     <string name="business_info_support_request_subject_wallet" translatable="false">Wallet Issues</string>

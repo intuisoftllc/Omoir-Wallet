@@ -1,7 +1,5 @@
 
 import android.app.Application
-import com.intuisoft.plaid.PlaidApp
-import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.WalletViewModel
 import com.intuisoft.plaid.common.model.SavedAccountModel
 import com.intuisoft.plaid.common.repositories.ApiRepository
@@ -33,7 +31,7 @@ class WalletSettingsViewModel(
         val hiddenWallets = walletManager.getHiddenWalletCount(localWallet!!)
         val requiresNewWallet = walletManager.requiresNewHiddenWallet(localWallet!!, passphrase, account)
 
-        if(localStoreRepository.isProEnabled()) return true
+        if(localStoreRepository.isPremiumUser()) return true
         else {
             return (hiddenWallets < Constants.Limit.FREE_MAX_HIDDEN_WALLETS) ||
                     (hiddenWallets >= Constants.Limit.FREE_MAX_HIDDEN_WALLETS && !requiresNewWallet)

@@ -10,6 +10,7 @@ import com.intuisoft.plaid.features.onboarding.viewmodel.OnboardingViewModel
 import com.intuisoft.plaid.features.settings.viewmodel.AccountsViewModel
 import com.intuisoft.plaid.features.settings.viewmodel.AddressBookViewModel
 import com.intuisoft.plaid.features.settings.viewmodel.SettingsViewModel
+import com.intuisoft.plaid.features.settings.viewmodel.SubscriptionViewModel
 import com.intuisoft.plaid.features.splash.viewmodel.SplashViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
@@ -110,5 +111,9 @@ val viewModelModule = module {
 
     viewModel {
         AccountsViewModel(get(), get(), get(), get())
+    }
+
+    viewModel {
+        SubscriptionViewModel(get(), get(), get(), get())
     }
 }

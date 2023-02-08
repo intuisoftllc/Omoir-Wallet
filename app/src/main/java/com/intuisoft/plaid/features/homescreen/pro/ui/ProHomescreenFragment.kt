@@ -34,7 +34,8 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class ProHomescreenFragment : ConfigurableFragment<FragmentProHomescreenBinding>(
     pinProtection = true,
-    requiresWallet = false
+    requiresWallet = false,
+    premiumContent = true
 ), StateListener {
     protected val viewModel: HomeScreenViewModel by viewModel()
     protected val walletVM: WalletViewModel by viewModel()

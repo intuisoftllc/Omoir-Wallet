@@ -285,9 +285,10 @@ fun File.readFromFile(context: Context): String? {
     return ret
 }
 
+fun Double.format(digits: Int) = "%.${digits}f".format(this)
+
 fun Double.roundTo(numFractionDigits: Int): Double {
-    val factor = 10.0.pow(numFractionDigits.toDouble())
-    return (this * factor) / factor
+    return this.format(numFractionDigits).toDouble()
 }
 
 fun List<Long>.median(): Double {

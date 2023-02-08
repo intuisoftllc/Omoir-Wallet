@@ -34,7 +34,7 @@ import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.*
 
-class AssetTransferDetailsFragment : ConfigurableFragment<FragmentAssetTransferDetailsBinding>(pinProtection = true) {
+class AssetTransferDetailsFragment : ConfigurableFragment<FragmentAssetTransferDetailsBinding>(pinProtection = true, premiumContent = true) {
     protected val viewModel: AtpDetailsViewModel by viewModel()
     protected val localStoreRepository: LocalStoreRepository by inject()
     protected val walletManager: AbstractWalletManager by inject()

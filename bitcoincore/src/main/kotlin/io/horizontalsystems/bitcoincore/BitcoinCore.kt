@@ -859,7 +859,7 @@ class BitcoinCore(
     }
 
     companion object {
-        var loggingEnabled: Boolean = true
+        var loggingEnabled: Boolean = BuildConfig.DEBUG
     }
 
 }

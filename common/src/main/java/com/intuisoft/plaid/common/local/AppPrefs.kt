@@ -19,6 +19,7 @@ class AppPrefs(
         const val ALIAS_KEY = "ALIAS_KEY"
         const val APP_THEME = "APP_THEME"
         const val HIDE_HIDDEN_WALLETS = "HIDE_HIDDEN_WALLETS"
+        const val PREMIUM_USER = "PREMIUM_USER"
         const val DERIVATION_PATH_CHANGE_WARNING = "DERIVATION_PATH_CHANGE_WARNING"
     }
 
@@ -28,6 +29,14 @@ class AppPrefs(
         }
         set(finished) {
             putBool(ONBOARDING_FINISHED, finished)
+        }
+
+    var isPremiumUser: Boolean
+        get() {
+            return getBool(PREMIUM_USER)
+        }
+        set(premium) {
+            putBool(PREMIUM_USER, premium)
         }
 
     var maxPinAttempts: Int

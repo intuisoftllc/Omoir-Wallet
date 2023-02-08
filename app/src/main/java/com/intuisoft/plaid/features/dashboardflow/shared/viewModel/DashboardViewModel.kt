@@ -131,7 +131,7 @@ class DashboardViewModel(
         viewModelScope.launch {
            withContext(Dispatchers.IO) {
                safeWalletScope {
-                    if(localStoreRepository.isProEnabled()) {
+                    if(localStoreRepository.isPremiumUser()) {
                         if (balanceHistory.isEmpty()) {
                             _noChartData.postValue(Unit)
 
@@ -172,6 +172,8 @@ class DashboardViewModel(
                                 walletTransactions.filter { it.type == TransactionType.Incoming }
                             val outgoingTxs =
                                 walletTransactions.filter { it.type == TransactionType.Outgoing || it.type == TransactionType.SentToSelf }
+                            val incomingBalanceHistory =
+                                incomingTxs.map { it.timestamp to it.amount }
 
                             val totalSentCost = outgoingTxs
                                 .map { tx ->
@@ -187,15 +189,13 @@ class DashboardViewModel(
                                     (tx.amount.toDouble()) / Constants.Limit.SATS_PER_BTC
                                 }.sum()
 
-                            val averagePrice = incomingTxs
-                                .map { tx ->
-                                    allTimeMarketData?.find { it.time >= tx.timestamp }?.price?.toFloat() ?: 0f
-                                }.average()
+                            val averagePrice = allTimeMarketData?.map {
+                                getBalanceAtTime(it.time, incomingBalanceHistory)
+                            }?.average() ?: 0.0
 
-                            val highestBalance = balanceHistory
-                                .map { balance ->
-                                    balance.first
-                                }.maxOrNull()
+                            val highestBalance = allTimeMarketData?.map {
+                                getBalanceAtTime(it.time, balanceHistory)
+                            }?.maxOrNull()
 
                             val rate = RateConverter(
                                 localStoreRepository.getRateFor(localStoreRepository.getLocalCurrency())?.currentPrice
@@ -330,9 +330,30 @@ class DashboardViewModel(
     }
 
     private fun getBalanceAtTime(time: Long, history: List<Pair<Long, Long>>): Float {
-        val closestBalance = history.find { it.second >= time }?.first?.toFloat()
-            ?: history.lastOrNull()?.first?.toFloat()
-        return (closestBalance ?: 0f) / Constants.Limit.SATS_PER_BTC
+        var closestBalance = 0f
+        var index = 0
+
+        for(item in history) {
+            val startBalance = item
+            val endBalance = history.getOrNull(index + 1) ?: startBalance
+
+            if(startBalance == endBalance && time >= startBalance.second) {
+                closestBalance = startBalance.first.toFloat()
+                break
+            } else if(time in startBalance.second..endBalance.second) {
+                if(time == endBalance.second) {
+                    closestBalance = endBalance.first.toFloat()
+                } else {
+                    closestBalance = startBalance.first.toFloat()
+                }
+
+                break
+            }
+
+            index++
+        }
+
+        return closestBalance / Constants.Limit.SATS_PER_BTC
     }
 
     private fun getMaxMarketInterval(interval: ChartIntervalType, birthdate: Instant): Pair<Long, Long> {
@@ -399,7 +420,12 @@ class DashboardViewModel(
             }
             ChartIntervalType.INTERVAL_ALL_TIME -> {
                 txStartTime = Instant.ofEpochSecond(balanceHistory.firstOrNull()?.second ?: 0)
-                splitTime = -1 // just show full balance history
+
+                if(nowTime.minusDays(1).toInstant().isBefore(txStartTime))
+                    splitTime = 30 * (Constants.Time.ONE_MINUTE * Constants.Time.MILLS_PER_SEC) // 30 minute intervals
+                else if(nowTime.minusMonths(1).toInstant().isBefore(txStartTime))
+                    splitTime = 60 * (Constants.Time.ONE_MINUTE * Constants.Time.MILLS_PER_SEC) // 60 minute intervals
+                else splitTime = (Constants.Time.SECONDS_PER_DAY * Constants.Time.MILLS_PER_SEC) // 1 day intervals
             }
         }
 

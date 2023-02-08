@@ -59,6 +59,10 @@ class WalletManager(
         syncer.stop()
     }
 
+    override fun isRunning(): Boolean {
+        return syncer.isRunning()
+    }
+
     override fun getHiddenWallets(): MutableMap<String, HiddenWalletModel?> {
         return hiddenWallets
     }

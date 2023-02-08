@@ -18,7 +18,6 @@ import com.intuisoft.plaid.features.onboarding.viewmodel.OnboardingViewModel
 import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.util.fragmentconfig.AllSetData
 import com.intuisoft.plaid.walletmanager.AbstractWalletManager
-import com.intuisoft.plaid.walletmanager.WalletManager
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
@@ -84,7 +83,7 @@ class OnboardingPinFragment : BindingFragment<FragmentOnboardingPinBinding>() {
                             positiveText = getString(R.string.create_new_wallet),
                             negativeText = getString(R.string.goto_homescreen),
                             positiveDestination = R.id.createWalletFragment,
-                            negativeDestination = if(localStoreRepository.isProEnabled()) R.id.proHomescreenFragment else R.id.homescreenFragment,
+                            negativeDestination = if(localStoreRepository.isPremiumUser()) R.id.proHomescreenFragment else R.id.homescreenFragment,
                             walletUUID = ""
                         )
                     )

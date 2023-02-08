@@ -32,6 +32,7 @@
     <color name="alt_blue_grey">#FCFEFF</color>
     <color name="white">#FFFFFFFF</color>
     <color name="orange">#F7931A</color>
+    <color name="soft_blue">#F4F9FF</color>
 <!--    Hard Colors End -->
 
 <!--    Component Colors -->
@@ -58,6 +59,7 @@
     <color name="qr_code_whitespace_color">@color/white</color>
     <color name="qr_code_data_color">@color/black</color>
     <color name="disabled_color">@color/grey</color>
+    <color name="subscription_save_tag_color">@color/soft_blue</color>
 <!--    Component Colors End -->
 
 

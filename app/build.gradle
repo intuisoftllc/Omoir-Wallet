@@ -20,7 +20,7 @@ android {
         applicationId "com.intuisoft.plaid"
         minSdk 26
         targetSdk 33
-        versionCode 1
+        versionCode 5
         versionName "0.1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -63,7 +63,8 @@ android {
             buildConfigField("String", "BLOCKSTREAM_INFO_SERVER_URL", "\"https://blockstream.info/api/\"")
             buildConfigField("String", "BLOCKSTREAM_INFO_TEST_NET_SERVER_URL", "\"https://blockstream.info/testnet/api/\"")
             buildConfigField("String", "BLOCKCHAIR_CLIENT_SECRET", "null")
-            buildConfigField("String", "CHANGE_NOW_CLIENT_SECRET", "\"${properties['CHANGE_NOW_CLIENT_SECRET']}\"")
+            buildConfigField("String", "CHANGE_NOW_CLIENT_SECRET", "\"\"")
+            buildConfigField("String", "REVENUE_CAT_SECRET", "\"${properties['REVENUE_CAT_SECRET']}\"")
 
             /**
              * Wallet Secret
@@ -88,6 +89,7 @@ android {
             buildConfigField("String", "BLOCKSTREAM_INFO_TEST_NET_SERVER_URL", "\"https://blockstream.info/testnet/api/\"")
             buildConfigField("String", "BLOCKCHAIR_CLIENT_SECRET", "\"${properties['BLOCKCHAIR_CLIENT_SECRET']}\"")
             buildConfigField("String", "CHANGE_NOW_CLIENT_SECRET", "\"${properties['CHANGE_NOW_CLIENT_SECRET']}\"")
+            buildConfigField("String", "REVENUE_CAT_SECRET", "\"${properties['REVENUE_CAT_SECRET']}\"")
             buildConfigField("String", "WALLET_SECRET", "\"${properties['WALLET_SECRET']}\"")
         }
     }
@@ -149,7 +151,7 @@ dependencies {
 
     implementation 'com.diogobernardino:williamchart:3.11.0'
 
-    implementation "com.android.billingclient:billing-ktx:5.1.0"
+    implementation 'com.revenuecat.purchases:purchases:5.4.0'
 
 // Tooltips
     implementation 'com.diogobernardino.williamchart:tooltip-slider:3.11.0'

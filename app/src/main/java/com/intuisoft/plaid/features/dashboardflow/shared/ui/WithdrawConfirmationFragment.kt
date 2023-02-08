@@ -293,7 +293,7 @@ class WithdrawConfirmationFragment : ConfigurableFragment<FragmentWithdrawConfir
                 )
             } else {
                 findNavController().popBackStack(
-                    if (localStoreRepository.isProEnabled()) R.id.walletProDashboardFragment
+                    if (localStoreRepository.isPremiumUser()) R.id.walletProDashboardFragment
                     else R.id.walletDashboardFragment,
                     false
                 )

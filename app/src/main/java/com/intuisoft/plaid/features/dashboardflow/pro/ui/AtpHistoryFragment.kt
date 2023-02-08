@@ -24,7 +24,7 @@ import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
-class AtpHistoryFragment : ConfigurableFragment<FragmentAtpHistoryBinding>(pinProtection = true) {
+class AtpHistoryFragment : ConfigurableFragment<FragmentAtpHistoryBinding>(pinProtection = true, premiumContent = true) {
     protected val viewModel: AtpHistoryViewModel by viewModel()
     protected val localStoreRepository: LocalStoreRepository by inject()
     protected val walletManager: AbstractWalletManager by inject()

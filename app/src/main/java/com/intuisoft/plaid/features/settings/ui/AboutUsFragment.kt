@@ -9,6 +9,7 @@ import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.ConfigurableFragment
 import com.intuisoft.plaid.androidwrappers.delegates.FragmentConfiguration
 import com.intuisoft.plaid.androidwrappers.TopBarView
+import com.intuisoft.plaid.androidwrappers.openLink
 import com.intuisoft.plaid.databinding.FragmentAboutUsBinding
 import com.intuisoft.plaid.features.settings.viewmodel.SettingsViewModel
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
@@ -31,17 +32,17 @@ class AboutUsFragment : ConfigurableFragment<FragmentAboutUsBinding>(
     }
 
     override fun onConfiguration(configuration: FragmentConfiguration?) {
-//        binding.security.setOnClickListener {
-//            // todo: impl -> navigate to fragment in app explaining our security model
-//        }
-//
-//        binding.privacyPolicy.setOnClickListener {
-//            // todo: impl -> navigate to web address on plaidcryptowallet.com
-//        }
-//
-//        binding.termsOfService.setOnClickListener {
-//            // todo: impl -> navigate to web address on plaidcryptowallet.com
-//        }
+        binding.security.setOnClickListener {
+            requireContext().openLink(getString(R.string.business_security_model))
+        }
+
+        binding.privacyPolicy.setOnClickListener {
+            requireContext().openLink(getString(R.string.business_privacy_policy))
+        }
+
+        binding.termsOfService.setOnClickListener {
+            requireContext().openLink(getString(R.string.business_terms_of_service))
+        }
     }
 
 
