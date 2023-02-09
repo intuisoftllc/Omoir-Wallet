@@ -58,6 +58,7 @@
     <string name="premium_subscriptions_subscribe">Upgrade to Pro</string>
     <string name="premium_subscriptions_load_error">Failed to load subscription information, please try again.</string>
     <string name="premium_subscriptions_success">Pro Subscription Enabled</string>
+    <string name="premium_subscriptions_update_success">Subscription Updated</string>
     <string name="premium_subscriptions_cancelled_purchase">Purchase cancelled.</string>
     <string name="premium_subscriptions_failed_purchase">Purchase Failed: %1$s</string>
     <string name="premium_subscription_type_yearly">Annual</string>
@@ -67,6 +68,18 @@
     <string name="premium_subscription_monthly_price_savings">Save %1$s%%</string>
     <string name="premium_subscription_monthly_price">%1$s/month</string>
     <string name="premium_subscription_switch_to_free">Premium subscription not found, switching to free version.</string>
+    <string name="premium_subscription_info_title">Premium Subscription</string>
+    <string name="premium_subscription_info_1_title">Renewal Type</string>
+    <string name="premium_subscription_info_2_title">Good Until</string>
+    <string name="premium_subscription_info_3_title">Status</string>
+    <string name="premium_subscription_renewal_type_1">Monthly</string>
+    <string name="premium_subscription_renewal_type_2">Annual</string>
+    <string name="premium_subscription_state_type_1">Active</string>
+    <string name="premium_subscription_state_type_2">Inactive Until Renewal</string>
+    <string name="premium_subscription_expired_state">Expired</string>
+    <string name="premium_subscription_manage">Manage Subscription</string>
+    <string name="premium_subscription_switch_annual">Switch To Annual</string>
+    <string name="premium_subscription_switch_monthly">Switch To Monthly</string>
 <!--  Premium Subscription Strings End -->
 
 <!--    Settings Strings -->
@@ -899,7 +912,8 @@
     <string name="setup_pin_fragment_label">Onboarding Pin Setup</string>
     <string name="fingerprint_fragment_label">Setup Fingerprint</string>
     <string name="fingerprint_all_set_label">All Set</string>
-    <string name="fingerprint_premium_subscriptions_label">Premium Subscriptions</string>
+    <string name="premium_subscriptions_label">Premium Subscriptions</string>
+    <string name="current_subscription_label">My Subscriptions</string>
 <!--  Fragment Labels End -->
 
 
@@ -911,8 +925,8 @@
     <string name="business_info_support_request_subject_general" translatable="false">Help</string>
     <string name="business_info_support_request_subject_wallet" translatable="false">Wallet Issues</string>
     <string name="business_info_support_request_subject_exchange" translatable="false">Exchange Issue</string>
-    <string name="business_info_support_request_message" translatable="false">Hello Intuisoft team, I would like to request more information regarding your app.\n\n----------------------------------------\nDevice: %1$s\nApi Level: %2$s\nOS Version: %3$s\nModel: %4$s\nProduct: %5$s\n%6$s\n</string>
-    <string name="business_info_support_request_wallet_state_message" translatable="false">Hello Intuisoft team, I am having trouble using my wallet.\nDescription:\n\n\n\n----------------------------------------\n[This information helps our developers better understand how to fix your issue]\n\nWallet Status --\n\nTestnet Wallet: %1$s\nHidden Wallet: %2$s\nSynced Until: %3$s\nSyncing Peer: %4$s\nType: %5$s\nSync State: %6$s\nLast Seen Block Height: %7$s\n\nPeer Info --\n\n%8$s\n\n----------------------------------------\nDevice: %9$s\nApi Level: %10$s\nOS Version: %11$s\nModel: %12$s\nProduct: %13$s\n%14$s\n</string>
-    <string name="business_info_support_request_exchange_message" translatable="false">Hello Intuisoft team, I am having trouble with the following exchange: %1$s.\nDescription:\n\n\n\n----------------------------------------\n[This information helps our developers better understand how to fix your issue]\n\nWallet Status --\n\nTestnet Wallet: %2$s\nHidden Wallet: %3$s\nSynced Until: %4$s\nSyncing Peer: %5$s\nType: %6$s\nSync State: %7$s\nLast Seen Block Height: %8$s\n\nPeer Info --\n\n%9$s\n\n----------------------------------------\nDevice: %10$s\nApi Level: %11$s\nOS Version: %12$s\nModel: %13$s\nProduct: %14$s\n%15$s\n</string>
+    <string name="business_info_support_request_message" translatable="false">Hello Intuisoft team, I would like to request more information regarding your app.\n\n----------------------------------------\n[This information helps our developers better understand how to fix your issue]\nDevice: %1$s\nApi Level: %2$s\nOS Version: %3$s\nModel: %4$s\nProduct: %5$s\n%6$s\n%7$s\n</string>
+    <string name="business_info_support_request_wallet_state_message" translatable="false">Hello Intuisoft team, I am having trouble using my wallet.\nDescription:\n\n\n\n----------------------------------------\n[This information helps our developers better understand how to fix your issue]\n\nWallet Status --\n\nTestnet Wallet: %1$s\nHidden Wallet: %2$s\nSynced Until: %3$s\nSyncing Peer: %4$s\nType: %5$s\nSync State: %6$s\nLast Seen Block Height: %7$s\n\nPeer Info --\n\n%8$s\n\n----------------------------------------\nDevice: %9$s\nApi Level: %10$s\nOS Version: %11$s\nModel: %12$s\nProduct: %13$s\n%14$s\n%15$s\n[This information helps our developers better understand how to fix your issue]\n</string>
+    <string name="business_info_support_request_exchange_message" translatable="false">Hello Intuisoft team, I am having trouble with the following exchange: %1$s.\nDescription:\n\n\n\n----------------------------------------\n[This information helps our developers better understand how to fix your issue]\n\nWallet Status --\n\nTestnet Wallet: %2$s\nHidden Wallet: %3$s\nSynced Until: %4$s\nSyncing Peer: %5$s\nType: %6$s\nSync State: %7$s\nLast Seen Block Height: %8$s\n\nPeer Info --\n\n%9$s\n\n----------------------------------------\nDevice: %10$s\nApi Level: %11$s\nOS Version: %12$s\nModel: %13$s\nProduct: %14$s\n%15$s\n%16$s\n[This information helps our developers better understand how to fix your issue]\n</string>
 <!--  Business Information End -->
 </resources>

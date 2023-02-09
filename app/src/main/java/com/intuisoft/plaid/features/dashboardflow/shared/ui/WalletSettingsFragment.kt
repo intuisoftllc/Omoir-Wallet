@@ -28,6 +28,7 @@ import com.intuisoft.plaid.PlaidApp
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.*
 import com.intuisoft.plaid.androidwrappers.delegates.FragmentConfiguration
+import com.intuisoft.plaid.billing.BillingManager
 import com.intuisoft.plaid.common.analytics.EventTracker
 import com.intuisoft.plaid.common.analytics.events.*
 import com.intuisoft.plaid.common.model.HiddenWalletModel
@@ -52,6 +53,7 @@ class WalletSettingsFragment : ConfigurableFragment<FragmentWalletSettingsBindin
     private val viewModel: WalletSettingsViewModel by viewModel()
     private val appSettingsViewModel: SettingsViewModel by sharedViewModel()
     protected val eventTracker: EventTracker by inject()
+    protected val billing: BillingManager by inject()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -150,7 +152,8 @@ class WalletSettingsFragment : ConfigurableFragment<FragmentWalletSettingsBindin
                     System.getProperty("os.version"),
                     Build.MODEL,
                     Build.PRODUCT,
-                    if(viewModel.isProEnabled()) Constants.Strings.PRO_SUBSCRIPTION_MARK else ""
+                    if(viewModel.isProEnabled()) Constants.Strings.PRO_SUBSCRIPTION_MARK else "",
+                    billing.getUserId()
                 )
             )
         }

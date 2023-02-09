@@ -172,20 +172,20 @@ class RoundedButtonView(context: Context, attrs: AttributeSet?) : LinearLayout(c
         button?.setCompoundDrawablesWithIntrinsicBounds(0, 0, drawable, 0)
     }
 
-    fun onClick(click: (Button) -> Unit) {
-        findViewById<Button>(R.id.normal_button)?.setOnSingleClickListener(Constants.Time.MIN_CLICK_INTERVAL_MED) {
+    fun onClick(clickDuration: Int = Constants.Time.MIN_CLICK_INTERVAL_MED, click: (Button) -> Unit) {
+        findViewById<Button>(R.id.normal_button)?.setOnSingleClickListener(clickDuration) {
             click(button!!)
         }
-        findViewById<Button>(R.id.rounded_style_button)?.setOnSingleClickListener(Constants.Time.MIN_CLICK_INTERVAL_MED) {
+        findViewById<Button>(R.id.rounded_style_button)?.setOnSingleClickListener(clickDuration) {
             click(button!!)
         }
-        findViewById<Button>(R.id.rounded_outlined_style_button)?.setOnSingleClickListener(Constants.Time.MIN_CLICK_INTERVAL_MED) {
+        findViewById<Button>(R.id.rounded_outlined_style_button)?.setOnSingleClickListener(clickDuration) {
             click(button!!)
         }
-        findViewById<Button>(R.id.pill_style_button)?.setOnSingleClickListener(Constants.Time.MIN_CLICK_INTERVAL_MED) {
+        findViewById<Button>(R.id.pill_style_button)?.setOnSingleClickListener(clickDuration) {
             click(button!!)
         }
-        findViewById<Button>(R.id.transparent_style_button)?.setOnSingleClickListener(Constants.Time.MIN_CLICK_INTERVAL_MED) {
+        findViewById<Button>(R.id.transparent_style_button)?.setOnSingleClickListener(clickDuration) {
             click(button!!)
         }
     }

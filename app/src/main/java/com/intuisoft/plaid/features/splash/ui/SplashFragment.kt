@@ -36,13 +36,16 @@ class SplashFragment : BindingFragment<FragmentSplashBinding>() {
         super.onViewCreated(view, savedInstanceState)
 
         (activity as? MainActivity)?.setAppTheme()
-        billing.checkEntitlement()
-        billing.getProducts { }
+        viewModel.shouldRunEntitlementCheck()
         animateLogo()
         viewModel.nextScreen()
 
         viewModel.nextDestination.observe(viewLifecycleOwner, Observer {
             findNavController().navigate(it, Constants.Navigation.ANIMATED_FADE_IN_EXIT_NAV_OPTION)
+        })
+
+        viewModel.runEntitlementCheck.observe(viewLifecycleOwner, Observer {
+            billing.checkEntitlement()
         })
 
         viewModel.goHome.observe(viewLifecycleOwner, Observer {

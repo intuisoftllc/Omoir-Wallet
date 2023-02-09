@@ -103,7 +103,7 @@ class ReportsFragment : ConfigurableFragment<FragmentReportsBinding>(pinProtecti
     }
 
     override fun onBackPressed() {
-        onNavigateBottomBarSecondaryFragmentBackwards(localStoreRepository)
+        onNavigateBottomBarSecondaryFragmentBackwards()
     }
 
     override fun onNavigateTo(destination: Int) {

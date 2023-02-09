@@ -9,11 +9,14 @@ import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.BaseViewModel
 import com.intuisoft.plaid.androidwrappers.BindingFragment
 import com.intuisoft.plaid.androidwrappers.SingleLiveData
+import com.intuisoft.plaid.common.coroutines.PlaidScope
 import com.intuisoft.plaid.common.model.AppTheme
 import com.intuisoft.plaid.common.model.BitcoinDisplayUnit
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.common.util.Constants
+import com.intuisoft.plaid.common.util.extensions.safeWalletScope
 import com.intuisoft.plaid.walletmanager.AbstractWalletManager
+import kotlinx.coroutines.launch
 
 class SettingsViewModel(
     application: Application,
@@ -64,17 +67,21 @@ class SettingsViewModel(
 
     fun saveMinimumConfirmation(min: Int) {
         localStoreRepository.setMinConfirmations(min)
-    }
+     }
 
     fun updateSettingsScreen() {
-        updateDisplayUnitSetting()
-        updateAppThemeSetting()
-        updatePinTimeoutSetting()
-        updateFingerprintRegisteredSetting()
-        updateAppVersionSetting()
-        updateNameSetting()
-        updateLocalCurrencySetting()
-        updateHideHiddenWalletsSetting()
+        PlaidScope.MainScope.launch {
+            safeWalletScope {
+                updateDisplayUnitSetting()
+                updateAppThemeSetting()
+                updatePinTimeoutSetting()
+                updateFingerprintRegisteredSetting()
+                updateAppVersionSetting()
+                updateNameSetting()
+                updateLocalCurrencySetting()
+                updateHideHiddenWalletsSetting()
+            }
+        }
     }
 
     fun pinTimeoutToString(context: Context, timeout: Int) : String =

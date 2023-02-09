@@ -1,8 +1,10 @@
 package com.intuisoft.plaid.androidwrappers
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.WindowManager
+import android.widget.Toast
 import androidx.navigation.fragment.findNavController
 import androidx.viewbinding.ViewBinding
 import com.intuisoft.plaid.R
@@ -70,8 +72,8 @@ abstract class ConfigurableFragment<T: ViewBinding>(
 
         if(premiumContent) {
             _billing.checkEntitlement {
-                if(!it) {
-                    styledSnackBar(requireView(), getString(R.string.premium_subscription_switch_to_free))
+                if(!_billing.subscriptionActive(it) && !CommonService.getPremiumOverride()) {
+                    Toast.makeText(requireContext(), getString(R.string.premium_subscription_switch_to_free), Toast.LENGTH_LONG).show()
                     softRestart(_manager, _localStore)
                 }
             }
@@ -167,15 +169,15 @@ abstract class ConfigurableFragment<T: ViewBinding>(
         return baseVM!!.currentConfig != null
     }
 
-    fun onNavigateBottomBarSecondaryFragmentBackwards(localStoreRepository: LocalStoreRepository) {
-        if(localStoreRepository.isPremiumUser())
+    fun onNavigateBottomBarSecondaryFragmentBackwards() {
+        if(findNavController().isFragmentInBackStack(R.id.walletProDashboardFragment))
             findNavController().popBackStack(R.id.walletProDashboardFragment, false)
         else
             findNavController().popBackStack(R.id.walletDashboardFragment, false)
     }
 
-    fun onNavigateBottomBarPrimaryFragmentBackwards(localStoreRepository: LocalStoreRepository) {
-        if(localStoreRepository.isPremiumUser())
+    fun onNavigateBottomBarPrimaryFragmentBackwards() {
+        if(findNavController().isFragmentInBackStack(R.id.proHomescreenFragment))
             findNavController().popBackStack(R.id.proHomescreenFragment, false)
         else
             findNavController().popBackStack(R.id.homescreenFragment, false)

@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+
+    <com.intuisoft.plaid.androidwrappers.RoundedButtonView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:text_position="center"
+        app:btn_text="@string/premium_subscription_manage"
+        app:button_style="rounded"
+        android:id="@+id/manage"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/switch_subscription"
+        android:layout_marginBottom="@dimen/horizontal_padding_size"
+        android:layout_marginHorizontal="50dp"/>
+
+    <com.intuisoft.plaid.androidwrappers.RoundedButtonView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:text_position="center"
+        app:btn_text="@string/premium_subscriptions_subscribe"
+        app:button_style="outlined"
+        android:visibility="gone"
+        android:id="@+id/switch_subscription"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="@dimen/parent_bottom_margin"
+        android:layout_marginHorizontal="50dp"/>
+
+    <ScrollView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/manage"
+        android:layout_marginBottom="@dimen/margin_8">
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            xmlns:app="http://schemas.android.com/apk/res-auto">
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/benifits_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:layout_marginBottom="@dimen/horizontal_padding_size"
+                    app:cardCornerRadius="4dp"
+                    android:layout_margin="10dp"
+                    android:backgroundTint="@color/card_background_color"
+                    app:layout_constraintHorizontal_bias="0">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="16dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            style="@style/TextStyle.Semibold.12"
+                            android:textColor="@color/settings_category_text_color"
+                            android:textStyle="bold"
+                            android:layout_marginBottom="@dimen/horizontal_padding_size"
+                            android:text="@string/premium_subscription_info_title"/>
+
+
+                        <com.intuisoft.plaid.androidwrappers.SettingsItemView
+                            android:id="@+id/info_1"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            app:settings_variant="normal"
+                            app:title_text_color="@color/subtitle_text_color"
+                            app:layout_constraintTop_toBottomOf="@id/security"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:item_title="@string/premium_subscription_info_1_title"
+                            android:layout_marginBottom="@dimen/horizontal_padding_size"
+                            app:item_subtitle=""/>
+
+
+                        <com.intuisoft.plaid.androidwrappers.SettingsItemView
+                            android:id="@+id/info_2"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            app:settings_variant="normal"
+                            app:title_text_color="@color/subtitle_text_color"
+                            app:layout_constraintTop_toBottomOf="@id/security"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:item_title="@string/premium_subscription_info_2_title"
+                            android:layout_marginBottom="@dimen/horizontal_padding_size"
+                            app:item_subtitle=""/>
+
+
+                        <com.intuisoft.plaid.androidwrappers.SettingsItemView
+                            android:id="@+id/info_3"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            app:settings_variant="normal"
+                            app:title_text_color="@color/subtitle_text_color"
+                            app:layout_constraintTop_toBottomOf="@id/security"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:item_title="@string/premium_subscription_info_3_title"
+                            app:item_subtitle=""/>
+
+                    </LinearLayout>
+
+                    </androidx.cardview.widget.CardView>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>

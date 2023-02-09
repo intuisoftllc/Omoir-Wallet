@@ -1,5 +1,6 @@
 package com.intuisoft.plaid.common.repositories
 
+import com.intuisoft.plaid.common.BuildConfig
 import com.intuisoft.plaid.common.CommonService
 import com.intuisoft.plaid.common.coroutines.PlaidScope
 import com.intuisoft.plaid.common.util.extensions.remove
@@ -108,7 +109,7 @@ class LocalStoreRepository_Impl(
     }
 
     override fun isPremiumUser(): Boolean {
-        return appPrefs.isPremiumUser
+        return appPrefs.isPremiumUser || CommonService.getPremiumOverride()
     }
 
     override fun setMaxPinEntryLimit(limit: Int) {

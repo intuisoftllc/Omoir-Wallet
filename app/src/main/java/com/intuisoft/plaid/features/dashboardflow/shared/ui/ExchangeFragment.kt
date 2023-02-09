@@ -186,7 +186,7 @@ class ExchangeFragment : ConfigurableFragment<FragmentExchangeBinding>(pinProtec
     }
 
     override fun onBackPressed() {
-        onNavigateBottomBarSecondaryFragmentBackwards(localStore)
+        onNavigateBottomBarSecondaryFragmentBackwards()
     }
 
     private fun setMinMax(minMax: Pair<String, String>?) {

@@ -94,8 +94,16 @@
     <fragment
         android:id="@+id/premiumSubscriptionFragment"
         android:name="com.intuisoft.plaid.features.settings.ui.PremiumSubscriptionsFragment"
-        android:label="@string/fingerprint_premium_subscriptions_label"
+        android:label="@string/premium_subscriptions_label"
         tools:layout="@layout/fragment_premium_subscriptions">
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/currentSubscriptionFragment"
+        android:name="com.intuisoft.plaid.features.settings.ui.SubscriptionFragment"
+        android:label="@string/current_subscription_label"
+        tools:layout="@layout/fragment_subscription">
 
     </fragment>
 

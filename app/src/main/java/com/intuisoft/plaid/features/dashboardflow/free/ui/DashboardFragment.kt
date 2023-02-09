@@ -11,9 +11,11 @@ import com.intuisoft.plaid.R
 import com.intuisoft.plaid.activities.MainActivity
 import com.intuisoft.plaid.androidwrappers.*
 import com.intuisoft.plaid.androidwrappers.delegates.FragmentConfiguration
+import com.intuisoft.plaid.billing.BillingManager
 import com.intuisoft.plaid.common.CommonService
 import com.intuisoft.plaid.common.analytics.EventTracker
 import com.intuisoft.plaid.common.analytics.events.*
+import com.intuisoft.plaid.common.model.BitcoinDisplayUnit
 import com.intuisoft.plaid.databinding.FragmentWalletDashboardBinding
 import com.intuisoft.plaid.features.homescreen.adapters.BasicTransactionAdapter
 import com.intuisoft.plaid.listeners.StateListener
@@ -38,6 +40,7 @@ class DashboardFragment : ConfigurableFragment<FragmentWalletDashboardBinding>(p
     protected val localStoreRepository: LocalStoreRepository by inject()
     protected val walletManager: AbstractWalletManager by inject()
     protected val eventTracker: EventTracker by inject()
+    protected val billing: BillingManager by inject()
 
     private val adapter = BasicTransactionAdapter(
         onTransactionSelected = ::onTransactionSelected,
@@ -60,6 +63,11 @@ class DashboardFragment : ConfigurableFragment<FragmentWalletDashboardBinding>(p
 
     override fun onConfiguration(configuration: FragmentConfiguration?) {
         eventTracker.log(EventDashboardView())
+        billing.checkEntitlement {
+            if(billing.subscriptionActive(it) || CommonService.getPremiumOverride()) {
+                softRestart()
+            }
+        }
         viewModel.getTransactions()
         viewModel.displayCurrentWallet()
         viewModel.showWalletBalance(requireContext())
@@ -152,7 +160,7 @@ class DashboardFragment : ConfigurableFragment<FragmentWalletDashboardBinding>(p
     }
 
     override fun onBackPressed() {
-        onNavigateBottomBarPrimaryFragmentBackwards(localStoreRepository)
+        onNavigateBottomBarPrimaryFragmentBackwards()
     }
 
     override fun onWalletStateUpdated(wallet: LocalWalletModel) {
@@ -173,6 +181,27 @@ class DashboardFragment : ConfigurableFragment<FragmentWalletDashboardBinding>(p
                     binding.swipeContainer.isRefreshing = wallet.isSyncing
                 }
             }
+        }
+    }
+
+    override fun onSubtitleClicked() {
+        if(!viewModel.getWallet()!!.isSyncing) {
+            when (viewModel.getDisplayUnit()) {
+                BitcoinDisplayUnit.BTC -> {
+                    viewModel.setDisplayUnit(BitcoinDisplayUnit.SATS)
+                }
+
+                BitcoinDisplayUnit.SATS -> {
+                    viewModel.setDisplayUnit(BitcoinDisplayUnit.FIAT)
+                }
+
+                BitcoinDisplayUnit.FIAT -> {
+                    viewModel.setDisplayUnit(BitcoinDisplayUnit.BTC)
+                }
+            }
+
+            viewModel.showWalletBalance(requireContext())
+            adapter.updateConversion()
         }
     }
 
@@ -211,7 +240,7 @@ class DashboardFragment : ConfigurableFragment<FragmentWalletDashboardBinding>(p
     }
 
     override fun onActionLeft() {
-        onNavigateBottomBarPrimaryFragmentBackwards(localStoreRepository)
+        onNavigateBottomBarPrimaryFragmentBackwards()
     }
 
     override fun onActionRight() {

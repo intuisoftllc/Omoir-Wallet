@@ -1,86 +1,87 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/swipeContainer"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:enabled="true"
-    app:layout_constraintHorizontal_bias="0.0"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintVertical_bias="0.0">
-        <LinearLayout
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="@dimen/parent_top_margin_med"
+        android:paddingHorizontal="@dimen/margin_10">
+
+        <com.intuisoft.plaid.androidwrappers.RoundedButtonView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            app:btn_text="@string/deposit"
+            android:id="@+id/deposit"
+            app:text_position="center"
+            app:button_style="rounded"
+            android:layout_weight="1"
+            android:paddingHorizontal="@dimen/margin_6"/>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="@dimen/parent_top_margin_med"
-                android:paddingHorizontal="@dimen/margin_10">
+        <com.intuisoft.plaid.androidwrappers.RoundedButtonView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:btn_text="@string/withdraw"
+            android:id="@+id/withdraw"
+            app:text_position="center"
+            android:layout_weight="1"
+            app:button_style="outlined"
+            android:paddingHorizontal="@dimen/margin_6"/>
+    </LinearLayout>
 
-                <com.intuisoft.plaid.androidwrappers.RoundedButtonView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:btn_text="@string/deposit"
-                    android:id="@+id/deposit"
-                    app:text_position="center"
-                    app:button_style="rounded"
-                    android:layout_weight="1"
-                    android:paddingHorizontal="@dimen/margin_6"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center_horizontal"
+        style="@style/TextStyle.Semibold.24"
+        android:textStyle="bold"
+        android:textColor="?attr/colorPrimaryVariant"
+        android:text="@string/wallet_dashboard_transactions_title"
+        android:paddingHorizontal="20dp"
+        android:layout_marginTop="@dimen/horizontal_padding_size_large"/>
 
-                <com.intuisoft.plaid.androidwrappers.RoundedButtonView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:btn_text="@string/withdraw"
-                    android:id="@+id/withdraw"
-                    app:text_position="center"
-                    android:layout_weight="1"
-                    app:button_style="outlined"
-                    android:paddingHorizontal="@dimen/margin_6"/>
-            </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:gravity="center_horizontal"
-                style="@style/TextStyle.Semibold.24"
-                android:textStyle="bold"
-                android:textColor="?attr/colorPrimaryVariant"
-                android:text="@string/wallet_dashboard_transactions_title"
-                android:paddingHorizontal="20dp"
-                android:layout_marginTop="@dimen/horizontal_padding_size_large"/>
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:alpha=".9"
+            android:visibility="gone"
+            android:layout_marginTop="@dimen/horizontal_padding_size_large"
+            android:id="@+id/noTransactionsIcon"
+            android:src="@drawable/ic_no_transactions"
+            android:layout_gravity="center"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:visibility="gone"
+            android:layout_marginTop="@dimen/horizontal_padding_size"
+            android:id="@+id/noTransactionsMessage"
+            android:layout_gravity="center"
+            android:text="@string/wallet_dashboard_no_transactions"/>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:orientation="vertical">
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:alpha=".9"
-                    android:visibility="gone"
-                    android:layout_marginTop="@dimen/horizontal_padding_size_large"
-                    android:id="@+id/noTransactionsIcon"
-                    android:src="@drawable/ic_no_transactions"
-                    android:layout_gravity="center"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:visibility="gone"
-                    android:layout_marginTop="@dimen/horizontal_padding_size"
-                    android:id="@+id/noTransactionsMessage"
-                    android:layout_gravity="center"
-                    android:text="@string/wallet_dashboard_no_transactions"/>
-
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/swipeContainer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:enabled="true"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintVertical_bias="0.0">
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/transactions"
                     android:layout_width="match_parent"
@@ -91,6 +92,6 @@
                     android:layout_marginTop="@dimen/horizontal_padding_size"
                     android:paddingHorizontal="@dimen/horizontal_padding_size"
                     tools:listitem="@layout/list_item_basic_transaction_detail" />
-            </LinearLayout>
-        </LinearLayout>
-</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+    </LinearLayout>
+</LinearLayout>

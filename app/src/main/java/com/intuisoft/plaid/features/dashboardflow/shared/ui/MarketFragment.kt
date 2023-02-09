@@ -305,7 +305,7 @@ class MarketFragment : ConfigurableFragment<FragmentMarketBinding>(pinProtection
     }
 
     override fun onBackPressed() {
-        onNavigateBottomBarSecondaryFragmentBackwards(localStore)
+        onNavigateBottomBarSecondaryFragmentBackwards()
     }
 
     override fun onResume() {

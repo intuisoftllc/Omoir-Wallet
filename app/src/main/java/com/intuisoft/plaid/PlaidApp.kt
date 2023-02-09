@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.Application
 import android.os.Bundle
 import com.intuisoft.plaid.activities.MainActivity
+import com.intuisoft.plaid.billing.BillingManager
 import com.intuisoft.plaid.common.CommonService
 import com.intuisoft.plaid.common.local.UserData
 import com.intuisoft.plaid.common.util.Constants
@@ -11,6 +12,7 @@ import com.intuisoft.plaid.di.*
 import com.revenuecat.purchases.Purchases
 import com.revenuecat.purchases.PurchasesConfiguration
 import com.revenuecat.purchases.PurchasesError
+import org.koin.android.ext.android.inject
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.component.KoinComponent
@@ -21,6 +23,7 @@ class PlaidApp : Application(), Application.ActivityLifecycleCallbacks, KoinComp
     private val usrData: UserData?
         get() = CommonService.getUserData()
     var ignorePinCheck = false
+    private val billing: BillingManager by inject()
 
     override fun onCreate() {
         super.onCreate()
@@ -35,7 +38,8 @@ class PlaidApp : Application(), Application.ActivityLifecycleCallbacks, KoinComp
             BuildConfig.BLOCKCHAIN_INFO_SERVER_URL,
             BuildConfig.COIN_GECKO_SERVER_URL,
             BuildConfig.CHANGE_NOW_SERVER_URL,
-            BuildConfig.WALLET_SECRET
+            BuildConfig.WALLET_SECRET,
+            BuildConfig.PREMIUM_OVERRIDE
         )
 
         startKoin {
@@ -54,7 +58,7 @@ class PlaidApp : Application(), Application.ActivityLifecycleCallbacks, KoinComp
             )
         }
 
-        Purchases.debugLogsEnabled = BuildConfig.DEBUG
+        Purchases.debugLogsEnabled = true//BuildConfig.DEBUG
         registerActivityLifecycleCallbacks(this)
         Purchases.configure(PurchasesConfiguration.Builder(this, BuildConfig.REVENUE_CAT_SECRET).build())
     }
@@ -67,6 +71,7 @@ class PlaidApp : Application(), Application.ActivityLifecycleCallbacks, KoinComp
 
     override fun onActivityResumed(p0: Activity) {
         if(p0 is MainActivity) {
+            billing.onForeground()
             invalidatePinCheckTime()
             ignorePinCheck = false
         }
@@ -74,6 +79,7 @@ class PlaidApp : Application(), Application.ActivityLifecycleCallbacks, KoinComp
 
     override fun onActivityPaused(p0: Activity) {
         if(p0 is MainActivity) {
+            billing.onBackground()
             invalidatePinCheckTime()
         }
     }

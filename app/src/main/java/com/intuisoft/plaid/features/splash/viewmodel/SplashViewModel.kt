@@ -21,8 +21,17 @@ class SplashViewModel(
     private val _nextDestination = MutableLiveData<NavDirections>()
     val nextDestination: LiveData<NavDirections> = _nextDestination
 
+    private val _runEntitlementCheck = MutableLiveData<Unit>()
+    val runEntitlementCheck: LiveData<Unit> = _runEntitlementCheck
+
     private val _goHome = MutableLiveData<Unit>()
     val goHome: LiveData<Unit> = _goHome
+
+    fun shouldRunEntitlementCheck() {
+        if(localStoreRepository.hasCompletedOnboarding()) {
+            _runEntitlementCheck.postValue(Unit)
+        }
+    }
 
     fun nextScreen() {
         viewModelScope.launch {

@@ -16,6 +16,7 @@ import com.intuisoft.plaid.androidwrappers.styledSnackBar
 import com.intuisoft.plaid.billing.BillingManager
 import com.intuisoft.plaid.common.util.extensions.roundTo
 import com.intuisoft.plaid.databinding.FragmentPremiumSubscriptionsBinding
+import com.intuisoft.plaid.features.settings.viewmodel.SettingsViewModel
 import com.intuisoft.plaid.features.settings.viewmodel.SubscriptionViewModel
 import com.revenuecat.purchases.CustomerInfo
 import com.revenuecat.purchases.Purchases
@@ -33,6 +34,7 @@ class PremiumSubscriptionsFragment : ConfigurableFragment<FragmentPremiumSubscri
     requiresWallet = false
 ) {
     private val viewModel: SubscriptionViewModel by sharedViewModel()
+    private val settingsViewModel: SettingsViewModel by sharedViewModel()
     private val billing: BillingManager by inject()
 
     override fun onCreateView(
@@ -91,34 +93,29 @@ class PremiumSubscriptionsFragment : ConfigurableFragment<FragmentPremiumSubscri
             binding.subscribe.enableButton(false)
 
             viewModel.getPurchaseProduct()?.let {
-                Purchases.sharedInstance.purchaseProduct(
-                    requireActivity(),
-                    it,
-                    object: PurchaseCallback {
-                        override fun onCompleted(
-                            storeTransaction: StoreTransaction,
-                            customerInfo: CustomerInfo
-                        ) {
-                            if (billing.subscriptionActive(customerInfo)) {
-                                styledSnackBar(requireView(), getString(R.string.premium_subscriptions_success), true)
-                                softRestart()
-                            } else {
-                                binding.subscribe.enableButton(true)
-                            }
-                        }
-
-                        override fun onError(error: PurchasesError, userCancelled: Boolean) {
+                billing.purchase(
+                    product = it,
+                    activity = requireActivity(),
+                    onSuccess = {
+                        if (billing.subscriptionActive(it)) {
+                            styledSnackBar(requireView(), getString(R.string.premium_subscriptions_success))
+                            settingsViewModel.appRestartNeeded = true
+                            onBackPressed()
+                        } else {
                             binding.subscribe.enableButton(true)
-
-                            if(userCancelled) {
-                                styledSnackBar(requireView(), getString(R.string.premium_subscriptions_cancelled_purchase), true)
-                            } else {
-                                FirebaseCrashlytics.getInstance().log(error.message)
-                                styledSnackBar(requireView(), getString(R.string.premium_subscriptions_failed_purchase, error.message), true)
-                            }
                         }
+                    },
+                    onFail = { error, cancelled ->
+                        binding.subscribe.enableButton(true)
 
-                    })
+                        if(cancelled) {
+                            styledSnackBar(requireView(), getString(R.string.premium_subscriptions_cancelled_purchase), true)
+                        } else {
+                            FirebaseCrashlytics.getInstance().log(error.message)
+                            styledSnackBar(requireView(), getString(R.string.premium_subscriptions_failed_purchase, error.message), true)
+                        }
+                    }
+                )
             }
         }
     }

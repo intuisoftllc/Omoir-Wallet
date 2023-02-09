@@ -27,6 +27,7 @@ import com.intuisoft.plaid.androidwrappers.PasscodeView.PasscodeViewType.Compani
 import com.intuisoft.plaid.androidwrappers.delegates.ActionBarDelegate
 import com.intuisoft.plaid.androidwrappers.delegates.FragmentActionBarDelegate
 import com.intuisoft.plaid.androidwrappers.delegates.FragmentBottomBarBarDelegate
+import com.intuisoft.plaid.billing.BillingManager
 import com.intuisoft.plaid.common.CommonService
 import com.intuisoft.plaid.common.coroutines.PlaidScope
 import com.intuisoft.plaid.common.model.AppTheme
@@ -57,6 +58,7 @@ class MainActivity : BindingActivity<ActivityMainBinding>(), ActionBarDelegate {
     protected val localStoreRepository: LocalStoreRepository by inject()
 //    protected val billingManager: BillingManager by inject()
     protected val walletManager: AbstractWalletManager by inject()
+    protected val billing: BillingManager by inject()
     private var configurationSetup = false
     private val dialogStack = mutableListOf<Pair<AppCompatDialog, (() -> Unit)?>>()
 
@@ -224,18 +226,20 @@ class MainActivity : BindingActivity<ActivityMainBinding>(), ActionBarDelegate {
                         walletManager.start()
 
                         if (loadingUserData) {
-                            if (localStoreRepository.isPremiumUser()) {
-                                getNavController().navigate(
-                                    R.id.proHomescreenFragment,
-                                    null,
-                                    Constants.Navigation.ANIMATED_FADE_IN_EXIT_NAV_OPTION
-                                )
-                            } else {
-                                getNavController().navigate(
-                                    R.id.homescreenFragment,
-                                    null,
-                                    Constants.Navigation.ANIMATED_FADE_IN_EXIT_NAV_OPTION
-                                )
+                            billing.checkEntitlement {
+                                if(billing.hasSubscription(it) || CommonService.getPremiumOverride()) {
+                                    getNavController().navigate(
+                                        R.id.proHomescreenFragment,
+                                        null,
+                                        Constants.Navigation.ANIMATED_FADE_IN_EXIT_NAV_OPTION
+                                    )
+                                } else {
+                                    getNavController().navigate(
+                                        R.id.homescreenFragment,
+                                        null,
+                                        Constants.Navigation.ANIMATED_FADE_IN_EXIT_NAV_OPTION
+                                    )
+                                }
                             }
                         } else hidePinIfNeeded() // only hide if a frag is showing or after it has been shown
                     }

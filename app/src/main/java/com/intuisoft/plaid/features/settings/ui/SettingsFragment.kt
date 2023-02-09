@@ -138,9 +138,12 @@ class SettingsFragment : ConfigurableFragment<FragmentSettingsBinding>(
         }
 
         binding.subscription.onClick(Constants.Time.MIN_CLICK_INTERVAL_LONG) {
-            billing.checkEntitlement { premiumUser ->
-                if(premiumUser) {
-
+            billing.checkEntitlement { info ->
+                if(billing.hasSubscription(info)) {
+                    navigate(
+                        R.id.currentSubscriptionFragment,
+                        Constants.Navigation.ANIMATED_ENTER_EXIT_RIGHT_NAV_OPTION
+                    )
                 } else {
                     navigate(
                         R.id.premiumSubscriptionFragment,
@@ -491,7 +494,8 @@ class SettingsFragment : ConfigurableFragment<FragmentSettingsBinding>(
                     System.getProperty("os.version"),
                     Build.MODEL,
                     Build.PRODUCT,
-                    if(viewModel.isProEnabled()) Constants.Strings.PRO_SUBSCRIPTION_MARK else ""
+                    if(viewModel.isProEnabled()) Constants.Strings.PRO_SUBSCRIPTION_MARK else "",
+                    billing.getUserId()
                 )
             )
         }

@@ -6,10 +6,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
+import com.google.api.Billing
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.activities.MainActivity
 import com.intuisoft.plaid.androidwrappers.*
 import com.intuisoft.plaid.androidwrappers.delegates.FragmentConfiguration
+import com.intuisoft.plaid.billing.BillingManager
 import com.intuisoft.plaid.common.analytics.EventTracker
 import com.intuisoft.plaid.common.analytics.events.EventHomescreenCreateWallet
 import com.intuisoft.plaid.common.analytics.events.EventHomescreenOpenSettings
@@ -36,6 +38,7 @@ class HomescreenFragment : ConfigurableFragment<FragmentHomescreenBinding>(
     protected val localStoreRepository: LocalStoreRepository by inject()
     protected val walletManager: AbstractWalletManager by inject()
     protected val eventTracker: EventTracker by inject()
+    protected val billing: BillingManager by inject()
 
     private val adapter = BasicWalletDataAdapter(
         onWalletSelected = ::onWalletSelected,
@@ -53,6 +56,11 @@ class HomescreenFragment : ConfigurableFragment<FragmentHomescreenBinding>(
 
     override fun onConfiguration(configuration: FragmentConfiguration?) {
         eventTracker.log(EventHomescreenView())
+        billing.checkEntitlement {
+            if(billing.subscriptionActive(it)) {
+                softRestart()
+            }
+        }
         (activity as? MainActivity)?.performSetup()
         viewModel.updateGreeting()
         walletVM.addWalletStateListener(this)

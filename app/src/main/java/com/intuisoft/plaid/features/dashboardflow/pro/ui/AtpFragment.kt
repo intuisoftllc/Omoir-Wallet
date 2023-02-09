@@ -184,7 +184,7 @@ class AtpFragment : ConfigurableFragment<FragmentAtpBinding>(pinProtection = tru
     }
 
     override fun onBackPressed() {
-        onNavigateBottomBarSecondaryFragmentBackwards(localStoreRepository)
+        onNavigateBottomBarSecondaryFragmentBackwards()
     }
 
     fun utxoTransfersDialog(items: List<AtpViewModel.UtxoData>, onCancel: ()-> Unit) {

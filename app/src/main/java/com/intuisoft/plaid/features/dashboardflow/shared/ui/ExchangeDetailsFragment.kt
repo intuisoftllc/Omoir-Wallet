@@ -14,6 +14,7 @@ import com.google.gson.Gson
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.*
 import com.intuisoft.plaid.androidwrappers.delegates.FragmentConfiguration
+import com.intuisoft.plaid.billing.BillingManager
 import com.intuisoft.plaid.common.analytics.EventTracker
 import com.intuisoft.plaid.common.analytics.events.EventExchangeDetailsSmartPay
 import com.intuisoft.plaid.common.analytics.events.EventExchangeDetailsView
@@ -36,6 +37,7 @@ class ExchangeDetailsFragment : ConfigurableFragment<FragmentExchangeDetailsBind
     protected val viewModel: ExchangeDetailsViewModel by viewModel()
     protected val localStoreRepository: LocalStoreRepository by inject()
     protected val eventTracker: EventTracker by inject()
+    protected val billing: BillingManager by inject()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -120,7 +122,8 @@ class ExchangeDetailsFragment : ConfigurableFragment<FragmentExchangeDetailsBind
                     System.getProperty("os.version"),
                     Build.MODEL,
                     Build.PRODUCT,
-                    if(viewModel.isProEnabled()) Constants.Strings.PRO_SUBSCRIPTION_MARK else ""
+                    if(viewModel.isProEnabled()) Constants.Strings.PRO_SUBSCRIPTION_MARK else "",
+                    billing.getUserId()
                 )
             )
         }

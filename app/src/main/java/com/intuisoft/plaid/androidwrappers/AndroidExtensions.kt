@@ -25,6 +25,7 @@ import androidx.core.os.bundleOf
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import androidx.navigation.NavController
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import coil.ImageLoader
@@ -193,6 +194,13 @@ fun Fragment.validateFingerprint(
     biometricPrompt.authenticate(promptInfo)
 }
 
+fun NavController.isFragmentInBackStack(destinationId: Int) =
+    try {
+        getBackStackEntry(destinationId)
+        true
+    } catch (e: Exception) {
+        false
+    }
 fun styledSnackBar(root: View, title: String, showTop: Boolean? = null, onDismissed: (() -> Unit)? = null) {
     val snack = Snackbar.make(root, title, Snackbar.LENGTH_LONG)
         .setBackgroundTint(root.context.getColorFromAttr(com.google.android.material.R.attr.colorPrimary))
@@ -288,6 +296,11 @@ fun Activity.checkAppPermission(permission: String, requestCode: Int, onAlreadyG
 
 fun Context.openLink(url: String) {
     val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+    startActivity(browserIntent)
+}
+
+fun Context.openLink(uri: Uri) {
+    val browserIntent = Intent(Intent.ACTION_VIEW, uri)
     startActivity(browserIntent)
 }
 

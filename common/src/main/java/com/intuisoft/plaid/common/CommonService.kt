@@ -60,6 +60,7 @@ object CommonService {
     private var changeNowSecret: String? = ""
     private var localPin: String = ""
     private var walletSecret: String = ""
+    private var premiumOverride = false
 
     fun getUserData(): UserData? {
         return userData
@@ -301,6 +302,8 @@ object CommonService {
 
     fun getUserPin() = localPin
 
+    fun getPremiumOverride() = premiumOverride
+
     fun getMemoryCacheInstance(): MemoryCache {
         if(memoryCache == null) {
             memoryCache = provideMemoryCache()
@@ -320,7 +323,8 @@ object CommonService {
         blockchainInfoApiUrl: String,
         coingeckoApiUrl: String,
         changeNowApiUrl: String,
-        walletSecret: String
+        walletSecret: String,
+        premiumOverride: Boolean
     ) {
         provideApplication(application)
         provideBlockchairSecret(blockchairSecret)
@@ -333,6 +337,7 @@ object CommonService {
         provideCoingeckoApiUrl(coingeckoApiUrl)
         provideChangeNowApiUrl(changeNowApiUrl)
         provideWalletSecret(walletSecret)
+        providePremiumOverride(premiumOverride)
 
         // create singleton instance of all classes
         getAppPrefs()
@@ -387,6 +392,10 @@ object CommonService {
 
     private fun provideWalletSecret(secret: String) {
         this.walletSecret = secret
+    }
+
+    private fun providePremiumOverride(override: Boolean) {
+        this.premiumOverride = override
     }
 
     private fun provideNowNodesTestNetNodeApiUrl(url: String) {

@@ -158,10 +158,6 @@ class DashboardViewModel(
                             _chartDataLoading.postValue(true)
                             _chartData.postValue(listOf())
                             val history = getBalanceHistoryForInterval(intervalType)
-                            val rateConverter = RateConverter(
-                                localStoreRepository.getRateFor(localStoreRepository.getLocalCurrency())?.currentPrice
-                                    ?: 0.0
-                            )
 
                             val time = getMaxMarketInterval(ChartIntervalType.INTERVAL_ALL_TIME, Instant.ofEpochSecond(balanceHistory.first().second-1))
                             val allTimeMarketData =
@@ -173,7 +169,7 @@ class DashboardViewModel(
                             val outgoingTxs =
                                 walletTransactions.filter { it.type == TransactionType.Outgoing || it.type == TransactionType.SentToSelf }
                             val incomingBalanceHistory =
-                                incomingTxs.map { it.timestamp to it.amount }
+                                incomingTxs.map { it.amount to it.timestamp }
 
                             val totalSentCost = outgoingTxs
                                 .map { tx ->
@@ -189,13 +185,17 @@ class DashboardViewModel(
                                     (tx.amount.toDouble()) / Constants.Limit.SATS_PER_BTC
                                 }.sum()
 
-                            val averagePrice = allTimeMarketData?.map {
-                                getBalanceAtTime(it.time, incomingBalanceHistory)
-                            }?.average() ?: 0.0
+                            val averagePrice = incomingBalanceHistory.map { tx ->
+                                allTimeMarketData?.find { it.time / Constants.Time.MILLS_PER_SEC >= tx.second }?.price ?: 0.0
+                            }.average()
 
                             val highestBalance = allTimeMarketData?.map {
-                                getBalanceAtTime(it.time, balanceHistory)
-                            }?.maxOrNull()
+                                it.price to getBalanceAtTime(it.time / Constants.Time.MILLS_PER_SEC, balanceHistory).toDouble()
+                            }?.maxByOrNull {
+                                if(localStoreRepository.getBitcoinDisplayUnit() == BitcoinDisplayUnit.FIAT)
+                                    it.first * it.second
+                                else it.second
+                            }
 
                             val rate = RateConverter(
                                 localStoreRepository.getRateFor(localStoreRepository.getLocalCurrency())?.currentPrice
@@ -235,7 +235,8 @@ class DashboardViewModel(
                                 ).second!!
                             )
 
-                            rate.setLocalRate(RateConverter.RateType.SATOSHI_RATE, highestBalance?.toDouble() ?: 0.0)
+                            rate.setFiatRate(highestBalance?.first ?: 0.0)
+                            rate.setLocalRate(RateConverter.RateType.BTC_RATE, highestBalance?.second ?: 0.0)
                             _highestBalance.postValue(
                                 rate.from(
                                     if(rate.getRawBtcRate() >= 1.0 && localStoreRepository.getBitcoinDisplayUnit() != BitcoinDisplayUnit.FIAT)
@@ -252,18 +253,19 @@ class DashboardViewModel(
                                 )
                             )
 
+                            rate.setFiatRate(localStoreRepository.getRateFor(localStoreRepository.getLocalCurrency())?.currentPrice ?: 0.0)
                             when (localStoreRepository.getBitcoinDisplayUnit()) {
                                 BitcoinDisplayUnit.SATS -> {
                                     _chartData.postValue(
                                         history.map {
-                                            rateConverter.setLocalRate(
+                                            rate.setLocalRate(
                                                 RateConverter.RateType.SATOSHI_RATE,
                                                 it.first.toDouble()
                                             )
 
                                             ChartDataModel(
                                                 time = it.second,
-                                                value = rateConverter.getRawBtcRate().toFloat()
+                                                value = rate.getRawBtcRate().toFloat()
                                             )
                                         }
                                     )
@@ -277,14 +279,14 @@ class DashboardViewModel(
                                 BitcoinDisplayUnit.BTC -> {
                                     _chartData.postValue(
                                         history.map {
-                                            rateConverter.setLocalRate(
+                                            rate.setLocalRate(
                                                 RateConverter.RateType.SATOSHI_RATE,
                                                 it.first.toDouble()
                                             )
 
                                             ChartDataModel(
                                                 time = it.second,
-                                                value = rateConverter.getRawBtcRate().toFloat()
+                                                value = rate.getRawBtcRate().toFloat()
                                             )
                                         }
                                     )

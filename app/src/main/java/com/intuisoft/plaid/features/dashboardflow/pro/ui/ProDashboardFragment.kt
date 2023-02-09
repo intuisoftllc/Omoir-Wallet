@@ -327,7 +327,7 @@ class ProDashboardFragment : ConfigurableFragment<FragmentProWalletDashboardBind
     }
 
     override fun onBackPressed() {
-        onNavigateBottomBarPrimaryFragmentBackwards(localStoreRepository)
+        onNavigateBottomBarPrimaryFragmentBackwards()
     }
 
     companion object {
@@ -419,7 +419,7 @@ class ProDashboardFragment : ConfigurableFragment<FragmentProWalletDashboardBind
     }
 
     override fun onActionLeft() {
-        onNavigateBottomBarPrimaryFragmentBackwards(localStoreRepository)
+        onNavigateBottomBarPrimaryFragmentBackwards()
     }
 
     override fun onActionRight() {
