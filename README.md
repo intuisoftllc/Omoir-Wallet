@@ -20,7 +20,7 @@ Keep in mind that bitcoin is the only cryptocurrency supported currently, howeve
 ## Asset Transfer Protocol
 Plaid Crypto Wallet is the first ever mobile wallet to have a dedicated in-app BTC UTXO management system called Asset Transfer Protocol (ATP)
 This works by individually sending yor UTXO's from one location to another in a series of "Batches". This effectiveley allows you to "transfer"
-your wallet with some or all of its contents without having to make a series of single transactions "doxxing" the coins that were involed in the transaction.
+your wallet with some or all of its contents without having to make a series of transactions "doxxing" the coins that were involed in the transaction.
 Below is an example of how this process works:
 
 ```
