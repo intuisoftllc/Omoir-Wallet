@@ -7,7 +7,7 @@ class Constants {
 
     object Database {
         const val DB_NAME = "plaid.db"
-        const val DB_VERSION = 5 // todo: whenever this changes, create a migration
+        const val DB_VERSION = 6 // todo: whenever this changes, create a migration
     }
 
     object Files {

@@ -4,7 +4,6 @@ import android.app.Application
 import androidx.work.Data
 import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequestBuilder
-import androidx.work.Operation.State.IN_PROGRESS
 import androidx.work.WorkManager
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.common.CommonService
@@ -23,7 +22,6 @@ import io.horizontalsystems.bitcoincore.models.TransactionDataSortType
 import io.horizontalsystems.bitcoincore.models.TransactionStatus
 import io.horizontalsystems.bitcoincore.storage.UnspentOutput
 import kotlinx.coroutines.*
-import kotlinx.coroutines.internal.synchronized
 import java.security.SecureRandom
 
 class AtpManager(
@@ -127,17 +125,17 @@ class AtpManager(
                         job?.ensureActive()
 
                         if(utxo.txId.isEmpty()) {
-                            val output = wallet.walletKit!!.getUnspentOutputs()
+                            val utxos = wallet.walletKit!!.getUnspentOutputs()
                                 .find { it.output.address == utxo.address }
                             val feeRate =
                                 if (transfer.dynamicFees)
                                     Math.min(apiRepository.getSuggestedFeeRate(wallet.testNetWallet)?.highFee?.plus(random.nextInt(transfer.feeRangeLow, transfer.feeRangeHigh)) ?: utxo.feeRate, utxo.feeRate)
                                 else utxo.feeRate
 
-                            if (output != null) {
+                            if (utxos != null) {
                                 if(NetworkUtil.hasInternet(application)) {
                                     val result = spendUtxo(
-                                        output,
+                                        utxos,
                                         addresses[index],
                                         feeRate,
                                         transfer.feeRangeLow,
@@ -156,7 +154,7 @@ class AtpManager(
                                         )
                                     } else {
                                         localStoreRepository.blacklistAddress(
-                                            BlacklistedAddressModel(address = output.output.address!!),
+                                            BlacklistedAddressModel(address = utxos.output.address!!),
                                             blacklist = false
                                         )
                                         utxo.txId = application.getString(R.string.atp_externally_spent, "$addresses")
@@ -222,6 +220,8 @@ class AtpManager(
     private suspend fun processTransfer(transfer: AssetTransferModel, wallet: LocalWalletModel, findWallet: (String) -> LocalWalletModel?, job: Job?): Boolean {
         if(!NetworkUtil.hasInternet(application)) return false
 
+        transfer.processing = true
+        localStoreRepository.saveAssetTransfer(transfer)
         val batches = localStoreRepository.getBatchDataForTransfer(transfer.id)
         var lastBatch: BatchDataModel? = null
         val recipient = findWallet(transfer.recipientWallet)
@@ -257,6 +257,7 @@ class AtpManager(
             transfer.status = AssetTransferStatus.FAILED
         }
 
+        transfer.processing = false
         localStoreRepository.saveAssetTransfer(transfer)
         return utxoSent
     }
@@ -290,14 +291,18 @@ class AtpManager(
         val transfers = localStoreRepository.getAllAssetTransfers(wallet.uuid)
         var utxoSent = false
 
-        transfers.lastOrNull { // todo: cancel all transfers if user is not a premium user
+        transfers.lastOrNull {
             it.status == AssetTransferStatus.WAITING
                     || it.status == AssetTransferStatus.IN_PROGRESS || it.status == AssetTransferStatus.NOT_STARTED
         }?.let { // run the most recent executing transfer to prevent "hacking" the protocol by creating many 50 utxo single batch transfers
-            job?.ensureActive()
-            showStatusNotification(it.id, wallet.uuid)
-            if (processTransfer(it, wallet, findWallet, job))
-                utxoSent = true
+            if(localStoreRepository.isPremiumUser()) {
+                job?.ensureActive()
+                showStatusNotification(it.id, wallet.uuid)
+                if (processTransfer(it, wallet, findWallet, job))
+                    utxoSent = true
+            } else {
+                cancelTransfer(it.id, wallet)
+            }
         }
 
         transfers.filter {
@@ -337,7 +342,13 @@ class AtpManager(
         transfers.firstOrNull {
             it.id == transferId
         }?.let {
+            var transfer = it
             if(it.status.id in AssetTransferStatus.NOT_STARTED.id..AssetTransferStatus.IN_PROGRESS.id) {
+                while(transfer.processing) {
+                    delay(100)
+                    transfer = localStoreRepository.getAllAssetTransfers(wallet.uuid).first { it.id == transferId }
+                }
+
                 it.status = AssetTransferStatus.CANCELLING
                 localStoreRepository.saveAssetTransfer(it)
             }

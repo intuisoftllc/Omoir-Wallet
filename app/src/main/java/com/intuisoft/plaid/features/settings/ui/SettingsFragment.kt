@@ -2,9 +2,7 @@ package com.intuisoft.plaid.features.settings.ui
 
 import android.app.Activity
 import android.app.ProgressDialog
-import android.content.ActivityNotFoundException
 import android.content.Context
-import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -18,23 +16,23 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navOptions
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.intuisoft.plaid.PlaidApp
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.*
 import com.intuisoft.plaid.androidwrappers.delegates.FragmentConfiguration
 import com.intuisoft.plaid.billing.BillingManager
 import com.intuisoft.plaid.common.analytics.EventTracker
 import com.intuisoft.plaid.common.analytics.events.*
+import com.intuisoft.plaid.common.coroutines.PlaidScope
 import com.intuisoft.plaid.common.model.AppTheme
 import com.intuisoft.plaid.databinding.FragmentSettingsBinding
 import com.intuisoft.plaid.features.settings.viewmodel.SettingsViewModel
 import com.intuisoft.plaid.common.model.BitcoinDisplayUnit
 import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.common.util.SimpleCurrencyFormat
-import com.intuisoft.plaid.common.util.extensions.mapToListOf
+import com.intuisoft.plaid.common.util.extensions.safeWalletScope
+import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
-import java.util.HashMap
 
 
 class SettingsFragment : ConfigurableFragment<FragmentSettingsBinding>(
@@ -56,7 +54,7 @@ class SettingsFragment : ConfigurableFragment<FragmentSettingsBinding>(
 
     override fun onConfiguration(configuration: FragmentConfiguration?) {
         eventTracker.log(EventSettingsView())
-        billing.checkEntitlement()
+        billing.shouldShowPremiumContent()
         viewModel.bitcoinDisplayUnitSetting.observe(viewLifecycleOwner, Observer {
             when(it) {
                 BitcoinDisplayUnit.BTC -> {
@@ -138,8 +136,8 @@ class SettingsFragment : ConfigurableFragment<FragmentSettingsBinding>(
         }
 
         binding.subscription.onClick(Constants.Time.MIN_CLICK_INTERVAL_LONG) {
-            billing.checkEntitlement { info ->
-                if(billing.hasSubscription(info)) {
+            billing.shouldShowPremiumContent { hasSubscription ->
+                if(hasSubscription) {
                     navigate(
                         R.id.currentSubscriptionFragment,
                         Constants.Navigation.ANIMATED_ENTER_EXIT_RIGHT_NAV_OPTION
@@ -575,7 +573,11 @@ class SettingsFragment : ConfigurableFragment<FragmentSettingsBinding>(
 
     override fun onResume() {
         super.onResume()
-        viewModel.updateSettingsScreen()
+        PlaidScope.MainScope.launch {
+            safeWalletScope {
+                viewModel.updateSettingsScreen()
+            }
+        }
     }
 
 

@@ -14,6 +14,7 @@ data class AssetTransferModel(
     var feeRangeLow: Int,
     var feeRangeHigh: Int,
     var dynamicFees: Boolean,
+    var processing: Boolean,
     var status: AssetTransferStatus,
     val batches: List<String>
 )

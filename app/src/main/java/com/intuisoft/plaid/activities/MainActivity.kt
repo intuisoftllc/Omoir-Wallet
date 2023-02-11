@@ -5,7 +5,6 @@ import android.app.ProgressDialog
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import androidx.activity.OnBackPressedCallback
@@ -45,8 +44,6 @@ import com.intuisoft.plaid.listeners.BarcodeResultListener
 import com.intuisoft.plaid.listeners.NetworkStateChangeListener
 import com.intuisoft.plaid.recievers.NetworkChangeReceiver
 import com.intuisoft.plaid.walletmanager.AbstractWalletManager
-import com.revenuecat.purchases.Purchases
-import com.revenuecat.purchases.getOfferingsWith
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
@@ -226,8 +223,8 @@ class MainActivity : BindingActivity<ActivityMainBinding>(), ActionBarDelegate {
                         walletManager.start()
 
                         if (loadingUserData) {
-                            billing.checkEntitlement {
-                                if(billing.hasSubscription(it) || CommonService.getPremiumOverride()) {
+                            billing.shouldShowPremiumContent { show ->
+                                if(show) {
                                     getNavController().navigate(
                                         R.id.proHomescreenFragment,
                                         null,

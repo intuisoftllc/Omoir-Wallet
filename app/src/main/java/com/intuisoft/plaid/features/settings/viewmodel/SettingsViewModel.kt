@@ -67,7 +67,7 @@ class SettingsViewModel(
 
     fun saveMinimumConfirmation(min: Int) {
         localStoreRepository.setMinConfirmations(min)
-     }
+    }
 
     fun updateSettingsScreen() {
         PlaidScope.MainScope.launch {

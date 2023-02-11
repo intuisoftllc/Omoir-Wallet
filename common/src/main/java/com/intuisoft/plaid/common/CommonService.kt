@@ -708,7 +708,7 @@ object CommonService {
         val clientBuilder = OkHttpClient.Builder()
             .addInterceptor(connectivityInterceptor)
 
-        if (BuildConfig.DEBUG) {
+        if (BuildConfig.LOGGING_ENABLED) {
             val loggingInterceptor = HttpLoggingInterceptor()
             loggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
             clientBuilder.addInterceptor(loggingInterceptor)

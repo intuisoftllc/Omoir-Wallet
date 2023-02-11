@@ -59,6 +59,7 @@
     <string name="premium_subscriptions_load_error">Failed to load subscription information, please try again.</string>
     <string name="premium_subscriptions_success">Pro Subscription Enabled</string>
     <string name="premium_subscriptions_update_success">Subscription Updated</string>
+    <string name="premium_subscriptions_update_error">There was an issue activating your subscription</string>
     <string name="premium_subscriptions_cancelled_purchase">Purchase cancelled.</string>
     <string name="premium_subscriptions_failed_purchase">Purchase Failed: %1$s</string>
     <string name="premium_subscription_type_yearly">Annual</string>
@@ -839,6 +840,7 @@
     <string name="main_net">Main Net</string>
     <string name="test_net">Test Net</string>
     <string name="not_applicable">N/A</string>
+    <string name="failed_to_get_state">Failed to get state</string>
     <string name="select_all">Select All</string>
     <string name="exchange">Exchange</string>
     <string name="currencies">Currencies</string>

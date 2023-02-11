@@ -49,39 +49,37 @@ class PremiumSubscriptionsFragment : ConfigurableFragment<FragmentPremiumSubscri
 
     override fun onConfiguration(configuration: FragmentConfiguration?) {
         binding.subscribe.enableButton(false)
-        billing.getProducts {
-            val monthly = it?.find { it.identifier == MONTHLY_PRODUCT }
-            val annual = it?.find { it.identifier == ANNUAL_PRODUCT }
+        billing.getSubscriptionProducts { products ->
             binding.loading.isVisible = false
 
-            if(it == null || monthly == null || annual == null) {
-                styledSnackBar(requireView(), getString(R.string.premium_subscriptions_load_error), true)
-            } else {
+            if(products.isNotEmpty()) {
+                val monthly = products.find { it.isMonthly }!!
+                val annual = products.find { !it.isMonthly }!!
+
                 binding.benefit1.isVisible = true
                 binding.benefit2.isVisible = true
 
                 binding.option1.onRadioClicked { view, clicked ->
                     if(clicked) {
-                        viewModel.setPurchaseProduct(annual.product)
+                        viewModel.setPurchaseProduct(annual.storeProduct)
                         binding.option2.checkRadio(false)
                     }
                 }
 
                 binding.option2.onRadioClicked { view, clicked ->
                     if(clicked) {
-                        viewModel.setPurchaseProduct(monthly.product)
+                        viewModel.setPurchaseProduct(monthly.storeProduct)
                         binding.option1.checkRadio(false)
                     }
                 }
 
-                val annualPricePerMonth = (annual.product.priceAmountMicros.toDouble() / 1000000) / 12
-                val pricePerMonth = monthly.product.priceAmountMicros.toDouble() / 1000000
-                val savings = 100 - ((annualPricePerMonth / pricePerMonth) * 100)
-                binding.annualPrice.text = getString(R.string.premium_subscription_annual_price, annual.product.price)
-                binding.annualMonthlyConversion.text = getString(R.string.premium_subscription_monthly_price_conversion, annualPricePerMonth.roundTo(2).toString())
-                binding.saveAmount.text = getString(R.string.premium_subscription_monthly_price_savings, savings.roundToLong().toString())
-                binding.monthlyPrice.text = getString(R.string.premium_subscription_monthly_price, pricePerMonth.roundTo(2).toString())
+                binding.annualPrice.text = getString(R.string.premium_subscription_annual_price, annual.price)
+                binding.annualMonthlyConversion.text = getString(R.string.premium_subscription_monthly_price_conversion, annual.priceConversion)
+                binding.saveAmount.text = getString(R.string.premium_subscription_monthly_price_savings, annual.saveAmount)
+                binding.monthlyPrice.text = getString(R.string.premium_subscription_monthly_price, monthly.price)
                 binding.option1.checkRadio(true)
+            } else {
+                styledSnackBar(requireView(), getString(R.string.premium_subscriptions_load_error), true)
             }
         }
 
@@ -97,12 +95,21 @@ class PremiumSubscriptionsFragment : ConfigurableFragment<FragmentPremiumSubscri
                     product = it,
                     activity = requireActivity(),
                     onSuccess = {
-                        if (billing.subscriptionActive(it)) {
-                            styledSnackBar(requireView(), getString(R.string.premium_subscriptions_success))
-                            settingsViewModel.appRestartNeeded = true
-                            onBackPressed()
-                        } else {
-                            binding.subscribe.enableButton(true)
+                        view?.let { view ->
+                            if (it) {
+                                styledSnackBar(
+                                    view,
+                                    getString(R.string.premium_subscriptions_success)
+                                )
+                                settingsViewModel.appRestartNeeded = true
+                                onBackPressed()
+                            } else {
+                                styledSnackBar(
+                                    view,
+                                    getString(R.string.premium_subscriptions_update_error)
+                                )
+                                binding.subscribe.enableButton(true)
+                            }
                         }
                     },
                     onFail = { error, cancelled ->

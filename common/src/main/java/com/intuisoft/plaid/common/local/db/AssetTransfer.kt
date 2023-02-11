@@ -27,7 +27,8 @@ data class AssetTransfer(
     @ColumnInfo(name = "fee_range_high") val feeRangeHigh: Int,
     @ColumnInfo(name = "dynamic_fees") val dynamicFees: Boolean,
     @ColumnInfo(name = "status") val status: AssetTransferStatus,
-    @ColumnInfo(name = "batches") val batches: List<String>
+    @ColumnInfo(name = "batches") val batches: List<String>,
+    @ColumnInfo(name = "processing") val processing: Boolean
 ) {
     fun from() =
         AssetTransferModel(
@@ -45,7 +46,8 @@ data class AssetTransfer(
             feesPaid = feesPaid,
             dynamicFees = dynamicFees,
             status = status,
-            batches = batches
+            batches = batches,
+            processing = processing
         )
 
     companion object {
@@ -65,7 +67,8 @@ data class AssetTransfer(
            feeRangeHigh: Int,
            dynamicFees: Boolean,
            status: AssetTransferStatus,
-           batches: List<String>
+           batches: List<String>,
+           processing: Boolean,
         ) =
             AssetTransfer(
                 id = id,
@@ -82,7 +85,8 @@ data class AssetTransfer(
                 feeRangeHigh = feeRangeHigh,
                 dynamicFees = dynamicFees,
                 status = status,
-                batches = batches
+                batches = batches,
+                processing = processing
             )
     }
 }

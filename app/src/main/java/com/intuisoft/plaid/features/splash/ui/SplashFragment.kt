@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.os.bundleOf
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.intuisoft.plaid.R
@@ -15,8 +14,6 @@ import com.intuisoft.plaid.billing.BillingManager
 import com.intuisoft.plaid.databinding.FragmentSplashBinding
 import com.intuisoft.plaid.features.splash.viewmodel.SplashViewModel
 import com.intuisoft.plaid.common.util.Constants
-import com.intuisoft.plaid.util.fragmentconfig.ConfigQrDisplayData
-import com.mifmif.common.regex.Main
 import org.koin.android.ext.android.inject
 
 class SplashFragment : BindingFragment<FragmentSplashBinding>() {
@@ -45,7 +42,7 @@ class SplashFragment : BindingFragment<FragmentSplashBinding>() {
         })
 
         viewModel.runEntitlementCheck.observe(viewLifecycleOwner, Observer {
-            billing.checkEntitlement()
+            billing.shouldShowPremiumContent()
         })
 
         viewModel.goHome.observe(viewLifecycleOwner, Observer {

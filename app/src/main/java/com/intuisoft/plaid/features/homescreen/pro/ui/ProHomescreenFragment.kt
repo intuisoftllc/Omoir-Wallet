@@ -131,7 +131,7 @@ class ProHomescreenFragment : ConfigurableFragment<FragmentProHomescreenBinding>
     fun showTotalBalance(totalBalance: Long) {
         PlaidScope.MainScope.launch {
             safeWalletScope {
-                binding.totalBalance.text =
+                binding?.totalBalance.text =
                     SimpleCoinNumberFormat.format(localStoreRepository, totalBalance, false)
             }
         }

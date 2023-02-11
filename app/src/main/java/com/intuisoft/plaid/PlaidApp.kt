@@ -58,7 +58,7 @@ class PlaidApp : Application(), Application.ActivityLifecycleCallbacks, KoinComp
             )
         }
 
-        Purchases.debugLogsEnabled = true//BuildConfig.DEBUG
+        Purchases.debugLogsEnabled = BuildConfig.LOGGING_ENABLED
         registerActivityLifecycleCallbacks(this)
         Purchases.configure(PurchasesConfiguration.Builder(this, BuildConfig.REVENUE_CAT_SECRET).build())
     }

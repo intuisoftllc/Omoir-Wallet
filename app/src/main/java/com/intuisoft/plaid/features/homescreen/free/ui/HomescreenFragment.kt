@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
-import com.google.api.Billing
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.activities.MainActivity
 import com.intuisoft.plaid.androidwrappers.*
@@ -56,8 +55,8 @@ class HomescreenFragment : ConfigurableFragment<FragmentHomescreenBinding>(
 
     override fun onConfiguration(configuration: FragmentConfiguration?) {
         eventTracker.log(EventHomescreenView())
-        billing.checkEntitlement {
-            if(billing.subscriptionActive(it)) {
+        billing.shouldShowPremiumContent { show ->
+            if(show) {
                 softRestart()
             }
         }

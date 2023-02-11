@@ -12,6 +12,7 @@ android {
         versionName "0.4.1"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        buildConfigField("Boolean", "LOGGING_ENABLED", "false")
     }
 
     kapt {

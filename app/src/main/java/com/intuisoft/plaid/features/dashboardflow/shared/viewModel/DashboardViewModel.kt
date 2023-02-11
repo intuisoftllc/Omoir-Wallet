@@ -189,13 +189,7 @@ class DashboardViewModel(
                                 allTimeMarketData?.find { it.time / Constants.Time.MILLS_PER_SEC >= tx.second }?.price ?: 0.0
                             }.average()
 
-                            val highestBalance = allTimeMarketData?.map {
-                                it.price to getBalanceAtTime(it.time / Constants.Time.MILLS_PER_SEC, balanceHistory).toDouble()
-                            }?.maxByOrNull {
-                                if(localStoreRepository.getBitcoinDisplayUnit() == BitcoinDisplayUnit.FIAT)
-                                    it.first * it.second
-                                else it.second
-                            }
+                            val highestBalance = balanceHistory.maxByOrNull { it.first }
 
                             val rate = RateConverter(
                                 localStoreRepository.getRateFor(localStoreRepository.getLocalCurrency())?.currentPrice
@@ -235,8 +229,8 @@ class DashboardViewModel(
                                 ).second!!
                             )
 
-                            rate.setFiatRate(highestBalance?.first ?: 0.0)
-                            rate.setLocalRate(RateConverter.RateType.BTC_RATE, highestBalance?.second ?: 0.0)
+                            rate.setFiatRate(getFiatBalanceAtTime(allTimeMarketData ?: listOf(), highestBalance?.second ?: 0))
+                            rate.setLocalRate(RateConverter.RateType.SATOSHI_RATE, highestBalance?.first?.toDouble() ?: 0.0)
                             _highestBalance.postValue(
                                 rate.from(
                                     if(rate.getRawBtcRate() >= 1.0 && localStoreRepository.getBitcoinDisplayUnit() != BitcoinDisplayUnit.FIAT)
@@ -329,6 +323,10 @@ class DashboardViewModel(
                 }
             }
         }
+    }
+
+    fun getFiatBalanceAtTime(marketData: List<MarketHistoryDataModel>, time: Long): Double {
+        return marketData.find { (it.time / Constants.Time.MILLS_PER_SEC) >= time }?.price ?: marketData.lastOrNull()?.price ?: 0.0
     }
 
     private fun getBalanceAtTime(time: Long, history: List<Pair<Long, Long>>): Float {
@@ -432,20 +430,16 @@ class DashboardViewModel(
         }
 
         var history = mutableListOf<Pair<Long, Long>>()
-        if(splitTime == -1) {
-            history = balanceHistory.toMutableList()
-        } else {
-            var currentTime = txStartTime.toEpochMilli()
-            var endTime = nowTime.toInstant().toEpochMilli()
+        var currentTime = txStartTime.toEpochMilli()
+        var endTime = nowTime.toInstant().toEpochMilli()
 
-            while(currentTime <= endTime) {
-                history.add(
-                    (getBalanceAtTime(currentTime / Constants.Time.MILLS_PER_SEC, balanceHistory) * Constants.Limit.SATS_PER_BTC).toLong()
-                            to (currentTime / Constants.Time.MILLS_PER_SEC)
-                )
+        while(currentTime <= endTime) {
+            history.add(
+                (getBalanceAtTime(currentTime / Constants.Time.MILLS_PER_SEC, balanceHistory) * Constants.Limit.SATS_PER_BTC).toLong()
+                        to (currentTime / Constants.Time.MILLS_PER_SEC)
+            )
 
-                currentTime += splitTime
-            }
+            currentTime += splitTime
         }
 
         if (history.size == 1) {

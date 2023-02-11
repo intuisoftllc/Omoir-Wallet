@@ -63,8 +63,8 @@ class DashboardFragment : ConfigurableFragment<FragmentWalletDashboardBinding>(p
 
     override fun onConfiguration(configuration: FragmentConfiguration?) {
         eventTracker.log(EventDashboardView())
-        billing.checkEntitlement {
-            if(billing.subscriptionActive(it) || CommonService.getPremiumOverride()) {
+        billing.shouldShowPremiumContent { show ->
+            if(show) {
                 softRestart()
             }
         }

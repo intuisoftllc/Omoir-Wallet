@@ -1,7 +1,6 @@
 package com.intuisoft.plaid.androidwrappers
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.view.WindowManager
 import android.widget.Toast
@@ -71,8 +70,8 @@ abstract class ConfigurableFragment<T: ViewBinding>(
         }
 
         if(premiumContent) {
-            _billing.checkEntitlement {
-                if(!_billing.subscriptionActive(it) && !CommonService.getPremiumOverride()) {
+            _billing.shouldShowPremiumContent { show ->
+                if(!show) {
                     Toast.makeText(requireContext(), getString(R.string.premium_subscription_switch_to_free), Toast.LENGTH_LONG).show()
                     softRestart(_manager, _localStore)
                 }

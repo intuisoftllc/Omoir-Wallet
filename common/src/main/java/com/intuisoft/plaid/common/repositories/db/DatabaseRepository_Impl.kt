@@ -71,6 +71,7 @@ class DatabaseRepository_Impl(
                 data.dynamicFees,
                 data.status,
                 data.batches,
+                data.processing
             )
         )
         database.onUpdate(transferDao)

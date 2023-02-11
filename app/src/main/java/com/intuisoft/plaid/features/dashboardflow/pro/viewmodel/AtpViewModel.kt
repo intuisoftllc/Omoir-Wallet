@@ -170,7 +170,8 @@ class AtpViewModel(
                     feeRangeHigh = getFeeSpread().last,
                     dynamicFees = isUsingDynamicBatchNetworkFee(),
                     status = AssetTransferStatus.NOT_STARTED,
-                    batches = batches
+                    batches = batches,
+                    processing = false
                 )
             )
 
