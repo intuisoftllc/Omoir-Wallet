@@ -67,6 +67,10 @@ abstract class BindingFragment<T: ViewBinding> : Fragment(), FragmentActionBarDe
         }
     }
 
+    fun withBinding(delegate: T.() -> Unit) {
+        _binding?.delegate()
+    }
+
     fun activatePin(setupPin: Boolean, loadingUserData: Boolean) {
         (activity as? MainActivity)?.activatePin(setupPin, loadingUserData)
     }

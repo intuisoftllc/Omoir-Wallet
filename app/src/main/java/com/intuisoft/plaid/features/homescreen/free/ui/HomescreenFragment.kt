@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import com.intuisoft.plaid.R
@@ -57,6 +58,7 @@ class HomescreenFragment : ConfigurableFragment<FragmentHomescreenBinding>(
         eventTracker.log(EventHomescreenView())
         billing.shouldShowPremiumContent { show ->
             if(show) {
+                Toast.makeText(requireContext(), R.string.premium_subscription_switch_to_pro, Toast.LENGTH_LONG).show()
                 softRestart()
             }
         }

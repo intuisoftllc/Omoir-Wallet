@@ -521,15 +521,7 @@ class SettingsFragment : ConfigurableFragment<FragmentSettingsBinding>(
 
         viewModel.eraseAllData {
             progressDialog.cancel()
-
-            navigate(
-                navId = R.id.splashFragment,
-                options = navOptions {
-                    popUpTo(R.id.settingsFragment) {
-                        inclusive = true
-                    }
-                }
-            )
+            softRestart()
         }
     }
 
@@ -560,7 +552,7 @@ class SettingsFragment : ConfigurableFragment<FragmentSettingsBinding>(
                 negative = null,
                 positiveTint = R.color.brand_color_dark_blue,
                 onPositive = {
-                    viewModel.restartApp(this)
+                    softRestart()
                 },
                 onNegative = null,
                 addToStack = ::addToStack,

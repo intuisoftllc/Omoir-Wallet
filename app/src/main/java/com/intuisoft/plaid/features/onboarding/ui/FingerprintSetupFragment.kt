@@ -11,6 +11,7 @@ import androidx.lifecycle.Observer
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.*
 import com.intuisoft.plaid.androidwrappers.delegates.FragmentConfiguration
+import com.intuisoft.plaid.billing.BillingManager
 import com.intuisoft.plaid.common.analytics.EventTracker
 import com.intuisoft.plaid.common.analytics.events.EventOnboardingFingerprintRegister
 import com.intuisoft.plaid.common.analytics.events.EventOnboardingFinish
@@ -26,6 +27,7 @@ class FingerprintSetupFragment : BindingFragment<FragmentOnboardingFingerprintRe
     private val viewModel: OnboardingViewModel by sharedViewModel()
     private val localStoreRepository: LocalStoreRepository by inject()
     protected val eventTracker: EventTracker by inject()
+    protected val billing: BillingManager by inject()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -114,27 +116,29 @@ class FingerprintSetupFragment : BindingFragment<FragmentOnboardingFingerprintRe
     }
 
     fun onNextStep() {
-        localStoreRepository.setOnboardingComplete(true)
-        eventTracker.log(EventOnboardingFinish())
+        billing.shouldShowPremiumContent { hasSubscription ->
+            localStoreRepository.setOnboardingComplete(true)
+            eventTracker.log(EventOnboardingFinish())
 
-        var bundle = bundleOf(
-            Constants.Navigation.FRAGMENT_CONFIG to FragmentConfiguration(
-                configurationType = FragmentConfigurationType.CONFIGURATION_ONBOARDING_All_SET,
-                configData = AllSetData(
-                    title = getString(R.string.all_set_title),
-                    subtitle = getString(R.string.all_set_description),
-                    positiveText = getString(R.string.create_new_wallet),
-                    negativeText = getString(R.string.goto_homescreen),
-                    positiveDestination = R.id.createWalletFragment,
-                    negativeDestination = if(localStoreRepository.isPremiumUser()) R.id.proHomescreenFragment else R.id.homescreenFragment,
-                    walletUUID = ""
+            var bundle = bundleOf(
+                Constants.Navigation.FRAGMENT_CONFIG to FragmentConfiguration(
+                    configurationType = FragmentConfigurationType.CONFIGURATION_ONBOARDING_All_SET,
+                    configData = AllSetData(
+                        title = getString(R.string.all_set_title),
+                        subtitle = getString(R.string.all_set_description),
+                        positiveText = getString(R.string.create_new_wallet),
+                        negativeText = getString(R.string.goto_homescreen),
+                        positiveDestination = R.id.createWalletFragment,
+                        negativeDestination = if (hasSubscription) R.id.proHomescreenFragment else R.id.homescreenFragment,
+                        walletUUID = ""
+                    )
                 )
             )
-        )
 
-        navigate(
-            R.id.allSetFragment,
-            bundle
-        )
+            navigate(
+                R.id.allSetFragment,
+                bundle
+            )
+        }
     }
 }

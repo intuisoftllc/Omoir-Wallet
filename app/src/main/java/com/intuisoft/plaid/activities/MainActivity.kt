@@ -253,15 +253,9 @@ class MainActivity : BindingActivity<ActivityMainBinding>(), ActionBarDelegate {
                     PlaidScope.applicationScope.launch(Dispatchers.IO) {
                         localStoreRepository.wipeAllData {
                             PlaidScope.MainScope.launch {
-                                safeWalletScope {
-                                    progressDialog.cancel()
-
-                                    getNavController().navigate(
-                                        R.id.splashFragment
-                                    )
-
-                                    pin.isVisible = false
-                                }
+                                progressDialog.cancel()
+                                pin.isVisible = false
+                                softRestart(walletManager, localStoreRepository)
                             }
                         }
                     }

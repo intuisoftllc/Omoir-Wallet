@@ -45,50 +45,52 @@ class SubscriptionFragment : ConfigurableFragment<FragmentSubscriptionBinding>(
         billing.getCurrentSubscription(
             activity = requireActivity()
         ) { sub ->
-            binding.info1.setSubTitleText(sub.renewalType)
-            binding.info2.setSubTitleText(sub.expireDate)
-            binding.info3.setSubTitleText(sub.state)
+            withBinding {
+                info1.setSubTitleText(sub.renewalType)
+                info2.setSubTitleText(sub.expireDate)
+                info3.setSubTitleText(sub.state)
 
-            // not the best way to do this but...
-            binding.switchSubscription.isVisible = sub.state == getString(R.string.premium_subscription_state_type_1)
-            if(getString(R.string.premium_subscription_renewal_type_1) == sub.renewalType) { // monthly
-                binding.switchSubscription.setButtonText(getString(R.string.premium_subscription_switch_annual))
-            } else {
-                binding.switchSubscription.setButtonText(getString(R.string.premium_subscription_switch_monthly))
-            }
+                // not the best way to do this but...
+                switchSubscription.isVisible = sub.state == getString(R.string.premium_subscription_state_type_1)
+                if(getString(R.string.premium_subscription_renewal_type_1) == sub.renewalType) { // monthly
+                    switchSubscription.setButtonText(getString(R.string.premium_subscription_switch_annual))
+                } else {
+                    switchSubscription.setButtonText(getString(R.string.premium_subscription_switch_monthly))
+                }
 
-            binding.switchSubscription.onClick(Constants.Time.MIN_CLICK_INTERVAL_LONG) {
-                binding.switchSubscription.enableButton(false)
-                billing.upgradeDownGrade(
-                    activity = requireActivity(),
-                    onSuccess = { subActive ->
-                        binding.switchSubscription.enableButton(true)
+                switchSubscription.onClick(Constants.Time.MIN_CLICK_INTERVAL_LONG) {
+                    switchSubscription.enableButton(false)
+                    billing.upgradeDownGrade(
+                        activity = requireActivity(),
+                        onSuccess = { subActive ->
+                            switchSubscription.enableButton(true)
 
-                        if (subActive) {
-                            styledSnackBar(requireView(), getString(R.string.premium_subscriptions_update_success))
-                            onBackPressed()
-                        } else {
-                            styledSnackBar(requireView(), getString(R.string.premium_subscriptions_update_error))
-                            onBackPressed()
+                            if (subActive) {
+                                styledSnackBar(requireView(), getString(R.string.premium_subscriptions_update_success))
+                                onBackPressed()
+                            } else {
+                                styledSnackBar(requireView(), getString(R.string.premium_subscriptions_update_error))
+                                onBackPressed()
+                            }
+
+                        },
+                        onFail = { error, cancelled ->
+                            switchSubscription.enableButton(true)
+
+                            if(cancelled) {
+                                styledSnackBar(requireView(), getString(R.string.premium_subscriptions_cancelled_purchase), true)
+                            } else {
+                                FirebaseCrashlytics.getInstance().log(error.message)
+                                styledSnackBar(requireView(), getString(R.string.premium_subscriptions_failed_purchase, error.message), true)
+                            }
                         }
+                    )
+                }
 
-                    },
-                    onFail = { error, cancelled ->
-                        binding.switchSubscription.enableButton(true)
-
-                        if(cancelled) {
-                            styledSnackBar(requireView(), getString(R.string.premium_subscriptions_cancelled_purchase), true)
-                        } else {
-                            FirebaseCrashlytics.getInstance().log(error.message)
-                            styledSnackBar(requireView(), getString(R.string.premium_subscriptions_failed_purchase, error.message), true)
-                        }
+                manage.onClick {
+                    sub.managementUrl?.let {
+                        requireContext().openLink(it)
                     }
-                )
-            }
-
-            binding.manage.onClick {
-                sub.managementUrl?.let {
-                    requireContext().openLink(it)
                 }
             }
         }

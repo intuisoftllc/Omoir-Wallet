@@ -9,6 +9,7 @@ import androidx.lifecycle.Observer
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.*
 import com.intuisoft.plaid.androidwrappers.delegates.FragmentConfiguration
+import com.intuisoft.plaid.billing.BillingManager
 import com.intuisoft.plaid.common.analytics.EventTracker
 import com.intuisoft.plaid.common.analytics.events.EventMarketView
 import com.intuisoft.plaid.common.model.ChartDataModel
@@ -31,6 +32,7 @@ class MarketFragment : ConfigurableFragment<FragmentMarketBinding>(pinProtection
     private val viewModel: MarketViewModel by viewModel()
     private val localStore: LocalStoreRepository by inject()
     protected val eventTracker: EventTracker by inject()
+    protected val billingManager: BillingManager by inject()
 
     val adapter = BasicLineChartAdapter()
 
@@ -199,7 +201,6 @@ class MarketFragment : ConfigurableFragment<FragmentMarketBinding>(pinProtection
             binding.addressesWithBalances.text = it
         })
 
-        viewModel.checkProStatus()
         viewModel.upgradeToPro.observe(viewLifecycleOwner, Observer {
             binding.upgradeToProContainer.isVisible = it
 
@@ -216,6 +217,24 @@ class MarketFragment : ConfigurableFragment<FragmentMarketBinding>(pinProtection
                 binding.addressesWithBalances.text = ""
             }
         })
+
+        binding.upgrade.onClick {
+            binding.upgrade.enableButton(false)
+            billingManager.shouldShowPremiumContent { hasSubscription ->
+                if(!hasSubscription) {
+                    navigate(
+                        R.id.premiumSubscriptionFragment,
+                        Constants.Navigation.ANIMATED_ENTER_EXIT_RIGHT_NAV_OPTION
+                    )
+                } else {
+                    withBinding {
+                        upgrade.enableButton(true)
+                        viewModel.checkProStatus()
+                        viewModel.updateData()
+                    }
+                }
+            }
+        }
 
         viewModel.congestionRating.observe(viewLifecycleOwner, Observer {
             when(it) {
@@ -310,6 +329,7 @@ class MarketFragment : ConfigurableFragment<FragmentMarketBinding>(pinProtection
 
     override fun onResume() {
         super.onResume()
+        viewModel.checkProStatus()
         viewModel.updateData()
     }
 

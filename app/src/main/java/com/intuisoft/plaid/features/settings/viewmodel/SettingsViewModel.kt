@@ -60,11 +60,6 @@ class SettingsViewModel(
 
     var appRestartNeeded = false
 
-    fun restartApp(fragment: Fragment) {
-        appRestartNeeded = false
-        (fragment as BindingFragment<*>).softRestart(walletManager, localStoreRepository)
-    }
-
     fun saveMinimumConfirmation(min: Int) {
         localStoreRepository.setMinConfirmations(min)
     }

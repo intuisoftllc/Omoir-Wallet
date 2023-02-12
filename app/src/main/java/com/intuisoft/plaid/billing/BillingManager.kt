@@ -244,7 +244,8 @@ class BillingManager(
                     storeTransaction: StoreTransaction,
                     customerInfo: CustomerInfo
                 ) {
-                    onSuccess(hasSubscription(customerInfo))
+                    prefs.isPremiumUser = hasSubscription(customerInfo)
+                    onSuccess(prefs.isPremiumUser)
                 }
 
                 override fun onError(error: PurchasesError, userCancelled: Boolean) {
@@ -283,12 +284,6 @@ class BillingManager(
                             )
                         )
                     )
-
-//                    val pricePerMonth = monthly.product.priceAmountMicros.toDouble() / 1000000
-//                    binding.annualPrice.text = getString(R.string.premium_subscription_annual_price, annual.product.price)
-//                    binding.annualMonthlyConversion.text = getString(R.string.premium_subscription_monthly_price_conversion, annualPricePerMonth.roundTo(2).toString())
-//                    binding.saveAmount.text = getString(R.string.premium_subscription_monthly_price_savings, savings.roundToLong().toString())
-//                    binding.monthlyPrice.text = getString(R.string.premium_subscription_monthly_price, pricePerMonth.roundTo(2).toString())
                 } else {
                     callback(listOf())
                 }

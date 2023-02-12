@@ -61,7 +61,6 @@ class AllSetFragment : ConfigurableFragment<FragmentOnboardingAllSetBinding>(
                 binding.negativeButton.setButtonText(data.negativeText)
 
                 binding.positiveButton.onClick {
-                    findNavController().popBackStack(if(localStoreRepository.isPremiumUser()) R.id.proHomescreenFragment else R.id.homescreenFragment, false)
                     if(data.positiveDestination == R.id.createWalletFragment
                         && configuration.configurationType == FragmentConfigurationType.CONFIGURATION_ONBOARDING_All_SET) {
                         eventTracker.log(EventOnboardingCreateWallet())
@@ -83,9 +82,7 @@ class AllSetFragment : ConfigurableFragment<FragmentOnboardingAllSetBinding>(
                 }
 
                 binding.negativeButton.onClick {
-
-                    findNavController().popBackStack(if(localStoreRepository.isPremiumUser()) R.id.proHomescreenFragment else R.id.homescreenFragment, false)
-                    if((data.positiveDestination == R.id.proHomescreenFragment ||data.positiveDestination == R.id.homescreenFragment)
+                    if((data.negativeDestination == R.id.proHomescreenFragment || data.negativeDestination == R.id.homescreenFragment)
                         && configuration.configurationType == FragmentConfigurationType.CONFIGURATION_ONBOARDING_All_SET) {
                         eventTracker.log(EventOnboardingGotoHomescreen())
                     }

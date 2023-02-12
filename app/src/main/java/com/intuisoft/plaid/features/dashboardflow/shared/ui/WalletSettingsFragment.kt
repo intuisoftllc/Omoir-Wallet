@@ -286,7 +286,7 @@ class WalletSettingsFragment : ConfigurableFragment<FragmentWalletSettingsBindin
                 negative = null,
                 positiveTint = R.color.brand_color_dark_blue,
                 onPositive = {
-                    appSettingsViewModel.restartApp(this)
+                    softRestart()
                 },
                 onNegative = null,
                 addToStack = ::addToStack,

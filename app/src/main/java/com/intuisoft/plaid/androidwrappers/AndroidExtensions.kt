@@ -34,6 +34,7 @@ import coil.request.CachePolicy
 import coil.request.ImageRequest
 import com.google.android.material.R
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.intuisoft.plaid.PlaidApp
 import com.intuisoft.plaid.activities.MainActivity
 import com.intuisoft.plaid.model.LocalWalletModel
@@ -228,19 +229,27 @@ fun styledSnackBar(root: View, title: String, showTop: Boolean? = null, onDismis
 }
 
 fun Fragment.navigate(navId: Int, options: NavOptions = Constants.Navigation.ANIMATED_FADE_IN_EXIT_NAV_OPTION) {
-    findNavController().navigate(
-        navId,
-        null,
-        options
-    )
+    try {
+        findNavController().navigate(
+            navId,
+            null,
+            options
+        )
+    } catch(e: java.lang.IllegalStateException) {
+        FirebaseCrashlytics.getInstance().recordException(e)
+    }
 }
 
 fun Fragment.navigate(navId: Int, bundle: Bundle, options: NavOptions = Constants.Navigation.ANIMATED_FADE_IN_EXIT_NAV_OPTION) {
-    findNavController().navigate(
-        navId,
-        bundle,
-        options
-    )
+    try {
+        findNavController().navigate(
+            navId,
+            bundle,
+            options
+        )
+    } catch(e: java.lang.IllegalStateException) {
+        FirebaseCrashlytics.getInstance().recordException(e)
+    }
 }
 
 fun Resources.dpToPixels(dp: Float) : Float {

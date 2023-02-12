@@ -20,7 +20,7 @@ android {
         applicationId "com.intuisoft.plaid"
         minSdk 26
         targetSdk 33
-        versionCode 5
+        versionCode 8
         versionName "0.1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -93,7 +93,7 @@ android {
             buildConfigField("String", "CHANGE_NOW_CLIENT_SECRET", "\"${properties['CHANGE_NOW_CLIENT_SECRET']}\"")
             buildConfigField("String", "REVENUE_CAT_SECRET", "\"${properties['REVENUE_CAT_SECRET']}\"")
             buildConfigField("String", "WALLET_SECRET", "\"${properties['WALLET_SECRET']}\"")
-            buildConfigField("Boolean", "PREMIUM_OVERRIDE", "true")
+            buildConfigField("Boolean", "PREMIUM_OVERRIDE", "false")
             buildConfigField("Boolean", "LOGGING_ENABLED", "true")
         }
     }

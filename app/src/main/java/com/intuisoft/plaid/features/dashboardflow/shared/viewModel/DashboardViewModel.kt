@@ -425,7 +425,7 @@ class DashboardViewModel(
                     splitTime = 30 * (Constants.Time.ONE_MINUTE * Constants.Time.MILLS_PER_SEC) // 30 minute intervals
                 else if(nowTime.minusMonths(1).toInstant().isBefore(txStartTime))
                     splitTime = 60 * (Constants.Time.ONE_MINUTE * Constants.Time.MILLS_PER_SEC) // 60 minute intervals
-                else splitTime = (Constants.Time.SECONDS_PER_DAY * Constants.Time.MILLS_PER_SEC) // 1 day intervals
+                 else splitTime = (Constants.Time.SECONDS_PER_DAY * Constants.Time.MILLS_PER_SEC) // 1 day intervals
             }
         }
 
@@ -440,6 +440,13 @@ class DashboardViewModel(
             )
 
             currentTime += splitTime
+        }
+
+        if(history.isNotEmpty() && history.lastOrNull()?.second != (currentTime / Constants.Time.MILLS_PER_SEC)) {
+            history.add(
+                (getBalanceAtTime(endTime / Constants.Time.MILLS_PER_SEC, balanceHistory) * Constants.Limit.SATS_PER_BTC).toLong()
+                        to (endTime / Constants.Time.MILLS_PER_SEC)
+            )
         }
 
         if (history.size == 1) {

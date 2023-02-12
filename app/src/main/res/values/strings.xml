@@ -69,6 +69,7 @@
     <string name="premium_subscription_monthly_price_savings">Save %1$s%%</string>
     <string name="premium_subscription_monthly_price">%1$s/month</string>
     <string name="premium_subscription_switch_to_free">Premium subscription not found, switching to free version.</string>
+    <string name="premium_subscription_switch_to_pro">Premium subscription found, switching to pro version.</string>
     <string name="premium_subscription_info_title">Premium Subscription</string>
     <string name="premium_subscription_info_1_title">Renewal Type</string>
     <string name="premium_subscription_info_2_title">Good Until</string>
