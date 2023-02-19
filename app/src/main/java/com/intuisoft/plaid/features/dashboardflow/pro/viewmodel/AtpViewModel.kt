@@ -15,7 +15,7 @@ import com.intuisoft.plaid.common.util.extensions.nextInt
 import com.intuisoft.plaid.common.util.extensions.splitIntoGroupOf
 import com.intuisoft.plaid.model.LocalWalletModel
 import com.intuisoft.plaid.util.NetworkUtil
-import com.intuisoft.plaid.util.Plural
+import com.intuisoft.plaid.common.util.Plural
 import com.intuisoft.plaid.walletmanager.AbstractWalletManager
 import com.intuisoft.plaid.walletmanager.AtpManager
 import io.horizontalsystems.bitcoincore.storage.UnspentOutput

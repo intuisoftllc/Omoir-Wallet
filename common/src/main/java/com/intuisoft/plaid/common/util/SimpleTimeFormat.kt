@@ -1,7 +1,6 @@
-package com.intuisoft.plaid.util
+package com.intuisoft.plaid.common.util
 
 import com.intuisoft.plaid.common.model.ReportHistoryTimeFilter
-import com.intuisoft.plaid.common.util.Constants
 import java.text.SimpleDateFormat
 import java.time.Instant
 import java.time.ZoneId

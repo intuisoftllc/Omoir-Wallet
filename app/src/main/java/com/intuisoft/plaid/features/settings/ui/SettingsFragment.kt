@@ -14,7 +14,6 @@ import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.navOptions
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.*
@@ -464,16 +463,36 @@ class SettingsFragment : ConfigurableFragment<FragmentSettingsBinding>(
             binding.appVersion.setSubTitleText(it)
         })
 
-        viewModel.showEasterEgg.observe(viewLifecycleOwner, Observer {
-            styledSnackBar(requireView(), getString(R.string.settings_meme_message)) {
-                try {
-                    navigate(
-                        R.id.memeFragment,
-                        Constants.Navigation.ANIMATED_ENTER_EXIT_RIGHT_NAV_OPTION
-                    )
-                } catch (t: Throwable) {}
+        viewModel.showStepsLeftToDeveloper.observe(viewLifecycleOwner, Observer {
+            if(it == 0) {
+                Toast.makeText(context, getString(R.string.settings_you_are_adeveloper), Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(
+                    context,
+                    getString(R.string.settings_steps_left_to_developer, it.toString()),
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         })
+
+        viewModel.showDeveloperSetting.observe(viewLifecycleOwner, Observer {
+            binding.developerOptions.isVisible = true
+        })
+
+        viewModel.showDeveloperOptions.observe(viewLifecycleOwner, Observer {
+            Toast.makeText(context, "Todo: Show developer options", Toast.LENGTH_SHORT).show()
+        })
+
+        viewModel.showMemeFragment.observe(viewLifecycleOwner, Observer {
+            navigate(
+                R.id.memeFragment,
+                Constants.Navigation.ANIMATED_ENTER_EXIT_RIGHT_NAV_OPTION
+            )
+        })
+
+        binding.developerOptions.onClick {
+            viewModel.onDeveloperOptionsClicked()
+        }
 
         binding.appVersion.onClick {
             viewModel.onVersionTapped()

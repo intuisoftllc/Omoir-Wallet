@@ -26,8 +26,8 @@ import com.intuisoft.plaid.common.util.extensions.toArrayList
 import com.intuisoft.plaid.databinding.FragmentAssetTransferDetailsBinding
 import com.intuisoft.plaid.features.dashboardflow.pro.adapters.BatchInfoAdapter
 import com.intuisoft.plaid.features.dashboardflow.pro.viewmodel.AtpDetailsViewModel
-import com.intuisoft.plaid.util.Plural
-import com.intuisoft.plaid.util.SimpleTimeFormat
+import com.intuisoft.plaid.common.util.Plural
+import com.intuisoft.plaid.common.util.SimpleTimeFormat
 import com.intuisoft.plaid.util.fragmentconfig.BasicConfigData
 import com.intuisoft.plaid.walletmanager.AbstractWalletManager
 import org.koin.android.ext.android.inject

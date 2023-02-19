@@ -46,7 +46,6 @@ class AllSetFragment : ConfigurableFragment<FragmentOnboardingAllSetBinding>(
 
     }
 
-    // todo: clear backstack when navigating here
     override fun onConfiguration(configuration: FragmentConfiguration?) {
         when(configuration?.configurationType ?: FragmentConfigurationType.CONFIGURATION_NONE) {
             FragmentConfigurationType.CONFIGURATION_ONBOARDING_All_SET,

@@ -3,7 +3,7 @@ package com.intuisoft.plaid.features.dashboardflow.shared.adapters.detail
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.BindingViewHolder
 import com.intuisoft.plaid.androidwrappers.ListItem
-import com.intuisoft.plaid.util.SimpleTimeFormat
+import com.intuisoft.plaid.common.util.SimpleTimeFormat
 import kotlinx.android.synthetic.main.list_item_section_info.view.*
 import java.time.Instant
 import java.util.*

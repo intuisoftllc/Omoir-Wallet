@@ -24,8 +24,8 @@ import com.intuisoft.plaid.common.util.extensions.toArrayList
 import com.intuisoft.plaid.databinding.FragmentUtxoDistroReportBinding
 import com.intuisoft.plaid.features.dashboardflow.pro.viewmodel.UtxoDistributionViewModel
 import com.intuisoft.plaid.features.homescreen.adapters.BasicCoinAdapter
-import com.intuisoft.plaid.util.Plural
-import com.intuisoft.plaid.util.SimpleTimeFormat
+import com.intuisoft.plaid.common.util.Plural
+import com.intuisoft.plaid.common.util.SimpleTimeFormat
 import com.intuisoft.plaid.util.fragmentconfig.BasicConfigData
 import com.intuisoft.plaid.walletmanager.AbstractWalletManager
 import io.horizontalsystems.bitcoincore.models.PublicKey

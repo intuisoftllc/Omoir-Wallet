@@ -140,7 +140,13 @@ class UserData {
             save()
         }
 
-    var versionTappedCount: Int = 0
+    var lastChartPriceUpdateTime: HashMap<Int, Long> = hashMapOf()
+        set(value) {
+            field = value
+            save()
+        }
+
+    var stepsToDeveloper: Int = 6
         set(value) {
             field = value
             save()

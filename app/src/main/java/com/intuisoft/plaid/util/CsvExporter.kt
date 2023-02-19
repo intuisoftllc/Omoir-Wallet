@@ -6,8 +6,8 @@ import com.intuisoft.plaid.R
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.common.util.SimpleCoinNumberFormat
+import com.intuisoft.plaid.common.util.SimpleTimeFormat
 import com.intuisoft.plaid.common.util.extensions.writeToFile
-import com.intuisoft.plaid.common.util.extensions.writeToPrivateFile
 import io.horizontalsystems.bitcoincore.models.TransactionInfo
 import io.horizontalsystems.bitcoincore.models.TransactionType
 import java.io.File

@@ -67,6 +67,7 @@ android {
             buildConfigField("String", "REVENUE_CAT_SECRET", "\"${properties['REVENUE_CAT_SECRET']}\"")
             buildConfigField("Boolean", "PREMIUM_OVERRIDE", "true")
             buildConfigField("Boolean", "LOGGING_ENABLED", "true")
+            buildConfigField("Boolean", "DEVELOPER_ACCESS", "false")
 
             /**
              * Wallet Secret
@@ -95,6 +96,7 @@ android {
             buildConfigField("String", "WALLET_SECRET", "\"${properties['WALLET_SECRET']}\"")
             buildConfigField("Boolean", "PREMIUM_OVERRIDE", "false")
             buildConfigField("Boolean", "LOGGING_ENABLED", "true")
+            buildConfigField("Boolean", "DEVELOPER_ACCESS", "false")
         }
     }
     compileOptions {
@@ -160,6 +162,8 @@ dependencies {
 // Tooltips
     implementation 'com.diogobernardino.williamchart:tooltip-slider:3.11.0'
     implementation 'com.diogobernardino.williamchart:tooltip-points:3.11.0'
+
+    implementation 'nl.dionsegijn:konfetti-xml:2.0.2'
 
     implementation 'io.coil-kt:coil:1.2.0'
     implementation 'io.coil-kt:coil-svg:1.2.0'

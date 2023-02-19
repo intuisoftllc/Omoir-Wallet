@@ -9,7 +9,7 @@ import com.intuisoft.plaid.androidwrappers.setOnSingleClickListener
 import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.common.util.RateConverter
 import com.intuisoft.plaid.features.dashboardflow.pro.viewmodel.AtpViewModel
-import com.intuisoft.plaid.util.Plural
+import com.intuisoft.plaid.common.util.Plural
 import kotlinx.android.synthetic.main.list_item_utxo_transfer.view.*
 import kotlinx.coroutines.*
 

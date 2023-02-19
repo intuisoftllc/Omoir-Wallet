@@ -1,10 +1,12 @@
 package com.intuisoft.plaid.billing
 
+import android.accounts.NetworkErrorException
 import android.app.Activity
 import android.app.Application
 import android.net.Uri
 import android.util.Log
 import com.android.billingclient.api.BillingFlowParams.ProrationMode
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.intuisoft.plaid.PlaidApp
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.common.CommonService
@@ -89,6 +91,10 @@ class BillingManager(
         Purchases.sharedInstance.getCustomerInfo(object : ReceiveCustomerInfoCallback {
             override fun onError(error: PurchasesError) {
                 if(com.intuisoft.plaid.BuildConfig.LOGGING_ENABLED) Log.e(TAG, "error: $error")
+                if(NetworkUtil.hasInternet(application)) {
+                    FirebaseCrashlytics.getInstance().recordException(NetworkErrorException("getCustomerInfo() error: $error"))
+                }
+
                 callback?.invoke(null)
             }
 
@@ -295,6 +301,10 @@ class BillingManager(
 
     private fun getProducts(callback: (List<Package>?) -> Unit) {
         Purchases.sharedInstance.getOfferingsWith({ error ->
+            if(NetworkUtil.hasInternet(application)) {
+                FirebaseCrashlytics.getInstance().recordException(NetworkErrorException("getProducts() error: $error"))
+            }
+
             callback(null)
         }) { offerings ->
             offerings.current?.availablePackages?.takeUnless { it.isNullOrEmpty() }?.let {

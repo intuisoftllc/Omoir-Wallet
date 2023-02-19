@@ -5,21 +5,10 @@ import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.BindingViewHolder
 import com.intuisoft.plaid.androidwrappers.ListItem
 import com.intuisoft.plaid.androidwrappers.setOnSingleClickListener
-import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.common.util.RateConverter
-import com.intuisoft.plaid.common.util.SimpleCoinNumberFormat
-import com.intuisoft.plaid.util.SimpleTimeFormat
-import io.horizontalsystems.bitcoincore.models.TransactionInfo
-import io.horizontalsystems.bitcoincore.models.TransactionStatus
-import io.horizontalsystems.bitcoincore.models.TransactionType
 import io.horizontalsystems.bitcoincore.storage.UnspentOutput
 import kotlinx.android.synthetic.main.list_item_basic_coin_detail.view.*
-import kotlinx.android.synthetic.main.list_item_basic_transaction_detail.view.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 
 
 class BasicCoinDetail(

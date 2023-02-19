@@ -35,7 +35,7 @@ import com.intuisoft.plaid.common.util.extensions.safeWalletScope
 import com.intuisoft.plaid.databinding.FragmentProWalletDashboardBinding
 import com.intuisoft.plaid.features.dashboardflow.shared.adapters.BasicLineChartAdapter
 import com.intuisoft.plaid.features.dashboardflow.shared.viewModel.DashboardViewModel
-import com.intuisoft.plaid.util.SimpleTimeFormat
+import com.intuisoft.plaid.common.util.SimpleTimeFormat
 import com.intuisoft.plaid.util.fragmentconfig.ConfigQrDisplayData
 import com.intuisoft.plaid.walletmanager.AbstractWalletManager
 import kotlinx.coroutines.MainScope

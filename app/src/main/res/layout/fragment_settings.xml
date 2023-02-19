@@ -324,6 +324,16 @@
                         app:settings_variant="normal"
                         app:item_title="@string/settings_option_view_help"
                         app:item_subtitle="@string/settings_option_view_help_description"/>
+
+                    <com.intuisoft.plaid.androidwrappers.SettingsItemView
+                        android:id="@+id/developer_options"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:settings_variant="normal"
+                        android:layout_marginTop="@dimen/horizontal_padding_size"
+                        android:visibility="gone"
+                        app:item_title="@string/settings_option_developer"
+                        app:item_subtitle="@string/settings_option_developer_subtitle"/>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 

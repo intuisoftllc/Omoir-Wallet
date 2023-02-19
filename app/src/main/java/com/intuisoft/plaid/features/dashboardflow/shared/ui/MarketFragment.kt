@@ -22,7 +22,7 @@ import com.intuisoft.plaid.common.util.SimpleCurrencyFormat
 import com.intuisoft.plaid.databinding.FragmentMarketBinding
 import com.intuisoft.plaid.features.dashboardflow.shared.adapters.BasicLineChartAdapter
 import com.intuisoft.plaid.features.dashboardflow.shared.viewModel.MarketViewModel
-import com.intuisoft.plaid.util.SimpleTimeFormat
+import com.intuisoft.plaid.common.util.SimpleTimeFormat
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.*

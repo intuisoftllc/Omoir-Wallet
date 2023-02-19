@@ -89,8 +89,10 @@ open class BaseViewModel(
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
                 localStoreRepository.wipeAllData {
-                    safeWalletScope {
-                        onWipeFinished()
+                    withContext(Dispatchers.Main) {
+                        safeWalletScope {
+                            onWipeFinished()
+                        }
                     }
                 }
             }

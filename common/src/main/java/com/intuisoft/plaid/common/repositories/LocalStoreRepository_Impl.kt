@@ -1,6 +1,5 @@
 package com.intuisoft.plaid.common.repositories
 
-import com.intuisoft.plaid.common.BuildConfig
 import com.intuisoft.plaid.common.CommonService
 import com.intuisoft.plaid.common.coroutines.PlaidScope
 import com.intuisoft.plaid.common.util.extensions.remove
@@ -253,6 +252,10 @@ class LocalStoreRepository_Impl(
         getUserData().lastSupportedCurrenciesUpdateTime = time
     }
 
+    override fun setLastChartPriceUpdate(time: Long, type: ChartIntervalType) {
+        getUserData().lastChartPriceUpdateTime.put(type.ordinal, time)
+    }
+
     override fun getLastSupportedCurrenciesUpdateTime(): Long {
         return getUserData().lastSupportedCurrenciesUpdateTime
     }
@@ -297,15 +300,19 @@ class LocalStoreRepository_Impl(
         return getUserData().pinTimeout
     }
 
-    override fun updateVersionTappedCount() {
-        if(getUserData().versionTappedCount < Constants.Limit.VERSION_CODE_TAPPED_LIMIT) {
-            getUserData().versionTappedCount = getUserData().versionTappedCount + 1
+    override fun updateStepsLeftToDeveloper() {
+        if(!isDeveloper()) {
+            getUserData().stepsToDeveloper = getUserData().stepsToDeveloper - 1
         }
     }
 
-    override fun versionTapLimitReached(): Boolean {
-        return getUserData().versionTappedCount == Constants.Limit.VERSION_CODE_TAPPED_LIMIT
+    override fun isDeveloper(): Boolean {
+        return getUserData().stepsToDeveloper == 0
     }
+
+    override fun hasDeveloperAccess(): Boolean = CommonService.getDeveloperAccess()
+
+    override fun stepsLeftToDeveloper() = getUserData().stepsToDeveloper
 
     override fun updateUserAlias(alias: String) {
         appPrefs.alias = alias
@@ -435,6 +442,10 @@ class LocalStoreRepository_Impl(
         databaseRepository.setTickerPriceChartData(data, currencyCode, intervalType)
     }
 
+    override fun getLastChartPriceUpdateTime(type: ChartIntervalType): Long {
+        return CommonService.getUserData()?.lastChartPriceUpdateTime?.get(type.ordinal) ?: 0
+    }
+
     override fun getTickerPriceChartData(
         currencyCode: String,
         intervalType: ChartIntervalType
@@ -509,6 +520,7 @@ class LocalStoreRepository_Impl(
             setLastFeeRateUpdate(0)
             setLastSupportedCurrenciesUpdate(0)
             setLastSupportedCurrenciesUpdate(0)
+            CommonService.getUserData()!!.lastChartPriceUpdateTime = hashMapOf()
         } catch(_: EmptyUsrDataErr) { }
         memoryCache.clear()
     }

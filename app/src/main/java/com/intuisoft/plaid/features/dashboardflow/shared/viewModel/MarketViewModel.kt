@@ -119,25 +119,27 @@ class MarketViewModel(
 
     fun onNoInternet(hasInternet: Boolean) {
         PlaidScope.applicationScope.launch(Dispatchers.IO) {
+            safeWalletScope {
+                val basicData = apiRepository.getBasicTickerData()
+                val extendedData =
+                    apiRepository.getExtendedNetworkData(getWalletNetwork() == BitcoinKit.NetworkType.TestNet)
+                val chartData = getChartData()
 
-            val basicData = apiRepository.getBasicTickerData()
-            val extendedData = apiRepository.getExtendedNetworkData(getWalletNetwork() == BitcoinKit.NetworkType.TestNet)
-            val chartData = getChartData()
-
-            if(basicData.marketCap != 0.0 && extendedData != null && chartData != null) {
-                _showContent.postValue(true)
-                updateBasicMarketData()
-                updateExtendedMarketData()
-                updateChartData()
-                setTickerPrice()
-            } else {
-                _showContent.postValue(hasInternet)
-
-                if (hasInternet) {
+                if (basicData.marketCap != 0.0 && extendedData != null && chartData != null) {
+                    _showContent.postValue(true)
                     updateBasicMarketData()
                     updateExtendedMarketData()
                     updateChartData()
                     setTickerPrice()
+                } else {
+                    _showContent.postValue(hasInternet)
+
+                    if (hasInternet) {
+                        updateBasicMarketData()
+                        updateExtendedMarketData()
+                        updateChartData()
+                        setTickerPrice()
+                    }
                 }
             }
         }

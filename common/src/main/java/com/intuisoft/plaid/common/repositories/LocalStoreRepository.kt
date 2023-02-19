@@ -1,7 +1,6 @@
 package com.intuisoft.plaid.common.repositories
 
 import com.intuisoft.plaid.common.listeners.WipeDataListener
-import com.intuisoft.plaid.common.local.db.BatchData
 import com.intuisoft.plaid.common.local.db.listeners.DatabaseListener
 import com.intuisoft.plaid.common.model.*
 import com.intuisoft.plaid.common.network.blockchair.response.SupportedCurrencyModel
@@ -97,6 +96,7 @@ interface LocalStoreRepository {
     fun getLastCurrencyRateUpdateTime(): Long
 
     fun setLastSupportedCurrenciesUpdate(time: Long)
+    fun setLastChartPriceUpdate(time: Long, type: ChartIntervalType)
 
     fun getLastSupportedCurrenciesUpdateTime(): Long
 
@@ -116,9 +116,13 @@ interface LocalStoreRepository {
 
     fun getLastExtendedMarketDataUpdateTime(): Long
 
-    fun updateVersionTappedCount()
+    fun updateStepsLeftToDeveloper()
 
-    fun versionTapLimitReached(): Boolean
+    fun isDeveloper(): Boolean
+
+    fun hasDeveloperAccess(): Boolean
+
+    fun stepsLeftToDeveloper(): Int
 
     fun updateUserAlias(alias: String)
 
@@ -167,6 +171,8 @@ interface LocalStoreRepository {
     fun getAllRates(): List<BasicPriceDataModel>
 
     suspend fun setTickerPriceChartData(data: List<ChartDataModel>, currencyCode: String, intervalType: ChartIntervalType)
+
+    fun getLastChartPriceUpdateTime(type: ChartIntervalType): Long
 
     fun getTickerPriceChartData(currencyCode: String, intervalType: ChartIntervalType): List<ChartDataModel>?
 

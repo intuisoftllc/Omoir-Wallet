@@ -12,7 +12,6 @@ import java.util.concurrent.CopyOnWriteArrayList
  */
 class MemoryCache {
     private var rangeLimitsCache: HashMap<String, Pair<Long, CurrencyRangeLimitModel>> = hashMapOf()
-    private var chartPriceUpdateTimes: HashMap<Int, Long> = hashMapOf()
     private var exchangeUpdateTimes: HashMap<String, Long> = hashMapOf()
     private var currencyRateCache: HashMap<String, BasicPriceDataModel?> = hashMapOf()
     private var storedWalletInfoCache: StoredWalletInfo? = null
@@ -26,7 +25,6 @@ class MemoryCache {
 
     fun clear() {
         rangeLimitsCache = hashMapOf()
-        chartPriceUpdateTimes = hashMapOf()
         exchangeUpdateTimes = hashMapOf()
         currencyRateCache = hashMapOf()
         storedWalletInfoCache = null
@@ -112,14 +110,6 @@ class MemoryCache {
 
     fun setCurrencySwapRangeLimit(from: SupportedCurrencyModel, to: SupportedCurrencyModel, currentTime: Long, limit: CurrencyRangeLimitModel) {
         rangeLimitsCache[from.id + to.id] = currentTime to limit
-    }
-
-    fun setChartPriceUpdateTime(type: ChartIntervalType, time: Long) {
-        chartPriceUpdateTimes.put(type.ordinal, time)
-    }
-
-    fun getChartPriceUpdateTimes(type: ChartIntervalType) : Long {
-        return chartPriceUpdateTimes.get(type.ordinal) ?: 0
     }
 
     fun getLastExchangeUpdateTime(id: String): Long {

@@ -101,6 +101,8 @@
     <string name="settings_option_view_credits">Credits</string>
     <string name="settings_option_view_credits_description">Libraries Used &amp; Notable Credits</string>
     <string name="settings_option_view_help">Help</string>
+    <string name="settings_option_developer">Developer Options</string>
+    <string name="settings_option_developer_subtitle">Change internal app behavior and settings</string>
     <string name="settings_option_wipe_data_title">Erase All Data</string>
     <string name="settings_option_wipe_data_button">Erase Data</string>
     <string name="settings_option_wipe_data_subtitle">Are you sure you want to wipe all data from Plaid Crypto Wallet™? This action is irreversible, please be sure you have backed up all your seed phrases.</string>
@@ -142,6 +144,8 @@
     <string name="settings_option_app_restart_positive_text">Restart Now</string>
     <string name="settings_option_app_restart_negative_text">Restart Later</string>
     <string name="settings_meme_message">You have unleashed the memes!</string>
+    <string name="settings_steps_left_to_developer">You are %1$s step(s) away from becoming a developer.</string>
+    <string name="settings_you_are_adeveloper">You are now a developer.</string>
     <string name="settings_send_email_help_message">Send email using…</string>
     <string name="settings_send_email_error">No email clients installed.</string>
     <string name="settings_option_hide_hidden_wallets_count">Hide Hidden Wallets Count</string>
@@ -339,7 +343,7 @@
 <!--    Withdraw Strings End -->
 
 <!--    Easter Egg Strings -->
-    <string name="easter_egg_screen_title">HODL! 1 BTC = 1 BTC</string>
+    <string name="easter_egg_screen_title">Developer Options</string>
 <!--    Easter Egg Strings End -->
 
 <!--    Pin Strings -->

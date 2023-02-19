@@ -39,7 +39,8 @@ class PlaidApp : Application(), Application.ActivityLifecycleCallbacks, KoinComp
             BuildConfig.COIN_GECKO_SERVER_URL,
             BuildConfig.CHANGE_NOW_SERVER_URL,
             BuildConfig.WALLET_SECRET,
-            BuildConfig.PREMIUM_OVERRIDE
+            BuildConfig.PREMIUM_OVERRIDE,
+            BuildConfig.DEVELOPER_ACCESS
         )
 
         startKoin {

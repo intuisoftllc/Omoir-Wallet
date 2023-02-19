@@ -2,13 +2,12 @@ package com.intuisoft.plaid.features.settings.viewmodel
 
 import android.app.Application
 import android.content.Context
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import com.intuisoft.plaid.BuildConfig
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.BaseViewModel
-import com.intuisoft.plaid.androidwrappers.BindingFragment
 import com.intuisoft.plaid.androidwrappers.SingleLiveData
+import com.intuisoft.plaid.common.CommonService
 import com.intuisoft.plaid.common.coroutines.PlaidScope
 import com.intuisoft.plaid.common.model.AppTheme
 import com.intuisoft.plaid.common.model.BitcoinDisplayUnit
@@ -48,15 +47,24 @@ class SettingsViewModel(
     private val _nameSetting = SingleLiveData<String>()
     val nameSetting: LiveData<String> = _nameSetting
 
-    private val _showEasterEgg = SingleLiveData<Unit>()
-    val showEasterEgg: LiveData<Unit> = _showEasterEgg
+    private val _showDeveloperSetting = SingleLiveData<Unit>()
+    val showDeveloperSetting: LiveData<Unit> = _showDeveloperSetting
+
+    private val _showStepsLeftToDeveloper = SingleLiveData<Int>()
+    val showStepsLeftToDeveloper: LiveData<Int> = _showStepsLeftToDeveloper
+
+    private val _showMemeFragment = SingleLiveData<Unit>()
+    val showMemeFragment: LiveData<Unit> = _showMemeFragment
+
+    private val _showDeveloperOptions = SingleLiveData<Unit>()
+    val showDeveloperOptions: LiveData<Unit> = _showDeveloperOptions
 
     fun getMaxPinAttempts() = localStoreRepository.getPinEntryLimit()
     fun getPinTimeout() = localStoreRepository.getPinTimeout()
     fun getDisplayUnit() = localStoreRepository.getBitcoinDisplayUnit()
     fun getName() = localStoreRepository.getUserAlias()
     fun getMinConfirmations() = localStoreRepository.getMinimumConfirmations()
-    fun versionTapLimitReached() = localStoreRepository.versionTapLimitReached()
+    fun versionTapLimitReached() = localStoreRepository.isDeveloper()
 
     var appRestartNeeded = false
 
@@ -75,6 +83,9 @@ class SettingsViewModel(
                 updateNameSetting()
                 updateLocalCurrencySetting()
                 updateHideHiddenWalletsSetting()
+                if(localStoreRepository.isDeveloper()) {
+                    _showDeveloperSetting.postValue(Unit)
+                }
             }
         }
     }
@@ -99,10 +110,23 @@ class SettingsViewModel(
         }
 
     fun onVersionTapped() {
-        if(localStoreRepository.versionTapLimitReached()) {
-            _showEasterEgg.postValue(Unit)
+        localStoreRepository.updateStepsLeftToDeveloper()
+
+        if(localStoreRepository.isDeveloper()) {
+            _showStepsLeftToDeveloper.postValue(0)
+            _showDeveloperSetting.postValue(Unit)
         } else {
-            localStoreRepository.updateVersionTappedCount()
+            if(localStoreRepository.stepsLeftToDeveloper() <= 3) {
+                _showStepsLeftToDeveloper.postValue(localStoreRepository.stepsLeftToDeveloper())
+            }
+        }
+    }
+
+    fun onDeveloperOptionsClicked() {
+        if(localStoreRepository.hasDeveloperAccess()) {
+            _showDeveloperOptions.postValue(Unit)
+        } else {
+            _showMemeFragment.postValue(Unit)
         }
     }
 

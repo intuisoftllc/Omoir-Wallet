@@ -1,4 +1,4 @@
-package com.intuisoft.plaid.util
+package com.intuisoft.plaid.common.util
 
 object Plural {
 

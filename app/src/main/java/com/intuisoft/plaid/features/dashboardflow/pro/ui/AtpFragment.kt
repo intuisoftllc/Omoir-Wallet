@@ -27,8 +27,8 @@ import com.intuisoft.plaid.features.dashboardflow.shared.ui.WithdrawConfirmation
 import com.intuisoft.plaid.features.dashboardflow.shared.ui.WithdrawalFragment
 import com.intuisoft.plaid.features.dashboardflow.pro.viewmodel.AtpViewModel
 import com.intuisoft.plaid.features.dashboardflow.pro.adapters.UtxoTransfersAdapter
-import com.intuisoft.plaid.util.Plural
-import com.intuisoft.plaid.util.SimpleTimeFormat
+import com.intuisoft.plaid.common.util.Plural
+import com.intuisoft.plaid.common.util.SimpleTimeFormat
 import com.intuisoft.plaid.util.fragmentconfig.BasicConfigData
 import com.intuisoft.plaid.walletmanager.AbstractWalletManager
 import org.koin.android.ext.android.inject
@@ -237,7 +237,8 @@ class AtpFragment : ConfigurableFragment<FragmentAtpBinding>(pinProtection = tru
                 getString(R.string.atp_confirm_batch_size_adjusted, Plural.of("utxo", data.batchSize.toLong()))
             else Plural.of("utxo", data.batchSize.toLong())
         )
-        time?.setSubTitleText("~${SimpleTimeFormat.timeToString(System.currentTimeMillis()
+        time?.setSubTitleText("~${
+            SimpleTimeFormat.timeToString(System.currentTimeMillis()
                 + ((data.estimatedCompletionTime * Constants.Time.ONE_MINUTE) * Constants.Time.MILLS_PER_SEC), "")}")
 
         rate.setLocalRate(RateConverter.RateType.SATOSHI_RATE, data.estimatedFee.toDouble())

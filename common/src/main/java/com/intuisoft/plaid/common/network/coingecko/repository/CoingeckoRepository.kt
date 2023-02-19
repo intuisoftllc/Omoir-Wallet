@@ -8,6 +8,7 @@ import com.intuisoft.plaid.common.model.MarketHistoryDataModel
 import com.intuisoft.plaid.common.network.blockchair.api.CoingeckoApi
 import com.intuisoft.plaid.common.network.blockchair.response.ChartDataResponse
 import com.intuisoft.plaid.common.util.Constants
+import java.time.Instant
 
 interface CoingeckoRepository {
     val TAG: String

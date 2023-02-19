@@ -15,10 +15,10 @@ import com.intuisoft.plaid.common.CommonService
 import com.intuisoft.plaid.databinding.FragmentTransactionDetailsBinding
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.common.util.Constants
-import com.intuisoft.plaid.util.Plural
+import com.intuisoft.plaid.common.util.Plural
 import com.intuisoft.plaid.common.util.SimpleCoinNumberFormat
 import com.intuisoft.plaid.features.settings.ui.SettingsFragment
-import com.intuisoft.plaid.util.SimpleTimeFormat.getDateByLocale
+import com.intuisoft.plaid.common.util.SimpleTimeFormat.getDateByLocale
 import com.intuisoft.plaid.util.fragmentconfig.BasicConfigData
 import io.horizontalsystems.bitcoincore.models.TransactionInfo
 import io.horizontalsystems.bitcoincore.models.TransactionStatus

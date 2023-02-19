@@ -7,8 +7,10 @@ import com.intuisoft.plaid.common.network.blockchair.repository.*
 import com.intuisoft.plaid.common.network.blockstreaminfo.repository.BlockstreamInfoRepository
 import com.intuisoft.plaid.common.network.blockchair.response.SupportedCurrencyModel
 import com.intuisoft.plaid.common.util.Constants
+import com.intuisoft.plaid.common.util.SimpleTimeFormat
 import kotlinx.coroutines.runBlocking
 import java.time.Instant
+import java.time.ZoneId
 
 
 class ApiRepository_Impl(
@@ -367,28 +369,39 @@ class ApiRepository_Impl(
                 cacheLimit = Constants.Time.GENERAL_CACHE_UPDATE_TIME_MED
             }
 
-            ChartIntervalType.INTERVAL_1WEEK,
-            ChartIntervalType.INTERVAL_1MONTH,
-            ChartIntervalType.INTERVAL_3MONTHS -> {
-                cacheLimit = Constants.Time.GENERAL_CACHE_UPDATE_TIME_LONG
-            }
              else -> {
-                 cacheLimit = Constants.Time.GENERAL_CACHE_UPDATE_TIME_XTRA_LONG
+                 cacheLimit = Constants.Time.GENERAL_CACHE_UPDATE_TIME_LONG
              }
         }
 
-        if((System.currentTimeMillis() - memoryCache.getChartPriceUpdateTimes(intervalType)) > cacheLimit
+        if((System.currentTimeMillis() - localStoreRepository.getLastChartPriceUpdateTime(intervalType)) > cacheLimit
             || localStoreRepository.getTickerPriceChartData(localStoreRepository.getLocalCurrency(), intervalType) == null) {
             val data = coingeckoRepository.getChartData(intervalType, localStoreRepository.getLocalCurrency())
 
             if(data.isSuccess) {
+                var marketPriceData = data.getOrThrow().toMutableList()
+
+                when(intervalType) {
+                    ChartIntervalType.INTERVAL_3MONTHS,
+                    ChartIntervalType.INTERVAL_6MONTHS,
+                    ChartIntervalType.INTERVAL_1YEAR,
+                    ChartIntervalType.INTERVAL_ALL_TIME -> { // attempt to to get realtime data for the past 24 hours if available/required
+                        val realtimeData = getMarketHistoryData(
+                            localStoreRepository.getLocalCurrency(),
+                            data.getOrThrow().last().time + (Constants.Time.FIVE_MINUTES * Constants.Time.MILLS_PER_SEC),
+                            Instant.now().toEpochMilli()
+                        )
+                        marketPriceData.addAll(realtimeData?.map { ChartDataModel(it.time, it.price.toFloat()) } ?: listOf())
+                    }
+                }
+
                 localStoreRepository.setTickerPriceChartData(
-                    data.getOrThrow(),
+                    marketPriceData,
                     localStoreRepository.getLocalCurrency(),
                     intervalType
                 )
 
-                memoryCache.setChartPriceUpdateTime(intervalType, System.currentTimeMillis())
+                localStoreRepository.setLastChartPriceUpdate(System.currentTimeMillis(), intervalType)
             }
         }
     }

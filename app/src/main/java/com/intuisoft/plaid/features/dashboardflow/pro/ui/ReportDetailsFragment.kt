@@ -1,12 +1,9 @@
 package com.intuisoft.plaid.features.dashboardflow.pro.ui
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
-import androidx.appcompat.app.AppCompatDialog
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
@@ -26,12 +23,10 @@ import com.intuisoft.plaid.common.util.extensions.toArrayList
 import com.intuisoft.plaid.databinding.FragmentReportDetailsBinding
 import com.intuisoft.plaid.features.dashboardflow.pro.viewmodel.ReportDetailsViewModel
 import com.intuisoft.plaid.features.homescreen.adapters.BasicTransactionAdapter
-import com.intuisoft.plaid.util.Plural
-import com.intuisoft.plaid.util.SimpleTimeFormat
+import com.intuisoft.plaid.common.util.Plural
+import com.intuisoft.plaid.common.util.SimpleTimeFormat
 import com.intuisoft.plaid.util.fragmentconfig.BasicConfigData
 import io.horizontalsystems.bitcoincore.models.TransactionInfo
-import kotlinx.android.synthetic.main.bottom_sheet_reports_filter.*
-import kotlinx.android.synthetic.main.fragment_exchange_history.*
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
