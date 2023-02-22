@@ -56,6 +56,14 @@ class LocalStoreRepository_Impl(
         return getUserData().localCurrency
     }
 
+    override fun getReportHistoryFilter(): ReportHistoryTimeFilter {
+        return getUserData().reportHistoryTimeFilter
+    }
+
+    override fun setReportHistoryFilter(filter: ReportHistoryTimeFilter) {
+        getUserData().reportHistoryTimeFilter = filter
+    }
+
     override fun setLocalCurrency(localCurrency: String) {
         getUserData().localCurrency = localCurrency
     }

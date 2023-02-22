@@ -92,10 +92,10 @@
     </fragment>
 
     <fragment
-        android:id="@+id/premiumSubscriptionFragment"
-        android:name="com.intuisoft.plaid.features.settings.ui.PremiumSubscriptionsFragment"
+        android:id="@+id/purchaseSubscriptionFragment"
+        android:name="com.intuisoft.plaid.features.settings.ui.PurchaseSubscriptionFragment"
         android:label="@string/premium_subscriptions_label"
-        tools:layout="@layout/fragment_premium_subscriptions">
+        tools:layout="@layout/fragment_purchase_subscription">
 
     </fragment>
 

@@ -11,6 +11,7 @@ import com.intuisoft.plaid.common.util.SimpleTimeFormat
 import kotlinx.coroutines.runBlocking
 import java.time.Instant
 import java.time.ZoneId
+import java.time.ZonedDateTime
 
 
 class ApiRepository_Impl(
@@ -389,7 +390,7 @@ class ApiRepository_Impl(
                         val realtimeData = getMarketHistoryData(
                             localStoreRepository.getLocalCurrency(),
                             data.getOrThrow().last().time + (Constants.Time.FIVE_MINUTES * Constants.Time.MILLS_PER_SEC),
-                            Instant.now().toEpochMilli()
+                            SimpleTimeFormat.endOfDay(ZonedDateTime.ofInstant(Instant.now(), ZoneId.systemDefault())).toInstant().toEpochMilli()
                         )
                         marketPriceData.addAll(realtimeData?.map { ChartDataModel(it.time, it.price.toFloat()) } ?: listOf())
                     }

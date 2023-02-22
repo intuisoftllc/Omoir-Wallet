@@ -11,6 +11,7 @@ import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.google.gson.Gson
+import com.intuisoft.plaid.BuildConfig
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.*
 import com.intuisoft.plaid.androidwrappers.delegates.FragmentConfiguration
@@ -122,8 +123,9 @@ class ExchangeDetailsFragment : ConfigurableFragment<FragmentExchangeDetailsBind
                     System.getProperty("os.version"),
                     Build.MODEL,
                     Build.PRODUCT,
-                    if(viewModel.isProEnabled()) Constants.Strings.PRO_SUBSCRIPTION_MARK else "",
-                    billing.getUserId()
+                    if(viewModel.isProEnabled()) Constants.Strings.PRO_SUBSCRIPTION_MARK + "\n" else "",
+                    billing.getUserId().replace(Constants.Strings.ANONYMOUS_ID_PREFIX, Constants.Strings.ANONYMOUS_ID_PREFIX_REPLACEMENT),
+                    BuildConfig.VERSION_NAME
                 )
             )
         }

@@ -12,7 +12,7 @@ import com.intuisoft.plaid.R
 import com.intuisoft.plaid.common.CommonService
 import com.intuisoft.plaid.common.local.AppPrefs
 import com.intuisoft.plaid.common.util.extensions.roundTo
-import com.intuisoft.plaid.features.settings.ui.PremiumSubscriptionsFragment
+import com.intuisoft.plaid.features.settings.ui.PurchaseSubscriptionFragment
 import com.intuisoft.plaid.util.NetworkUtil
 import com.revenuecat.purchases.*
 import com.revenuecat.purchases.interfaces.ProductChangeCallback
@@ -264,8 +264,8 @@ class BillingManager(
     fun getSubscriptionProducts(callback: (List<Product>) -> Unit) {
         getProducts {
             if(it != null) {
-                val monthly = it?.find { it.identifier == PremiumSubscriptionsFragment.MONTHLY_PRODUCT }
-                val annual = it?.find { it.identifier == PremiumSubscriptionsFragment.ANNUAL_PRODUCT }
+                val monthly = it.find { it.identifier == MONTHLY_PRODUCT }
+                val annual = it.find { it.identifier == ANNUAL_PRODUCT }
 
                 if(monthly != null && annual != null) {
                     val annualPricePerMonth = (annual.product.priceAmountMicros.toDouble() / 1000000) / 12

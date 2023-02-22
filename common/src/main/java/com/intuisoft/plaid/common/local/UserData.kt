@@ -158,6 +158,12 @@ class UserData {
             save()
         }
 
+    var reportHistoryTimeFilter: ReportHistoryTimeFilter = ReportHistoryTimeFilter.LAST_WEEK
+        set(value) {
+            field = value
+            save()
+        }
+
     var storedWalletInfo: StoredWalletInfo = StoredWalletInfo(mutableListOf())
         set(value) {
             field = value

@@ -15,6 +15,7 @@ import androidx.core.widget.doOnTextChanged
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.intuisoft.plaid.BuildConfig
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.*
 import com.intuisoft.plaid.androidwrappers.delegates.FragmentConfiguration
@@ -143,7 +144,7 @@ class SettingsFragment : ConfigurableFragment<FragmentSettingsBinding>(
                     )
                 } else {
                     navigate(
-                        R.id.premiumSubscriptionFragment,
+                        R.id.purchaseSubscriptionFragment,
                         Constants.Navigation.ANIMATED_ENTER_EXIT_RIGHT_NAV_OPTION
                     )
                 }
@@ -511,8 +512,9 @@ class SettingsFragment : ConfigurableFragment<FragmentSettingsBinding>(
                     System.getProperty("os.version"),
                     Build.MODEL,
                     Build.PRODUCT,
-                    if(viewModel.isProEnabled()) Constants.Strings.PRO_SUBSCRIPTION_MARK else "",
-                    billing.getUserId()
+                    if(viewModel.isProEnabled()) Constants.Strings.PRO_SUBSCRIPTION_MARK + "\n" else "",
+                    billing.getUserId().replace(Constants.Strings.ANONYMOUS_ID_PREFIX, Constants.Strings.ANONYMOUS_ID_PREFIX_REPLACEMENT),
+                    BuildConfig.VERSION_NAME
                 )
             )
         }

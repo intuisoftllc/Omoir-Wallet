@@ -54,6 +54,7 @@ android {
         dev {
             versionNameSuffix = "-dev"
             applicationIdSuffix ".dev"
+            resValue "string", "app_name", "Plaid (Dev)"
             signingConfig signingConfigs.develop
             buildConfigField("String", "BLOCKCHAIR_SERVER_URL", "\"https://api.blockchair.com/bitcoin/\"")
             buildConfigField("String", "BLOCKCHAIR_TESTNET_SERVER_URL", "\"https://api.blockchair.com/bitcoin/testnet/\"")
@@ -82,6 +83,7 @@ android {
 
         prod {
             versionNameSuffix = "-prod"
+            resValue "string", "app_name", "Plaid"
             signingConfig signingConfigs.production
             buildConfigField("String", "BLOCKCHAIR_SERVER_URL", "\"https://api.blockchair.com/bitcoin/\"")
             buildConfigField("String", "BLOCKCHAIR_TESTNET_SERVER_URL", "\"https://api.blockchair.com/bitcoin/testnet/\"")

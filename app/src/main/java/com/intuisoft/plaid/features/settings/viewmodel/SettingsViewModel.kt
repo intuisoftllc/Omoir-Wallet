@@ -110,6 +110,7 @@ class SettingsViewModel(
         }
 
     fun onVersionTapped() {
+        if(localStoreRepository.isDeveloper()) return
         localStoreRepository.updateStepsLeftToDeveloper()
 
         if(localStoreRepository.isDeveloper()) {

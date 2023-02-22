@@ -62,6 +62,10 @@ class ReportDetailsViewModel(
     fun setFilter(filter: ReportHistoryTimeFilter) {
         viewModelScope.launch {
             this@ReportDetailsViewModel.filter = filter
+            if(filter != localStoreRepository.getReportHistoryFilter()) {
+                localStoreRepository.setReportHistoryFilter(filter)
+            }
+
             data = null
             _contentEanbled.postValue(false)
             _noData.postValue(false)
@@ -105,6 +109,11 @@ class ReportDetailsViewModel(
                         Instant.ofEpochSecond(it.timestamp).epochSecond >= txStartTime.epochSecond && it.type == TransactionType.Outgoing
                     }
                 }
+                ReportType.NET_INFLOW_REPORT -> {
+                    filtered = tx.filter {
+                        Instant.ofEpochSecond(it.timestamp).epochSecond >= txStartTime.epochSecond && (it.type == TransactionType.Outgoing || it.type == TransactionType.Incoming)
+                    }
+                }
                 ReportType.FEE_REPORT -> {
                     filtered = tx.filter {
                         Instant.ofEpochSecond(it.timestamp).epochSecond >= txStartTime.epochSecond && (it.type == TransactionType.Outgoing || it.type == TransactionType.SentToSelf)
@@ -124,18 +133,46 @@ class ReportDetailsViewModel(
                 val total = rate.clone()
 
                 data = BarData(
-                    items = periods.map { (barName, timePeriod) ->
+                    items = periods.mapIndexed { i, (barName, timePeriod) ->
                         val txs = filtered.filter {
                             it.timestamp >= timePeriod.first.epochSecond && it.timestamp <= timePeriod.second.epochSecond
                         }
 
                         val value = txs.map {
-                            if(type != ReportType.FEE_REPORT) it.amount
-                            else it.fee ?: 0
+                            when(type) {
+                                ReportType.FEE_REPORT -> {
+                                    it.fee ?: 0
+                                }
+
+                                ReportType.NET_INFLOW_REPORT -> {
+                                    if(it.type == TransactionType.Incoming)
+                                        it.amount
+                                    else it.amount * -1
+                                }
+
+                                else -> {
+                                    it.amount
+                                }
+                            }
+                        }.sum().toDouble()
+
+
+                        val income = txs.map {
+                            if(it.type == TransactionType.Incoming)
+                                it.amount
+                            else 0
+                        }.sum().toDouble()
+
+
+                        val exp = txs.map {
+                            if(it.type == TransactionType.Outgoing)
+                                it.amount
+                            else 0
                         }.sum().toDouble()
 
                         total.setLocalRate(RateConverter.RateType.SATOSHI_RATE, total.getRawRate() + value)
 
+                        println("""txs for ${timePeriod.first.toString()} - ($value) income: $income exp: $exp""".trimIndent())
                         BarItem(
                             barName = barName,
                             transactions = txs,
@@ -253,7 +290,7 @@ class ReportDetailsViewModel(
                 tx.status != TransactionStatus.INVALID
                         && blacklist.find { tx.transactionHash == it.txId } == null
             }
-            setFilter(filter)
+            setFilter(localStoreRepository.getReportHistoryFilter())
         }.let {
             disposables.add(it)
         }

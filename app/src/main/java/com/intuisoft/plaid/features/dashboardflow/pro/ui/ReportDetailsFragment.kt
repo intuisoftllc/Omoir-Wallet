@@ -50,7 +50,8 @@ class ReportDetailsFragment : ConfigurableFragment<FragmentReportDetailsBinding>
             listOf(
                 FragmentConfigurationType.CONFIGURATION_INFLOW_REPORT,
                 FragmentConfigurationType.CONFIGURATION_OUTFLOW_REPORT,
-                FragmentConfigurationType.CONFIGURATION_FEE_REPORT
+                FragmentConfigurationType.CONFIGURATION_FEE_REPORT,
+                FragmentConfigurationType.CONFIGURATION_NET_INFLOW_REPORT
             )
         )
         return binding.root
@@ -72,6 +73,13 @@ class ReportDetailsFragment : ConfigurableFragment<FragmentReportDetailsBinding>
                 FragmentConfigurationType.CONFIGURATION_FEE_REPORT -> {
                     viewModel.type = ReportType.FEE_REPORT
                     binding.totalTitle.text = getString(R.string.report_details_report_type_fee_title)
+                }
+
+                FragmentConfigurationType.CONFIGURATION_NET_INFLOW_REPORT -> {
+                    viewModel.type = ReportType.NET_INFLOW_REPORT
+                    binding.totalTitle.text = getString(R.string.report_details_report_type_net_title)
+                    binding.chart.barsColor = resources.getColor(R.color.bar_chart_positive_color)
+                    binding.chart.barsSelectedColor = resources.getColor(R.color.bar_chart_selected_positive_color)
                 }
             }
         }
@@ -323,6 +331,10 @@ class ReportDetailsFragment : ConfigurableFragment<FragmentReportDetailsBinding>
 
             viewModel.hasConfiguration(FragmentConfigurationType.CONFIGURATION_INFLOW_REPORT) -> {
                 R.string.report_details_inflow_title
+            }
+
+            viewModel.hasConfiguration(FragmentConfigurationType.CONFIGURATION_NET_INFLOW_REPORT) -> {
+                R.string.report_details_net_inflow_title
             }
 
             viewModel.hasConfiguration(FragmentConfigurationType.CONFIGURATION_FEE_REPORT) -> {

@@ -55,6 +55,10 @@
     <color name="time_period_indicator_color">@color/brand_color_blue</color>
     <color name="homescreen_wallet_status_color">@color/brand_color_blue</color>
     <color name="bar_chart_color">@color/brand_color_accent_1</color>
+    <color name="bar_chart_negative_color">@color/soft_error_color</color>
+    <color name="bar_chart_positive_color">@color/success_color</color>
+    <color name="bar_chart_selected_negative_color">@color/alt_error_color</color>
+    <color name="bar_chart_selected_positive_color">@color/viridian</color>
     <color name="edit_text_hint_color">@color/grey</color>
     <color name="qr_code_whitespace_color">@color/white</color>
     <color name="qr_code_data_color">@color/black</color>

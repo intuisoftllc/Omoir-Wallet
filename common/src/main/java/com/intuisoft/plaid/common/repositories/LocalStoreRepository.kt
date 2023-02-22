@@ -19,6 +19,10 @@ interface LocalStoreRepository {
 
     fun getLocalCurrency(): String
 
+    fun getReportHistoryFilter(): ReportHistoryTimeFilter
+
+    fun setReportHistoryFilter(filter: ReportHistoryTimeFilter)
+
     fun setLocalCurrency(localCurrency: String)
 
     fun getBatchGap(): Int

@@ -9,7 +9,7 @@ fun List<Pair<String, Float>>.toDataPoints(): List<DataPoint> =
     map {
         DataPoint(
             label = it.first,
-            value = it.second,
+            value = Math.abs(it.second),
             screenPositionX = 0f,
             screenPositionY = 0f
         )

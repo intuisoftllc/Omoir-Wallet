@@ -38,6 +38,20 @@
                 app:layout_constraintTop_toBottomOf="@id/inflow"
                 android:id="@+id/outflow"/>
 
+
+            <com.intuisoft.plaid.androidwrappers.SettingsItemView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:item_title="@string/report_type_net_inflow_title"
+                app:item_subtitle="@string/report_type_net_inflow_subtitle"
+                app:settings_variant="card"
+                app:show_chevron="true"
+                android:layout_marginTop="@dimen/horizontal_padding_size"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/outflow"
+                android:id="@+id/net_inflow"/>
+
             <com.intuisoft.plaid.androidwrappers.SettingsItemView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -48,7 +62,7 @@
                 android:layout_marginTop="@dimen/horizontal_padding_size"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/outflow"
+                app:layout_constraintTop_toBottomOf="@id/net_inflow"
                 android:id="@+id/fees"/>
 
             <com.intuisoft.plaid.androidwrappers.SettingsItemView

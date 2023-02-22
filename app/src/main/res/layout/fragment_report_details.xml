@@ -227,6 +227,8 @@
         app:chart_barSelectedColor="@color/brand_color_dark_blue"
         app:chart_barsBackgroundColor="@color/background_color"
         app:chart_barsColor="@color/bar_chart_color"
+        app:chart_negativeBarsColor="@color/bar_chart_negative_color"
+        app:chart_negativeBarSelectedColor="@color/bar_chart_selected_negative_color"
         app:chart_barsRadius="24dp"
         app:chart_emptyDataLabelColor="@android:color/darker_gray"
         app:chart_labelsColor="@color/subtitle_text_color"

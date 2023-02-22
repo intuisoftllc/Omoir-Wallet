@@ -223,7 +223,7 @@ class MarketFragment : ConfigurableFragment<FragmentMarketBinding>(pinProtection
             billingManager.shouldShowPremiumContent { hasSubscription ->
                 if(!hasSubscription) {
                     navigate(
-                        R.id.premiumSubscriptionFragment,
+                        R.id.purchaseSubscriptionFragment,
                         Constants.Navigation.ANIMATED_ENTER_EXIT_RIGHT_NAV_OPTION
                     )
                 } else {

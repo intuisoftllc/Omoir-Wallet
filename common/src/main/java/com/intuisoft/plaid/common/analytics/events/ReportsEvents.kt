@@ -13,6 +13,7 @@ class EventReportSelected(
 enum class ReportType {
     INFLOW_REPORT,
     OUTFLOW_REPORT,
+    NET_INFLOW_REPORT,
     TXFEE_REPORT,
     UTXODISTRO_REPORT,
 }

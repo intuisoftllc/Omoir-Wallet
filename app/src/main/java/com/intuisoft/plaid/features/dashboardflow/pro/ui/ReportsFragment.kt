@@ -64,6 +64,21 @@ class ReportsFragment : ConfigurableFragment<FragmentReportsBinding>(pinProtecti
             )
         }
 
+        binding.netInflow.onClick {
+            eventTracker.log(EventReportSelected(ReportType.NET_INFLOW_REPORT))
+            var bundle = bundleOf(
+                Constants.Navigation.FRAGMENT_CONFIG to FragmentConfiguration(
+                    configurationType = FragmentConfigurationType.CONFIGURATION_NET_INFLOW_REPORT,
+                    configData = null
+                )
+            )
+
+            navigate(
+                R.id.reportDetailsFragment,
+                bundle
+            )
+        }
+
         binding.outflow.onClick {
             eventTracker.log(EventReportSelected(ReportType.OUTFLOW_REPORT))
             var bundle = bundleOf(

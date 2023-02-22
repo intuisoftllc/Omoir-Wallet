@@ -75,6 +75,9 @@ class DashboardViewModel(
             balanceHistory = generateBalanceHistory()
         }
 
+    private val birthdate: Instant
+        get() = Instant.ofEpochSecond(balanceHistory.first().second-1)
+
     private var balanceHistory: List<Pair<Long, Long>> = listOf()
 
     fun changeChartInterval(intervalType: ChartIntervalType) {
@@ -159,9 +162,9 @@ class DashboardViewModel(
                             _chartData.postValue(listOf())
                             val history = getBalanceHistoryForInterval(intervalType)
 
-                            val time = getMaxMarketInterval(ChartIntervalType.INTERVAL_ALL_TIME, Instant.ofEpochSecond(balanceHistory.first().second-1))
+                            val time = getMaxMarketInterval(ChartIntervalType.INTERVAL_ALL_TIME, birthdate)
                             val allTimeMarketData =
-                                apiRepository.getMarketHistoryData(localStoreRepository.getLocalCurrency(), time.first, time.second)
+                                apiRepository.getTickerPriceChartData(ChartIntervalType.INTERVAL_ALL_TIME)
                             val createdTime =
                                 Math.min(walletManager.findStoredWallet(getWalletId())!!.createdAt, balanceHistory.first().second * Constants.Time.MILLS_PER_SEC)
                             val incomingTxs =
@@ -186,7 +189,7 @@ class DashboardViewModel(
                                 }.sum()
 
                             val averagePrice = incomingBalanceHistory.map { tx ->
-                                allTimeMarketData?.find { it.time / Constants.Time.MILLS_PER_SEC >= tx.second }?.price ?: 0.0
+                                allTimeMarketData?.find { it.time / Constants.Time.MILLS_PER_SEC >= tx.second }?.value?.toDouble() ?: 0.0
                             }.average()
 
                             val highestBalance = balanceHistory.maxByOrNull { it.first }
@@ -292,14 +295,18 @@ class DashboardViewModel(
                                 }
 
                                 BitcoinDisplayUnit.FIAT -> {
-                                    val max = getMaxMarketInterval(intervalType, Instant.ofEpochSecond(balanceHistory.first().second-1))
-                                    val data = apiRepository.getMarketHistoryData(localStoreRepository.getLocalCurrency(), max.first, max.second)
+                                    val max = getMaxMarketInterval(intervalType, birthdate)
+                                    val data = apiRepository.getTickerPriceChartData(intervalType)
 
                                     if(data != null && data.isNotEmpty()) {
-                                        val cData = data.map {
+                                        val cData = data
+                                            .filter {
+                                                it.time >= birthdate.toEpochMilli()
+                                            }
+                                            .map {
                                             ChartDataModel(
                                                 time = it.time / Constants.Time.MILLS_PER_SEC,
-                                                value = getBalanceAtTime(it.time / Constants.Time.MILLS_PER_SEC, balanceHistory) * it.price.toFloat()
+                                                value = getBalanceAtTime(it.time / Constants.Time.MILLS_PER_SEC, balanceHistory) * it.value
                                             )
                                         }
 
@@ -325,8 +332,8 @@ class DashboardViewModel(
         }
     }
 
-    fun getFiatBalanceAtTime(marketData: List<MarketHistoryDataModel>, time: Long): Double {
-        return marketData.find { (it.time / Constants.Time.MILLS_PER_SEC) >= time }?.price ?: marketData.lastOrNull()?.price ?: 0.0
+    fun getFiatBalanceAtTime(marketData: List<ChartDataModel>, time: Long): Double {
+        return marketData.find { (it.time / Constants.Time.MILLS_PER_SEC) >= time }?.value?.toDouble() ?: marketData.lastOrNull()?.value?.toDouble() ?: 0.0
     }
 
     private fun getBalanceAtTime(time: Long, history: List<Pair<Long, Long>>): Float {

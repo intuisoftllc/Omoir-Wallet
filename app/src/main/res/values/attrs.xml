@@ -120,8 +120,10 @@
     <declare-styleable name="BarChartAttrs">
         <attr format="dimension" name="chart_spacing"/>
         <attr format="color" name="chart_barsColor"/>
+        <attr format="color" name="chart_negativeBarsColor"/>
         <attr format="boolean" name="chart_isHorizontal"/>
         <attr format="color" name="chart_barSelectedColor"/>
+        <attr format="color" name="chart_negativeBarSelectedColor"/>
         <attr format="color" name="chart_emptyDataLabelColor"/>
         <attr format="reference" name="chart_barsColorsList"/>
         <attr format="color" name="chart_barsBackgroundColor"/>

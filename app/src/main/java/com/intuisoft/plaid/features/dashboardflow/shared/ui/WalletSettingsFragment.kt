@@ -24,6 +24,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.intuisoft.plaid.BuildConfig
 import com.intuisoft.plaid.PlaidApp
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.*
@@ -152,8 +153,9 @@ class WalletSettingsFragment : ConfigurableFragment<FragmentWalletSettingsBindin
                     System.getProperty("os.version"),
                     Build.MODEL,
                     Build.PRODUCT,
-                    if(viewModel.isProEnabled()) Constants.Strings.PRO_SUBSCRIPTION_MARK else "",
-                    billing.getUserId()
+                    if(viewModel.isProEnabled()) Constants.Strings.PRO_SUBSCRIPTION_MARK + "\n" else "",
+                    billing.getUserId().replace(Constants.Strings.ANONYMOUS_ID_PREFIX, Constants.Strings.ANONYMOUS_ID_PREFIX_REPLACEMENT),
+                    BuildConfig.VERSION_NAME
                 )
             )
         }

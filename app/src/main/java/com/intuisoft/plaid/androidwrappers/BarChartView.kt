@@ -34,6 +34,10 @@ class BarChartView @JvmOverloads constructor(
     @Suppress("MemberVisibilityCanBePrivate")
     var barsColor: Int = defaultBarsColor
 
+    @ColorInt
+    @Suppress("MemberVisibilityCanBePrivate")
+    var negativeBarsColor: Int = defaultNegativeBarsColor
+
     @Suppress("MemberVisibilityCanBePrivate")
     var barsColorsList: List<Int>? = null
 
@@ -52,7 +56,10 @@ class BarChartView @JvmOverloads constructor(
     var emptyDataLabelColor: Int = labelsColor
 
     @Suppress("MemberVisibilityCanBePrivate")
-    var barSelectedColor: Int = defaultBarsColor
+    var barsSelectedColor: Int = defaultBarsColor
+
+    @Suppress("MemberVisibilityCanBePrivate")
+    var negativeBarSelectedColor: Int = defaultNegativeBarsColor
 
     @Suppress("MemberVisibilityCanBePrivate")
     var isHorizontal: Boolean = false
@@ -139,10 +146,16 @@ class BarChartView @JvmOverloads constructor(
 
             if (barsColorsList == null)
                 barsColorsList = List(frames.size) {
-                    if(it == lastSelectedBar)
-                        barSelectedColor
-                    else
-                        barsColor
+                    if(it == lastSelectedBar) {
+                        if(data[it].second < 0.0f)
+                            negativeBarSelectedColor
+                        else barsSelectedColor
+                    }
+                    else {
+                        if (data[it].second < 0.0f)
+                            negativeBarsColor
+                        else barsColor
+                    }
                 }.toList()
 
             if (barsColorsList!!.size != frames.size)
@@ -206,7 +219,9 @@ class BarChartView @JvmOverloads constructor(
         typedArray.apply {
             spacing = getDimension(R.styleable.BarChartAttrs_chart_spacing, spacing)
             barsColor = getColor(R.styleable.BarChartAttrs_chart_barsColor, barsColor)
-            barSelectedColor = getColor(R.styleable.BarChartAttrs_chart_barSelectedColor, barSelectedColor)
+            barsSelectedColor = getColor(R.styleable.BarChartAttrs_chart_barSelectedColor, barsSelectedColor)
+            negativeBarsColor = getColor(R.styleable.BarChartAttrs_chart_negativeBarsColor, negativeBarsColor)
+            negativeBarSelectedColor = getColor(R.styleable.BarChartAttrs_chart_negativeBarSelectedColor, negativeBarSelectedColor)
             isHorizontal = getBoolean(R.styleable.BarChartAttrs_chart_isHorizontal, isHorizontal)
             emptyDataLabelColor = getColor(R.styleable.BarChartAttrs_chart_emptyDataLabelColor, emptyDataLabelColor)
             barRadius = getDimension(R.styleable.BarChartAttrs_chart_barsRadius, barRadius)
@@ -222,6 +237,7 @@ class BarChartView @JvmOverloads constructor(
     companion object {
         private const val defaultSpacing = 10f
         private const val defaultBarsColor = Color.BLACK
+        private const val defaultNegativeBarsColor = Color.RED
         private const val defaultBarsRadius = 0F
     }
 }

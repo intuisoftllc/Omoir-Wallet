@@ -93,10 +93,6 @@ class MemeFragment : ConfigurableFragment<FragmentEasterEggBinding>(
                 meme2.isVisible = true
                 meme3.isVisible = true
                 meme4.isVisible = true
-
-                Toast.makeText(requireContext(),
-                    "completed",
-                    Toast.LENGTH_SHORT).show();
             }
 
             delay(1350)
