@@ -336,7 +336,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="@string/pro_wallet_dashboard_performance_title_3"
                                 android:drawablePadding="@dimen/margin_8"
-                                app:drawableRightCompat="@drawable/ic_alert_red_small"
+                                app:drawableRightCompat="@drawable/ic_more_info_small"
                                 app:drawableTint="@color/icon_contrast_color"
                                 style="@style/TextStyle.Semibold.14"
                                 android:textColor="@color/title_text_color" />

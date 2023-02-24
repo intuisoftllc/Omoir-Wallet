@@ -58,6 +58,7 @@ class BillingManager(
         val failed = SubscriptionInfo(
             renewalType = activity.getString(R.string.unknown),
             expireDate = activity.getString(R.string.not_applicable),
+            promotional = false,
             state = activity.getString(R.string.failed_to_get_state),
             managementUrl = Uri.EMPTY
         )
@@ -112,6 +113,7 @@ class BillingManager(
     ): SubscriptionInfo {
         val product = products.find { it.product.sku == customerInfo.entitlements[premiumUserEntitlement]?.productIdentifier }
         var expire: String = "?"
+        var isPromotional = false
         try {
             if(isSubscriptionExpired(customerInfo)) {
                 expire = activity.getString(R.string.premium_subscription_expired_state)
@@ -126,8 +128,13 @@ class BillingManager(
                 product?.identifier == ANNUAL_PRODUCT -> {
                     activity.getString(R.string.premium_subscription_renewal_type_2)
                 }
+                PROMOTIONAL_PRODUCTS.find { prom -> customerInfo.activeSubscriptions.find { it == prom } != null } != null -> {
+                    isPromotional = true
+                    activity.getString(R.string.premium_subscription_renewal_type_3)
+                }
                 else -> "?"
             },
+            promotional = isPromotional,
             expireDate = expire,
             state = if(isSubscriptionPaused(customerInfo)) activity.getString(R.string.premium_subscription_state_type_2)
                     else activity.getString(R.string.premium_subscription_state_type_1),
@@ -261,6 +268,25 @@ class BillingManager(
             })
     }
 
+    fun restorePurchases(callback: ((Boolean?) -> Unit)? = null) {
+        Purchases.sharedInstance.restorePurchases(object: ReceiveCustomerInfoCallback {
+            override fun onError(error: PurchasesError) {
+                if(com.intuisoft.plaid.BuildConfig.LOGGING_ENABLED) Log.e(TAG, "error: $error")
+                if(NetworkUtil.hasInternet(application)) {
+                    FirebaseCrashlytics.getInstance().recordException(NetworkErrorException("restorePurchases() error: $error"))
+                }
+
+                callback?.invoke(null)
+            }
+
+            override fun onReceived(customerInfo: CustomerInfo) {
+                prefs.isPremiumUser = hasSubscription(customerInfo)
+                callback?.invoke(prefs.isPremiumUser || CommonService.getPremiumOverride())
+            }
+
+        })
+    }
+
     fun getSubscriptionProducts(callback: (List<Product>) -> Unit) {
         getProducts {
             if(it != null) {
@@ -326,6 +352,7 @@ class BillingManager(
     data class SubscriptionInfo(
         val renewalType: String,
         val expireDate: String,
+        val promotional: Boolean,
         val state: String,
         val managementUrl: Uri?
     )
@@ -333,5 +360,15 @@ class BillingManager(
     companion object {
         const val MONTHLY_PRODUCT = "\$rc_monthly"
         const val ANNUAL_PRODUCT = "\$rc_annual"
+        val PROMOTIONAL_PRODUCTS = listOf(
+            "rc_promo_pro_daily",
+            "rc_promo_pro_three_day",
+            "rc_promo_pro_weekly",
+            "rc_promo_pro_monthly",
+            "rc_promo_pro_three_month",
+            "rc_promo_pro_six_month",
+            "rc_promo_pro_yearly",
+            "rc_promo_pro_lifetime",
+        )
     }
 }

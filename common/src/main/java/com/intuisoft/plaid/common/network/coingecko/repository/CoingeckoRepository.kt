@@ -1,14 +1,12 @@
 package com.intuisoft.plaid.common.network.blockchair.repository
 
-import android.util.Log
 import com.intuisoft.plaid.common.model.BasicPriceDataModel
 import com.intuisoft.plaid.common.model.ChartDataModel
 import com.intuisoft.plaid.common.model.ChartIntervalType
 import com.intuisoft.plaid.common.model.MarketHistoryDataModel
 import com.intuisoft.plaid.common.network.blockchair.api.CoingeckoApi
-import com.intuisoft.plaid.common.network.blockchair.response.ChartDataResponse
+import com.intuisoft.plaid.common.network.coingecko.response.ChartDataResponse
 import com.intuisoft.plaid.common.util.Constants
-import java.time.Instant
 
 interface CoingeckoRepository {
     val TAG: String
@@ -22,11 +20,12 @@ interface CoingeckoRepository {
 
     private class Impl(
         private val api: CoingeckoApi,
+        private val apiKey: String?
     ) : CoingeckoRepository {
 
         override fun getHistoryData(currencyCode: String, from: Long, to: Long): Result<List<MarketHistoryDataModel>> {
             try {
-                val history = api.getHistoryData(currency = currencyCode.lowercase(), from = from, to = to).execute().body()
+                val history = api.getHistoryData(currency = currencyCode.lowercase(), from = from, to = to, apiKey = apiKey).execute().body()
 
                 return Result.success(
                     history!!.prices.map {
@@ -44,7 +43,7 @@ interface CoingeckoRepository {
 
         override fun getBasicPriceData(): Result<List<BasicPriceDataModel>> {
             try {
-                val prices = api.getBasicPriceData().execute().body()
+                val prices = api.getBasicPriceData(apiKey = apiKey).execute().body()
 
                 return Result.success(
                     listOf(
@@ -164,25 +163,25 @@ interface CoingeckoRepository {
 
                 when(interval) {
                     ChartIntervalType.INTERVAL_1DAY -> {
-                        data = api.get1DayChartData(currencyCode = currencyCode).execute().body()!!
+                        data = api.get1DayChartData(currencyCode = currencyCode, apiKey = apiKey).execute().body()!!
                     }
                     ChartIntervalType.INTERVAL_1WEEK -> {
-                        data = api.get7DayChartData(currencyCode = currencyCode).execute().body()!!
+                        data = api.get7DayChartData(currencyCode = currencyCode, apiKey = apiKey).execute().body()!!
                     }
                     ChartIntervalType.INTERVAL_1MONTH -> {
-                        data = api.get30DayChartData(currencyCode = currencyCode).execute().body()!!
+                        data = api.get30DayChartData(currencyCode = currencyCode, apiKey = apiKey).execute().body()!!
                     }
                     ChartIntervalType.INTERVAL_3MONTHS -> {
-                        data = api.get90DayChartData(currencyCode = currencyCode).execute().body()!!
+                        data = api.get90DayChartData(currencyCode = currencyCode, apiKey = apiKey).execute().body()!!
                     }
                     ChartIntervalType.INTERVAL_6MONTHS -> {
-                        data = api.get6MonthChartData(currencyCode = currencyCode).execute().body()!!
+                        data = api.get6MonthChartData(currencyCode = currencyCode, apiKey = apiKey).execute().body()!!
                     }
                     ChartIntervalType.INTERVAL_1YEAR -> {
-                        data = api.get1YearChartData(currencyCode = currencyCode).execute().body()!!
+                        data = api.get1YearChartData(currencyCode = currencyCode, apiKey = apiKey).execute().body()!!
                     }
                     ChartIntervalType.INTERVAL_ALL_TIME -> {
-                        data = api.getMaxChartData(currencyCode = currencyCode).execute().body()!!
+                        data = api.getMaxChartData(currencyCode = currencyCode, apiKey = apiKey).execute().body()!!
                     }
                 }
 
@@ -200,6 +199,7 @@ interface CoingeckoRepository {
         @JvmStatic
         fun create(
             api: CoingeckoApi,
-        ): CoingeckoRepository = Impl(api)
+            apiKey: String?
+        ): CoingeckoRepository = Impl(api, apiKey)
     }
 }

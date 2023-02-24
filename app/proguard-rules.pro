@@ -28,3 +28,17 @@
 -keep class org.xmlpull.** { *; }
 -keepclassmembers class org.xmlpull.** { *; }
 -keep class com.revenuecat.purchases.** { *; }
+
+-keep class com.intuisoft.plaid.common.local.UserData**
+-keepclassmembers class com.intuisoft.plaid.common.local.UserData** {*;}
+
+-keep class kotlin.** {*;}
+-keep class java.util.** {*;}
+
+-keep class com.intuisoft.plaid.common.model.** {*;}
+
+-keep class io.horizontalsystems.** {*;}
+
+-keep class io.horizontalsystems.com.intuisoft.plaid.walletmanager.WalletIdentifier** {*;}
+
+-keep public class com.google.gson.**

@@ -40,7 +40,8 @@ class PlaidApp : Application(), Application.ActivityLifecycleCallbacks, KoinComp
             BuildConfig.CHANGE_NOW_SERVER_URL,
             BuildConfig.WALLET_SECRET,
             BuildConfig.PREMIUM_OVERRIDE,
-            BuildConfig.DEVELOPER_ACCESS
+            BuildConfig.DEVELOPER_ACCESS,
+            BuildConfig.COINGECKO_CLIENT_SECRET
         )
 
         startKoin {

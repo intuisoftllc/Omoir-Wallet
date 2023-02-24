@@ -320,8 +320,8 @@ class PasscodeView @JvmOverloads constructor(
      * @param val the input number string
      * @return true if val is right passcode
      */
-    protected fun equals(`val`: String): Boolean {
-        return localPasscode == `val`
+    protected fun equals(passcode: String): Boolean {
+        return localPasscode == passcode
     }
 
     private operator fun next() {

@@ -28,9 +28,17 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
+
+        // Proguard testing form dev (Uncomment when needing to test a newly imported lib)
+//        debug {
+//            minifyEnabled true
+//            proguardFile 'proguard-rules.pro'
+//            zipAlignEnabled true
+//        }
     }
 
     signingConfigs {
@@ -64,6 +72,7 @@ android {
             buildConfigField("String", "BLOCKSTREAM_INFO_SERVER_URL", "\"https://blockstream.info/api/\"")
             buildConfigField("String", "BLOCKSTREAM_INFO_TEST_NET_SERVER_URL", "\"https://blockstream.info/testnet/api/\"")
             buildConfigField("String", "BLOCKCHAIR_CLIENT_SECRET", "null")
+            buildConfigField("String", "COINGECKO_CLIENT_SECRET", "null")
             buildConfigField("String", "CHANGE_NOW_CLIENT_SECRET", "\"\"")
             buildConfigField("String", "REVENUE_CAT_SECRET", "\"${properties['REVENUE_CAT_SECRET']}\"")
             buildConfigField("Boolean", "PREMIUM_OVERRIDE", "true")
@@ -96,6 +105,7 @@ android {
             buildConfigField("String", "CHANGE_NOW_CLIENT_SECRET", "\"${properties['CHANGE_NOW_CLIENT_SECRET']}\"")
             buildConfigField("String", "REVENUE_CAT_SECRET", "\"${properties['REVENUE_CAT_SECRET']}\"")
             buildConfigField("String", "WALLET_SECRET", "\"${properties['WALLET_SECRET']}\"")
+            buildConfigField("String", "COINGECKO_CLIENT_SECRET", "\"${properties['COINGECKO_CLIENT_SECRET']}\"")
             buildConfigField("Boolean", "PREMIUM_OVERRIDE", "false")
             buildConfigField("Boolean", "LOGGING_ENABLED", "true")
             buildConfigField("Boolean", "DEVELOPER_ACCESS", "false")

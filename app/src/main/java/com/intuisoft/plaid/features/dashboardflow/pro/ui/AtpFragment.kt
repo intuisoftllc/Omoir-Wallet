@@ -502,7 +502,7 @@ class AtpFragment : ConfigurableFragment<FragmentAtpBinding>(pinProtection = tru
     }
 
     override fun actionBarActionLeft(): Int {
-        return R.drawable.ic_alert_red
+        return R.drawable.ic_more_info
     }
 
     override fun onActionLeft() {

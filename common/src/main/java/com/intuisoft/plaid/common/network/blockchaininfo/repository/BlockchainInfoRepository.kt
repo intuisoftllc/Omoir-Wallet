@@ -1,9 +1,8 @@
 package com.intuisoft.plaid.common.network.blockchair.repository
 
-import android.util.Log
 import com.intuisoft.plaid.common.model.ExtendedNetworkDataModel
 import com.intuisoft.plaid.common.network.blockchair.api.BlockchainInfoApi
-import com.intuisoft.plaid.common.network.blockchair.response.BasicNetworkDataResponse
+import com.intuisoft.plaid.common.network.blockchaininfo.response.BasicNetworkDataResponse
 import com.intuisoft.plaid.common.util.Constants
 
 interface BlockchainInfoRepository {

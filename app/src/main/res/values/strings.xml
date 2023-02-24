@@ -51,7 +51,7 @@
     <string name="premium_subscriptions_benefits_6">Create up to 10 wallets</string>
     <string name="premium_subscriptions_benefits_7">Unlimited Hidden Wallets</string>
     <string name="premium_subscriptions_benefits_8">Wallet Usage Reports</string>
-    <string name="premium_subscriptions_restore">Restore Purchases</string>
+    <string name="premium_subscriptions_restore">Restore Purchase</string>
     <string name="premium_subscriptions_pricing_title">The Pricing Structure</string>
     <string name="premium_subscriptions_subscribe">Upgrade to Pro</string>
     <string name="premium_subscriptions_load_error">Failed to load subscription information, please try again.</string>
@@ -74,12 +74,14 @@
     <string name="premium_subscription_info_3_title">Status</string>
     <string name="premium_subscription_renewal_type_1">Monthly</string>
     <string name="premium_subscription_renewal_type_2">Annual</string>
+    <string name="premium_subscription_renewal_type_3">Promotional</string>
     <string name="premium_subscription_state_type_1">Active</string>
     <string name="premium_subscription_state_type_2">Inactive Until Renewal</string>
     <string name="premium_subscription_expired_state">Expired</string>
     <string name="premium_subscription_manage">Manage Subscription</string>
     <string name="premium_subscription_switch_annual">Switch To Annual</string>
     <string name="premium_subscription_switch_monthly">Switch To Monthly</string>
+    <string name="premium_subscription_not_found">No active subscription found</string>
 <!--  Premium Subscription Strings End -->
 
 <!--    Settings Strings -->

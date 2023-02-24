@@ -1,4 +1,4 @@
-package com.intuisoft.plaid.walletmanager
+package com.intuisoft.plaid.common.model
 
 data class WalletIdentifier(
     var name: String,

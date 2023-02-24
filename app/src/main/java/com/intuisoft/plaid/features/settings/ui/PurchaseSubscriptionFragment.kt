@@ -9,10 +9,8 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.intuisoft.plaid.R
-import com.intuisoft.plaid.androidwrappers.ConfigurableFragment
+import com.intuisoft.plaid.androidwrappers.*
 import com.intuisoft.plaid.androidwrappers.delegates.FragmentConfiguration
-import com.intuisoft.plaid.androidwrappers.TopBarView
-import com.intuisoft.plaid.androidwrappers.styledSnackBar
 import com.intuisoft.plaid.billing.BillingManager
 import com.intuisoft.plaid.databinding.FragmentPurchaseSubscriptionBinding
 import com.intuisoft.plaid.features.settings.viewmodel.SettingsViewModel
@@ -41,6 +39,97 @@ class PurchaseSubscriptionFragment : ConfigurableFragment<FragmentPurchaseSubscr
 
     override fun onConfiguration(configuration: FragmentConfiguration?) {
         binding.subscribe.enableButton(false)
+        binding.atpMoreInfo.setOnSingleClickListener {
+            navigate(
+                R.id.atpInfoFragment
+            )
+        }
+
+        binding.restore.setOnSingleClickListener {
+            binding.restore.isVisible = false
+            binding.restoreLoader.isVisible = true
+
+            billing.restorePurchases {
+                binding.restoreLoader.isVisible = false
+                withBinding {
+                    if (it != null) {
+                        if (it) {
+                            styledSnackBar(
+                                requireView(),
+                                getString(R.string.premium_subscriptions_success)
+                            )
+                            settingsViewModel.appRestartNeeded = true
+                            onBackPressed()
+                        } else {
+                            styledSnackBar(
+                                requireView(),
+                                getString(R.string.premium_subscription_not_found),
+                                true
+                            )
+                        }
+                    } else {
+                        restore.isVisible = true
+                        styledSnackBar(
+                            requireView(),
+                            getString(R.string.premium_subscriptions_load_error),
+                            true
+                        )
+                    }
+                }
+            }
+        }
+
+        viewModel.purchaseProductUpdated.observe(viewLifecycleOwner, Observer {
+            binding.subscribe.enableButton(true)
+        })
+
+        binding.subscribe.onClick {
+            binding.subscribe.enableButton(false)
+            binding.restore.isVisible = false
+
+            viewModel.getPurchaseProduct()?.let {
+                billing.purchase(
+                    product = it,
+                    activity = requireActivity(),
+                    onSuccess = {
+                        view?.let { view ->
+                            if (it) {
+                                styledSnackBar(
+                                    view,
+                                    getString(R.string.premium_subscriptions_success)
+                                )
+                                settingsViewModel.appRestartNeeded = true
+                                onBackPressed()
+                            } else {
+                                styledSnackBar(
+                                    view,
+                                    getString(R.string.premium_subscriptions_update_error)
+                                )
+                                withBinding {
+                                    subscribe.enableButton(true)
+                                }
+                            }
+                        }
+                    },
+                    onFail = { error, cancelled ->
+                        withBinding {
+                            restore.isVisible = true
+                            subscribe.enableButton(true)
+                        }
+
+                        if(cancelled) {
+                            styledSnackBar(requireView(), getString(R.string.premium_subscriptions_cancelled_purchase), true)
+                        } else {
+                            FirebaseCrashlytics.getInstance().log(error.message)
+                            styledSnackBar(requireView(), getString(R.string.premium_subscriptions_failed_purchase, error.message), true)
+                        }
+                    }
+                )
+            }
+        }
+    }
+
+    fun getSubscriptionInfo() {
         billing.getSubscriptionProducts { products ->
             withBinding {
                 loading.isVisible = false
@@ -88,55 +177,12 @@ class PurchaseSubscriptionFragment : ConfigurableFragment<FragmentPurchaseSubscr
                 }
             }
         }
-
-        viewModel.purchaseProductUpdated.observe(viewLifecycleOwner, Observer {
-            binding.subscribe.enableButton(true)
-        })
-
-        binding.subscribe.onClick {
-            binding.subscribe.enableButton(false)
-
-            viewModel.getPurchaseProduct()?.let {
-                billing.purchase(
-                    product = it,
-                    activity = requireActivity(),
-                    onSuccess = {
-                        view?.let { view ->
-                            if (it) {
-                                styledSnackBar(
-                                    view,
-                                    getString(R.string.premium_subscriptions_success)
-                                )
-                                settingsViewModel.appRestartNeeded = true
-                                onBackPressed()
-                            } else {
-                                styledSnackBar(
-                                    view,
-                                    getString(R.string.premium_subscriptions_update_error)
-                                )
-                                withBinding {
-                                    subscribe.enableButton(true)
-                                }
-                            }
-                        }
-                    },
-                    onFail = { error, cancelled ->
-                        withBinding {
-                            subscribe.enableButton(true)
-                        }
-
-                        if(cancelled) {
-                            styledSnackBar(requireView(), getString(R.string.premium_subscriptions_cancelled_purchase), true)
-                        } else {
-                            FirebaseCrashlytics.getInstance().log(error.message)
-                            styledSnackBar(requireView(), getString(R.string.premium_subscriptions_failed_purchase, error.message), true)
-                        }
-                    }
-                )
-            }
-        }
     }
 
+    override fun onResume() {
+        super.onResume()
+        getSubscriptionInfo()
+    }
 
     override fun onDestroyView() {
         super.onDestroyView()

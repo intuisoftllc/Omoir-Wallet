@@ -20,7 +20,7 @@
         android:id="@+id/atp_more_info"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_alert_red_small"
+        android:src="@drawable/ic_more_info_small"
         app:tint="?attr/colorPrimaryVariant"
         app:layout_constraintBottom_toTopOf="@id/illustration_title"
         app:layout_constraintEnd_toEndOf="@id/illustration_title"

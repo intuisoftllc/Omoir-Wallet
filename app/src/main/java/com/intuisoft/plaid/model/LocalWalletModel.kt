@@ -6,8 +6,7 @@ import com.intuisoft.plaid.R
 import com.intuisoft.plaid.common.model.HiddenWalletModel
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.common.util.SimpleCoinNumberFormat
-import com.intuisoft.plaid.common.util.extensions.sha256
-import com.intuisoft.plaid.walletmanager.WalletIdentifier
+import com.intuisoft.plaid.common.model.WalletIdentifier
 import io.horizontalsystems.bitcoincore.storage.UnspentOutput
 import io.horizontalsystems.bitcoinkit.BitcoinKit
 import io.horizontalsystems.hdwalletkit.HDWallet

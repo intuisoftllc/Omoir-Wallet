@@ -92,17 +92,17 @@ class PeerGroup(
 
         when (e) {
             null -> {
-                if(BitcoinCore.loggingEnabled)  logger.info("Peer ${peer.host} disconnected.")
+                if(BitcoinCore.loggingEnabled) logger.info("Peer ${peer.host} disconnected.")
                 hostManager.markSuccess(peer.host)
             }
             is PeerTimer.Error.Timeout -> {
-                logger.warning("Peer ${peer.host} disconnected. Warning: ${e.javaClass.simpleName}, ${e.message}.")
+                if(BitcoinCore.loggingEnabled)  logger.warning("Peer ${peer.host} disconnected. Warning: ${e.javaClass.simpleName}, ${e.message}.")
                 // since the peer can be normally interacted after awhile we should not remove it from list
                 // that is why we mark it as disconnected with no error
                 hostManager.markSuccess(peer.host)
             }
             else -> {
-                logger.warning("Peer ${peer.host} disconnected. Error: ${e.javaClass.simpleName}, ${e.message}.")
+                if(BitcoinCore.loggingEnabled)  logger.warning("Peer ${peer.host} disconnected. Error: ${e.javaClass.simpleName}, ${e.message}.")
                 hostManager.markFailed(peer.host)
             }
         }

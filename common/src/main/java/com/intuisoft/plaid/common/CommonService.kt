@@ -58,6 +58,7 @@ object CommonService {
     private var coingeckoApiUrl: String? = ""
     private var changeNowApiUrl: String? = ""
     private var changeNowSecret: String? = ""
+    private var coingeckoSecret: String? = null
     private var localPin: String = ""
     private var walletSecret: String = ""
     private var premiumOverride = false
@@ -244,7 +245,8 @@ object CommonService {
                         ),
                         getGsonInstance()
                     )
-                )
+                ),
+                coingeckoSecret
             )
         }
 
@@ -328,7 +330,8 @@ object CommonService {
         changeNowApiUrl: String,
         walletSecret: String,
         premiumOverride: Boolean,
-        developerAccess: Boolean
+        developerAccess: Boolean,
+        coinceckoSecret: String?
     ) {
         provideApplication(application)
         provideBlockchairSecret(blockchairSecret)
@@ -343,6 +346,7 @@ object CommonService {
         provideWalletSecret(walletSecret)
         providePremiumOverride(premiumOverride)
         provideDeveloperAccess(developerAccess)
+        provideCoingeckoSecret(coinceckoSecret)
 
         // create singleton instance of all classes
         getAppPrefs()
@@ -405,6 +409,10 @@ object CommonService {
 
     private fun provideDeveloperAccess(devAccess: Boolean) {
         this.developerAccess = devAccess
+    }
+
+    private fun provideCoingeckoSecret(secret: String?) {
+        this.coingeckoSecret = secret
     }
 
     private fun provideNowNodesTestNetNodeApiUrl(url: String) {

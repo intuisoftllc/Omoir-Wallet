@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.intuisoft.plaid.common.model.HiddenWalletModel
 import com.intuisoft.plaid.common.model.SavedAccountModel
+import com.intuisoft.plaid.common.model.WalletIdentifier
 import com.intuisoft.plaid.listeners.StateListener
 import com.intuisoft.plaid.model.LocalWalletModel
 import io.horizontalsystems.bitcoincore.models.BitcoinPaymentData

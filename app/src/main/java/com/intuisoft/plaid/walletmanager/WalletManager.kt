@@ -1,12 +1,12 @@
 package com.intuisoft.plaid.walletmanager
 
 import android.app.Application
-import android.util.Log
 import com.intuisoft.plaid.common.coroutines.PlaidScope
 import com.intuisoft.plaid.common.listeners.WipeDataListener
 import com.intuisoft.plaid.common.local.db.listeners.DatabaseListener
 import com.intuisoft.plaid.common.model.HiddenWalletModel
 import com.intuisoft.plaid.common.model.SavedAccountModel
+import com.intuisoft.plaid.common.model.WalletIdentifier
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.common.util.extensions.remove
