@@ -27,8 +27,10 @@
     <string name="homescreen_greeting_3">Good Evening</string>
     <string name="homescreen_greeting_4">Hello</string>
     <string name="pro_homescreen_average_price_dialog_title">Average Price</string>
+    <string name="pro_homescreen_unreaized_profit_dialog_title">Unrealized Profit</string>
     <string name="pro_homescreen_wallet_limit_reached">Cannot create more than %1$s wallets for pro version</string>
     <string name="pro_homescreen_average_price_dialog_message">The average price that you acquired this asset at. This is calculated based on the total amount of bitcoin the wallet received and the relative price of the asset at the time it was received.</string>
+    <string name="pro_homescreen_unrealized_profit_dialog_message">The total unrealized or \"un-sold\" value of your holdings. This is calculated based on the current average price of your holdings times the total amount of \"units\" or coins within the wallet.</string>
 <!--    Pro Homescreen Strings End -->
 
 <!--  Pin Screen Strings -->
@@ -287,6 +289,7 @@
     <string name="pro_wallet_dashboard_performance_title_4">All Time Return</string>
     <string name="pro_wallet_dashboard_performance_title_5">Highest Balance</string>
     <string name="pro_wallet_dashboard_performance_title_6">Wallet Age</string>
+    <string name="pro_wallet_dashboard_performance_title_7">Unrealized Profit</string>
     <string name="pro_wallet_dashboard_new_wallet">N/A (New Wallet)</string>
 <!--    Pro Wallet Dashboard Strings End -->
 

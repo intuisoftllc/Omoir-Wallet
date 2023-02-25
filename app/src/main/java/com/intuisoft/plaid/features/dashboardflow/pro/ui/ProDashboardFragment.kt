@@ -152,6 +152,10 @@ class ProDashboardFragment : ConfigurableFragment<FragmentProWalletDashboardBind
             binding.averagePrice.text = it
         })
 
+        viewModel.unrealizedProfit.observe(viewLifecycleOwner, Observer {
+            binding.profit.text = it
+        })
+
         viewModel.highestBalance.observe(viewLifecycleOwner, Observer {
             binding.highestBalance.text = it
         })
@@ -280,6 +284,16 @@ class ProDashboardFragment : ConfigurableFragment<FragmentProWalletDashboardBind
                 context = requireContext(),
                 title = getString(R.string.pro_homescreen_average_price_dialog_title),
                 message = getString(R.string.pro_homescreen_average_price_dialog_message),
+                ::addToStack,
+                ::removeFromStack
+            )
+        }
+
+        binding.profitContainer.setOnSingleClickListener(Constants.Time.MIN_CLICK_INTERVAL_MED) {
+            showBasicInfoBottomSheet(
+                context = requireContext(),
+                title = getString(R.string.pro_homescreen_unreaized_profit_dialog_title),
+                message = getString(R.string.pro_homescreen_unrealized_profit_dialog_message),
                 ::addToStack,
                 ::removeFromStack
             )

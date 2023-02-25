@@ -22,15 +22,19 @@
 
 -keepattributes EnclosingMethod
 -keepattributes InnerClasses
+-keepattributes Signature
 
 -dontwarn org.xmlpull.v1.**
 -dontnote org.xmlpull.v1.**
 -keep class org.xmlpull.** { *; }
 -keepclassmembers class org.xmlpull.** { *; }
 -keep class com.revenuecat.purchases.** { *; }
+-keepattributes SourceFile,LineNumberTable
+-keep public class * extends java.lang.Exception
+-keepattributes *Annotation*
 
--keep class com.intuisoft.plaid.common.local.UserData**
--keepclassmembers class com.intuisoft.plaid.common.local.UserData** {*;}
+#-keep class com.intuisoft.plaid.common.local.UserData**
+#-keepclassmembers class com.intuisoft.plaid.common.local.UserData** {*;}
 
 -keep class kotlin.** {*;}
 -keep class java.util.** {*;}
@@ -38,7 +42,5 @@
 -keep class com.intuisoft.plaid.common.model.** {*;}
 
 -keep class io.horizontalsystems.** {*;}
-
--keep class io.horizontalsystems.com.intuisoft.plaid.walletmanager.WalletIdentifier** {*;}
 
 -keep public class com.google.gson.**

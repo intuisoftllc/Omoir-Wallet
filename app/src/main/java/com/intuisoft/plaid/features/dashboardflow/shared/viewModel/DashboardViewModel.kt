@@ -68,6 +68,9 @@ class DashboardViewModel(
     protected val _walletAge = SingleLiveData<String>()
     val walletAge: LiveData<String> = _walletAge
 
+    protected val _unrealizedProfit = SingleLiveData<String>()
+    val unrealizedProfit: LiveData<String> = _unrealizedProfit
+
     private var intervalType = ChartIntervalType.INTERVAL_1DAY
     private var walletTransactions: List<TransactionInfo> = listOf()
         set(value) {
@@ -140,10 +143,30 @@ class DashboardViewModel(
 
                             val rate = RateConverter(localStoreRepository.getRateFor(localStoreRepository.getLocalCurrency())?.currentPrice ?: 0.0)
                             rate.setLocalRate(RateConverter.RateType.FIAT_RATE, 0.0)
-                            _totalSent.postValue(rate.from(RateConverter.RateType.FIAT_RATE, localStoreRepository.getLocalCurrency()).second!!)
-                            _totalReceived.postValue(rate.from(RateConverter.RateType.FIAT_RATE, localStoreRepository.getLocalCurrency()).second!!)
+                            _totalSent.postValue(
+                                rate.from(
+                                    if(rate.getRawBtcRate() >= 1.0 && localStoreRepository.getBitcoinDisplayUnit() != BitcoinDisplayUnit.FIAT)
+                                        RateConverter.RateType.BTC_RATE
+                                    else localStoreRepository.getBitcoinDisplayUnit().toRateType(), localStoreRepository.getLocalCurrency()
+                                ).second!!
+                            )
+                            _totalReceived.postValue(
+                                rate.from(
+                                    if(rate.getRawBtcRate() >= 1.0 && localStoreRepository.getBitcoinDisplayUnit() != BitcoinDisplayUnit.FIAT)
+                                        RateConverter.RateType.BTC_RATE
+                                    else localStoreRepository.getBitcoinDisplayUnit().toRateType(),
+                                    localStoreRepository.getLocalCurrency()
+                                ).second!!
+                            )
                             _averagePrice.postValue(rate.from(RateConverter.RateType.FIAT_RATE, localStoreRepository.getLocalCurrency()).second!!)
-                            _highestBalance.postValue(rate.from(RateConverter.RateType.FIAT_RATE, localStoreRepository.getLocalCurrency()).second!!)
+                            _unrealizedProfit.postValue(rate.from(RateConverter.RateType.FIAT_RATE, localStoreRepository.getLocalCurrency()).second!!)
+                            _highestBalance.postValue(
+                                rate.from(
+                                    if(rate.getRawBtcRate() >= 1.0 && localStoreRepository.getBitcoinDisplayUnit() != BitcoinDisplayUnit.FIAT)
+                                    RateConverter.RateType.BTC_RATE
+                                else localStoreRepository.getBitcoinDisplayUnit().toRateType(), localStoreRepository.getLocalCurrency()
+                                ).second!!
+                            )
 
                             walletManager.findStoredWallet(getWalletId())?.createdAt?.let {
                                 if(it > 0) {
@@ -198,6 +221,16 @@ class DashboardViewModel(
                                 localStoreRepository.getRateFor(localStoreRepository.getLocalCurrency())?.currentPrice
                                     ?: 0.0
                             )
+
+                            rate.setLocalRate(RateConverter.RateType.SATOSHI_RATE, getWalletBalance().toDouble())
+                            val purchasePrice = rate.getRawBtcRate() * averagePrice
+                            val unrealizedProfit = rate.getRawFiatRate() - purchasePrice
+
+                            rate.setLocalRate(RateConverter.RateType.FIAT_RATE, unrealizedProfit)
+                            _unrealizedProfit.postValue(
+                                rate.from(RateConverter.RateType.FIAT_RATE, localStoreRepository.getLocalCurrency()).second!!
+                            )
+
                             rate.setLocalRate(
                                 RateConverter.RateType.BTC_RATE,
                                 totalSentCost
