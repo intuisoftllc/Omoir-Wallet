@@ -99,6 +99,29 @@
         app:layout_constraintBottom_toTopOf="@id/name_container"
         android:layout_marginBottom="@dimen/horizontal_padding_size"/>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/name_container"
+        android:orientation="horizontal"
+        android:paddingHorizontal="@dimen/margin_20"
+        android:gravity="center"
+        android:layout_marginTop="@dimen/horizontal_padding_size_large">
+
+        <CheckBox
+            android:id="@+id/terms_agreement"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:id="@+id/terms_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_4"
+            android:text="dfd"/>
+
+    </LinearLayout>
+
     <com.intuisoft.plaid.androidwrappers.RoundedButtonView
         android:layout_width="0dp"
         android:layout_height="wrap_content"

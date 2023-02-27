@@ -33,8 +33,6 @@
 -keep public class * extends java.lang.Exception
 -keepattributes *Annotation*
 
-#-keep class com.intuisoft.plaid.common.local.UserData**
-#-keepclassmembers class com.intuisoft.plaid.common.local.UserData** {*;}
 
 -keep class kotlin.** {*;}
 -keep class java.util.** {*;}

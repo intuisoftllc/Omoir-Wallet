@@ -3,6 +3,7 @@
 <!--    On-boarding Welcome Strings -->
     <string name="welcome_setup_message">Let\’s get you setup\nWhat shall I call you?</string>
     <string name="welcome_alias_suggestion">Joel Smith</string>
+    <string name="welcome_agree_to_terms">I agree to the Terms Of Service and Privacy Policy</string>
 <!--    On-boarding Welcome Strings End -->
 
 <!--    On-boarding Fingerprint Strings -->

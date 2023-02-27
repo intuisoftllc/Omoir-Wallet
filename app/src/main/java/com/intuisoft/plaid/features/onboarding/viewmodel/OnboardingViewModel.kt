@@ -25,12 +25,25 @@ class OnboardingViewModel(
 
     private var alias = ""
 
+    private var termsAccepted = false
+    private var validName = false
+
     fun updateAlias(alias: String) {
         this.alias = alias
     }
 
-    fun enableNextButton(enable: Boolean) {
-        _advanceAllowed.postValue(enable)
+    fun updateTermsAccepted(accepted: Boolean) {
+        this.termsAccepted = accepted
+    }
+
+    fun areTermsAccepted() = termsAccepted
+
+    fun setNameValid(valid: Boolean) {
+        validName = valid
+    }
+
+    fun enableButton() {
+        _advanceAllowed.postValue(validName && termsAccepted)
     }
 
     fun saveUserAlias() {

@@ -1,12 +1,18 @@
 package com.intuisoft.plaid.features.onboarding.ui
 
+import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
+import android.text.Spannable
+import android.text.Spanned
 import android.text.TextWatcher
+import android.text.method.LinkMovementMethod
+import android.text.style.ClickableSpan
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.intuisoft.plaid.R
@@ -15,10 +21,10 @@ import com.intuisoft.plaid.androidwrappers.TopBarView
 import com.intuisoft.plaid.androidwrappers.hideSoftKeyboard
 import com.intuisoft.plaid.common.analytics.EventTracker
 import com.intuisoft.plaid.common.analytics.events.EventOnboardingStart
-import com.intuisoft.plaid.databinding.FragmentOnboardingWelcomeBinding
-import com.intuisoft.plaid.features.onboarding.viewmodel.OnboardingViewModel
 import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.common.util.Constants.Limit.MAX_ALIAS_LENGTH
+import com.intuisoft.plaid.databinding.FragmentOnboardingWelcomeBinding
+import com.intuisoft.plaid.features.onboarding.viewmodel.OnboardingViewModel
 import com.intuisoft.plaid.walletmanager.AbstractWalletManager
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
@@ -62,7 +68,8 @@ class WelcomeFragment : BindingFragment<FragmentOnboardingWelcomeBinding>() {
 
         binding.name.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable) {
-                viewModel.enableNextButton(s.length > 0 && s.length <= MAX_ALIAS_LENGTH)
+                viewModel.setNameValid(s.length in 1..MAX_ALIAS_LENGTH)
+                viewModel.enableButton()
                 binding.textLeft.text = "${s?.length}/25"
             }
 
@@ -80,7 +87,43 @@ class WelcomeFragment : BindingFragment<FragmentOnboardingWelcomeBinding>() {
         viewModel.advanceAllowed.observe(viewLifecycleOwner, Observer {
             binding.next.enableButton(it)
         })
+
+        setupTermsClick()
+        binding.termsAgreement.setOnCheckedChangeListener { view, isChecked ->
+            viewModel.updateTermsAccepted(isChecked)
+            viewModel.enableButton()
+        }
     }
+
+    private fun setupTermsClick() {
+        val agreeTerms = getString(R.string.welcome_agree_to_terms)
+        val span = Spannable.Factory.getInstance().newSpannable(agreeTerms)
+        span.setSpan(object : ClickableSpan() {
+            override fun onClick(v: View) {
+                Toast.makeText(requireContext(), "tos clicked", Toast.LENGTH_SHORT).show()
+                onTermsOfServiceClicked()
+            }
+        }, 15, 31, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        span.setSpan(object : ClickableSpan() {
+            override fun onClick(v: View) {
+                Toast.makeText(requireContext(), "privacyPolicy clicked", Toast.LENGTH_SHORT).show()
+                onPrivacyPolicyClicked()
+            }
+        }, 36, agreeTerms.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+
+        binding.termsText.text = span
+        binding.termsText.highlightColor = Color.TRANSPARENT;
+        binding.termsText.movementMethod = LinkMovementMethod.getInstance()
+    }
+
+    fun onTermsOfServiceClicked() {
+        // todo: impl
+    }
+
+    fun onPrivacyPolicyClicked() {
+        // todo: impl
+    }
+
     override fun actionBarTitle(): Int {
         return 0
     }
