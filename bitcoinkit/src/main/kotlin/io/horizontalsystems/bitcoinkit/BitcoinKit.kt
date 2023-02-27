@@ -162,8 +162,7 @@ class BitcoinKit : AbstractKit {
                 TestNet()
             }
             NetworkType.RegTest -> {
-                initialSyncApi = InsightApi("")
-                RegTest()
+                throw java.lang.UnsupportedOperationException("unsupported network type: RegTest")
             }
         }
 

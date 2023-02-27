@@ -123,7 +123,6 @@ public class HDKey extends ECKey {
         if (ser.position() != 78) {
             throw new IllegalStateException();
         }
-
         return ser.array();
     }
 
