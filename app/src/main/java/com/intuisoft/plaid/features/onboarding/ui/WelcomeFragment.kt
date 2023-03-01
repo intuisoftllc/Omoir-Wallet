@@ -48,6 +48,7 @@ class WelcomeFragment : BindingFragment<FragmentOnboardingWelcomeBinding>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        viewModel.setSavedAlias()
         eventTracker.log(EventOnboardingStart())
         binding.next.enableButton(false)
         binding.name.setOnKeyListener(object : View.OnKeyListener {
@@ -64,6 +65,10 @@ class WelcomeFragment : BindingFragment<FragmentOnboardingWelcomeBinding>() {
                 }
                 return false
             }
+        })
+
+        viewModel.userAlias.observe(viewLifecycleOwner, Observer {
+            binding.name.setText(it)
         })
 
         binding.name.addTextChangedListener(object : TextWatcher {

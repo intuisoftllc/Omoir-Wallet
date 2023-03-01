@@ -129,7 +129,9 @@
     <string name="settings_option_max_pin_timeout_variant_4">5 minutes</string>
     <string name="settings_option_max_pin_timeout_variant_5">10 minutes</string>
     <string name="settings_option_enable_fingerprint">Enable Fingerprint</string>
+    <string name="settings_option_usage_data_consent">Send Usage Data</string>
     <string name="settings_option_enable_fingerprint_description">Require fingerprint for signing transactions</string>
+    <string name="settings_option_usage_data_consent_description">This helps us continue to improve our service.</string>
     <string name="settings_option_max_pin_attempts_description">Set the max amount of times to enter a pin</string>
     <string name="settings_option_appearance">Appearance</string>
     <string name="settings_option_app_mode">App Mode</string>

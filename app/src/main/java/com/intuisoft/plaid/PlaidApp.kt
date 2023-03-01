@@ -6,6 +6,8 @@ import android.os.Bundle
 import com.intuisoft.plaid.activities.MainActivity
 import com.intuisoft.plaid.billing.BillingManager
 import com.intuisoft.plaid.common.CommonService
+import com.intuisoft.plaid.common.analytics.EventTracker
+import com.intuisoft.plaid.common.local.AppPrefs
 import com.intuisoft.plaid.common.local.UserData
 import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.di.*
@@ -24,6 +26,7 @@ class PlaidApp : Application(), Application.ActivityLifecycleCallbacks, KoinComp
         get() = CommonService.getUserData()
     var ignorePinCheck = false
     private val billing: BillingManager by inject()
+    private val eventTracker: EventTracker by inject()
 
     override fun onCreate() {
         super.onCreate()
@@ -63,6 +66,7 @@ class PlaidApp : Application(), Application.ActivityLifecycleCallbacks, KoinComp
         Purchases.debugLogsEnabled = BuildConfig.LOGGING_ENABLED
         registerActivityLifecycleCallbacks(this)
         Purchases.configure(PurchasesConfiguration.Builder(this, BuildConfig.REVENUE_CAT_SECRET).build())
+        eventTracker.applyDataTrackingConsent()
     }
 
     override fun onActivityCreated(p0: Activity, p1: Bundle?) {

@@ -359,6 +359,14 @@ class LocalStoreRepository_Impl(
         return appPrefs.hideHiddenWalletsCount
     }
 
+    override fun isTrackingUsageData(): Boolean {
+        return appPrefs.trackingConsent
+    }
+
+    override fun setUsageDataTrackingEnabled(enabled: Boolean) {
+        appPrefs.trackingConsent = enabled
+    }
+
     override fun setFingerprintEnabled(enabled: Boolean) {
         appPrefs.fingerprintSecurity = enabled
     }

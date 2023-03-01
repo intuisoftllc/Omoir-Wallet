@@ -6,4 +6,7 @@ data class AddressValidationResponse(
 
     @SerializedName("result")
     val result: Boolean,
+
+    @SerializedName("message")
+    val message: String?,
 )

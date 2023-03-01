@@ -20,6 +20,9 @@ class OnboardingViewModel(
     private val _advanceAllowed = SingleLiveData<Boolean>()
     val advanceAllowed: LiveData<Boolean> = _advanceAllowed
 
+    private val _userAlias = SingleLiveData<String>()
+    val userAlias: LiveData<String> = _userAlias
+
     private val _onBiometricRegisterSuccess = SingleLiveData<Unit>()
     val onBiometricRegisterSuccess: LiveData<Unit> = _onBiometricRegisterSuccess
 
@@ -36,7 +39,10 @@ class OnboardingViewModel(
         this.termsAccepted = accepted
     }
 
-    fun areTermsAccepted() = termsAccepted
+    fun setSavedAlias() {
+        alias = localStoreRepository.getUserAlias() ?: ""
+        _userAlias.postValue(alias)
+    }
 
     fun setNameValid(valid: Boolean) {
         validName = valid

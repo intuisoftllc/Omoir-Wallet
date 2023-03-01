@@ -7,7 +7,9 @@ import com.intuisoft.plaid.BuildConfig
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.BaseViewModel
 import com.intuisoft.plaid.androidwrappers.SingleLiveData
-import com.intuisoft.plaid.common.CommonService
+import com.intuisoft.plaid.common.analytics.EventTracker
+import com.intuisoft.plaid.common.analytics.events.EventDisableUsageData
+import com.intuisoft.plaid.common.analytics.events.EventEnableUsageData
 import com.intuisoft.plaid.common.coroutines.PlaidScope
 import com.intuisoft.plaid.common.model.AppTheme
 import com.intuisoft.plaid.common.model.BitcoinDisplayUnit
@@ -20,7 +22,8 @@ import kotlinx.coroutines.launch
 class SettingsViewModel(
     application: Application,
     private val localStoreRepository: LocalStoreRepository,
-    private val walletManager: AbstractWalletManager
+    private val walletManager: AbstractWalletManager,
+    private val eventTracker: EventTracker
 ): BaseViewModel(application, localStoreRepository, walletManager) {
 
     private val _bitcoinDisplayUnitSetting = SingleLiveData<BitcoinDisplayUnit>()
@@ -34,6 +37,9 @@ class SettingsViewModel(
 
     private val _fingerprintRegistered = SingleLiveData<Boolean>()
     val fingerprintRegistered: LiveData<Boolean> = _fingerprintRegistered
+
+    private val _sendUsageData = SingleLiveData<Boolean>()
+    val sendUsageData: LiveData<Boolean> = _sendUsageData
 
     private val _hideHiddenWallets = SingleLiveData<Boolean>()
     val hideHiddenWallets: LiveData<Boolean> = _hideHiddenWallets
@@ -83,6 +89,7 @@ class SettingsViewModel(
                 updateNameSetting()
                 updateLocalCurrencySetting()
                 updateHideHiddenWalletsSetting()
+                updateSendUsageDataSetting()
                 if(localStoreRepository.isDeveloper()) {
                     _showDeveloperSetting.postValue(Unit)
                 }
@@ -151,6 +158,10 @@ class SettingsViewModel(
         _hideHiddenWallets.postValue(localStoreRepository.isHidingHiddenWalletsCount())
     }
 
+    fun updateSendUsageDataSetting() {
+        _sendUsageData.postValue(localStoreRepository.isTrackingUsageData())
+    }
+
     fun updatePinTimeoutSetting() {
         _pinTimeoutSetting.postValue(localStoreRepository.getPinTimeout())
     }
@@ -186,6 +197,20 @@ class SettingsViewModel(
     fun savePinTimeout(timeout: Int) {
         localStoreRepository.updatePinTimeout(timeout)
         updatePinTimeoutSetting()
+    }
+
+    fun saveUsageDataTracking(track: Boolean) {
+        if(track != localStoreRepository.isTrackingUsageData()) {
+            if(track) {
+                localStoreRepository.setUsageDataTrackingEnabled(track)
+                eventTracker.applyDataTrackingConsent()
+                eventTracker.log(EventEnableUsageData())
+            } else {
+                eventTracker.log(EventDisableUsageData())
+                localStoreRepository.setUsageDataTrackingEnabled(track)
+                eventTracker.applyDataTrackingConsent()
+            }
+        }
     }
 
     fun saveDisplayUnit(unit: BitcoinDisplayUnit) {

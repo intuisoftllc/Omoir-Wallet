@@ -7,7 +7,7 @@ class Constants {
 
     object Database {
         const val DB_NAME = "plaid.db"
-        const val DB_VERSION = 6 // todo: whenever this changes, create a migration
+        const val DB_VERSION = 7 // todo: whenever this changes, create a migration
     }
 
     object Files {
@@ -84,6 +84,10 @@ class Constants {
         const val TEST_WALLET_2 = "wrong cousin spell stadium snake enact author piano venue outer question chair"
         const val TEST_WALLET_3 = "patient sort can island cute saddle shield crunch knock tourist butter budget"
         const val TEST_WALLET_4 = "walk north lazy coffee uncle isolate super shoulder flat accident shy deposit"
+
+        // testnet wallets
+        const val TEST_WALLET_5 = "sad copy help mass donate day they poverty spawn senior fun fix"
+        const val TEST_WALLET_6 = "level beyond pole asthma immense february chief trigger kite vote north gallery"
         const val BASE_WALLET = "BASE_WALLET_ID"
         const val BTC_TICKER = "btc"
         const val SUPPORT_EMAIL = "support@plaidcryptowallet.com"

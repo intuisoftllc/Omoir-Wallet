@@ -66,7 +66,7 @@ class OnboardingPinFragment : BindingFragment<FragmentOnboardingPinBinding>() {
 
         })
 
-        viewModel.fingerprintSupported.observe(viewLifecycleOwner, Observer {
+        viewModel.fingerprintEnroll.observe(viewLifecycleOwner, Observer {
             if(it) {
                 findNavController().navigate(
                     OnboardingPinFragmentDirections.actionOnboardingPinSetupFragmentToFingerprintSetupFragment(),

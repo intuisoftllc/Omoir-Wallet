@@ -21,6 +21,7 @@ class AppPrefs(
         const val HIDE_HIDDEN_WALLETS = "HIDE_HIDDEN_WALLETS"
         const val PREMIUM_USER = "PREMIUM_USER"
         const val DERIVATION_PATH_CHANGE_WARNING = "DERIVATION_PATH_CHANGE_WARNING"
+        const val TRACKING_CONSENT = "TRACKING_CONSENT"
     }
 
     var onboardingFinished: Boolean
@@ -62,6 +63,14 @@ class AppPrefs(
         }
         set(enable) {
             putBool(FINGERPRINT_SECURITY_KEY, enable)
+        }
+
+    var trackingConsent: Boolean
+        get() {
+            return getBool(TRACKING_CONSENT, true)
+        }
+        set(enable) {
+            putBool(TRACKING_CONSENT, enable)
         }
 
     var hideHiddenWalletsCount: Boolean

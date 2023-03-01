@@ -17,6 +17,8 @@ import com.intuisoft.plaid.common.util.SimpleCurrencyFormat
 import com.intuisoft.plaid.common.util.extensions.safeWalletScope
 import com.intuisoft.plaid.util.NetworkUtil
 import com.intuisoft.plaid.common.util.SimpleTimeFormat
+import com.intuisoft.plaid.common.util.extensions.prepend
+import com.intuisoft.plaid.common.util.extensions.roundTo
 import com.intuisoft.plaid.walletmanager.AbstractWalletManager
 import io.horizontalsystems.bitcoincore.models.TransactionInfo
 import io.horizontalsystems.bitcoincore.models.TransactionStatus
@@ -332,25 +334,48 @@ class DashboardViewModel(
                                     val data = apiRepository.getTickerPriceChartData(intervalType)
 
                                     if(data != null && data.isNotEmpty()) {
-                                        val cData = data
+                                        var cData = data
                                             .filter {
                                                 it.time >= birthdate.toEpochMilli()
                                             }
                                             .map {
-                                            ChartDataModel(
-                                                time = it.time / Constants.Time.MILLS_PER_SEC,
-                                                value = getBalanceAtTime(it.time / Constants.Time.MILLS_PER_SEC, balanceHistory) * it.value
+                                                ChartDataModel(
+                                                    time = it.time / Constants.Time.MILLS_PER_SEC,
+                                                    value = (getBalanceAtTime(it.time / Constants.Time.MILLS_PER_SEC, balanceHistory) * it.value).toDouble().roundTo(2).toFloat()
+                                                )
+                                            }
+
+                                        if(cData.isNotEmpty()) {
+                                            if(cData.size == 1) {
+                                                cData = cData + cData
+                                            }
+
+                                            _chartData.postValue(
+                                                cData
                                             )
+                                            var beginValue = cData.firstOrNull { it.value > 0 }?.value ?: 0f
+                                            val endValue =  cData.last().value
+                                            _percentageGain.postValue(100 * ((endValue.toDouble() - beginValue) / beginValue.toDouble()) to (endValue - beginValue).toDouble())
+                                        } else { // if list is empty we show a flat line
+                                            val latestPrice = data.last()
+                                            cData = balanceHistory.drop(1).map {
+                                                ChartDataModel(
+                                                    time = latestPrice.time / Constants.Time.MILLS_PER_SEC,
+                                                    value = (it.first.toFloat() / Constants.Limit.SATS_PER_BTC) * latestPrice.value
+                                                )
+                                            }
+
+                                            if(cData.size == 1) {
+                                                cData = cData + cData
+                                            }
+
+                                            _chartData.postValue(
+                                                cData
+                                            )
+                                            _percentageGain.postValue(0.0 to 0.0)
                                         }
 
-                                        _chartData.postValue(
-                                            cData
-                                        )
-
                                         _showChartError.postValue(null)
-                                        var beginValue = cData.firstOrNull { it.value > 0 }?.value ?: 0f
-                                        val endValue =  cData.last().value
-                                        _percentageGain.postValue(100 * ((endValue.toDouble() - beginValue) / beginValue.toDouble()) to (endValue - beginValue).toDouble())
                                     } else {
                                         _showChartError.postValue(getApplication<PlaidApp>().getString(R.string.failed_to_load_chart_data))
                                     }
@@ -433,6 +458,10 @@ class DashboardViewModel(
         val nowTime: ZonedDateTime = ZonedDateTime.now()
         var splitTime = 0
 
+        if((nowTime.toEpochSecond() - balanceHistory.first().second) <= (25 * Constants.Time.ONE_HOUR)) {
+            return balanceHistory
+        }
+
         when(interval) {
             ChartIntervalType.INTERVAL_1DAY -> {
                 txStartTime = nowTime.minusDays(1).toInstant()
@@ -482,7 +511,7 @@ class DashboardViewModel(
             currentTime += splitTime
         }
 
-        if(history.isNotEmpty() && history.lastOrNull()?.second != (currentTime / Constants.Time.MILLS_PER_SEC)) {
+        if(history.isNotEmpty() && history.lastOrNull()?.second != nowTime.toEpochSecond()) {
             history.add(
                 (getBalanceAtTime(endTime / Constants.Time.MILLS_PER_SEC, balanceHistory) * Constants.Limit.SATS_PER_BTC).toLong()
                         to (endTime / Constants.Time.MILLS_PER_SEC)

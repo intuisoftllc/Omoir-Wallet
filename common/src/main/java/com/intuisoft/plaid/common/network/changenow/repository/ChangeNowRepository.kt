@@ -19,7 +19,7 @@ interface ChangeNowRepository {
 
     fun getExchange(id: String): Result<ExchangeInfoDataModel>
 
-    fun isAddressValid(currency: SupportedCurrencyModel, address: String): Result<Boolean>
+    fun isAddressValid(currency: SupportedCurrencyModel, address: String): Result<Pair<Boolean, String?>>
 
     fun getEstimatedReceiveAmount(from: SupportedCurrencyModel, to: SupportedCurrencyModel, amount: Double): Result<EstimatedReceiveAmountModel>
 
@@ -58,10 +58,10 @@ interface ChangeNowRepository {
             }
         }
 
-        override fun isAddressValid(currency: SupportedCurrencyModel, address: String): Result<Boolean> {
+        override fun isAddressValid(currency: SupportedCurrencyModel, address: String): Result<Pair<Boolean, String?>> {
             try {
-                val result = api.validateAddress(currency.ticker, address).execute().body()
-                return Result.success(result!!.result)
+                val result = api.validateAddress(currency.network, address).execute().body()
+                return Result.success(result!!.result to result!!.message)
             } catch (t: Throwable) {
                 return Result.failure(t)
             }
@@ -78,7 +78,9 @@ interface ChangeNowRepository {
                         timestamp = Instant.parse(result.createdAt),
                         lastUpdated = Instant.parse(result.updatedAt),
                         from = getFullName(result.fromCurrency),
+                        fromId = getId(result.fromCurrency, result.fromNetwork),
                         to = getFullName(result.toCurrency),
+                        toId = getId(result.toCurrency, result.toNetwork),
                         fromShort = result.fromCurrency.uppercase(),
                         toShort = result.toCurrency.uppercase(),
                         sendAmount = result.amountFrom ?: 0.0,
@@ -186,6 +188,11 @@ interface ChangeNowRepository {
         private fun getFullName(ticker: String) : String {
             val currencies = localStoreRepository.getSupportedCurrenciesData()
             return currencies.first { it.ticker == ticker }.name
+        }
+
+        private fun getId(ticker: String, network: String) : String {
+            val currencies = localStoreRepository.getSupportedCurrenciesData()
+            return currencies.first { it.ticker == ticker && it.network == network }.id
         }
     }
 

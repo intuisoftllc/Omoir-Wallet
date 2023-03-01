@@ -276,11 +276,11 @@ fun File.readFromFile(context: Context): String? {
             ret = stringBuilder.toString()
         }
     } catch (e: FileNotFoundException) {
-        FirebaseCrashlytics.getInstance().recordException(e)
-        Log.e("FileWriter", "File not found: " + e.toString())
+//        FirebaseCrashlytics.getInstance().recordException(e)
+//        Log.e("FileWriter", "File not found: " + e.toString())
     } catch (e: IOException) {
-        FirebaseCrashlytics.getInstance().recordException(e)
-        Log.e("FileWriter", "Can not read file: $e")
+//        FirebaseCrashlytics.getInstance().recordException(e)
+//        Log.e("FileWriter", "Can not read file: $e")
     }
     return ret
 }

@@ -148,6 +148,10 @@ interface LocalStoreRepository {
 
     fun isHidingHiddenWalletsCount(): Boolean
 
+    fun setUsageDataTrackingEnabled(enabled: Boolean)
+
+    fun isTrackingUsageData(): Boolean
+
     fun setStoredWalletInfo(storedWalletInfo: StoredWalletInfo?)
 
     fun isFingerprintEnabled(): Boolean

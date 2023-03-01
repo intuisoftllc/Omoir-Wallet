@@ -1,5 +1,6 @@
 package com.intuisoft.plaid.common.repositories
 
+import android.util.Log
 import com.intuisoft.plaid.common.local.db.SupportedCurrency
 import com.intuisoft.plaid.common.local.memorycache.MemoryCache
 import com.intuisoft.plaid.common.model.*
@@ -96,9 +97,9 @@ class ApiRepository_Impl(
     }
 
     /* On-Demand Call */
-    override fun isAddressValid(currency: SupportedCurrencyModel, address: String): Boolean {
+    override fun isAddressValid(currency: SupportedCurrencyModel, address: String): Pair<Boolean, String?> {
         return runBlocking {
-            return@runBlocking changeNowRepository.isAddressValid(currency, address).getOrNull() ?: false
+            return@runBlocking changeNowRepository.isAddressValid(currency, address).getOrNull() ?: (false to null)
         }
     }
 

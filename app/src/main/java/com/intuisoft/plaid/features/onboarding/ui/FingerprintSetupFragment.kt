@@ -56,7 +56,7 @@ class FingerprintSetupFragment : BindingFragment<FragmentOnboardingFingerprintRe
             onNextStep()
         }
 
-        viewModel.fingerprintSupported.observe(viewLifecycleOwner, Observer {
+        viewModel.fingerprintEnroll.observe(viewLifecycleOwner, Observer {
             if(it) {
                 validateFingerprint {
                     viewModel.biometricAuthenticationSuccessful()

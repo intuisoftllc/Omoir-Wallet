@@ -23,8 +23,8 @@ open class BaseViewModel(
     private val walletManager: AbstractWalletManager
 ) : AndroidViewModel(application) {
 
-    private val _fingerprintSupported = SingleLiveData<Boolean>()
-    val fingerprintSupported: LiveData<Boolean> = _fingerprintSupported
+    private val _fingerprintEnroll = SingleLiveData<Boolean>()
+    val fingerprintEnroll: LiveData<Boolean> = _fingerprintEnroll
 
     protected val _loading = MutableLiveData<Boolean>()
     val loading: LiveData<Boolean> = _loading
@@ -45,7 +45,8 @@ open class BaseViewModel(
     fun checkFingerprintSupport(onEnroll: () -> Unit) {
         validateOrRegisterFingerprintSupport(
             onCheck = {
-                _fingerprintSupported.postValue(it)
+                val enrollFingerprint = it && !localStoreRepository.isFingerprintEnabled()
+                _fingerprintEnroll.postValue(enrollFingerprint)
             },
             onEnroll = {
                 onEnroll()

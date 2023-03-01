@@ -297,6 +297,20 @@ class SettingsFragment : ConfigurableFragment<FragmentSettingsBinding>(
             binding.pinTimeout.setSubTitleText(viewModel.pinTimeoutToString(requireContext(), it))
         })
 
+        viewModel.sendUsageData.observe(viewLifecycleOwner, Observer {
+            binding.optOutDataCollection.setSwitchChecked(it)
+        })
+
+        binding.optOutDataCollection.onSwitchClicked {
+            if(it) {
+                viewModel.saveUsageDataTracking(it)
+                eventTracker.log(EventEnableUsageData())
+            } else {
+                eventTracker.log(EventDisableUsageData())
+                viewModel.saveUsageDataTracking(it)
+            }
+        }
+
         viewModel.validateOrRegisterFingerprintSupport(
             onCheck = { supported ->
                 binding.fingerprint.disableView(!supported)

@@ -116,6 +116,7 @@ class ExchangeViewModel(
             else receiveEstimate = EstimatedReceiveAmountModel("", Instant.now(), 0.0)
             _estimatedReceiveAmount.postValue(receiveEstimate.toAmount)
             estimatedReceiveAmountJob = null
+            _confirmButtonEnabled.postValue(min != 0.0 && sendAmount >= min)
         }
     }
 
@@ -127,8 +128,8 @@ class ExchangeViewModel(
                         .takeLast(20)
                         .map {
                             if (it.fromShort.lowercase() == BTC_TICKER)
-                                it.to
-                            else it.from
+                                it.toId
+                            else it.fromId
                         }
                     val timesUsed = mutableListOf<Pair<String, Int>>()
 
@@ -143,9 +144,9 @@ class ExchangeViewModel(
 
                     val sorted = timesUsed.sortedByDescending { it.second }.take(3)
                         .filter { frequent ->
-                            supportedCurrencies.find { it.name == frequent.first } != null
+                            supportedCurrencies.find { it.id == frequent.first } != null
                         }.map { frequent ->
-                            supportedCurrencies.find { frequent.first == it.name }!!
+                            supportedCurrencies.find { frequent.first == it.id }!!
                         }
 
                     if (searchValue.isBlank()) {
@@ -192,7 +193,7 @@ class ExchangeViewModel(
         sendAmount = sending ?: 0.0
         updateEstimatedReceiveAmount()
         _conversionAmount.postValue(receiveEstimate.toAmount)
-        _confirmButtonEnabled.postValue(min != 0.0 && sendAmount >= min)
+        _confirmButtonEnabled.postValue(false)
         return true
     }
 
@@ -220,7 +221,7 @@ class ExchangeViewModel(
         refundAddressMemo = memo
     }
 
-    fun checkAddress(currency: SupportedCurrencyModel, address: String, onResult: (Boolean) -> Unit) {
+    fun checkAddress(currency: SupportedCurrencyModel, address: String, onResult: (Pair<Boolean, String?>) -> Unit) {
         PlaidScope.applicationScope.launch(Dispatchers.IO) {
             val result = apiRepository.isAddressValid(currency, address)
             PlaidScope.MainScope.launch {
@@ -429,18 +430,10 @@ class ExchangeViewModel(
 
                         if (isBitcoin) {
                             refundAddress = getRecieveAddress()
-                            val currency = apiRepository.getSupportedCurrencies()
-                                .filter { it.ticker.lowercase() == inboundCurrency!!.ticker.lowercase() }
-                            val recipient = currency.first()
-
-                            _getReceiveAddress.postValue(recipient)
+                            _getReceiveAddress.postValue(inboundCurrency!!)
                         } else {
                             receiveAddress = getRecieveAddress()
-                            val currency = apiRepository.getSupportedCurrencies()
-                                .filter { it.ticker.lowercase() == outboundCurrency!!.ticker.lowercase() }
-                            val sender = currency.first()
-
-                            _getRefundAddress.postValue(sender)
+                            _getRefundAddress.postValue(outboundCurrency!!)
                         }
                     } else {
                         _onDisplayExplanation.postValue(

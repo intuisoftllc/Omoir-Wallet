@@ -207,7 +207,7 @@ class ExchangeFragment : ConfigurableFragment<FragmentExchangeBinding>(pinProtec
         viewModel.setRefundAddress(address, memo)
     }
 
-    private fun checkAddress(address: String, ticker: SupportedCurrencyModel, onResult: (Boolean) -> Unit) {
+    private fun checkAddress(address: String, ticker: SupportedCurrencyModel, onResult: (Pair<Boolean, String?>) -> Unit) {
         viewModel.checkAddress(ticker, address, onResult)
     }
 
@@ -239,7 +239,7 @@ class ExchangeFragment : ConfigurableFragment<FragmentExchangeBinding>(pinProtec
         currency: SupportedCurrencyModel,
         depositAddressTitle: String,
         setAddress: (address: String, memo: String) -> Unit,
-        checkAddress: (address: String, ticker: SupportedCurrencyModel, onResult: (Boolean) -> Unit) -> Unit
+        checkAddress: (address: String, ticker: SupportedCurrencyModel, onResult: (Pair<Boolean, String?>) -> Unit) -> Unit
     ) {
         val bottomSheetDialog = BottomSheetDialog(context)
         addToStack(bottomSheetDialog)
@@ -275,10 +275,10 @@ class ExchangeFragment : ConfigurableFragment<FragmentExchangeBinding>(pinProtec
                 validationError.isVisible = true
                 validationError.text = getString(R.string.swap_deposit_address_dialog_invalid_address_error, currency.ticker.lowercase())
             } else {
-                checkAddress(address.text.toString(), currency) { isValid ->
+                checkAddress(address.text.toString(), currency) { (isValid, error) ->
                     if(!isValid) {
                         validationError.isVisible = true
-                        validationError.text = getString(R.string.swap_deposit_address_dialog_invalid_address_error, currency.ticker.lowercase())
+                        validationError.text = error ?: getString(R.string.swap_deposit_address_dialog_invalid_address_error, currency.ticker.lowercase())
                     } else if (!NetworkUtil.hasInternet(requireContext())) {
                         validationError.isVisible = true
                         validationError.text = getString(R.string.no_internet_connection)

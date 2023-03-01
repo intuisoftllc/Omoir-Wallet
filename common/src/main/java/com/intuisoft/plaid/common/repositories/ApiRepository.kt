@@ -22,7 +22,7 @@ interface ApiRepository {
 
     suspend fun getMarketHistoryData(currencyCode: String, from: Long, to: Long): List<MarketHistoryDataModel>?
 
-    fun isAddressValid(currency: SupportedCurrencyModel, address: String): Boolean
+    fun isAddressValid(currency: SupportedCurrencyModel, address: String): Pair<Boolean, String?>
 
     suspend fun createExchange(
         from: SupportedCurrencyModel,

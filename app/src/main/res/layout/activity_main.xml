@@ -155,7 +155,6 @@
         android:paddingTop="20dp"
         android:paddingBottom="20dp"
         android:clickable="true"
-        app:trackIncorrectAttempts="true"
         app:firstInputTip="@string/enter_pin_to_unlock_message"
         app:wrongLengthTip="@string/incorrect_pin_length_tip_message"
         app:secondInputTip="@string/re_enter_pin_tip_message"

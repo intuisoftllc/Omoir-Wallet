@@ -44,6 +44,7 @@ import com.intuisoft.plaid.listeners.BarcodeResultListener
 import com.intuisoft.plaid.listeners.NetworkStateChangeListener
 import com.intuisoft.plaid.recievers.NetworkChangeReceiver
 import com.intuisoft.plaid.walletmanager.AbstractWalletManager
+import kotlinx.android.synthetic.main.fragment_withdraw.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
@@ -57,6 +58,7 @@ class MainActivity : BindingActivity<ActivityMainBinding>(), ActionBarDelegate {
     protected val walletManager: AbstractWalletManager by inject()
     protected val billing: BillingManager by inject()
     private var configurationSetup = false
+    private var backAllowed = false
     private val dialogStack = mutableListOf<Pair<AppCompatDialog, (() -> Unit)?>>()
 
     companion object {
@@ -128,6 +130,8 @@ class MainActivity : BindingActivity<ActivityMainBinding>(), ActionBarDelegate {
                             && !pin.isVisible
                         ) {
                             listener?.onBackPressed()
+                        } else if(pin.isVisible && backAllowed) {
+                            hidePinIfNeeded()
                         }
                     }
                 }
@@ -175,7 +179,8 @@ class MainActivity : BindingActivity<ActivityMainBinding>(), ActionBarDelegate {
 
     fun hidePinIfNeeded() {
         withBinding {
-            if(pin.isUnlocked) {
+            if(pin.isVisible && (pin.isUnlocked || backAllowed)) {
+                backAllowed = false
                 pin.animateDown {
                     pin.isVisible = false
                     pin.translationY = 0f
@@ -189,8 +194,10 @@ class MainActivity : BindingActivity<ActivityMainBinding>(), ActionBarDelegate {
             if (pin.isVisible) return@withBinding
 
             var SetupPin = setupPin
+            backAllowed = SetupPin
             pin.isVisible = true
             pin.setPasscodeType(TYPE_CHECK_PASSCODE)
+            pin.enablePinAttemptTracking(true)
             if (SetupPin) {
                 pin.setFirstInputTip(getString(R.string.enter_pin_to_reset_message))
                 pin.resetView()
@@ -218,7 +225,7 @@ class MainActivity : BindingActivity<ActivityMainBinding>(), ActionBarDelegate {
                         pin.setFirstInputTip(getString(R.string.create_pin_tip_message))
                         pin.setSecondInputTip(getString(R.string.re_enter_pin_tip_message))
                         pin.resetView()
-                        pin.disablePinAttemptTracking()
+                        pin.enablePinAttemptTracking(false)
                     } else {
                         walletManager.start()
 

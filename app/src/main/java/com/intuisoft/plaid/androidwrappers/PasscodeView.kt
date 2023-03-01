@@ -102,6 +102,7 @@ class PasscodeView @JvmOverloads constructor(
         }
 
         isUnlocked = false
+        secondInput = false
         maxAttempts = prefs.maxPinAttempts
         layout_psd = findViewById<View>(R.id.layout_psd) as ViewGroup
         tv_input_tip = findViewById<View>(R.id.tv_input_tip) as TextView
@@ -211,8 +212,8 @@ class PasscodeView @JvmOverloads constructor(
         iv_fingerprint?.isVisible = false
     }
 
-    fun disablePinAttemptTracking() {
-        pinAttemptTracking = false
+    fun enablePinAttemptTracking(enable: Boolean) {
+        pinAttemptTracking = enable
     }
 
     fun setListener(listener: PasscodeViewListener?): PasscodeView {
@@ -585,8 +586,6 @@ class PasscodeView @JvmOverloads constructor(
         try {
             passcodeType =
                 typedArray.getInt(R.styleable.PasscodeView_passcodeViewType, passcodeType)
-            pinAttemptTracking =
-                typedArray.getBoolean(R.styleable.PasscodeView_trackIncorrectAttempts, false)
             passcodeLength =
                 typedArray.getInt(R.styleable.PasscodeView_passcodeLength, passcodeLength)
             normalStatusColor =

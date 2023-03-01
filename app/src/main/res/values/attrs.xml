@@ -36,7 +36,6 @@
         <attr name="numberTextColor" format="color"/>
         <attr name="passcodeLength" format="integer"/>
         <attr name="firstInputTip" format="string"/>
-        <attr name="trackIncorrectAttempts" format="boolean"/>
         <attr name="tipTextColor" format="color"/>
         <attr name="secondInputTip" format="string"/>
         <attr name="wrongLengthTip" format="string"/>

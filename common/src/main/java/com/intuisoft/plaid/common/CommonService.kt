@@ -87,7 +87,8 @@ object CommonService {
     fun getEventTrackerInstance(): EventTracker {
         if(eventTracker == null) {
             eventTracker = provideEventTracker(
-                getApplication()
+                getApplication(),
+                getLocalStoreInstance()
             )
         }
 
@@ -570,9 +571,10 @@ object CommonService {
     }
 
     private fun provideEventTracker(
-        application: Application
+        application: Application,
+        localStoreRepository: LocalStoreRepository
     ): EventTracker {
-        return EventTracker(application)
+        return EventTracker(application, localStoreRepository)
     }
 
     private fun provideApiRepository(

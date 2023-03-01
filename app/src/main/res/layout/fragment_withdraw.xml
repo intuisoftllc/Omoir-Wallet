@@ -16,7 +16,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="@dimen/parent_top_margin_small"
+        android:layout_marginTop="@dimen/parent_top_margin_xsmall"
         android:layout_marginBottom="@dimen/horizontal_padding_size"
         app:item_title="@string/available_balance"
         app:subtitle_text_color="@color/brand_color_dark_blue"
@@ -33,16 +33,16 @@
         app:layout_constraintVertical_bias="@dimen/vertical_bias_40"
         android:gravity="center">
 
+
         <TextView
             android:id="@+id/amount"
+            style="@style/TextStyle.Semibold.30"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tools:text="388,500 Sats"
             android:gravity="center"
-            style="@style/TextStyle.Semibold.36"
+            android:textColor="?attr/colorPrimaryVariant"
             android:textStyle="bold"
-            android:textColor="?attr/colorPrimaryVariant"/>
-
+            tools:text="388,500 Sats" />
 
         <androidx.cardview.widget.CardView
             android:id="@+id/conversion_selector"
@@ -54,7 +54,7 @@
             android:layout_marginBottom="@dimen/horizontal_padding_size"
             app:cardCornerRadius="24dp"
             android:backgroundTint="@color/card_background_color"
-            android:layout_marginTop="@dimen/margin_24"
+            android:layout_marginTop="@dimen/margin_18"
             android:layout_marginHorizontal="@dimen/margin_20"
             app:layout_constraintHorizontal_bias="0">
 
@@ -110,7 +110,7 @@
             android:gravity="center"
             android:background="?android:selectableItemBackground"
             android:paddingHorizontal="@dimen/horizontal_padding_size"
-            android:layout_marginTop="@dimen/margin_15"
+            android:layout_marginTop="@dimen/margin_10"
             style="@style/TextStyle.Semibold.16"
             android:textColor="?attr/colorPrimaryVariant"
             app:layout_constraintTop_toBottomOf="@id/conversion_selector"/>

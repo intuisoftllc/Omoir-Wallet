@@ -59,6 +59,12 @@ class ExchangeDetailsFragment : ConfigurableFragment<FragmentExchangeDetailsBind
         val swapData = configuration!!.configData as BasicConfigData
         val data = Gson().fromJson(swapData.payload, ExchangeInfoDataModel::class.java)
         val status = ExchangeStatus.values().find { it.type == data.status }!!
+        val from = localStoreRepository.getSupportedCurrenciesData().filter {
+            it.id == data.fromId
+        }.firstOrNull()
+        val to = localStoreRepository.getSupportedCurrenciesData().filter {
+            it.id == data.toId
+        }.firstOrNull()
 
         eventTracker.log(EventExchangeDetailsView())
         binding.status.text = data.status
@@ -67,8 +73,8 @@ class ExchangeDetailsFragment : ConfigurableFragment<FragmentExchangeDetailsBind
                 ExchangeStatusColors.getColor(status)
             )
         )
-        binding.from.text = data.from
-        binding.to.text = data.to
+        binding.from.text = data.from + " (${from?.network?.uppercase() ?: "?"})"
+        binding.to.text = data.to + " (${to?.network?.uppercase() ?: "?"})"
         binding.exchangeId.text = data.id
         if(status.isFinalState()) {
             binding.sendAmount.text =
