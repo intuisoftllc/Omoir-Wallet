@@ -75,8 +75,6 @@ class Constants {
         const val USE_BIOMETRIC_REASON_7 = "Scan your fingerprint to show/hide hidden wallet counts."
         const val SKIP_FOR_NOW = "Skip for now"
         const val PRO_SUBSCRIPTION_MARK = "~~Pro"
-        const val ANONYMOUS_ID_PREFIX = "\$RCAnonymousID:"
-        const val ANONYMOUS_ID_PREFIX_REPLACEMENT = "userId:"
         const val USE_PIN = "Use pin"
         const val COPIED_TO_CLIPBOARD = "Copied To Clipboard!"
         const val BLOCKCHAIN_COM_TX_URL = "https://www.blockchain.com/btc/tx/"

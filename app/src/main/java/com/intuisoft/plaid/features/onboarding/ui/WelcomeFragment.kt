@@ -12,13 +12,13 @@ import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.BindingFragment
 import com.intuisoft.plaid.androidwrappers.TopBarView
 import com.intuisoft.plaid.androidwrappers.hideSoftKeyboard
+import com.intuisoft.plaid.androidwrappers.openLink
 import com.intuisoft.plaid.common.analytics.EventTracker
 import com.intuisoft.plaid.common.analytics.events.EventOnboardingStart
 import com.intuisoft.plaid.common.util.Constants
@@ -105,13 +105,11 @@ class WelcomeFragment : BindingFragment<FragmentOnboardingWelcomeBinding>() {
         val span = Spannable.Factory.getInstance().newSpannable(agreeTerms)
         span.setSpan(object : ClickableSpan() {
             override fun onClick(v: View) {
-                Toast.makeText(requireContext(), "tos clicked", Toast.LENGTH_SHORT).show()
                 onTermsOfServiceClicked()
             }
         }, 15, 31, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         span.setSpan(object : ClickableSpan() {
             override fun onClick(v: View) {
-                Toast.makeText(requireContext(), "privacyPolicy clicked", Toast.LENGTH_SHORT).show()
                 onPrivacyPolicyClicked()
             }
         }, 36, agreeTerms.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
@@ -122,11 +120,11 @@ class WelcomeFragment : BindingFragment<FragmentOnboardingWelcomeBinding>() {
     }
 
     fun onTermsOfServiceClicked() {
-        // todo: impl
+        requireContext().openLink(getString(R.string.business_terms_of_service))
     }
 
     fun onPrivacyPolicyClicked() {
-        // todo: impl
+        requireContext().openLink(getString(R.string.business_privacy_policy))
     }
 
     override fun actionBarTitle(): Int {

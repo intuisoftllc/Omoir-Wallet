@@ -130,7 +130,7 @@ class ExchangeDetailsFragment : ConfigurableFragment<FragmentExchangeDetailsBind
                     Build.MODEL,
                     Build.PRODUCT,
                     if(viewModel.isProEnabled()) Constants.Strings.PRO_SUBSCRIPTION_MARK + "\n" else "",
-                    billing.getUserId().replace(Constants.Strings.ANONYMOUS_ID_PREFIX, Constants.Strings.ANONYMOUS_ID_PREFIX_REPLACEMENT),
+                    billing.getUserId(),
                     BuildConfig.VERSION_NAME
                 )
             )
