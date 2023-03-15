@@ -14,6 +14,9 @@ import com.intuisoft.plaid.androidwrappers.TopBarView
 import com.intuisoft.plaid.androidwrappers.openLink
 import com.intuisoft.plaid.androidwrappers.styledSnackBar
 import com.intuisoft.plaid.billing.BillingManager
+import com.intuisoft.plaid.common.analytics.EventTracker
+import com.intuisoft.plaid.common.analytics.events.CurrentSubscriptionView
+import com.intuisoft.plaid.common.analytics.events.PurchaseSubscriptionView
 import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.databinding.FragmentSubscriptionBinding
 import com.intuisoft.plaid.features.settings.viewmodel.SettingsViewModel
@@ -30,6 +33,7 @@ class SubscriptionFragment : ConfigurableFragment<FragmentSubscriptionBinding>(
     private val viewModel: SubscriptionViewModel by sharedViewModel()
     private val settingsViewModel: SettingsViewModel by sharedViewModel()
     private val billing: BillingManager by inject()
+    protected val eventTracker: EventTracker by inject()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -46,6 +50,7 @@ class SubscriptionFragment : ConfigurableFragment<FragmentSubscriptionBinding>(
             activity = requireActivity()
         ) { sub ->
             withBinding {
+                eventTracker.log(CurrentSubscriptionView())
                 info1.setSubTitleText(sub.renewalType)
                 info2.setSubTitleText(sub.expireDate)
                 info3.setSubTitleText(sub.state)

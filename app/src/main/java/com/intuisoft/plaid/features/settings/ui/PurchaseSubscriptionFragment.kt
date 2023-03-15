@@ -12,6 +12,8 @@ import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.*
 import com.intuisoft.plaid.androidwrappers.delegates.FragmentConfiguration
 import com.intuisoft.plaid.billing.BillingManager
+import com.intuisoft.plaid.common.analytics.EventTracker
+import com.intuisoft.plaid.common.analytics.events.PurchaseSubscriptionView
 import com.intuisoft.plaid.databinding.FragmentPurchaseSubscriptionBinding
 import com.intuisoft.plaid.features.settings.viewmodel.SettingsViewModel
 import com.intuisoft.plaid.features.settings.viewmodel.SubscriptionViewModel
@@ -26,6 +28,7 @@ class PurchaseSubscriptionFragment : ConfigurableFragment<FragmentPurchaseSubscr
     private val viewModel: SubscriptionViewModel by sharedViewModel()
     private val settingsViewModel: SettingsViewModel by sharedViewModel()
     private val billing: BillingManager by inject()
+    protected val eventTracker: EventTracker by inject()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -39,6 +42,8 @@ class PurchaseSubscriptionFragment : ConfigurableFragment<FragmentPurchaseSubscr
 
     override fun onConfiguration(configuration: FragmentConfiguration?) {
         binding.subscribe.enableButton(false)
+        getSubscriptionInfo()
+        eventTracker.log(PurchaseSubscriptionView())
         binding.atpMoreInfo.setOnSingleClickListener {
             navigate(
                 R.id.atpInfoFragment
@@ -181,7 +186,6 @@ class PurchaseSubscriptionFragment : ConfigurableFragment<FragmentPurchaseSubscr
 
     override fun onResume() {
         super.onResume()
-        getSubscriptionInfo()
     }
 
     override fun onDestroyView() {

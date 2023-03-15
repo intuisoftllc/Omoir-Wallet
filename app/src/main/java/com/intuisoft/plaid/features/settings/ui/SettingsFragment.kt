@@ -138,11 +138,13 @@ class SettingsFragment : ConfigurableFragment<FragmentSettingsBinding>(
         binding.subscription.onClick(Constants.Time.MIN_CLICK_INTERVAL_LONG) {
             billing.shouldShowPremiumContent { hasSubscription ->
                 if(hasSubscription) {
+                    eventTracker.log(EventSettingsViewPurchaseProSub())
                     navigate(
                         R.id.currentSubscriptionFragment,
                         Constants.Navigation.ANIMATED_ENTER_EXIT_RIGHT_NAV_OPTION
                     )
                 } else {
+                    eventTracker.log(EventSettingsViewProSub())
                     navigate(
                         R.id.purchaseSubscriptionFragment,
                         Constants.Navigation.ANIMATED_ENTER_EXIT_RIGHT_NAV_OPTION
@@ -304,10 +306,8 @@ class SettingsFragment : ConfigurableFragment<FragmentSettingsBinding>(
         binding.optOutDataCollection.onSwitchClicked {
             if(it) {
                 viewModel.saveUsageDataTracking(it)
-                eventTracker.log(EventEnableUsageData())
             } else {
                 eventTracker.log(EventDisableUsageData())
-                viewModel.saveUsageDataTracking(it)
             }
         }
 

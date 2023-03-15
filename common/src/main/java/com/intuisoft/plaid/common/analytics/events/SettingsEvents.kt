@@ -50,4 +50,8 @@ class EventSettingsMinimumConfirmations(
 
 class EventSettingsViewCredits: Event("settings_view_credits", listOf())
 
+class EventSettingsViewProSub: Event("settings_view_pro_sub", listOf())
+
+class EventSettingsViewPurchaseProSub: Event("settings_view_purchase_pro_sub", listOf())
+
 class EventSettingsWipeData: Event("settings_wipe_data", listOf())
