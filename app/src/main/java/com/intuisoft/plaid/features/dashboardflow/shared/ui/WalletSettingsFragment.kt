@@ -89,15 +89,7 @@ class WalletSettingsFragment : ConfigurableFragment<FragmentWalletSettingsBindin
             }
         })
 
-        viewModel.upgradeToPro.observe(viewLifecycleOwner, Observer {
-            if(it) {
-                binding.exportWalletTx.setTitleText(getString(R.string.wallet_settings_export_tx_data_without_pro))
-                binding.exportWalletTx.disableView(true)
-            } else {
-                binding.exportWalletTx.setTitleText(getString(R.string.wallet_settings_export_tx_data))
-            }
-        })
-
+        binding.exportWalletTx.setTitleText(getString(R.string.wallet_settings_export_tx_data))
         viewModel.walletBip.observe(viewLifecycleOwner, Observer {
             binding.bip.disableView(true)
 

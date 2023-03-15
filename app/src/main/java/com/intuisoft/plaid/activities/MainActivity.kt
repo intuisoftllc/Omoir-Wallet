@@ -1,6 +1,7 @@
 package com.intuisoft.plaid.activities
 
 import android.app.Activity
+import android.app.Dialog
 import android.app.ProgressDialog
 import android.content.Intent
 import android.content.IntentFilter
@@ -59,7 +60,7 @@ class MainActivity : BindingActivity<ActivityMainBinding>(), ActionBarDelegate {
     protected val billing: BillingManager by inject()
     private var configurationSetup = false
     private var backAllowed = false
-    private val dialogStack = mutableListOf<Pair<AppCompatDialog, (() -> Unit)?>>()
+    private val dialogStack = mutableListOf<Pair<Dialog, (() -> Unit)?>>()
 
     companion object {
         private val TOP_LEVEL_DESTINATIONS = setOf(
@@ -156,13 +157,13 @@ class MainActivity : BindingActivity<ActivityMainBinding>(), ActionBarDelegate {
         }
     }
 
-    fun addToDialogStack(dialog: AppCompatDialog, onCancel: (() -> Unit)? = null) {
+    fun addToDialogStack(dialog: Dialog, onCancel: (() -> Unit)? = null) {
         if(dialogStack.find { it === dialog } == null) {
             dialogStack.add(dialog to onCancel)
         }
     }
 
-    fun removeFromDialogStack(dialog: AppCompatDialog) {
+    fun removeFromDialogStack(dialog: Dialog) {
         dialogStack.remove {
             it == dialog
         }

@@ -343,6 +343,7 @@ open class WalletViewModel(
 
     open fun getWalletBalance() = localWallet!!.getWhitelistedBalance(localStoreRepository)
 
+    fun getWalletBirthday() =  walletManager.findStoredWallet(localWallet!!.uuid)!!.createdAt
 
     open fun setInitialSpendUtxo(utxo: String) {
         selectedUTXOs = mutableListOf(getUnspentOutputs().find { it.output.address == utxo }!!)

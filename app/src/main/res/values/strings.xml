@@ -330,6 +330,21 @@
     <string name="export_wallet_title">Your Public Key</string>
     <string name="export_wallet_receive_btc_title">Receive BTC</string>
     <string name="export_wallet_copied_to_clipboard">Copied To Clipboard!</string>
+    <string name="export_wallet_options_simple">Simple</string>
+    <string name="export_wallet_options_advanced">Advanced (Pro)</string>
+    <string name="export_wallet_options_title">Wallet Export</string>
+    <string name="export_wallet_options_start_end_date_hint">3/6/2023</string>
+    <string name="export_wallet_options_start_date_title">Start Period</string>
+    <string name="export_wallet_options_end_date_title">End Period</string>
+    <string name="export_wallet_options_transaction_data_value_title">Where Data is</string>
+    <string name="export_wallet_options_transaction_data_value_hint">0 (set to 0 or leave blank for all data)</string>
+    <string name="export_wallet_options_transaction_type_title">Export Data</string>
+    <string name="export_wallet_options_csv_format_title">Csv Format</string>
+    <string name="export_wallet_options_csv_format_subtitle_1">Turbotax</string>
+    <string name="export_wallet_options_transaction_type_subtitle_1">Raw (All Transactions)</string>
+    <string name="export_wallet_options_transaction_type_subtitle_2">Incoming</string>
+    <string name="export_wallet_options_transaction_type_subtitle_3">Outgoing</string>
+    <string name="export_wallet_options_transaction_type_subtitle_4">Profit &amp; Loss</string>
 <!--    Export Wallet Strings End -->
 
 <!--    Withdraw Strings -->
@@ -479,7 +494,6 @@
     <string name="wallet_settings_export">Export Wallet</string>
     <string name="wallet_settings_export_description">Show wallet\'s master public key</string>
     <string name="wallet_settings_export_tx_data">Export Transaction Data</string>
-    <string name="wallet_settings_export_tx_data_without_pro">Export Transaction Data (Pro Only)</string>
     <string name="wallet_settings_export_tx_data_description">Export wallet\'s transaction data</string>
     <string name="wallet_settings_network">Network</string>
     <string name="wallet_settings_sync_type">Sync Type</string>
@@ -516,6 +530,7 @@
     <string name="export_type_subtitle">How would you like to\nexport your wallet data?</string>
     <string name="export_data_loading_message">Exporting Transaction Data</string>
     <string name="export_data_finished_message">Transaction data exported to file: %1$s</string>
+    <string name="export_data_failed_message">Failed to export transaction data</string>
     <string name="export_csv_column_1">Date</string>
     <string name="export_csv_column_2">Transaction Type</string>
     <string name="export_csv_column_3">Transaction Value</string>
@@ -816,6 +831,7 @@
     <string name="address">Address</string>
     <string name="explorer">Explorer</string>
     <string name="website">Website</string>
+    <string name="export">Export</string>
     <string name="configuration">Configuration</string>
     <string name="no_internet_connection">No Internet Connection!</string>
     <string name="reconnecting_to_core">Syncing with the network, please wait…</string>
