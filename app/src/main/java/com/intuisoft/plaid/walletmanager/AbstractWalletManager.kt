@@ -31,6 +31,7 @@ abstract class AbstractWalletManager {
     abstract fun isRunning(): Boolean
     abstract fun updateWalletName(localWallet: LocalWalletModel, newName: String)
     abstract fun validAddress(address: String) : Boolean
+    abstract fun validPubPrivKey(key: String) : Boolean
     abstract fun parseInvoice(invoiceData: String) : BitcoinPaymentData
     abstract fun canSendTransaction(localWallet: LocalWalletModel) : Boolean
     abstract suspend fun deleteWallet(localWallet: LocalWalletModel, onDeleteFinished: suspend () -> Unit)

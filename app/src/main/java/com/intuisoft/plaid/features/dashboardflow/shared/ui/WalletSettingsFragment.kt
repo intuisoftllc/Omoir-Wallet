@@ -73,12 +73,33 @@ class WalletSettingsFragment : ConfigurableFragment<FragmentWalletSettingsBindin
 
         eventTracker.log(EventWalletSettingsView())
         viewModel.updateWalletSettings()
-        viewModel.checkReadOnlyStatus()
         viewModel.showHiddenWalletsCount()
         viewModel.checkProStatus()
+        viewModel.showPrivKeySetting()
+        viewModel.enableSeedPhraseSetting()
+        viewModel.enableHiddenWallet()
+
         viewModel.walletName.observe(viewLifecycleOwner, Observer {
             binding.renameWallet.setSubTitleText(it)
         })
+
+        viewModel.seedPhraseSettingEnabled.observe(viewLifecycleOwner, Observer {
+            binding.seedPhrase.isVisible = it != null
+            binding.seedPhrase.disableView(it == false)
+        })
+
+        viewModel.showPrivKeySetting.observe(viewLifecycleOwner, Observer {
+            binding.privateKey.isVisible = it
+        })
+
+        viewModel.hiddenWalletEnabled.observe(viewLifecycleOwner, Observer {
+            binding.hiddenWallet.disableView(!it)
+        })
+
+        binding.hiddenWallet.onClick {
+            eventTracker.log(EventWalletSettingsViewHiddenWallet())
+            showPassphraseDialog(viewModel.getHiddenWallet())
+        }
 
         viewModel.hiddenWallets.observe(viewLifecycleOwner, Observer {
             binding.hiddenWalletsCount.isVisible = it != null
@@ -113,6 +134,29 @@ class WalletSettingsFragment : ConfigurableFragment<FragmentWalletSettingsBindin
                 }
             }
         })
+
+        binding.privateKey.onClick {
+            var bundle = bundleOf(
+                Constants.Navigation.FRAGMENT_CONFIG to FragmentConfiguration(
+                    actionBarTitle = R.string.wallet_settings_prv_key,
+                    actionBarSubtitle = 0,
+                    actionBarVariant = TopBarView.CENTER_ALIGN,
+                    actionLeft = R.drawable.ic_arrow_left,
+                    actionRight = 0,
+                    configurationType = FragmentConfigurationType.CONFIGURATION_DISPLAY_QR,
+                    configData = ConfigQrDisplayData(
+                        payload = viewModel.getPrvKey(),
+                        qrTitle = getString(R.string.wallet_settings_prv_key_title),
+                        showClose = false
+                    )
+                )
+            )
+
+            navigate(
+                R.id.exportWalletFragment,
+                bundle
+            )
+        }
 
         binding.walletHelp.onClick {
             val status = viewModel.getWalletStatus()
@@ -175,11 +219,6 @@ class WalletSettingsFragment : ConfigurableFragment<FragmentWalletSettingsBindin
             } else {
                 binding.network.setSubTitleText(getString(R.string.main_net))
             }
-        })
-
-        viewModel.readOnlyWallet.observe(viewLifecycleOwner, Observer {
-            binding.hiddenWallet.disableView(true)
-            binding.seedPhrase.disableView(true)
         })
 
         binding.seedPhrase.onClick {

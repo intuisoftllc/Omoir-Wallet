@@ -23,7 +23,6 @@ import io.horizontalsystems.bitcoincore.managers.SendValueErrors
 import io.horizontalsystems.bitcoincore.models.TransactionInfo
 import io.horizontalsystems.bitcoincore.storage.UnspentOutput
 import io.horizontalsystems.bitcoinkit.BitcoinKit
-import io.horizontalsystems.hdwalletkit.HDExtendedKey
 import io.horizontalsystems.hdwalletkit.HDWallet
 import io.horizontalsystems.hdwalletkit.Mnemonic
 import io.reactivex.disposables.CompositeDisposable
@@ -40,8 +39,8 @@ open class WalletViewModel(
     protected val _seedPhraseGenerated = SingleLiveData<List<String>>()
     val seedPhraseGenerated: LiveData<List<String>> = _seedPhraseGenerated
 
-    protected val _walletCreationError = SingleLiveData<Unit>()
-    val walletCreationError: LiveData<Unit> = _walletCreationError
+    protected val _walletCreationError = SingleLiveData<Throwable>()
+    val walletCreationError: LiveData<Throwable> = _walletCreationError
 
     protected val _transactions = SingleLiveData<List<TransactionInfo>>()
     val transactions: LiveData<List<TransactionInfo>> = _transactions
@@ -297,18 +296,15 @@ open class WalletViewModel(
         }
     }
 
-    fun isPublicKeyAddressValid(address: String) : Boolean {
-        try {
-            HDExtendedKey.validate(address, true)
-            return true
-        } catch (e: Throwable) {
-            return false
-        }
+    fun isPubPrivKeyAddressValid(key: String) : Boolean {
+        return walletManager.validPubPrivKey(key)
     }
 
     fun getHiddenWallet() = walletManager.getCurrentHiddenWallet(localWallet!!)
 
     fun getWalletSeedPhrase() = walletManager.findStoredWallet(localWallet!!.uuid)!!.seedPhrase
+
+    fun isPrivKeyWallet() = walletManager.findStoredWallet(localWallet!!.uuid)!!.isPrivateKeyWallet
 
     fun getDisplayUnit() = localStoreRepository.getBitcoinDisplayUnit()
 
@@ -325,6 +321,8 @@ open class WalletViewModel(
             return localWallet!!.walletKit!!.getMasterPublicKey(!localWallet!!.testNetWallet, localWallet!!.hiddenWallet)
         }
     }
+
+    fun getPrvKey() = walletManager.findStoredWallet(localWallet!!.uuid)!!.pubKey
 
     fun getRecieveAddress() : String {
         return localWallet!!.walletKit!!.receiveAddress()
@@ -419,7 +417,7 @@ open class WalletViewModel(
 
                 _walletCreated.postValue(walletId)
             } catch(err: ExistingWalletErr) {
-                _walletCreationError.postValue(Unit)
+                _walletCreationError.postValue(err)
             }
         }
     }
@@ -457,7 +455,7 @@ open class WalletViewModel(
 
                 _walletCreated.postValue(walletId)
             } catch(e: Throwable) {
-                _walletCreationError.postValue(Unit)
+                _walletCreationError.postValue(e)
             }
         }
     }

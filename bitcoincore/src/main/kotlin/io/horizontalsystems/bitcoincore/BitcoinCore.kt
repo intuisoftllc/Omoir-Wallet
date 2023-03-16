@@ -510,6 +510,29 @@ class BitcoinCore(
         }
     }
 
+    fun isPubPrivKeyValid(key: String) : Boolean {
+        try {
+            HDExtendedKey.validate(key, true)
+            return true
+        } catch (e: Throwable) { }
+
+        try {
+            HDExtendedKey.validate(key, false)
+            return true
+        } catch (e: Throwable) {
+            return false
+        }
+    }
+
+    fun isPubKeyValid(key: String) : Boolean {
+        try {
+            HDExtendedKey.validate(key, true)
+            return true
+        } catch (e: Throwable) {
+            return false
+        }
+    }
+
     fun addPeerGroupListener(listener: PeerGroup.Listener) {
         peerGroup.addPeerGroupListener(listener)
     }

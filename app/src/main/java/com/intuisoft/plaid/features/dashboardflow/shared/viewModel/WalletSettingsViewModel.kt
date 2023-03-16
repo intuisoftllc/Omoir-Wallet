@@ -1,5 +1,7 @@
 
 import android.app.Application
+import androidx.lifecycle.LiveData
+import com.intuisoft.plaid.androidwrappers.SingleLiveData
 import com.intuisoft.plaid.androidwrappers.WalletViewModel
 import com.intuisoft.plaid.common.model.SavedAccountModel
 import com.intuisoft.plaid.common.repositories.ApiRepository
@@ -15,7 +17,31 @@ class WalletSettingsViewModel(
     private val walletManager: AbstractWalletManager
 ): WalletViewModel(application, localStoreRepository, apiRepository, walletManager) {
 
+    protected val _seedPhraseSettingEnabled = SingleLiveData<Boolean?>()
+    val seedPhraseSettingEnabled: LiveData<Boolean?> = _seedPhraseSettingEnabled
+
+    protected val _hiddenWalletEnabled = SingleLiveData<Boolean>()
+    val hiddenWalletEnabled: LiveData<Boolean> = _hiddenWalletEnabled
+
+    protected val _showPrivKeySetting = SingleLiveData<Boolean>()
+    val showPrivKeySetting: LiveData<Boolean> = _showPrivKeySetting
+
     var fromSettings: Boolean = false
+
+    fun showPrivKeySetting() {
+        _showPrivKeySetting.postValue(isPrivKeyWallet())
+    }
+
+    fun enableHiddenWallet() {
+        _hiddenWalletEnabled.postValue(!isPrivKeyWallet() && !isReadOnly())
+    }
+    fun enableSeedPhraseSetting() {
+        if(isPrivKeyWallet())
+            _seedPhraseSettingEnabled.postValue(null)
+        else {
+            _seedPhraseSettingEnabled.postValue(!isReadOnly())
+        }
+    }
 
     fun setHiddenWalletParams(passphrase: String, account: SavedAccountModel, restartRequired: () -> Unit) {
         val currentHiddenWallet = walletManager.getCurrentHiddenWallet(getWallet()!!)

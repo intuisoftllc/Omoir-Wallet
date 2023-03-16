@@ -177,10 +177,10 @@ class HDExtendedKey(
         val isPublic: Boolean
     )
 
-    sealed class ParsingError : Throwable() {
-        object WrongVersion : ParsingError()
-        object WrongKeyLength : ParsingError()
-        object WrongDerivedType : ParsingError()
-        object InvalidChecksum : ParsingError()
+    sealed class ParsingError(message: String) : Throwable(message) {
+        object WrongVersion : ParsingError("Wrong Version")
+        object WrongKeyLength : ParsingError("Wrong Key Length")
+        object WrongDerivedType : ParsingError("Wrong Derived Type")
+        object InvalidChecksum : ParsingError("Invalid Checksum")
     }
 }

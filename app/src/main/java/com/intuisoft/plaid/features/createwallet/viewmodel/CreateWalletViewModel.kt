@@ -263,7 +263,7 @@ class CreateWalletViewModel(
     }
 
     fun importPublicKey() {
-        if(isPublicKeyAddressValid(pubKey)) {
+        if(isPubPrivKeyAddressValid(pubKey)) {
             _onConfirm.postValue(Unit)
         } else {
             _onInputRejected.postValue(Unit)

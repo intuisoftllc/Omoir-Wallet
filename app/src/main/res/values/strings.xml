@@ -443,7 +443,7 @@
     <string name="create_wallet_success_subtitle">Your bitcoin wallet has been created.\n\nPlease note that it may take some time before your transactions (if any) will appear in the wallet dashboard screen.</string>
     <string name="create_wallet_success_positive_button">Go to Wallet Dashboard</string>
     <string name="create_wallet_success_negative_button">Go to Home Screen</string>
-    <string name="create_wallet_failure_error">This wallet has already been created.</string>
+    <string name="create_wallet_failure_error">Failed to create wallet: %1$s</string>
 <!--    Create Wallet Strings End -->
 
 <!--    Transaction Details Strings -->
@@ -473,6 +473,9 @@
     <string name="wallet_settings_help_description">Having trouble with this wallet? Drop us a line to get help.</string>
     <string name="wallet_settings_rename_wallet">Rename Wallet</string>
     <string name="wallet_settings_seed_phrase">Seed Phrase</string>
+    <string name="wallet_settings_prv_key">Private Key</string>
+    <string name="wallet_settings_prv_key_title">Your Private Key</string>
+    <string name="wallet_settings_prv_key_description">Show private key</string>
     <string name="wallet_settings_seed_phrase_description">Show seed phrase</string>
     <string name="wallet_settings_hidden_wallet">Hidden Wallet</string>
     <string name="wallet_settings_hidden_wallet_description">Create a hidden wallet</string>
@@ -598,9 +601,9 @@
 <!--    Import Wallet Strings -->
     <string name="import_wallet_description">How would you like to\nimport your wallet?</string>
     <string name="import_wallet_option_1">Recovery Phrase Import</string>
-    <string name="import_wallet_option_2">Public Key Import</string>
-    <string name="import_wallet_option_2_description">Public key import allows you to create a “watch-only” wallet where you can observe all incoming and outgoing transactions but cannot access the funds directly.\n\nEnter your public key below to create a “watch-only” wallet (usually  zpub, xpub, or ypub).</string>
-    <string name="import_wallet_public_key_text_box_title">Public Key</string>
+    <string name="import_wallet_option_2">Pub/Prv Key Import</string>
+    <string name="import_wallet_option_2_description">Pub/Prv key import allows you to create a standard wallet via a bip32 root key or “watch-only” wallet via public key. Watch-Only wallets allows you to only observe all incoming and outgoing transactions but not send funds directly.\n\nEnter your public key below to create a “watch-only” wallet (usually  zpub, xpub, or ypub) or standard wallet via private key (usually  zprv, xprv, or yprv).</string>
+    <string name="import_wallet_public_key_text_box_title">Pub/Prv Key</string>
     <string name="import_wallet_public_key_suggestion">xpub6qR26r18Vj3QtUJrb...</string>
 <!--    Import Wallet Strings End -->
 
