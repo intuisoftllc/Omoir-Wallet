@@ -48,6 +48,7 @@
     <color name="settings_category_text_color">@color/grey</color>
     <color name="line_chart_card_background_color">@color/brand_color_dark_blue</color>
     <color name="time_period_indicator_color">@color/white</color>
+    <color name="branded_icon_color">@color/white</color>
     <color name="homescreen_wallet_status_color">@color/title_text_color</color>
     <color name="bar_chart_color">@color/alt_blue_grey</color>
     <color name="bar_chart_negative_color">@color/alt_error_color</color>

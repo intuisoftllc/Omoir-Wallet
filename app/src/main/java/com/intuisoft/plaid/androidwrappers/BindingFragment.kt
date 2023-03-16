@@ -1,6 +1,7 @@
 package com.intuisoft.plaid.androidwrappers
 
 import android.Manifest
+import android.app.Dialog
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -75,11 +76,11 @@ abstract class BindingFragment<T: ViewBinding> : Fragment(), FragmentActionBarDe
         (activity as? MainActivity)?.activatePin(setupPin, loadingUserData)
     }
 
-    fun addToStack(dialog: AppCompatDialog, onCancel: (() -> Unit)? = null) {
+    fun addToStack(dialog: Dialog, onCancel: (() -> Unit)? = null) {
         (activity as? MainActivity)?.addToDialogStack(dialog, onCancel)
     }
 
-    fun removeFromStack(dialog: AppCompatDialog) {
+    fun removeFromStack(dialog: Dialog) {
         (activity as? MainActivity)?.removeFromDialogStack(dialog)
     }
 

@@ -484,6 +484,9 @@ class WalletManager(
                                    CoroutineScope(Dispatchers.Main).launch {
                                        if(state == BitcoinCore.KitState.Synced) {
                                            identifier.lastSynced = System.currentTimeMillis()
+                                           identifier.createdAt =
+                                               (model.walletKit!!.getAllTransactions()
+                                                   .lastOrNull()?.timestamp?.times(1000)) ?: identifier.createdAt
                                            localStoreRepository.setStoredWalletInfo(localStoreRepository.getStoredWalletInfo())
                                        }
 

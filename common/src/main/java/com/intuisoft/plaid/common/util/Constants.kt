@@ -165,7 +165,7 @@ class Constants {
         const val ADDRESS_HINT_LENGTH = 16
         const val BITCOIN_SUPPLY_CAP = 21000000
         const val DEFAULT_PIN_TIMEOUT =
-            Time.FIVE_MINUTES // check for pin only when 5 minutes have passed by default
+            Time.TEN_MINUTES // check for pin only when 10 minutes have passed by default
     }
 
     object LocalCurrency {

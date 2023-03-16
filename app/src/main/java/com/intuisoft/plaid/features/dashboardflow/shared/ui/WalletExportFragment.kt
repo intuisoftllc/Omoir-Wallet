@@ -195,75 +195,11 @@ class WalletExportFragment : ConfigurableFragment<FragmentWalletExportBinding>(p
         val save = bottomSheetDialog.findViewById<RoundedButtonView>(R.id.save)!!
         val cancel = bottomSheetDialog.findViewById<RoundedButtonView>(R.id.cancel)!!
         val rateConverter = RateConverter(localStoreRepository.getRateFor(localStoreRepository.getLocalCurrency())?.currentPrice ?: 0.0 )
-        var watcher: TextWatcher? = null
 
         eventTracker.log(EventDepositBuildInvoice())
         save.enableButton(false)
         showInvoiceDisplayType(conversionType)
-        watcher = invoiceAmount.doOnTextChanged { text, start, before, count ->
-            if(text != null) {
-                if(text.isNotEmpty() && text.contains(".")
-                    && (
-                            localStoreRepository.getBitcoinDisplayUnit() == BitcoinDisplayUnit.SATS
-                              || (localStoreRepository.getBitcoinDisplayUnit() == BitcoinDisplayUnit.FIAT && text.toString().charsAfter('.') > 2)
-                              || (localStoreRepository.getBitcoinDisplayUnit() == BitcoinDisplayUnit.BTC && text.toString().charsAfter('.') > 8)
-                        )
-                ) {
-                    invoiceAmount.setText(text.toString().deleteAt(start))
-                    invoiceAmount.setSelection(invoiceAmount.length())
-                } else if (text.isNotEmpty() && text.toString().containsNumbers()) {
-                    invoiceAmount.removeTextChangedListener(watcher)
-                    when (localStoreRepository.getBitcoinDisplayUnit()) {
-                        BitcoinDisplayUnit.BTC -> {
-                            rateConverter.setLocalRate(
-                                RateConverter.RateType.BTC_RATE,
-                                text.toString().replace(",", "").toDouble()
-                            )
-                        }
-
-                        BitcoinDisplayUnit.FIAT -> {
-                            val currentValue = rateConverter.from(
-                                RateConverter.RateType.FIAT_RATE,
-                                localStoreRepository.getLocalCurrency(),
-                                false
-                            ).first
-
-                            if(currentValue != text.toString()) {
-                                rateConverter.setLocalRate(
-                                    RateConverter.RateType.FIAT_RATE,
-                                    text.toString().replace(",", "").toDouble()
-                                )
-                            }
-                        }
-
-                        BitcoinDisplayUnit.SATS -> {
-                            rateConverter.setLocalRate(
-                                RateConverter.RateType.SATOSHI_RATE,
-                                text.toString().replace(",", "").toDouble()
-                            )
-
-                        }
-                    }
-
-                    invoiceAmount.addTextChangedListener(watcher)
-                    if(rateConverter.getRawBtcRate() > Constants.Limit.BITCOIN_SUPPLY_CAP) {
-                        invoiceAmount.setText(text.toString().deleteAt(start))
-                    }
-
-                    invoiceAmount.setSelection(invoiceAmount.length())
-                } else {
-                    rateConverter.setLocalRate(
-                        RateConverter.RateType.SATOSHI_RATE,
-                        0.0
-                    )
-                }
-            } else {
-                rateConverter.setLocalRate(
-                    RateConverter.RateType.SATOSHI_RATE,
-                    0.0
-                )
-            }
-
+        addDisplayUnitBasedTextListener(invoiceAmount, localStoreRepository, rateConverter) {
             save.enableButton(rateConverter.getRawRate() > 0)
         }
 
@@ -327,6 +263,85 @@ class WalletExportFragment : ConfigurableFragment<FragmentWalletExportBinding>(p
         }
         bottomSheetDialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
         bottomSheetDialog.show()
+    }
+
+    companion object {
+
+        fun addDisplayUnitBasedTextListener(
+            et: EditText,
+            localStoreRepository: LocalStoreRepository,
+            rateConverter: RateConverter,
+            onTextChanged: () -> Unit
+        ) {
+            var watcher: TextWatcher? = null
+
+            watcher = et.doOnTextChanged { text, start, before, count ->
+                if(text != null) {
+                    if(text.isNotEmpty() && text.contains(".")
+                        && (
+                                localStoreRepository.getBitcoinDisplayUnit() == BitcoinDisplayUnit.SATS
+                                        || (localStoreRepository.getBitcoinDisplayUnit() == BitcoinDisplayUnit.FIAT && text.toString().charsAfter('.') > 2)
+                                        || (localStoreRepository.getBitcoinDisplayUnit() == BitcoinDisplayUnit.BTC && text.toString().charsAfter('.') > 8)
+                                )
+                    ) {
+                        et.setText(text.toString().deleteAt(start))
+                        et.setSelection(et.length())
+                    } else if (text.isNotEmpty() && text.toString().containsNumbers()) {
+                        et.removeTextChangedListener(watcher)
+                        when (localStoreRepository.getBitcoinDisplayUnit()) {
+                            BitcoinDisplayUnit.BTC -> {
+                                rateConverter.setLocalRate(
+                                    RateConverter.RateType.BTC_RATE,
+                                    text.toString().replace(",", "").toDouble()
+                                )
+                            }
+
+                            BitcoinDisplayUnit.FIAT -> {
+                                val currentValue = rateConverter.from(
+                                    RateConverter.RateType.FIAT_RATE,
+                                    localStoreRepository.getLocalCurrency(),
+                                    false
+                                ).first
+
+                                if(currentValue != text.toString()) {
+                                    rateConverter.setLocalRate(
+                                        RateConverter.RateType.FIAT_RATE,
+                                        text.toString().replace(",", "").toDouble()
+                                    )
+                                }
+                            }
+
+                            BitcoinDisplayUnit.SATS -> {
+                                rateConverter.setLocalRate(
+                                    RateConverter.RateType.SATOSHI_RATE,
+                                    text.toString().replace(",", "").toDouble()
+                                )
+
+                            }
+                        }
+
+                        et.addTextChangedListener(watcher)
+                        if(rateConverter.getRawBtcRate() > Constants.Limit.BITCOIN_SUPPLY_CAP) {
+                            et.setText(text.toString().deleteAt(start))
+                        }
+
+                        et.setSelection(et.length())
+                    } else {
+                        rateConverter.setLocalRate(
+                            RateConverter.RateType.SATOSHI_RATE,
+                            0.0
+                        )
+                    }
+                } else {
+                    rateConverter.setLocalRate(
+                        RateConverter.RateType.SATOSHI_RATE,
+                        0.0
+                    )
+                }
+
+                onTextChanged()
+            }
+        }
     }
 
     override fun onDestroyView() {

@@ -15,7 +15,7 @@ open class TransactionInfo {
     var type: TransactionType
     var fee: Long? = null
     var blockHeight: Int? = null
-    var timestamp: Long = 0
+    var timestamp: Long = 0 // epochSecond
     var status: TransactionStatus = TransactionStatus.NEW
     var conflictingTxHash: String? = null
 
