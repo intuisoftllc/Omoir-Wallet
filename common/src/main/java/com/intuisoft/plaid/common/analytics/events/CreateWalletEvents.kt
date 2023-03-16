@@ -9,3 +9,5 @@ class EventCreateWalletAdvancedOptions: Event("create_wallet_advanced_options", 
 class EventRecoveryPhraseImport: Event("recovery_phrase_import", listOf())
 
 class EventPublicKeyImport: Event("public_key_import", listOf())
+
+class EventTestNetWallet: Event("test_net_wallet_option", listOf())

@@ -15,6 +15,7 @@ import com.intuisoft.plaid.androidwrappers.delegates.FragmentConfiguration
 import com.intuisoft.plaid.common.analytics.EventTracker
 import com.intuisoft.plaid.common.analytics.events.EventCreateWallet
 import com.intuisoft.plaid.common.analytics.events.EventCreateWalletAdvancedOptions
+import com.intuisoft.plaid.common.analytics.events.EventTestNetWallet
 import com.intuisoft.plaid.databinding.FragmentCreateImportWalletBinding
 import com.intuisoft.plaid.features.createwallet.ZoomOutPageTransformer
 import com.intuisoft.plaid.features.createwallet.adapters.WalletBenefitsAdapter
@@ -113,6 +114,7 @@ class CreateWalletFragment : ConfigurableFragment<FragmentCreateImportWalletBind
 
 
         testNet.onRadioClicked { view, it ->
+            eventTracker.log(EventTestNetWallet())
             viewModel.setUseTestNet(it)
             testNet.checkRadio(it)
             mainNet.checkRadio(!it)
