@@ -337,7 +337,7 @@
     <string name="export_wallet_options_start_date_title">Start Period</string>
     <string name="export_wallet_options_end_date_title">End Period</string>
     <string name="export_wallet_options_transaction_data_value_title">Where Data is</string>
-    <string name="export_wallet_options_transaction_data_value_hint">0 (set to 0 or leave blank for all data)</string>
+    <string name="export_wallet_options_transaction_data_value_hint">0 (set to 0 or blank for all data)</string>
     <string name="export_wallet_options_transaction_type_title">Export Data</string>
     <string name="export_wallet_options_csv_format_title">Csv Format</string>
     <string name="export_wallet_options_csv_format_subtitle_1">Turbotax</string>

@@ -322,19 +322,28 @@ class ExportOptionsFragment : ConfigurableFragment<FragmentExportOptionsBinding>
         }
 
         onDataTypeUpdated()
-        raw.onClick {
-            viewModel.dataType = ExportDataType.RAW
-            onDataTypeUpdated()
+        raw.onRadioClicked { view, clicked ->
+            if(clicked) {
+                viewModel.dataType = ExportDataType.RAW
+                incoming.checkRadio(false)
+                outgoing.checkRadio(false)
+            }
         }
 
-        incoming.onClick {
-            viewModel.dataType = ExportDataType.INCOMING
-            onDataTypeUpdated()
+        incoming.onRadioClicked { view, clicked ->
+            if(clicked) {
+                viewModel.dataType = ExportDataType.INCOMING
+                raw.checkRadio(false)
+                outgoing.checkRadio(false)
+            }
         }
 
-        outgoing.onClick {
-            viewModel.dataType = ExportDataType.OUTGOING
-            onDataTypeUpdated()
+        outgoing.onRadioClicked { view, clicked ->
+            if(clicked) {
+                viewModel.dataType = ExportDataType.OUTGOING
+                raw.checkRadio(false)
+                incoming.checkRadio(false)
+            }
         }
 
         done.onClick {
