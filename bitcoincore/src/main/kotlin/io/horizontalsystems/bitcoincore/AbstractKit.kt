@@ -143,6 +143,12 @@ abstract class AbstractKit {
     fun isAddressValid(address: String) : Boolean =
         bitcoinCore.isAddressValid(address)
 
+    fun isPubKeyValid(key: String) : Boolean=
+        bitcoinCore.isPubKeyValid(key)
+
+    fun isPubPrivKeyValid(key: String) : Boolean=
+        bitcoinCore.isPubPrivKeyValid(key)
+
     fun parsePaymentAddress(paymentAddress: String): BitcoinPaymentData {
         return bitcoinCore.parsePaymentAddress(paymentAddress)
     }

@@ -154,6 +154,14 @@ class WalletManager(
         return _baseMainNetWallet!!.isAddressValid(address) || _baseTestNetWallet!!.isAddressValid(address)
     }
 
+    override fun validPubPrivKey(key: String): Boolean {
+        return _baseMainNetWallet!!.isPubPrivKeyValid(key)
+    }
+
+    private fun validPubKey(key: String): Boolean {
+        return _baseMainNetWallet!!.isPubKeyValid(key)
+    }
+
     override fun parseInvoice(invoiceData: String) : BitcoinPaymentData {
         return _baseMainNetWallet!!.parsePaymentAddress(invoiceData)
     }
@@ -357,7 +365,7 @@ class WalletManager(
        }
 
        if(findStoredWallet(uuid) != null) {
-           throw ExistingWalletErr("Wallet Already created")
+           throw ExistingWalletErr("Wallet already created")
        }
 
        saveWallet(
@@ -371,7 +379,7 @@ class WalletManager(
                0,
                System.currentTimeMillis(),
                network == BitcoinKit.NetworkType.TestNet,
-               true
+               validPubKey(pubKey)
            )
        )
 
@@ -410,7 +418,7 @@ class WalletManager(
                }
 
 
-               if (identifier.readOnly) {
+               if (identifier.readOnly || identifier.isPrivateKeyWallet) {
                    model.walletKit = BitcoinKit(
                        context = application,
                        extendedKey = HDExtendedKey(identifier.pubKey),

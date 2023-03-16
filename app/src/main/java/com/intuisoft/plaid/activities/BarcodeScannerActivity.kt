@@ -83,8 +83,9 @@ class BarcodeScannerActivity : BindingActivity<ActivityScanBarcodeBinding>(), Ko
                         if (barcodes.size() != 0 && walletManager.validAddress(address ?: "")) {
                             closeActivity(address!!)
                         } else {
-                            HDExtendedKey.validate(address ?: "", true)
-                            closeActivity(address!!)
+                            if(walletManager.validPubPrivKey(address ?: "")) {
+                                closeActivity(address!!)
+                            }
                         }
                     }
                 } catch (e: Throwable) {}

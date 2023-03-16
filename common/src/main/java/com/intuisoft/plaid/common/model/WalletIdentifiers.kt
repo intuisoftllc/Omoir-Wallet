@@ -11,4 +11,8 @@ data class WalletIdentifier(
     var createdAt: Long,
     var isTestNet: Boolean,
     var readOnly: Boolean
-)
+) {
+
+    val isPrivateKeyWallet: Boolean
+        get() = seedPhrase.isEmpty() && !readOnly && pubKey.isNotEmpty()
+}
