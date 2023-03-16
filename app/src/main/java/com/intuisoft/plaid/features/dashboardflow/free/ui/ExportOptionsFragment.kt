@@ -1,4 +1,4 @@
-package com.intuisoft.plaid.features.dashboardflow.pro.ui
+package com.intuisoft.plaid.features.dashboardflow.free.ui
 
 import android.Manifest
 import android.app.DatePickerDialog
@@ -28,17 +28,16 @@ import com.intuisoft.plaid.common.util.RateConverter
 import com.intuisoft.plaid.common.util.SimpleCurrencyFormat
 import com.intuisoft.plaid.common.util.SimpleTimeFormat
 import com.intuisoft.plaid.databinding.FragmentExportOptionsBinding
-import com.intuisoft.plaid.features.dashboardflow.pro.viewmodel.ExportOptionsViewModel
+import com.intuisoft.plaid.features.dashboardflow.free.viewmodel.ExportOptionsViewModel
 import com.intuisoft.plaid.features.dashboardflow.shared.ui.WalletExportFragment
 import com.intuisoft.plaid.model.ExportDataType
 import com.intuisoft.plaid.model.ValueFilter
-import kotlinx.android.synthetic.main.custom_view_settings_item.view.*
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.time.Instant
 import java.util.*
 
-class ExportOptionsFragment : ConfigurableFragment<FragmentExportOptionsBinding>(pinProtection = true, premiumContent = true) {
+class ExportOptionsFragment : ConfigurableFragment<FragmentExportOptionsBinding>(pinProtection = true) {
     protected val viewModel: ExportOptionsViewModel by viewModel()
     protected val eventTracker: EventTracker by inject()
     protected val localStoreRepository: LocalStoreRepository by inject()

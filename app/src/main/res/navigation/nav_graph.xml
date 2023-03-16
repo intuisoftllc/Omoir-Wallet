@@ -329,7 +329,7 @@
 
     <fragment
         android:id="@+id/exportOptionsFragment"
-        android:name="com.intuisoft.plaid.features.dashboardflow.pro.ui.ExportOptionsFragment"
+        android:name="com.intuisoft.plaid.features.dashboardflow.free.ui.ExportOptionsFragment"
         android:label="@string/export_options_fragment_label"
         tools:layout="@layout/fragment_export_options">
 

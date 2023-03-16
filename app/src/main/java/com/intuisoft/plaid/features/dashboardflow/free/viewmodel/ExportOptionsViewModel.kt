@@ -1,11 +1,10 @@
-package com.intuisoft.plaid.features.dashboardflow.pro.viewmodel
+package com.intuisoft.plaid.features.dashboardflow.free.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
 import com.intuisoft.plaid.androidwrappers.SingleLiveData
 import com.intuisoft.plaid.androidwrappers.WalletViewModel
-import com.intuisoft.plaid.common.model.BitcoinDisplayUnit
 import com.intuisoft.plaid.model.ExportDataType
 import com.intuisoft.plaid.common.repositories.ApiRepository
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
