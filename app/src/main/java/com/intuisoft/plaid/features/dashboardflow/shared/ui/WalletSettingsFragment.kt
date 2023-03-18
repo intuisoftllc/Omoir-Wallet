@@ -330,7 +330,7 @@ class WalletSettingsFragment : ConfigurableFragment<FragmentWalletSettingsBindin
         }
     }
 
-    fun showPassphraseDialog(hiddenWallet: HiddenWalletModel?) {
+    fun showPassphraseDialog(hiddenWallet: HiddenWalletModel?) { // todo: look into updating this
         val bottomSheetDialog = BottomSheetDialog(requireContext())
         addToStack(bottomSheetDialog) {
 
