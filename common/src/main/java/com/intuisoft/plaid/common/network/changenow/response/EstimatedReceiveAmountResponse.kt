@@ -1,7 +1,10 @@
 package com.intuisoft.plaid.common.network.changenow.response
 
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.android.parcel.Parcelize
 
+@Parcelize
 data class EstimatedReceiveAmountResponse(
 
     @SerializedName("rateId")
@@ -12,4 +15,4 @@ data class EstimatedReceiveAmountResponse(
 
     @SerializedName("toAmount")
     val toAmount: Double
-)
+): Parcelable

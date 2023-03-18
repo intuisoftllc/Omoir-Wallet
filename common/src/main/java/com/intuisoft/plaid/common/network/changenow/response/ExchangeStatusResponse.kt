@@ -1,7 +1,10 @@
 package com.intuisoft.plaid.common.network.changenow.response
 
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.android.parcel.Parcelize
 
+@Parcelize
 data class ExchangeStatusResponse(
 
     @SerializedName("id")
@@ -63,4 +66,4 @@ data class ExchangeStatusResponse(
 
     @SerializedName("payoutHash")
     val payoutHash: String?
-)
+): Parcelable

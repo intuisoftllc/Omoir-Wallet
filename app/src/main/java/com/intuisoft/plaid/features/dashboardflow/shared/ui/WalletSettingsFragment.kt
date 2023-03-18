@@ -332,8 +332,9 @@ class WalletSettingsFragment : ConfigurableFragment<FragmentWalletSettingsBindin
 
     fun showPassphraseDialog(hiddenWallet: HiddenWalletModel?) {
         val bottomSheetDialog = BottomSheetDialog(requireContext())
+        var doNotRecreate = false
         addToStack(bottomSheetDialog) {
-
+            doNotRecreate = true
         }
         bottomSheetDialog.setContentView(R.layout.bottom_sheet_passphrase)
         val save = bottomSheetDialog.findViewById<RoundedButtonView>(R.id.save)!!
@@ -380,8 +381,11 @@ class WalletSettingsFragment : ConfigurableFragment<FragmentWalletSettingsBindin
                     negative = getString(R.string.cancel),
                     positiveTint = 0,
                     onPositive = {
-                        showSavedAccountsBottomSheet(HiddenWallet)
                         viewModel.hideDerivationPathChangeWarning()
+
+                        if(!doNotRecreate) {
+                            showSavedAccountsBottomSheet(HiddenWallet)
+                        }
                     },
                     onNegative = null,
                     isCancellable = true,
@@ -389,7 +393,10 @@ class WalletSettingsFragment : ConfigurableFragment<FragmentWalletSettingsBindin
                     removeFromStack = ::removeFromStack
                 )
             } else {
-                showSavedAccountsBottomSheet(HiddenWallet)
+
+                if(!doNotRecreate) {
+                    showSavedAccountsBottomSheet(HiddenWallet)
+                }
             }
         }
 

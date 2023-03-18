@@ -405,7 +405,7 @@
 <!--    Search Currency Strings -->
     <string name="search_currencies_hint">Type a currency</string>
     <string name="search_currencies_info_title_1">Frequently Used</string>
-    <string name="search_currencies_info_title_2">Results</string>
+    <string name="search_currencies_info_title_2">Results (%1$s)</string>
 <!--    Search Currency Strings End -->
 
 <!--    Save Address Strings -->

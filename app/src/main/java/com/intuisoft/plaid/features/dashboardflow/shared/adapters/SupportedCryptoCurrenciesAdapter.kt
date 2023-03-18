@@ -71,7 +71,7 @@ class SupportedCryptoCurrenciesAdapter(
             }
         }
 
-        currencies.add(ListSectionInfoDetail(context.getString(R.string.search_currencies_info_title_2)))
+        currencies.add(ListSectionInfoDetail(context.getString(R.string.search_currencies_info_title_2, items.size.toString())))
 
         items.forEach {
             currencies.add(SupportedCryptoCurrencyDetail(it, onCurrencySelected))
