@@ -3,6 +3,7 @@ package com.intuisoft.plaid.features.dashboardflow.shared.ui
 import android.graphics.*
 import android.os.Bundle
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup

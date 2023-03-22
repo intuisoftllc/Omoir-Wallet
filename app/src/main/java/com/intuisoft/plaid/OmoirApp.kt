@@ -7,13 +7,11 @@ import com.intuisoft.plaid.activities.MainActivity
 import com.intuisoft.plaid.billing.BillingManager
 import com.intuisoft.plaid.common.CommonService
 import com.intuisoft.plaid.common.analytics.EventTracker
-import com.intuisoft.plaid.common.local.AppPrefs
 import com.intuisoft.plaid.common.local.UserData
 import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.di.*
 import com.revenuecat.purchases.Purchases
 import com.revenuecat.purchases.PurchasesConfiguration
-import com.revenuecat.purchases.PurchasesError
 import org.koin.android.ext.android.inject
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
@@ -21,7 +19,7 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.context.startKoin
 import org.koin.core.logger.Level
 
-class PlaidApp : Application(), Application.ActivityLifecycleCallbacks, KoinComponent {
+class OmoirApp : Application(), Application.ActivityLifecycleCallbacks, KoinComponent {
     private val usrData: UserData?
         get() = CommonService.getUserData()
     var ignorePinCheck = false
@@ -49,7 +47,7 @@ class PlaidApp : Application(), Application.ActivityLifecycleCallbacks, KoinComp
 
         startKoin {
             androidLogger(Level.DEBUG)
-            androidContext(this@PlaidApp)
+            androidContext(this@OmoirApp)
             modules(
                 listOf(
                     viewModelModule,

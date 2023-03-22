@@ -1,9 +1,10 @@
 package com.intuisoft.plaid.common.local
 
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
 import com.intuisoft.plaid.common.CommonService
-import com.intuisoft.plaid.common.coroutines.PlaidScope
+import com.intuisoft.plaid.common.coroutines.OmoirScope
 import com.intuisoft.plaid.common.model.*
 import com.intuisoft.plaid.common.util.AESUtils
 import com.intuisoft.plaid.common.util.Constants
@@ -239,11 +240,19 @@ class UserData {
         }
 
     fun save() {
-        PlaidScope.applicationScope.launch(Dispatchers.IO) {
+        OmoirScope.applicationScope.launch(Dispatchers.IO) {
             synchronized(this@UserData::class.java) {
                 val json = Gson().toJson(this@UserData, UserData::class.java)
                 AESUtils.encrypt(json, CommonService.getUserPin(), CommonService.getWalletSecret())?.let { usrData ->
                     val dir: File = CommonService.getApplication().dataDir
+                    if(File(dir, OLD_FILE_NAME).exists()) {
+                        try {
+                            File(dir, OLD_FILE_NAME).delete()
+                        } catch (e: Throwable) {
+                            FirebaseCrashlytics.getInstance().recordException(e)
+                        }
+                    }
+
                     File(dir, FILE_NAME).writeToPrivateFile(
                         usrData,
                         CommonService.getApplication()
@@ -254,14 +263,31 @@ class UserData {
     }
 
     companion object {
-        private const val FILE_NAME = "plaid_wallet_usr_data"
-        private const val SECONDARY_FILE_NAME = "plaid_wallet_data" // possible use for a "plausable-deniability" or "spaces" concept feature in the future
+        private const val OLD_FILE_NAME = "plaid_wallet_usr_data"
+        private const val FILE_NAME = "wallet_usr_data"
+        private const val SECONDARY_FILE_NAME = "wallet_usr_data_bck" // possible use for a "plausable-deniability" or "spaces" concept feature in the future
 
         fun load(pin: String): UserData? {
             synchronized(this::class.java) {
                 try {
                     val dir: File = CommonService.getApplication().filesDir
-                    val data = File(dir, FILE_NAME).readFromFile(CommonService.getApplication())
+                    val file: File
+
+                    when {
+                        File(dir, FILE_NAME).exists() -> {
+                            file = File(dir, FILE_NAME)
+                        }
+
+                        !File(dir, FILE_NAME).exists() && File(dir, OLD_FILE_NAME).exists() -> {
+                            file = File(dir, OLD_FILE_NAME)
+                        }
+
+                        else -> {
+                            file = File(dir, FILE_NAME)
+                        }
+                    }
+
+                    val data = file.readFromFile(CommonService.getApplication())
 
                     if (data != null && data.isNotEmpty()) {
                         val json = AESUtils.decrypt(data.trim(), pin, CommonService.getWalletSecret())

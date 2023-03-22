@@ -1,18 +1,13 @@
 package com.intuisoft.plaid.walletmanager
 
 import android.app.Application
-import android.util.Log
-import com.intuisoft.plaid.common.coroutines.PlaidScope
-import com.intuisoft.plaid.common.model.DevicePerformanceLevel
-import com.intuisoft.plaid.common.repositories.ApiRepository
+import com.intuisoft.plaid.common.coroutines.OmoirScope
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.model.LocalWalletModel
 import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.common.util.extensions.remove
-import com.intuisoft.plaid.common.util.extensions.splitIntoGroupOf
 import com.intuisoft.plaid.util.NetworkUtil
 import com.intuisoft.plaid.util.entensions.ensureActive
-import io.horizontalsystems.bitcoincore.network.peer.PeerGroup
 import kotlinx.coroutines.*
 import java.util.concurrent.CopyOnWriteArrayList
 import java.util.concurrent.atomic.AtomicBoolean
@@ -48,7 +43,7 @@ class SyncManager(
     private var lastSynced: Long = 0
 
     private fun runInBackground(run: suspend () -> Unit) =
-        PlaidScope.applicationScope.launch(Dispatchers.IO) {
+        OmoirScope.applicationScope.launch(Dispatchers.IO) {
             run()
         }
 
@@ -200,7 +195,7 @@ class SyncManager(
     }
 
     fun cancelTransfer(id: String) {
-        PlaidScope.applicationScope.launch(Dispatchers.IO) {
+        OmoirScope.applicationScope.launch(Dispatchers.IO) {
             atp.cancelTransfer(id, openedWallet!!)
             resync = true
             syncWallets(force = true)

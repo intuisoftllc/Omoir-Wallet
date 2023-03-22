@@ -1,7 +1,7 @@
 package com.intuisoft.plaid.walletmanager
 
 import android.app.Application
-import com.intuisoft.plaid.common.coroutines.PlaidScope
+import com.intuisoft.plaid.common.coroutines.OmoirScope
 import com.intuisoft.plaid.common.listeners.WipeDataListener
 import com.intuisoft.plaid.common.local.db.listeners.DatabaseListener
 import com.intuisoft.plaid.common.model.HiddenWalletModel
@@ -40,7 +40,7 @@ class WalletManager(
     open class BitcoinEventListener: BitcoinKit.Listener {}
 
     override fun start() {
-        PlaidScope.applicationScope.launch(Dispatchers.IO) {
+        OmoirScope.applicationScope.launch(Dispatchers.IO) {
             if(!syncer.isRunning()) {
                 _baseMainNetWallet =
                     createBaseWallet(_baseMainNetWallet, BitcoinKit.NetworkType.MainNet)

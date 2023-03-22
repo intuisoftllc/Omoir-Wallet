@@ -34,7 +34,7 @@ import com.intuisoft.plaid.common.util.Constants
     ),
     version = Constants.Database.DB_VERSION
 )
-abstract class PlaidDatabase : RoomDatabase() {
+abstract class OmoirDatabase : RoomDatabase() {
     private var listener: DatabaseListener? = null
 
     fun setDatabaseListener(databaseListener: DatabaseListener) {
@@ -49,15 +49,15 @@ abstract class PlaidDatabase : RoomDatabase() {
 
         private const val DATABASE_NAME = Constants.Database.DB_NAME
 
-        private var instance: PlaidDatabase? = null
+        private var instance: OmoirDatabase? = null
 
-        private fun create(context: Context): PlaidDatabase =
-            Room.databaseBuilder(context, PlaidDatabase::class.java, DATABASE_NAME)
+        private fun create(context: Context): OmoirDatabase =
+            Room.databaseBuilder(context, OmoirDatabase::class.java, DATABASE_NAME)
                 .fallbackToDestructiveMigration()
                 .allowMainThreadQueries()
                 .build()
 
-        fun getInstance(context: Context): PlaidDatabase =
+        fun getInstance(context: Context): OmoirDatabase =
             (instance ?: create(context)).also { instance = it }
     }
 

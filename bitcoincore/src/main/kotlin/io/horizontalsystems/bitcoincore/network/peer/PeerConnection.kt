@@ -1,6 +1,6 @@
 package io.horizontalsystems.bitcoincore.network.peer
 
-import com.intuisoft.plaid.common.coroutines.PlaidScope
+import com.intuisoft.plaid.common.coroutines.OmoirScope
 import io.horizontalsystems.bitcoincore.BitcoinCore
 import io.horizontalsystems.bitcoincore.io.BitcoinInput
 import io.horizontalsystems.bitcoincore.network.Network
@@ -13,7 +13,6 @@ import java.io.InputStream
 import java.io.OutputStream
 import java.net.InetAddress
 import java.net.InetSocketAddress
-import java.util.concurrent.ExecutorService
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.logging.Logger
 
@@ -94,7 +93,7 @@ class PeerConnection(
 
     @OptIn(DelicateCoroutinesApi::class)
     fun sendMessage(message: IMessage) {
-        PlaidScope.applicationScope.launch(Dispatchers.IO) {
+        OmoirScope.applicationScope.launch(Dispatchers.IO) {
             synchronized(this@PeerConnection) {
                 if (isRunning.get()) {
                     try {

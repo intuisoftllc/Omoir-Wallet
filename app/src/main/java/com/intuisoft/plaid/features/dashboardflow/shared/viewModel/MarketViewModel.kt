@@ -3,11 +3,11 @@ package com.intuisoft.plaid.features.dashboardflow.shared.viewModel
 import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
-import com.intuisoft.plaid.PlaidApp
+import com.intuisoft.plaid.OmoirApp
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.SingleLiveData
 import com.intuisoft.plaid.androidwrappers.WalletViewModel
-import com.intuisoft.plaid.common.coroutines.PlaidScope
+import com.intuisoft.plaid.common.coroutines.OmoirScope
 import com.intuisoft.plaid.common.model.ChartDataModel
 import com.intuisoft.plaid.common.model.ChartIntervalType
 import com.intuisoft.plaid.common.model.CongestionRating
@@ -106,7 +106,7 @@ class MarketViewModel(
     private var intervalType = ChartIntervalType.INTERVAL_1DAY
 
     fun updateData() {
-        if(NetworkUtil.hasInternet(getApplication<PlaidApp>())) {
+        if(NetworkUtil.hasInternet(getApplication<OmoirApp>())) {
             _showContent.postValue(true)
             updateBasicMarketData()
             updateExtendedMarketData()
@@ -118,7 +118,7 @@ class MarketViewModel(
     }
 
     fun onNoInternet(hasInternet: Boolean) {
-        PlaidScope.applicationScope.launch(Dispatchers.IO) {
+        OmoirScope.applicationScope.launch(Dispatchers.IO) {
             safeWalletScope {
                 val basicData = apiRepository.getBasicTickerData()
                 val extendedData =
@@ -210,9 +210,9 @@ class MarketViewModel(
                 safeWalletScope {
                     _extendedNetworkDataLoading.postValue(true)
                     if(getWalletNetwork() == BitcoinKit.NetworkType.TestNet) {
-                        _network.postValue(getApplication<PlaidApp>().getString(R.string.market_data_extended_item_1_description2))
+                        _network.postValue(getApplication<OmoirApp>().getString(R.string.market_data_extended_item_1_description2))
                     } else {
-                        _network.postValue(getApplication<PlaidApp>().getString(R.string.market_data_extended_item_1_description))
+                        _network.postValue(getApplication<OmoirApp>().getString(R.string.market_data_extended_item_1_description))
                     }
 
                     val extendedData = apiRepository.getExtendedNetworkData(getWalletNetwork() == BitcoinKit.NetworkType.TestNet)
@@ -221,19 +221,19 @@ class MarketViewModel(
                         _blockHeight.postValue(SimpleCoinNumberFormat.format(extendedData.height.toLong()) ?: "")
                         _difficulty.postValue(SimpleCoinNumberFormat.format(extendedData.difficulty) ?: "")
                         _blockchainSize.postValue(extendedData.blockchainSize.humanReadableByteCountSI() ?: "")
-                        _addressesWithBalance.postValue(SimpleCoinNumberFormat.formatSatsShort(extendedData.addressesWithBalance) + " ${getApplication<PlaidApp>().getString(R.string.addresses)}")
+                        _addressesWithBalance.postValue(SimpleCoinNumberFormat.formatSatsShort(extendedData.addressesWithBalance) + " ${getApplication<OmoirApp>().getString(R.string.addresses)}")
                         _memoryPoolSize.postValue(extendedData.memPoolSize.humanReadableByteCountSI() ?: "")
                         _unconfirmedTxs.postValue(SimpleCoinNumberFormat.format(extendedData.unconfirmedTxs.toLong()) ?: "")
 
                         if(getWalletNetwork() == BitcoinKit.NetworkType.TestNet || extendedData == null) {
                             _congestionRating.postValue(CongestionRating.NA)
-                            _avgConfTime.postValue(getApplication<PlaidApp>().getString(R.string.not_applicable))
-                            _nodesOnNetwork.postValue(getApplication<PlaidApp>().getString(R.string.not_applicable))
-                            _txPerSecond.postValue(getApplication<PlaidApp>().getString(R.string.not_applicable))
+                            _avgConfTime.postValue(getApplication<OmoirApp>().getString(R.string.not_applicable))
+                            _nodesOnNetwork.postValue(getApplication<OmoirApp>().getString(R.string.not_applicable))
+                            _txPerSecond.postValue(getApplication<OmoirApp>().getString(R.string.not_applicable))
                         } else {
                             _avgConfTime.postValue(SimpleCoinNumberFormat.formatCurrency(extendedData.avgConfTime) ?: "")
-                            _nodesOnNetwork.postValue(SimpleCoinNumberFormat.format(extendedData.nodesOnNetwork.toLong()) + " ${getApplication<PlaidApp>().getString(R.string.nodes)}")
-                            _txPerSecond.postValue(SimpleCoinNumberFormat.format(extendedData.txPerSecond.toLong()) + " ${getApplication<PlaidApp>().getString(R.string.tx_per_sec)}")
+                            _nodesOnNetwork.postValue(SimpleCoinNumberFormat.format(extendedData.nodesOnNetwork.toLong()) + " ${getApplication<OmoirApp>().getString(R.string.nodes)}")
+                            _txPerSecond.postValue(SimpleCoinNumberFormat.format(extendedData.txPerSecond.toLong()) + " ${getApplication<OmoirApp>().getString(R.string.tx_per_sec)}")
 
                             var points: Int
 

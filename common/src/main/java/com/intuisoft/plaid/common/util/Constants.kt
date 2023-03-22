@@ -6,7 +6,7 @@ import com.intuisoft.plaid.common.R
 class Constants {
 
     object Database {
-        const val DB_NAME = "plaid.db"
+        const val DB_NAME = "omoir.db"
         const val DB_VERSION = 1 // todo: whenever this changes, create a migration
     }
 
@@ -67,7 +67,7 @@ class Constants {
         const val DISABLE_BIOMETRIC_AUTH = "Disable Biometric Authentication"
         const val SCAN_TO_ERASE_DATA = "Scan To Erase Data"
         const val USE_BIOMETRIC_REASON_1 = "Use biometrics to add an additional layer of security to your wallet. You will be asked to scan your fingerprint when signing transactions or interacting with sensitive app data."
-        const val USE_BIOMETRIC_REASON_2 = "Unlock Plaid Crypto Wallet™ using biometrics."
+        const val USE_BIOMETRIC_REASON_2 = "Unlock Omoir Wallet™ using biometrics."
         const val USE_BIOMETRIC_REASON_3 = "Scan your fingerprint to reset app data."
         const val USE_BIOMETRIC_REASON_4 = "Scan your fingerprint to remove biometric authentication."
         const val USE_BIOMETRIC_REASON_5 = "Scan your fingerprint to delete your wallet."
@@ -88,7 +88,7 @@ class Constants {
         const val TEST_WALLET_6 = "level beyond pole asthma immense february chief trigger kite vote north gallery"
         const val BASE_WALLET = "BASE_WALLET_ID"
         const val BTC_TICKER = "btc"
-        const val SUPPORT_EMAIL = "support@plaidcryptowallet.com"
+        const val SUPPORT_EMAIL = "support@omoirwallet.com"
         const val DEFAULT_EXCHANGE_FLOW = "standard"
         const val STATUS_INFO_1 = "Synced Until"
         const val STATUS_INFO_2 = "Syncing Peer"

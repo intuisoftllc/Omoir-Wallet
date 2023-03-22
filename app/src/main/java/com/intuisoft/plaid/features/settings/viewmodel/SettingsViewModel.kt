@@ -10,7 +10,7 @@ import com.intuisoft.plaid.androidwrappers.SingleLiveData
 import com.intuisoft.plaid.common.analytics.EventTracker
 import com.intuisoft.plaid.common.analytics.events.EventDisableUsageData
 import com.intuisoft.plaid.common.analytics.events.EventEnableUsageData
-import com.intuisoft.plaid.common.coroutines.PlaidScope
+import com.intuisoft.plaid.common.coroutines.OmoirScope
 import com.intuisoft.plaid.common.model.AppTheme
 import com.intuisoft.plaid.common.model.BitcoinDisplayUnit
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
@@ -79,7 +79,7 @@ class SettingsViewModel(
     }
 
     fun updateSettingsScreen() {
-        PlaidScope.MainScope.launch {
+        OmoirScope.MainScope.launch {
             safeWalletScope {
                 updateDisplayUnitSetting()
                 updateAppThemeSetting()

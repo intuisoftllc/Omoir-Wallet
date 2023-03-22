@@ -7,12 +7,11 @@ import android.net.Uri
 import android.util.Log
 import com.android.billingclient.api.BillingFlowParams.ProrationMode
 import com.google.firebase.crashlytics.FirebaseCrashlytics
-import com.intuisoft.plaid.PlaidApp
+import com.intuisoft.plaid.OmoirApp
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.common.CommonService
 import com.intuisoft.plaid.common.local.AppPrefs
 import com.intuisoft.plaid.common.util.extensions.roundTo
-import com.intuisoft.plaid.features.settings.ui.PurchaseSubscriptionFragment
 import com.intuisoft.plaid.util.NetworkUtil
 import com.revenuecat.purchases.*
 import com.revenuecat.purchases.interfaces.ProductChangeCallback
@@ -159,7 +158,7 @@ class BillingManager(
                         when {
                             info.entitlements[premiumUserEntitlement]?.isActive == true &&
                                     info.entitlements[premiumUserEntitlement]?.productIdentifier == monthlyProduct?.product?.sku -> {
-                                (activity.application as PlaidApp).ignorePinCheck = true
+                                (activity.application as OmoirApp).ignorePinCheck = true
 
                                 Purchases.sharedInstance.purchaseProduct(
                                     activity,
@@ -185,7 +184,7 @@ class BillingManager(
                             }
                             info.entitlements[premiumUserEntitlement]?.isActive == true &&
                                     info.entitlements[premiumUserEntitlement]?.productIdentifier == annualProduct?.product?.sku -> {
-                                (activity.application as PlaidApp).ignorePinCheck = true
+                                (activity.application as OmoirApp).ignorePinCheck = true
 
                                 Purchases.sharedInstance.purchaseProduct(
                                     activity,
@@ -248,7 +247,7 @@ class BillingManager(
         onSuccess: (Boolean) -> Unit,
         onFail: (PurchasesError, Boolean) -> Unit
     ) {
-        (activity.application as PlaidApp).ignorePinCheck = true
+        (activity.application as OmoirApp).ignorePinCheck = true
         Purchases.sharedInstance.purchaseProduct(
             activity,
             product,

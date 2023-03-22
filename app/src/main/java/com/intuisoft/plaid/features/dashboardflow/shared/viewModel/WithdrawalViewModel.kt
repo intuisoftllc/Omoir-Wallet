@@ -2,7 +2,7 @@ package com.intuisoft.plaid.features.dashboardflow.shared.viewModel
 
 import android.app.Application
 import androidx.lifecycle.LiveData
-import com.intuisoft.plaid.PlaidApp
+import com.intuisoft.plaid.OmoirApp
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.SingleLiveData
 import com.intuisoft.plaid.androidwrappers.WalletViewModel
@@ -102,7 +102,7 @@ class WithdrawalViewModel(
             )
         } else if(selectedUTXOs.size == 1) {
             _maximumSpend.postValue(
-                getApplication<PlaidApp>().getString(R.string.withdraw_selected_single_utxo_amount,
+                getApplication<OmoirApp>().getString(R.string.withdraw_selected_single_utxo_amount,
                     getMaxSpend().from(
                         getDisplayUnit().toRateType(),
                         localStoreRepository.getLocalCurrency(),
@@ -113,7 +113,7 @@ class WithdrawalViewModel(
         }
         else {
             _maximumSpend.postValue(
-                getApplication<PlaidApp>().getString(R.string.withdraw_selected_utxo_amount,
+                getApplication<OmoirApp>().getString(R.string.withdraw_selected_utxo_amount,
                     getMaxSpend().from(
                         getDisplayUnit().toRateType(),
                         localStoreRepository.getLocalCurrency(),
@@ -146,7 +146,7 @@ class WithdrawalViewModel(
             decimalPlaceNotAllowedErrors++
 
             if(decimalPlaceNotAllowedErrors % errorThreshold == 0) {
-                _onDisplayExplanation.postValue(getApplication<PlaidApp>().getString(R.string.withdraw_error_decimal_not_allowed))
+                _onDisplayExplanation.postValue(getApplication<OmoirApp>().getString(R.string.withdraw_error_decimal_not_allowed))
             }
         }
 
@@ -263,7 +263,7 @@ class WithdrawalViewModel(
         overBalanceErrors++
 
         if(overBalanceErrors % errorThreshold == 0) {
-            _onDisplayExplanation.postValue(getApplication<PlaidApp>().getString(R.string.withdraw_error_over_balance))
+            _onDisplayExplanation.postValue(getApplication<OmoirApp>().getString(R.string.withdraw_error_over_balance))
         }
     }
 
@@ -272,7 +272,7 @@ class WithdrawalViewModel(
         maxDecimalErrors++
 
         if(maxDecimalErrors % errorThreshold == 0) {
-            _onDisplayExplanation.postValue(getApplication<PlaidApp>().getString(R.string.withdraw_error_max_decimals))
+            _onDisplayExplanation.postValue(getApplication<OmoirApp>().getString(R.string.withdraw_error_max_decimals))
         }
     }
 
@@ -348,17 +348,17 @@ class WithdrawalViewModel(
             when(result) {
                 -1L  -> { // not enough funds
                     if(selectedUTXOs.isNotEmpty() && selectedUTXOs.size != getUnspentOutputs().size)
-                        _onDisplayExplanation.postValue(getApplication<PlaidApp>().getString(R.string.withdraw_error_not_enough_funds_with_selected_utxos))
+                        _onDisplayExplanation.postValue(getApplication<OmoirApp>().getString(R.string.withdraw_error_not_enough_funds_with_selected_utxos))
                     else
-                        _onDisplayExplanation.postValue(getApplication<PlaidApp>().getString(R.string.withdraw_error_not_enough_funds))
+                        _onDisplayExplanation.postValue(getApplication<OmoirApp>().getString(R.string.withdraw_error_not_enough_funds))
                 }
 
                 -2L -> { // low payment amount
-                    _onDisplayExplanation.postValue(getApplication<PlaidApp>().getString(R.string.withdraw_error_low_payment_amount))
+                    _onDisplayExplanation.postValue(getApplication<OmoirApp>().getString(R.string.withdraw_error_low_payment_amount))
                 }
 
                 0L -> { // something went wrong
-                    _onDisplayExplanation.postValue(getApplication<PlaidApp>().getString(R.string.withdraw_error_something_went_wrong))
+                    _onDisplayExplanation.postValue(getApplication<OmoirApp>().getString(R.string.withdraw_error_something_went_wrong))
                 }
 
                 else ->  { // good

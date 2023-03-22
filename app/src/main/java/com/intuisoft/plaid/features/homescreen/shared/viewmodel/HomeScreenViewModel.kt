@@ -3,7 +3,7 @@ package com.intuisoft.plaid.features.homescreen.shared.viewmodel
 import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.intuisoft.plaid.PlaidApp
+import com.intuisoft.plaid.OmoirApp
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.BaseViewModel
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
@@ -29,10 +29,10 @@ class HomeScreenViewModel(
         val timeOfDay = c.get(Calendar.HOUR_OF_DAY)
 
         return when (timeOfDay) {
-            in 0..11 -> getApplication<PlaidApp>().getString(R.string.homescreen_greeting_1)
-            in 12..15 -> getApplication<PlaidApp>().getString(R.string.homescreen_greeting_2)
-            in 16..23 -> getApplication<PlaidApp>().getString(R.string.homescreen_greeting_3)
-            else -> getApplication<PlaidApp>().getString(R.string.homescreen_greeting_4)
+            in 0..11 -> getApplication<OmoirApp>().getString(R.string.homescreen_greeting_1)
+            in 12..15 -> getApplication<OmoirApp>().getString(R.string.homescreen_greeting_2)
+            in 16..23 -> getApplication<OmoirApp>().getString(R.string.homescreen_greeting_3)
+            else -> getApplication<OmoirApp>().getString(R.string.homescreen_greeting_4)
         }
     }
 }

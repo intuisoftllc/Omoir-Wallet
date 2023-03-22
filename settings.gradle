@@ -14,7 +14,7 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Plaid"
+rootProject.name = "Omoir"
 include ':app'
 include ':hodler'
 include ':bitcoincore'

@@ -3,7 +3,7 @@ package com.intuisoft.plaid.features.dashboardflow.pro.viewmodel
 import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
-import com.intuisoft.plaid.PlaidApp
+import com.intuisoft.plaid.OmoirApp
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.SingleLiveData
 import com.intuisoft.plaid.androidwrappers.WalletViewModel
@@ -119,9 +119,9 @@ class AtpViewModel(
         val spread = localStoreRepository.getFeeSpread()
 
         if((spread.first == 0 && spread.last == 0) || localStoreRepository.isUsingDynamicBatchNetworkFee()) {
-            _feeSpread.postValue(getApplication<PlaidApp>().getString(R.string.dynamic_network_fee))
+            _feeSpread.postValue(getApplication<OmoirApp>().getString(R.string.dynamic_network_fee))
         } else {
-            _feeSpread.postValue(getApplication<PlaidApp>().getString(R.string.sat_per_vbyte, "${spread.first}-${spread.last}"))
+            _feeSpread.postValue(getApplication<OmoirApp>().getString(R.string.sat_per_vbyte, "${spread.first}-${spread.last}"))
         }
     }
 
@@ -264,7 +264,7 @@ class AtpViewModel(
                                 )
                             )
                         } else {
-                            _onDisplayExplanation.postValue(getApplication<PlaidApp>().getString(R.string.atp_confirm_error_not_enough_funds))
+                            _onDisplayExplanation.postValue(getApplication<OmoirApp>().getString(R.string.atp_confirm_error_not_enough_funds))
                         }
                     } else {
                         val estimatedFees = selectedUTXOs.mapIndexed { index, it ->
@@ -312,18 +312,18 @@ class AtpViewModel(
                                 )
                             )
                         } else {
-                            _onDisplayExplanation.postValue(getApplication<PlaidApp>().getString(R.string.atp_confirm_error_not_enough_funds))
+                            _onDisplayExplanation.postValue(getApplication<OmoirApp>().getString(R.string.atp_confirm_error_not_enough_funds))
                         }
                     }
 
                     _nextEnabled.postValue(true)
                 } else {
                     _nextEnabled.postValue(true)
-                    _onDisplayExplanation.postValue(getApplication<PlaidApp>().getString(R.string.atp_confirm_error_not_enough_funds_no_utxo))
+                    _onDisplayExplanation.postValue(getApplication<OmoirApp>().getString(R.string.atp_confirm_error_not_enough_funds_no_utxo))
                 }
             } else {
                 _nextEnabled.postValue(true)
-                _onDisplayExplanation.postValue(getApplication<PlaidApp>().getString(R.string.no_internet_connection))
+                _onDisplayExplanation.postValue(getApplication<OmoirApp>().getString(R.string.no_internet_connection))
             }
 
             _loading.postValue(false)

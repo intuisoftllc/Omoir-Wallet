@@ -3,8 +3,6 @@ package com.intuisoft.plaid.features.dashboardflow.shared.ui
 import WalletSettingsViewModel
 import android.app.Activity
 import android.app.ProgressDialog
-import android.content.ActivityNotFoundException
-import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.text.method.PasswordTransformationMethod
@@ -25,7 +23,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.intuisoft.plaid.BuildConfig
-import com.intuisoft.plaid.PlaidApp
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.*
 import com.intuisoft.plaid.androidwrappers.delegates.FragmentConfiguration
