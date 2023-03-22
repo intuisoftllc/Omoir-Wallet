@@ -14,7 +14,7 @@
 <!--    On-boarding All Set Strings -->
     <string name="goto_homescreen">Go to Home Screen</string>
     <string name="all_set_title">Your All Set!</string>
-    <string name="all_set_description">Congratulations on taking the first step towards your financial sovernty.\n\nPlaid Crypto Wallet™ gives you the tools you need to take your self-custody journey to the next level. Get started by creating a new wallet or navigating to the main screen.</string>
+    <string name="all_set_description">Congratulations on taking the first step towards your financial sovernty.\n\nOmoir Wallet™ gives you the tools you need to take your self-custody journey to the next level. Get started by creating a new wallet or navigating to the main screen.</string>
 <!--    On-boarding All Set Strings End -->
 
 <!--    Homescreen Strings -->
@@ -108,7 +108,7 @@
     <string name="settings_option_developer_subtitle">Change internal app behavior and settings</string>
     <string name="settings_option_wipe_data_title">Erase All Data</string>
     <string name="settings_option_wipe_data_button">Erase Data</string>
-    <string name="settings_option_wipe_data_subtitle">Are you sure you want to wipe all data from Plaid Crypto Wallet™? This action is irreversible, please be sure you have backed up all your seed phrases.</string>
+    <string name="settings_option_wipe_data_subtitle">Are you sure you want to wipe all data from Omoir Wallet™? This action is irreversible, please be sure you have backed up all your seed phrases.</string>
     <string name="settings_option_view_wipe_data">Wipe All Data</string>
     <string name="settings_option_view_build_version">Build Version</string>
     <string name="settings_option_view_help_description">Get Help and Learn More</string>
@@ -120,8 +120,8 @@
     <string name="settings_option_view_address_min_confirmations_description">Set the minimum confirmations needed for incoming/outgoing transactions</string>
     <string name="settings_option_view_address_min_escape_pod_protocol">Escape Pod Protocol</string>
     <string name="settings_option_view_address_min_escape_pod_protocol_description">Set default settings for epp</string>
-    <string name="settings_option_plaid_crypto_wallet_pro">Plaid Crypto Wallet<font color="#104686">™</font> Pro</string>
-    <string name="settings_option_plaid_crypto_wallet_pro_description">Manage your subscription</string>
+    <string name="settings_option_omoir_wallet_pro">Omoir Wallet<font color="#104686">™</font> Pro</string>
+    <string name="settings_option_omoir_pro_description">Manage your subscription</string>
     <string name="settings_option_max_pin_timeout">Pin Code Timeout</string>
     <string name="settings_option_max_pin_timeout_variant_1">Only when I leave the app</string>
     <string name="settings_option_max_pin_timeout_variant_2">1 minute</string>
@@ -185,7 +185,7 @@
 
 <!--    What is ATP Strings -->
     <string name="what_is_atp_title">What is\nAsset transfer Protocol (ATP)?</string>
-    <string name="what_is_atp_description">Asset transfer protocol is a premium feature provided to Plaid Crypto Wallet™ Pro users. It provides a convenient new way for you to transfer your assets from one wallet to another without sacrificing security.</string>
+    <string name="what_is_atp_description">Asset transfer protocol is a premium feature provided to Omoir Wallet™ Pro users. It provides a convenient new way for you to transfer your assets from one wallet to another without sacrificing security.</string>
 <!--    What is ATP Strings End -->
 
 <!--    How does ATP work Strings -->
@@ -195,7 +195,7 @@
 
 <!--    Your In Full Control Strings -->
     <string name="your_in_full_control_title">Your In Full Control</string>
-    <string name="your_in_full_control_description">Plaid Crypto Wallet™ puts you in the drivers seat by giving you the power to control how much you spend in fees, to how fast the transfer will happen.\n\nTake back your financial security by using ATP to move funds privately on the bitcoin network.</string>
+    <string name="your_in_full_control_description">Omoir Wallet™ puts you in the drivers seat by giving you the power to control how much you spend in fees, to how fast the transfer will happen.\n\nTake back your financial security by using ATP to move funds privately on the bitcoin network.</string>
 <!--    Your In Full Control End -->
 
 <!--    Private & Secure Wallet Strings -->
@@ -517,7 +517,7 @@
     <string name="wallet_settings_passphrase_error">Passphrases do not match!</string>
     <string name="wallet_settings_passphrase_limit_error">Hidden wallet limit reached!\nPlease upgrade to a pro subscription to create additional hidden wallets.</string>
     <string name="wallet_settings_sync_type_title">Sync Type</string>
-    <string name="wallet_settings_sync_type_subtitle">Change how your wallet syncs with the bitcoin network. Api syncing is significantly faster however if you are looking for a more secure solution.\n\nPlaid Crypto Wallet™ allows you to sync your wallet directly with bitcoin node operators. Please keep in mind that enabling core syncing may be significantly slower.</string>
+    <string name="wallet_settings_sync_type_subtitle">Change how your wallet syncs with the bitcoin network. Api syncing is significantly faster however if you are looking for a more secure solution.\n\nOmoir Wallet™ allows you to sync your wallet directly with bitcoin node operators. Please keep in mind that enabling core syncing may be significantly slower.</string>
     <string name="wallet_settings_sync_type_api">Api Based Syncing</string>
     <string name="wallet_settings_sync_type_core">Core Based Syncing</string>
     <string name="wallet_settings_hidden_wallets_count">Total Hidden Wallets: %1$s</string>
@@ -954,10 +954,10 @@
 
 
 <!--  Business Information -->
-    <string name="business_security_model" translatable="false">https://plaidcryptowallet.com/security/</string>
-    <string name="business_terms_of_service" translatable="false">https://plaidcryptowallet.com/terms-of-service/</string>
-    <string name="business_privacy_policy" translatable="false">https://plaidcryptowallet.com/privacy-policy/</string>
-    <string name="business_info_email" translatable="false">support@plaidcryptowallet.com</string>
+    <string name="business_security_model" translatable="false">https://omoirwallet.com/security/</string>
+    <string name="business_terms_of_service" translatable="false">https://omoirwallet.com/terms-of-service/</string>
+    <string name="business_privacy_policy" translatable="false">https://omoirwallet.com/privacy-policy/</string>
+    <string name="business_info_email" translatable="false">support@omoirwallet.com</string>
     <string name="business_info_support_request_subject_general" translatable="false">Help</string>
     <string name="business_info_support_request_subject_wallet" translatable="false">Wallet Issues</string>
     <string name="business_info_support_request_subject_exchange" translatable="false">Exchange Issue</string>

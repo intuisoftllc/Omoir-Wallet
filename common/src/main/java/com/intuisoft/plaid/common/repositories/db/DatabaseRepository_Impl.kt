@@ -6,7 +6,7 @@ import com.intuisoft.plaid.common.model.*
 import com.intuisoft.plaid.common.network.blockchair.response.SupportedCurrencyModel
 
 class DatabaseRepository_Impl(
-    private val database: PlaidDatabase,
+    private val database: OmoirDatabase,
     private val suggestedFeeRateDao: SuggestedFeeRateDao,
     private val basicPriceDataDao: BasicPriceDataDao,
     private val baseNetworkDataDao: BaseMarketDataDao,

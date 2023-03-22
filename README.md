@@ -1,24 +1,24 @@
-# Plaid-Crypto-Wallet
+# Omoir-Wallet
 A multi-currency mobile-wallet
 
 
 [![Playstore](https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg)](https://play.google.com/store/apps/details?id=com.intuisoft.plaid)
 
-Website: [plaidcryptowallet](https://plaidcryptowallet.com)
+Website: [omoirwallet](https://omoirwallet.com)
 
 * Private keys never leave your device
 * Asset Transfer Protocol. See Below
 * SegWit Support
 * Encrypted Wallet Data
-* And much more [features...](https://plaidcryptowallet.com)
+* And much more [features...](https://omoirwallet.com)
 
-<img src="https://github.com/intuisoftllc/Plaid-Crypto-Wallet/blob/main/docs/pictures/phone_app.svg" width="100%" height="600">
+<img src="https://github.com/intuisoftllc/Omoir-Wallet/blob/main/docs/pictures/phone_app.svg" width="100%" height="600">
 
 #### Cryptocurrency Support
 Keep in mind that bitcoin is the only cryptocurrency supported currently, however support for other currencies will be coming in the future!
 
 ## Asset Transfer Protocol
-Plaid Crypto Wallet is the first ever mobile wallet to have a dedicated in-app BTC UTXO management system called Asset Transfer Protocol (ATP)
+Omoir Wallet is the first ever mobile wallet to have a dedicated in-app BTC UTXO management system called Asset Transfer Protocol (ATP)
 This works by individually sending yor UTXO's from one location to another in a series of "Batches". This effectiveley allows you to "transfer"
 your wallet with some or all of its contents without having to make a series of transactions "doxxing" the coins that were involed in the transaction.
 Below is an example of how this process works:
@@ -53,5 +53,5 @@ The batch gaps provide more anonymity and the batch size can be any number of UT
 
 ## RESPONSIBLE DISCLOSURE
 
-Found critical bugs/vulnerabilities? Please email them to support@plaidcryptowallet.com
+Found critical bugs/vulnerabilities? Please email them to support@omoirwallet.com
 Thanks!

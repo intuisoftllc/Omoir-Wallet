@@ -4,9 +4,9 @@ import android.app.Application
 import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
-import com.intuisoft.plaid.PlaidApp
+import com.intuisoft.plaid.OmoirApp
 import com.intuisoft.plaid.R
-import com.intuisoft.plaid.common.coroutines.PlaidScope
+import com.intuisoft.plaid.common.coroutines.OmoirScope
 import com.intuisoft.plaid.common.model.BitcoinDisplayUnit
 import com.intuisoft.plaid.common.model.SavedAccountModel
 import com.intuisoft.plaid.common.model.TransactionMemoModel
@@ -108,7 +108,7 @@ open class WalletViewModel(
 
     fun getSavedAccounts() = localStoreRepository.getSavedAccounts()
 
-    fun getDefaultAccount() = localStoreRepository.getSavedAccounts().find { it.accountName == getApplication<PlaidApp>().getString(R.string._default) }!!
+    fun getDefaultAccount() = localStoreRepository.getSavedAccounts().find { it.accountName == getApplication<OmoirApp>().getString(R.string._default) }!!
 
     fun saveAccount(name: String, accountNumber: Int) {
         localStoreRepository.saveAccount(name, accountNumber)
@@ -206,7 +206,7 @@ open class WalletViewModel(
 
     fun getMemoForTx(txId: String) {
         viewModelScope.launch {
-            _txMemo.postValue(localStoreRepository.getTransactionMemo(txId)?.memo ?: getApplication<PlaidApp>().getString(R.string.not_applicable))
+            _txMemo.postValue(localStoreRepository.getTransactionMemo(txId)?.memo ?: getApplication<OmoirApp>().getString(R.string.not_applicable))
         }
     }
 
@@ -243,7 +243,7 @@ open class WalletViewModel(
     }
 
     fun refreshLocalCache() {
-        PlaidScope.applicationScope.launch(Dispatchers.IO) {
+        OmoirScope.applicationScope.launch(Dispatchers.IO) {
             // go to network and get fee rates if we have passed the cache time
             apiRepository.refreshLocalCache()
         }
@@ -407,7 +407,7 @@ open class WalletViewModel(
         bip: HDWallet.Purpose,
         testNetWallet: Boolean
     ) {
-        PlaidScope.applicationScope.launch(Dispatchers.IO) {
+        OmoirScope.applicationScope.launch(Dispatchers.IO) {
             try{
                 val walletId = walletManager.createWallet(
                     name = walletName,
@@ -447,7 +447,7 @@ open class WalletViewModel(
         walletName: String,
         pubKey: String
     ) {
-        PlaidScope.applicationScope.launch(Dispatchers.IO) {
+        OmoirScope.applicationScope.launch(Dispatchers.IO) {
             try {
                 val walletId = walletManager.createWallet(
                     name = walletName,
@@ -463,7 +463,7 @@ open class WalletViewModel(
 
 
     fun deleteWallet(onDeleteFinished: () -> Unit) {
-        PlaidScope.applicationScope.launch(Dispatchers.IO) {
+        OmoirScope.applicationScope.launch(Dispatchers.IO) {
           walletManager.deleteWallet(localWallet!!) {
               withContext(Dispatchers.Main) {
                   safeWalletScope {

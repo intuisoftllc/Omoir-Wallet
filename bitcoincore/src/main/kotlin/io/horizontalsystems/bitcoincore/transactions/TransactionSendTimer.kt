@@ -1,11 +1,8 @@
 package io.horizontalsystems.bitcoincore.transactions
 
-import com.intuisoft.plaid.common.coroutines.PlaidScope
+import com.intuisoft.plaid.common.coroutines.OmoirScope
 import com.intuisoft.plaid.common.util.Constants
 import kotlinx.coroutines.*
-import java.util.concurrent.Executors
-import java.util.concurrent.ScheduledFuture
-import java.util.concurrent.TimeUnit
 
 class TransactionSendTimer(private val period: Long) {
 
@@ -19,7 +16,7 @@ class TransactionSendTimer(private val period: Long) {
     @Synchronized
     fun startIfNotRunning() {
         if (task == null) {
-            task = PlaidScope.applicationScope.launch(Dispatchers.IO) {
+            task = OmoirScope.applicationScope.launch(Dispatchers.IO) {
                 while(true) {
                     this.ensureActive()
                     listener?.onTimePassed()

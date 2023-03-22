@@ -3,11 +3,11 @@ package com.intuisoft.plaid.features.dashboardflow.shared.viewModel
 import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
-import com.intuisoft.plaid.PlaidApp
+import com.intuisoft.plaid.OmoirApp
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.SingleLiveData
 import com.intuisoft.plaid.androidwrappers.WalletViewModel
-import com.intuisoft.plaid.common.coroutines.PlaidScope
+import com.intuisoft.plaid.common.coroutines.OmoirScope
 import com.intuisoft.plaid.common.model.FeeType
 import com.intuisoft.plaid.common.model.NetworkFeeRate
 import com.intuisoft.plaid.common.repositories.ApiRepository
@@ -77,7 +77,7 @@ class WithdrawConfirmationViewModel(
                 it.status = ExchangeStatus.CONFIRMING.type
                 it.paymentTxId = txId
 
-                PlaidScope.applicationScope.launch(Dispatchers.IO) {
+                OmoirScope.applicationScope.launch(Dispatchers.IO) {
                     localStoreRepository.saveExchangeData(it, getWalletId())
                 }
             }
@@ -157,18 +157,18 @@ class WithdrawConfirmationViewModel(
     }
 
     fun broadcast(fullTransaction: FullTransaction): Boolean {
-        if(NetworkUtil.hasInternet(getApplication<PlaidApp>())) {
+        if(NetworkUtil.hasInternet(getApplication<OmoirApp>())) {
             if(localWallet!!.walletKit!!.canSendTransaction())
                 localWallet!!.walletKit!!.broadcast(fullTransaction)
             else {
                 walletManager.synchronize(localWallet!!)
-                _onNetworkError.postValue(getApplication<PlaidApp>().getString(R.string.reconnecting_to_core))
+                _onNetworkError.postValue(getApplication<OmoirApp>().getString(R.string.reconnecting_to_core))
                 return false
             }
 
             return true
         } else {
-            _onNetworkError.postValue(getApplication<PlaidApp>().getString(R.string.no_internet_connection))
+            _onNetworkError.postValue(getApplication<OmoirApp>().getString(R.string.no_internet_connection))
             return false
         }
     }
@@ -179,11 +179,11 @@ class WithdrawConfirmationViewModel(
 
         if(invalidAddressErrors % errorThreshold == 0) {
             if(localWallet!!.testNetWallet && walletManager.getBaseWallet(mainNet = true).isAddressValid(address ?: "")) {
-                _onDisplayExplanation.postValue(getApplication<PlaidApp>().getString(R.string.withdraw_confirmation_error_invalid_address_test_net))
+                _onDisplayExplanation.postValue(getApplication<OmoirApp>().getString(R.string.withdraw_confirmation_error_invalid_address_test_net))
             } else if(!localWallet!!.testNetWallet && walletManager.getBaseWallet(mainNet = false).isAddressValid(address ?: "")) {
-                _onDisplayExplanation.postValue(getApplication<PlaidApp>().getString(R.string.withdraw_confirmation_error_invalid_address_main_net))
+                _onDisplayExplanation.postValue(getApplication<OmoirApp>().getString(R.string.withdraw_confirmation_error_invalid_address_main_net))
             } else {
-                _onDisplayExplanation.postValue(getApplication<PlaidApp>().getString(R.string.withdraw_confirmation_error_invalid_address))
+                _onDisplayExplanation.postValue(getApplication<OmoirApp>().getString(R.string.withdraw_confirmation_error_invalid_address))
             }
         }
     }
@@ -198,15 +198,15 @@ class WithdrawConfirmationViewModel(
 
             when (result) {
                 -1L -> { // not enough funds
-                    _onDisplayExplanation.postValue(getApplication<PlaidApp>().getString(R.string.withdraw_error_fee_too_high))
+                    _onDisplayExplanation.postValue(getApplication<OmoirApp>().getString(R.string.withdraw_error_fee_too_high))
                 }
 
                 -2L -> { // low payment amount
-                    _onDisplayExplanation.postValue(getApplication<PlaidApp>().getString(R.string.withdraw_error_low_payment_amount))
+                    _onDisplayExplanation.postValue(getApplication<OmoirApp>().getString(R.string.withdraw_error_low_payment_amount))
                 }
 
                 0L -> { // something went wrong
-                    _onDisplayExplanation.postValue(getApplication<PlaidApp>().getString(R.string.withdraw_error_something_went_wrong))
+                    _onDisplayExplanation.postValue(getApplication<OmoirApp>().getString(R.string.withdraw_error_something_went_wrong))
                 }
 
                 else ->  { // good
@@ -268,7 +268,7 @@ class WithdrawConfirmationViewModel(
                 )
             }
         } catch(e: Exception) {
-            _onDisplayExplanation.postValue(getApplication<PlaidApp>().getString(R.string.withdraw_confirmation_create_transaction_error))
+            _onDisplayExplanation.postValue(getApplication<OmoirApp>().getString(R.string.withdraw_confirmation_create_transaction_error))
             return null
         }
     }

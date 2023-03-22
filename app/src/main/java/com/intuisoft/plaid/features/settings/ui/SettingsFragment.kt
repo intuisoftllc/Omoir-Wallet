@@ -22,7 +22,7 @@ import com.intuisoft.plaid.androidwrappers.delegates.FragmentConfiguration
 import com.intuisoft.plaid.billing.BillingManager
 import com.intuisoft.plaid.common.analytics.EventTracker
 import com.intuisoft.plaid.common.analytics.events.*
-import com.intuisoft.plaid.common.coroutines.PlaidScope
+import com.intuisoft.plaid.common.coroutines.OmoirScope
 import com.intuisoft.plaid.common.model.AppTheme
 import com.intuisoft.plaid.databinding.FragmentSettingsBinding
 import com.intuisoft.plaid.features.settings.viewmodel.SettingsViewModel
@@ -600,7 +600,7 @@ class SettingsFragment : ConfigurableFragment<FragmentSettingsBinding>(
 
     override fun onResume() {
         super.onResume()
-        PlaidScope.MainScope.launch {
+        OmoirScope.MainScope.launch {
             safeWalletScope {
                 viewModel.updateSettingsScreen()
             }

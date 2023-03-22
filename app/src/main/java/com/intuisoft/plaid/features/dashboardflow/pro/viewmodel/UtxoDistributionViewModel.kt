@@ -3,7 +3,7 @@ package com.intuisoft.plaid.features.dashboardflow.pro.viewmodel
 import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
-import com.intuisoft.plaid.PlaidApp
+import com.intuisoft.plaid.OmoirApp
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.SingleLiveData
 import com.intuisoft.plaid.androidwrappers.WalletViewModel
@@ -98,31 +98,31 @@ class UtxoDistributionViewModel(
                 data = BarData(
                     items = listOf(
                         BarItem(
-                            barName = getApplication<PlaidApp>().getString(R.string.report_details_utxo_range_1),
+                            barName = getApplication<OmoirApp>().getString(R.string.report_details_utxo_range_1),
                             utxos = _0_1k
                         ),
                         BarItem(
-                            barName = getApplication<PlaidApp>().getString(R.string.report_details_utxo_range_2),
+                            barName = getApplication<OmoirApp>().getString(R.string.report_details_utxo_range_2),
                             utxos = _1k_10k
                         ),
                         BarItem(
-                            barName = getApplication<PlaidApp>().getString(R.string.report_details_utxo_range_3),
+                            barName = getApplication<OmoirApp>().getString(R.string.report_details_utxo_range_3),
                             utxos = _10k_100k
                         ),
                         BarItem(
-                            barName = getApplication<PlaidApp>().getString(R.string.report_details_utxo_range_4),
+                            barName = getApplication<OmoirApp>().getString(R.string.report_details_utxo_range_4),
                             utxos = _100k_1m
                         ),
                         BarItem(
-                            barName = getApplication<PlaidApp>().getString(R.string.report_details_utxo_range_5),
+                            barName = getApplication<OmoirApp>().getString(R.string.report_details_utxo_range_5),
                             utxos = _1m_10m
                         ),
                         BarItem(
-                            barName = getApplication<PlaidApp>().getString(R.string.report_details_utxo_range_6),
+                            barName = getApplication<OmoirApp>().getString(R.string.report_details_utxo_range_6),
                             utxos = _10m_100m
                         ),
                         BarItem(
-                            barName = getApplication<PlaidApp>().getString(R.string.report_details_utxo_range_7),
+                            barName = getApplication<OmoirApp>().getString(R.string.report_details_utxo_range_7),
                             utxos = _1btc
                         )
                     ),

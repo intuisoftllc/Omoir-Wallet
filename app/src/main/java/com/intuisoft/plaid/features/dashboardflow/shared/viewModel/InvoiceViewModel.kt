@@ -2,7 +2,7 @@ package com.intuisoft.plaid.features.dashboardflow.shared.viewModel
 
 import android.app.Application
 import androidx.lifecycle.LiveData
-import com.intuisoft.plaid.PlaidApp
+import com.intuisoft.plaid.OmoirApp
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.SingleLiveData
 import com.intuisoft.plaid.androidwrappers.WalletViewModel
@@ -54,7 +54,7 @@ class InvoiceViewModel(
                 address,
                 if(description.isNotEmpty() && description.isNotBlank())
                     description
-                else getApplication<PlaidApp>().getString(R.string.not_applicable),
+                else getApplication<OmoirApp>().getString(R.string.not_applicable),
                 exchangeId
             )
         )
@@ -81,7 +81,7 @@ class InvoiceViewModel(
     }
 
     private fun overBalanceError() {
-        _onDisplayExplanation.postValue(getApplication<PlaidApp>().getString(R.string.invoice_error_over_balance))
+        _onDisplayExplanation.postValue(getApplication<OmoirApp>().getString(R.string.invoice_error_over_balance))
     }
 
     fun onNextStep() {
@@ -101,17 +101,17 @@ class InvoiceViewModel(
                 when (result) {
                     -1L -> { // not enough funds
                         if (selectedUTXOs.isNotEmpty() && selectedUTXOs.size != getUnspentOutputs().size)
-                            _onDisplayExplanation.postValue(getApplication<PlaidApp>().getString(R.string.withdraw_error_not_enough_funds_with_selected_utxos))
+                            _onDisplayExplanation.postValue(getApplication<OmoirApp>().getString(R.string.withdraw_error_not_enough_funds_with_selected_utxos))
                         else
-                            _onDisplayExplanation.postValue(getApplication<PlaidApp>().getString(R.string.withdraw_error_not_enough_funds))
+                            _onDisplayExplanation.postValue(getApplication<OmoirApp>().getString(R.string.withdraw_error_not_enough_funds))
                     }
 
                     -2L -> { // low payment amount
-                        _onDisplayExplanation.postValue(getApplication<PlaidApp>().getString(R.string.withdraw_error_low_payment_amount))
+                        _onDisplayExplanation.postValue(getApplication<OmoirApp>().getString(R.string.withdraw_error_low_payment_amount))
                     }
 
                     0L -> { // something went wrong
-                        _onDisplayExplanation.postValue(getApplication<PlaidApp>().getString(R.string.withdraw_error_something_went_wrong))
+                        _onDisplayExplanation.postValue(getApplication<OmoirApp>().getString(R.string.withdraw_error_something_went_wrong))
                     }
 
                     else -> { // good
@@ -131,11 +131,11 @@ class InvoiceViewModel(
 
     private fun invalidAddressError() {
         if(localWallet!!.testNetWallet && walletManager.getBaseWallet(mainNet = true).isAddressValid(address ?: "")) {
-            _onDisplayExplanation.postValue(getApplication<PlaidApp>().getString(R.string.withdraw_confirmation_error_invalid_address_test_net))
+            _onDisplayExplanation.postValue(getApplication<OmoirApp>().getString(R.string.withdraw_confirmation_error_invalid_address_test_net))
         } else if(!localWallet!!.testNetWallet && walletManager.getBaseWallet(mainNet = false).isAddressValid(address ?: "")) {
-            _onDisplayExplanation.postValue(getApplication<PlaidApp>().getString(R.string.withdraw_confirmation_error_invalid_address_main_net))
+            _onDisplayExplanation.postValue(getApplication<OmoirApp>().getString(R.string.withdraw_confirmation_error_invalid_address_main_net))
         } else {
-            _onDisplayExplanation.postValue(getApplication<PlaidApp>().getString(R.string.invoice_error_invalid_address))
+            _onDisplayExplanation.postValue(getApplication<OmoirApp>().getString(R.string.invoice_error_invalid_address))
         }
     }
 

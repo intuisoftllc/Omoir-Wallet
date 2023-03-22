@@ -3,11 +3,11 @@ package com.intuisoft.plaid.features.dashboardflow.shared.viewModel
 import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
-import com.intuisoft.plaid.PlaidApp
+import com.intuisoft.plaid.OmoirApp
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.SingleLiveData
 import com.intuisoft.plaid.androidwrappers.WalletViewModel
-import com.intuisoft.plaid.common.coroutines.PlaidScope
+import com.intuisoft.plaid.common.coroutines.OmoirScope
 import com.intuisoft.plaid.common.model.*
 import com.intuisoft.plaid.common.repositories.ApiRepository
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
@@ -17,7 +17,6 @@ import com.intuisoft.plaid.common.util.SimpleCurrencyFormat
 import com.intuisoft.plaid.common.util.extensions.safeWalletScope
 import com.intuisoft.plaid.util.NetworkUtil
 import com.intuisoft.plaid.common.util.SimpleTimeFormat
-import com.intuisoft.plaid.common.util.extensions.prepend
 import com.intuisoft.plaid.common.util.extensions.roundTo
 import com.intuisoft.plaid.walletmanager.AbstractWalletManager
 import io.horizontalsystems.bitcoincore.models.TransactionInfo
@@ -97,7 +96,7 @@ class DashboardViewModel(
     }
 
     private fun updateBalanceHistory() {
-        if(localStoreRepository.getBitcoinDisplayUnit() != BitcoinDisplayUnit.FIAT || NetworkUtil.hasInternet(getApplication<PlaidApp>())) {
+        if(localStoreRepository.getBitcoinDisplayUnit() != BitcoinDisplayUnit.FIAT || NetworkUtil.hasInternet(getApplication<OmoirApp>())) {
             _showChartError.postValue(null)
             updateWalletBalanceHistory()
         } else {
@@ -179,7 +178,7 @@ class DashboardViewModel(
                                         )
                                     )
                                 } else {
-                                    _walletAge.postValue(getApplication<PlaidApp>().getString(R.string.pro_wallet_dashboard_new_wallet))
+                                    _walletAge.postValue(getApplication<OmoirApp>().getString(R.string.pro_wallet_dashboard_new_wallet))
                                 }
                             }
                         } else {
@@ -377,7 +376,7 @@ class DashboardViewModel(
 
                                         _showChartError.postValue(null)
                                     } else {
-                                        _showChartError.postValue(getApplication<PlaidApp>().getString(R.string.failed_to_load_chart_data))
+                                        _showChartError.postValue(getApplication<OmoirApp>().getString(R.string.failed_to_load_chart_data))
                                     }
                                 }
                             }
@@ -566,7 +565,7 @@ class DashboardViewModel(
 
 
     fun onNoInternet(hasInternet: Boolean) {
-        PlaidScope.applicationScope.launch(Dispatchers.IO) {
+        OmoirScope.applicationScope.launch(Dispatchers.IO) {
 
             val data = apiRepository.getTickerPriceChartData(intervalType)
 
@@ -574,7 +573,7 @@ class DashboardViewModel(
                 _showChartError.postValue(null)
                 updateWalletBalanceHistory()
             } else {
-                _showChartError.postValue(getApplication<PlaidApp>().getString(R.string.no_internet_connection))
+                _showChartError.postValue(getApplication<OmoirApp>().getString(R.string.no_internet_connection))
 
                 if (hasInternet) {
                     updateWalletBalanceHistory()

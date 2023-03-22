@@ -1,7 +1,7 @@
 package io.horizontalsystems.bitcoincore
 
 import android.content.Context
-import com.intuisoft.plaid.common.coroutines.PlaidScope
+import com.intuisoft.plaid.common.coroutines.OmoirScope
 import com.intuisoft.plaid.common.util.Constants.Strings.PEER_STATUS_INFO_1
 import com.intuisoft.plaid.common.util.Constants.Strings.PEER_STATUS_INFO_2
 import com.intuisoft.plaid.common.util.Constants.Strings.PEER_STATUS_INFO_3
@@ -41,7 +41,6 @@ import io.reactivex.Single
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.*
-import java.util.concurrent.Executor
 import kotlin.math.roundToInt
 
 class BitcoinCoreBuilder {
@@ -739,25 +738,25 @@ class BitcoinCore(
     // DataProvider Listener implementations
     //
     override fun onTransactionsUpdate(inserted: List<TransactionInfo>, updated: List<TransactionInfo>) {
-        PlaidScope.applicationScope.launch(Dispatchers.IO) {
+        OmoirScope.applicationScope.launch(Dispatchers.IO) {
             listener?.onTransactionsUpdate(inserted, updated)
         }
     }
 
     override fun onTransactionsDelete(hashes: List<String>) {
-        PlaidScope.applicationScope.launch(Dispatchers.IO) {
+        OmoirScope.applicationScope.launch(Dispatchers.IO) {
             listener?.onTransactionsDelete(hashes)
         }
     }
 
     override fun onBalanceUpdate(balance: BalanceInfo) {
-        PlaidScope.applicationScope.launch(Dispatchers.IO) {
+        OmoirScope.applicationScope.launch(Dispatchers.IO) {
             listener?.onBalanceUpdate(balance)
         }
     }
 
     override fun onLastBlockInfoUpdate(blockInfo: BlockInfo) {
-        PlaidScope.applicationScope.launch(Dispatchers.IO) {
+        OmoirScope.applicationScope.launch(Dispatchers.IO) {
             listener?.onLastBlockInfoUpdate(blockInfo)
         }
     }
@@ -766,7 +765,7 @@ class BitcoinCore(
     // IKitStateManagerListener implementations
     //
     override fun onKitStateUpdate(state: KitState) {
-        PlaidScope.applicationScope.launch(Dispatchers.IO) {
+        OmoirScope.applicationScope.launch(Dispatchers.IO) {
             listener?.onKitStateUpdate(state)
         }
     }

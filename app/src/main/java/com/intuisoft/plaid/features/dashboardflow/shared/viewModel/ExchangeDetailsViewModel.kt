@@ -4,7 +4,7 @@ import android.app.Application
 import android.widget.ImageView
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
-import com.intuisoft.plaid.PlaidApp
+import com.intuisoft.plaid.OmoirApp
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.SingleLiveData
 import com.intuisoft.plaid.androidwrappers.WalletViewModel
@@ -50,7 +50,7 @@ class ExchangeDetailsViewModel(
                             ).second!!
                         )
                     } else {
-                        _priceConversion.postValue(getApplication<PlaidApp>().getString(R.string.not_applicable))
+                        _priceConversion.postValue(getApplication<OmoirApp>().getString(R.string.not_applicable))
                     }
                 }
             }

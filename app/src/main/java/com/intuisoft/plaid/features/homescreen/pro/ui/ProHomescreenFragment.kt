@@ -14,7 +14,7 @@ import com.intuisoft.plaid.androidwrappers.delegates.FragmentConfiguration
 import com.intuisoft.plaid.common.analytics.EventTracker
 import com.intuisoft.plaid.common.analytics.events.EventHomescreenCreateWallet
 import com.intuisoft.plaid.common.analytics.events.EventHomescreenView
-import com.intuisoft.plaid.common.coroutines.PlaidScope
+import com.intuisoft.plaid.common.coroutines.OmoirScope
 import com.intuisoft.plaid.common.model.BitcoinDisplayUnit
 import com.intuisoft.plaid.features.homescreen.shared.viewmodel.HomeScreenViewModel
 import com.intuisoft.plaid.listeners.StateListener
@@ -129,7 +129,7 @@ class ProHomescreenFragment : ConfigurableFragment<FragmentProHomescreenBinding>
     }
 
     fun showTotalBalance(totalBalance: Long) {
-        PlaidScope.MainScope.launch {
+        OmoirScope.MainScope.launch {
             safeWalletScope {
                 binding?.totalBalance.text =
                     SimpleCoinNumberFormat.format(localStoreRepository, totalBalance, false)

@@ -10,7 +10,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.intuisoft.plaid.PlaidApp
+import com.intuisoft.plaid.OmoirApp
 import com.intuisoft.plaid.androidwrappers.delegates.FragmentConfiguration
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.common.util.extensions.safeWalletScope
@@ -71,7 +71,7 @@ open class BaseViewModel(
     }
 
     fun navigateToFingerprintSettings(activity: Activity) {
-        (activity.application as PlaidApp).ignorePinCheck = true
+        (activity.application as OmoirApp).ignorePinCheck = true
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             activity.startActivity(Intent(Settings.ACTION_BIOMETRIC_ENROLL));

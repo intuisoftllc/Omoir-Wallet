@@ -68,7 +68,7 @@ android {
         dev {
             versionNameSuffix = "-dev"
             applicationIdSuffix ".dev"
-            resValue "string", "app_name", "Plaid (Dev)"
+            resValue "string", "app_name", "Omoir (Dev)"
             signingConfig signingConfigs.develop
             buildConfigField("String", "BLOCKCHAIR_SERVER_URL", "\"https://api.blockchair.com/bitcoin/\"")
             buildConfigField("String", "BLOCKCHAIR_TESTNET_SERVER_URL", "\"https://api.blockchair.com/bitcoin/testnet/\"")
@@ -87,7 +87,7 @@ android {
 
             /**
              * Wallet Secret
-             * This is a global secret for all Plaid Crypto Wallet™ users
+             * This is a global secret for all Omoir Wallet™ users
              *
              * This is an added failsafe in the event an attacker gains access to the user's wallet file.
              * Even if they somehow manage to gain access to the user's pin. They will still be unable to un-encrypt the file
@@ -98,7 +98,7 @@ android {
 
         prod {
             versionNameSuffix = "-prod"
-            resValue "string", "app_name", "Plaid"
+            resValue "string", "app_name", "Omoir Wallet"
             signingConfig signingConfigs.production
             buildConfigField("String", "BLOCKCHAIR_SERVER_URL", "\"https://api.blockchair.com/bitcoin/\"")
             buildConfigField("String", "BLOCKCHAIR_TESTNET_SERVER_URL", "\"https://api.blockchair.com/bitcoin/testnet/\"")

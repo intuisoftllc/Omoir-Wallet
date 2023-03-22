@@ -15,7 +15,10 @@ import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.ConfigurableFragment
 import com.intuisoft.plaid.androidwrappers.TopBarView
 import com.intuisoft.plaid.androidwrappers.delegates.FragmentConfiguration
-import com.intuisoft.plaid.common.coroutines.PlaidScope
+import com.intuisoft.plaid.androidwrappers.uriFromResource
+import com.intuisoft.plaid.common.analytics.EventTracker
+import com.intuisoft.plaid.common.analytics.events.EventMemeView
+import com.intuisoft.plaid.common.coroutines.OmoirScope
 import com.intuisoft.plaid.common.model.AppTheme
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.databinding.FragmentEasterEggBinding
@@ -35,6 +38,7 @@ class MemeFragment : ConfigurableFragment<FragmentEasterEggBinding>(
 ) {
 
     private val localStoreRepository: LocalStoreRepository by inject()
+    private val eventTracker: EventTracker by inject()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -48,6 +52,7 @@ class MemeFragment : ConfigurableFragment<FragmentEasterEggBinding>(
 
     override fun onConfiguration(configuration: FragmentConfiguration?) {
         // do nothing
+        eventTracker.log(EventMemeView())
         var theme = localStoreRepository.getAppTheme()
         if(theme == AppTheme.AUTO) {
             val nightModeFlags = requireContext().resources.configuration.uiMode and
@@ -60,8 +65,11 @@ class MemeFragment : ConfigurableFragment<FragmentEasterEggBinding>(
         }
 
         when(theme) {
-            AppTheme.LIGHT -> {
-                binding.videoView.setVideoURI(Uri.parse("android.resource://" + requireContext().packageName + "/" + R.raw.meme_video_1))
+            AppTheme.LIGHT, AppTheme.DARK -> {
+                binding.videoView.setVideoURI(
+                    uriFromResource(R.raw.meme_video_1)
+                )
+
                 videoView.setOnErrorListener { mediaPlayer, what, extra ->
                     Toast.makeText(requireContext(),
                         "error loading video", Toast.LENGTH_SHORT).show();
@@ -73,15 +81,11 @@ class MemeFragment : ConfigurableFragment<FragmentEasterEggBinding>(
                     onVideoComplete()
                 })
             }
-
-            AppTheme.DARK -> {
-
-            }
         }
     }
 
     fun onVideoComplete() {
-        PlaidScope.MainScope.launch {
+        OmoirScope.MainScope.launch {
             delay(350)
             withBinding {
                 val mPlayer: MediaPlayer =

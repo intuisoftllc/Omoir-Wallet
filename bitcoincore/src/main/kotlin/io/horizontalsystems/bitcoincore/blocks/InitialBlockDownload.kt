@@ -1,6 +1,6 @@
 package io.horizontalsystems.bitcoincore.blocks
 
-import com.intuisoft.plaid.common.coroutines.PlaidScope
+import com.intuisoft.plaid.common.coroutines.OmoirScope
 import io.horizontalsystems.bitcoincore.BitcoinCore
 import io.horizontalsystems.bitcoincore.core.IBlockSyncListener
 import io.horizontalsystems.bitcoincore.models.InventoryItem
@@ -12,7 +12,6 @@ import io.horizontalsystems.bitcoincore.network.peer.task.PeerTask
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.concurrent.CopyOnWriteArrayList
-import java.util.concurrent.Executors
 import java.util.logging.Logger
 import kotlin.math.max
 
@@ -121,7 +120,7 @@ class InitialBlockDownload(
     }
 
     private fun assignNextSyncPeer() {
-        PlaidScope.applicationScope.launch(Dispatchers.IO) {
+        OmoirScope.applicationScope.launch(Dispatchers.IO) {
             if (syncPeer == null) {
                 val notSyncedPeers = peerManager.sorted().filter { !it.synced }
                 if (notSyncedPeers.isEmpty()) {

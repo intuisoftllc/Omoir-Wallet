@@ -12,7 +12,6 @@ import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.DrawableRes
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.appcompat.app.AppCompatDialog
 import androidx.core.view.isVisible
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
@@ -20,7 +19,7 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import com.google.gson.Gson
-import com.intuisoft.plaid.PlaidApp
+import com.intuisoft.plaid.OmoirApp
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.*
 import com.intuisoft.plaid.androidwrappers.PasscodeView.PasscodeViewType.Companion.TYPE_CHECK_PASSCODE
@@ -29,7 +28,7 @@ import com.intuisoft.plaid.androidwrappers.delegates.FragmentActionBarDelegate
 import com.intuisoft.plaid.androidwrappers.delegates.FragmentBottomBarBarDelegate
 import com.intuisoft.plaid.billing.BillingManager
 import com.intuisoft.plaid.common.CommonService
-import com.intuisoft.plaid.common.coroutines.PlaidScope
+import com.intuisoft.plaid.common.coroutines.OmoirScope
 import com.intuisoft.plaid.common.model.AppTheme
 import com.intuisoft.plaid.common.model.HiddenWalletModel
 import com.intuisoft.plaid.common.model.StoredHiddenWalletsModel
@@ -37,7 +36,6 @@ import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.common.util.Constants.Navigation.PASSPHRASES
 import com.intuisoft.plaid.common.util.extensions.remove
-import com.intuisoft.plaid.common.util.extensions.safeWalletScope
 import com.intuisoft.plaid.common.util.extensions.toArrayList
 import com.intuisoft.plaid.databinding.ActivityMainBinding
 import com.intuisoft.plaid.features.splash.ui.SplashFragment
@@ -45,7 +43,6 @@ import com.intuisoft.plaid.listeners.BarcodeResultListener
 import com.intuisoft.plaid.listeners.NetworkStateChangeListener
 import com.intuisoft.plaid.recievers.NetworkChangeReceiver
 import com.intuisoft.plaid.walletmanager.AbstractWalletManager
-import kotlinx.android.synthetic.main.fragment_withdraw.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
@@ -258,9 +255,9 @@ class MainActivity : BindingActivity<ActivityMainBinding>(), ActionBarDelegate {
                     )
                     progressDialog.setCancelable(false)
 
-                    PlaidScope.applicationScope.launch(Dispatchers.IO) {
+                    OmoirScope.applicationScope.launch(Dispatchers.IO) {
                         localStoreRepository.wipeAllData {
-                            PlaidScope.MainScope.launch {
+                            OmoirScope.MainScope.launch {
                                 progressDialog.cancel()
                                 pin.isVisible = false
                                 softRestart(walletManager, localStoreRepository)
@@ -423,13 +420,13 @@ class MainActivity : BindingActivity<ActivityMainBinding>(), ActionBarDelegate {
     }
 
     fun scanBarcode() {
-        (application as PlaidApp).ignorePinCheck = true
+        (application as OmoirApp).ignorePinCheck = true
         BarcodeScannerActivity.invoiceMode = false
         barcodeLauncher.launch(Intent(this, BarcodeScannerActivity::class.java))
     }
 
     fun scanInvoice() {
-        (application as PlaidApp).ignorePinCheck = true
+        (application as OmoirApp).ignorePinCheck = true
         BarcodeScannerActivity.invoiceMode = true
         barcodeLauncher.launch(Intent(this, BarcodeScannerActivity::class.java))
     }

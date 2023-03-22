@@ -3,7 +3,7 @@ package com.intuisoft.plaid.features.createwallet.viewmodel
 import android.app.Application
 import android.content.Context
 import androidx.lifecycle.LiveData
-import com.intuisoft.plaid.PlaidApp
+import com.intuisoft.plaid.OmoirApp
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.SingleLiveData
 import com.intuisoft.plaid.androidwrappers.WalletViewModel
@@ -117,7 +117,7 @@ class CreateWalletViewModel(
             Mnemonic().toSeed(seed)
             _onConfirm.postValue(Unit)
         } catch(err: Throwable) {
-            _onDisplayExplanation.postValue(getApplication<PlaidApp>().getString(R.string.import_recovery_phrase_error_invalid_seed_phrase))
+            _onDisplayExplanation.postValue(getApplication<OmoirApp>().getString(R.string.import_recovery_phrase_error_invalid_seed_phrase))
         }
     }
 
@@ -245,7 +245,7 @@ class CreateWalletViewModel(
         invalidSeedWordErrors++
 
         if(invalidSeedWordErrors % errorThreshold == 0) {
-            _onDisplayExplanation.postValue(getApplication<PlaidApp>().getString(R.string.import_recovery_phrase_error_invalid_seed_word))
+            _onDisplayExplanation.postValue(getApplication<OmoirApp>().getString(R.string.import_recovery_phrase_error_invalid_seed_word))
         }
     }
 
@@ -254,7 +254,7 @@ class CreateWalletViewModel(
         maxWordsErrors++
 
         if(maxWordsErrors % errorThreshold == 0) {
-            _onDisplayExplanation.postValue(getApplication<PlaidApp>().getString(R.string.import_recovery_phrase_error_max_words))
+            _onDisplayExplanation.postValue(getApplication<OmoirApp>().getString(R.string.import_recovery_phrase_error_max_words))
         }
     }
 
@@ -270,7 +270,7 @@ class CreateWalletViewModel(
             invalidAddressErrors++
 
             if(invalidAddressErrors % errorThreshold == 0) {
-                _onDisplayExplanation.postValue(getApplication<PlaidApp>().getString(R.string.import_public_key_error_invalid_address))
+                _onDisplayExplanation.postValue(getApplication<OmoirApp>().getString(R.string.import_public_key_error_invalid_address))
             }
         }
     }

@@ -434,8 +434,8 @@ object CommonService {
 
     private fun provideDatabase(
         context: Context
-    ): PlaidDatabase {
-        return PlaidDatabase.getInstance(context)
+    ): OmoirDatabase {
+        return OmoirDatabase.getInstance(context)
     }
 
     private fun provideSharedPrefs(
@@ -447,77 +447,77 @@ object CommonService {
     private fun provideSuggestedFeeRateDao(
         context: Context
     ): SuggestedFeeRateDao {
-        return PlaidDatabase.getInstance(context).suggestedFeeRateDao()
+        return OmoirDatabase.getInstance(context).suggestedFeeRateDao()
     }
 
     private fun provideLocalCurrencyRateDao(
         context: Context
     ): BasicPriceDataDao {
-        return PlaidDatabase.getInstance(context).localCurrencyRateDao()
+        return OmoirDatabase.getInstance(context).localCurrencyRateDao()
     }
 
     private fun provideBasicMarketDataDao(
         context: Context
     ): BaseMarketDataDao {
-        return PlaidDatabase.getInstance(context).baseMarketDataDao()
+        return OmoirDatabase.getInstance(context).baseMarketDataDao()
     }
 
     private fun provideExtendedMarketDataDao(
         context: Context
     ): ExtendedNetworkDataDao {
-        return PlaidDatabase.getInstance(context).extendedMarketDataDao()
+        return OmoirDatabase.getInstance(context).extendedMarketDataDao()
     }
 
     private fun provideTickerPriceDataDao(
         context: Context
     ): TickerPriceChartDataDao {
-        return PlaidDatabase.getInstance(context).tickerPriceChartDataDao()
+        return OmoirDatabase.getInstance(context).tickerPriceChartDataDao()
     }
 
     private fun provideSupportedCurrencyDao(
         context: Context
     ): SupportedCurrencyDao {
-        return PlaidDatabase.getInstance(context).supportedCurrencyDao()
+        return OmoirDatabase.getInstance(context).supportedCurrencyDao()
     }
 
     private fun provideTransactionMemoDao(
         context: Context
     ): TransactionMemoDao {
-        return PlaidDatabase.getInstance(context).transactionMemoDao()
+        return OmoirDatabase.getInstance(context).transactionMemoDao()
     }
 
     private fun provideExchangeInfoDao(
         context: Context
     ): ExchangeInfoDao {
-        return PlaidDatabase.getInstance(context).exchangeInfoDao()
+        return OmoirDatabase.getInstance(context).exchangeInfoDao()
     }
 
     private fun provideAssetTransferDao(
         context: Context
     ): AssetTransferDao {
-        return PlaidDatabase.getInstance(context).assetTransfersDao()
+        return OmoirDatabase.getInstance(context).assetTransfersDao()
     }
 
     private fun provideBatchDao(
         context: Context
     ): BatchDao {
-        return PlaidDatabase.getInstance(context).batchDataDao()
+        return OmoirDatabase.getInstance(context).batchDataDao()
     }
 
     private fun provideTransactionBlacklistDao(
         context: Context
     ): TransactionBlacklistDao {
-        return PlaidDatabase.getInstance(context).transactionBlacklistDao()
+        return OmoirDatabase.getInstance(context).transactionBlacklistDao()
     }
 
     private fun provideAddressBlacklistDao(
         context: Context
     ): AddressBlacklistDao {
-        return PlaidDatabase.getInstance(context).addressBlacklistDao()
+        return OmoirDatabase.getInstance(context).addressBlacklistDao()
     }
 
     private fun provideDatabaseRepository(
-        database: PlaidDatabase,
+        database: OmoirDatabase,
         suggestedFeeRateDao: SuggestedFeeRateDao,
         basicPriceDataDao: BasicPriceDataDao,
         baseMarketDataDao: BaseMarketDataDao,

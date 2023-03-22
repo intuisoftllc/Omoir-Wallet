@@ -3,13 +3,12 @@ package com.intuisoft.plaid.features.dashboardflow.shared.viewModel
 import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
-import com.intuisoft.plaid.PlaidApp
+import com.intuisoft.plaid.OmoirApp
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.SingleLiveData
 import com.intuisoft.plaid.androidwrappers.SwapPairItemView
 import com.intuisoft.plaid.androidwrappers.WalletViewModel
-import com.intuisoft.plaid.common.coroutines.PlaidScope
-import com.intuisoft.plaid.common.local.db.SupportedCurrency
+import com.intuisoft.plaid.common.coroutines.OmoirScope
 import com.intuisoft.plaid.common.model.EstimatedReceiveAmountModel
 import com.intuisoft.plaid.common.model.ExchangeInfoDataModel
 import com.intuisoft.plaid.common.network.blockchair.response.SupportedCurrencyModel
@@ -108,7 +107,7 @@ class ExchangeViewModel(
 
     fun updateEstimatedReceiveAmount() {
         estimatedReceiveAmountJob?.cancel()
-        estimatedReceiveAmountJob = PlaidScope.applicationScope.launch(Dispatchers.IO) {
+        estimatedReceiveAmountJob = OmoirScope.applicationScope.launch(Dispatchers.IO) {
             _estimatedReceiveAmount.postValue(null)
             if(sendAmount != 0.0) delay(Constants.Time.ESTIMATED_RECEIVE_AMOUNT_UPDATE_TIME)
             if(outboundCurrency != null && inboundCurrency != null)
@@ -222,9 +221,9 @@ class ExchangeViewModel(
     }
 
     fun checkAddress(currency: SupportedCurrencyModel, address: String, onResult: (Pair<Boolean, String?>) -> Unit) {
-        PlaidScope.applicationScope.launch(Dispatchers.IO) {
+        OmoirScope.applicationScope.launch(Dispatchers.IO) {
             val result = apiRepository.isAddressValid(currency, address)
-            PlaidScope.MainScope.launch {
+            OmoirScope.MainScope.launch {
                 onResult(result)
             }
         }
@@ -240,10 +239,10 @@ class ExchangeViewModel(
 
         if(isBitcoin) {
             if(refundAddressMemo.isNotEmpty()) return refundAddressMemo
-            else return getApplication<PlaidApp>().getString(R.string.not_applicable)
+            else return getApplication<OmoirApp>().getString(R.string.not_applicable)
         } else {
             if(receiveAddressMemo.isNotEmpty()) return receiveAddressMemo
-            else return getApplication<PlaidApp>().getString(R.string.not_applicable)
+            else return getApplication<OmoirApp>().getString(R.string.not_applicable)
         }
     }
 
@@ -254,14 +253,14 @@ class ExchangeViewModel(
         _exchangeInfoDisplay.postValue(
             ExchangeInfoDisplay(
                 recipient =
-                    if(receivingBitcoin) getApplication<PlaidApp>().getString(R.string.swap_auto_generated_recipient_address, receiveAddress)
+                    if(receivingBitcoin) getApplication<OmoirApp>().getString(R.string.swap_auto_generated_recipient_address, receiveAddress)
                     else  receiveAddress,
                 sender =
-                    if(sendingBitcoin) getApplication<PlaidApp>().getString(R.string.swap_bitcoin_sender)
-                    else getApplication<PlaidApp>().getString(R.string.swap_external_wallet_sender, outboundCurrency?.ticker?.uppercase()),
+                    if(sendingBitcoin) getApplication<OmoirApp>().getString(R.string.swap_bitcoin_sender)
+                    else getApplication<OmoirApp>().getString(R.string.swap_external_wallet_sender, outboundCurrency?.ticker?.uppercase()),
                 refundAddress =
                     if(receivingBitcoin) refundAddress
-                    else getApplication<PlaidApp>().getString(R.string.swap_auto_generated_recipient_address, refundAddress),
+                    else getApplication<OmoirApp>().getString(R.string.swap_auto_generated_recipient_address, refundAddress),
                 memo = getMemo(),
                 amountSent = "${SimpleCoinNumberFormat.format(sendAmount)} ${outboundCurrency!!.ticker}",
                 amountReceived = "~${if(receiveEstimate.toAmount == 0.0) " ?" else SimpleCoinNumberFormat.format(receiveEstimate.toAmount)} ${inboundCurrency!!.ticker}"
@@ -295,7 +294,7 @@ class ExchangeViewModel(
                     if (exchangeData != null) {
                         _onNext.postValue(exchangeData!!)
                     } else {
-                        _onDisplayExplanation.postValue(getApplication<PlaidApp>().getString(R.string.swap_failed_error))
+                        _onDisplayExplanation.postValue(getApplication<OmoirApp>().getString(R.string.swap_failed_error))
                     }
 
                     _creatingExchange.postValue(false)
@@ -314,9 +313,9 @@ class ExchangeViewModel(
     }
 
     fun setInitialValues() {
-        PlaidScope.applicationScope.launch(Dispatchers.IO) {
+        OmoirScope.applicationScope.launch(Dispatchers.IO) {
             safeWalletScope {
-                if (NetworkUtil.hasInternet(getApplication<PlaidApp>())) {
+                if (NetworkUtil.hasInternet(getApplication<OmoirApp>())) {
                     sendAmount = 0.0
                     receiveEstimate = EstimatedReceiveAmountModel("", Instant.now(), 0.0)
                     min = 0.0
@@ -392,7 +391,7 @@ class ExchangeViewModel(
         bitcoinAmountLimitErrors++
 
         if(bitcoinAmountLimitErrors % errorThreshold == 0) {
-            _onDisplayExplanation.postValue(getApplication<PlaidApp>().getString(R.string.swap_bitcoin_amount_limit_error))
+            _onDisplayExplanation.postValue(getApplication<OmoirApp>().getString(R.string.swap_bitcoin_amount_limit_error))
         }
     }
 
@@ -400,7 +399,7 @@ class ExchangeViewModel(
         maxSwapErrors++
 
         if(maxSwapErrors % errorThreshold == 0) {
-            _onDisplayExplanation.postValue(getApplication<PlaidApp>().getString(R.string.swap_limit_reached_error, outboundCurrency!!.ticker.uppercase(), max?.toString() ?: "0"))
+            _onDisplayExplanation.postValue(getApplication<OmoirApp>().getString(R.string.swap_limit_reached_error, outboundCurrency!!.ticker.uppercase(), max?.toString() ?: "0"))
         }
     }
 
@@ -437,7 +436,7 @@ class ExchangeViewModel(
                         }
                     } else {
                         _onDisplayExplanation.postValue(
-                            getApplication<PlaidApp>().getString(
+                            getApplication<OmoirApp>().getString(
                                 R.string.swap_limit_reached_error,
                                 outboundCurrency!!.ticker.uppercase(),
                                 max?.toString() ?: "0"
@@ -469,7 +468,7 @@ class ExchangeViewModel(
                                 outboundCurrency!!.ticker.uppercase(),
                                 if (isBitcoin) null else crypto.image,
                                 sendAmount,
-                                getApplication<PlaidApp>().getString(
+                                getApplication<OmoirApp>().getString(
                                     if (isBitcoin) R.string.swap_send_variant_1 else R.string.swap_send_variant_2,
                                     crypto.name
                                 ),
@@ -478,7 +477,7 @@ class ExchangeViewModel(
                         )
                     } else {
                         _onDisplayExplanation.postValue(
-                            getApplication<PlaidApp>().getString(
+                            getApplication<OmoirApp>().getString(
                                 R.string.swap_could_not_find_crypto_error,
                                 outboundCurrency!!.ticker
                             )
@@ -507,7 +506,7 @@ class ExchangeViewModel(
                                 inboundCurrency!!.ticker.uppercase(),
                                 if (isBitcoin) null else crypto.image,
                                 receiveEstimate.toAmount,
-                                getApplication<PlaidApp>().getString(
+                                getApplication<OmoirApp>().getString(
                                     if (isBitcoin) R.string.swap_receive_variant_2 else R.string.swap_receive_variant_1,
                                     crypto.name
                                 ),
@@ -516,7 +515,7 @@ class ExchangeViewModel(
                         )
                     } else {
                         _onDisplayExplanation.postValue(
-                            getApplication<PlaidApp>().getString(
+                            getApplication<OmoirApp>().getString(
                                 R.string.swap_could_not_find_crypto_error,
                                 inboundCurrency!!.ticker
                             )
@@ -542,7 +541,7 @@ class ExchangeViewModel(
                         max = 0.0
                         _range.postValue(null)
                         _onDisplayExplanation.postValue(
-                            getApplication<PlaidApp>().getString(
+                            getApplication<OmoirApp>().getString(
                                 R.string.swap_could_not_load_min_max_error,
                                 outboundCurrency,
                                 inboundCurrency

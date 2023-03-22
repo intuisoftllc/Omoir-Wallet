@@ -1,18 +1,14 @@
 package io.horizontalsystems.bitcoincore.managers
 
-import com.intuisoft.plaid.common.coroutines.PlaidScope
-import com.intuisoft.plaid.common.util.extensions.remove
+import com.intuisoft.plaid.common.coroutines.OmoirScope
 import io.horizontalsystems.bitcoincore.core.IPublicKeyManager
 import io.horizontalsystems.bitcoincore.core.IStorage
 import io.horizontalsystems.bitcoincore.models.BlockHash
 import io.horizontalsystems.bitcoincore.models.PublicKey
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.job
 import kotlinx.coroutines.launch
-import java.util.concurrent.CopyOnWriteArrayList
 import java.util.logging.Logger
 
 class InitialSyncer(
@@ -38,7 +34,7 @@ class InitialSyncer(
     }
 
     fun sync() {
-        syncJob = PlaidScope.applicationScope.launch(Dispatchers.IO) {
+        syncJob = OmoirScope.applicationScope.launch(Dispatchers.IO) {
             runDiscovery(this.coroutineContext.job)
             syncJob = null
         }

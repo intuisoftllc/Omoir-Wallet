@@ -5,7 +5,7 @@ import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.BindingViewHolder
 import com.intuisoft.plaid.androidwrappers.ListItem
 import com.intuisoft.plaid.androidwrappers.setOnSingleClickListener
-import com.intuisoft.plaid.common.coroutines.PlaidScope
+import com.intuisoft.plaid.common.coroutines.OmoirScope
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.common.util.SimpleCoinNumberFormat
@@ -59,7 +59,7 @@ class BasicTransactionDetail(
                 }
             }
 
-            PlaidScope.applicationScope.launch(Dispatchers.IO) {
+            OmoirScope.applicationScope.launch(Dispatchers.IO) {
                 val memo = localStoreRepository.getTransactionMemo(transaction.transactionHash)
 
                 view?.apply {
