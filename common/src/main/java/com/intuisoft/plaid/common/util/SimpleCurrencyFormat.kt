@@ -1,6 +1,5 @@
 package com.intuisoft.plaid.common.util
 
-import android.provider.ContactsContract.CommonDataKinds.StructuredPostal
 import java.text.NumberFormat
 import java.util.*
 
@@ -27,6 +26,11 @@ object SimpleCurrencyFormat {
                     trimSymbol(localCurrency) + " "
                 )
         }
+    }
+
+    fun normalizeSeparators(number: String): Double {
+        val nf_in = NumberFormat.getNumberInstance(Locale.getDefault())
+        return nf_in.parse(number)?.toDouble() ?: 0.0
     }
 
     fun getSymbol(localCurrency: String): String {

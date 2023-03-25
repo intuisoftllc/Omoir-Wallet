@@ -17,6 +17,7 @@ import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.common.util.Constants.Strings.BTC_TICKER
 import com.intuisoft.plaid.common.util.SimpleCoinNumberFormat
+import com.intuisoft.plaid.common.util.SimpleCurrencyFormat
 import com.intuisoft.plaid.common.util.extensions.roundTo
 import com.intuisoft.plaid.common.util.extensions.safeWalletScope
 import com.intuisoft.plaid.util.NetworkUtil
@@ -323,6 +324,7 @@ class ExchangeViewModel(
                     wholeCoinConversion = 0.0
                     clearAddresses()
                     _showContent.postValue(true)
+                    _screenFunctionsEnabled.postValue(false)
                     _confirmButtonEnabled.postValue(false)
                     val lastCurrencyId = localStoreRepository.getLastExchangeCurrency()
                     var lastCurrency: SupportedCurrencyModel? = null
@@ -533,8 +535,8 @@ class ExchangeViewModel(
                     val range =
                         apiRepository.getCurrencyRangeLimit(outboundCurrency!!, inboundCurrency!!)
                     if (range != null) {
-                        min = range.min.toDouble().roundTo(8)
-                        max = range.max?.toDouble()?.roundTo(8)
+                        min = SimpleCurrencyFormat.normalizeSeparators(range.min).roundTo(8)
+                        max = if(range.max != null) SimpleCurrencyFormat.normalizeSeparators(range.max!!).roundTo(8) else null
                         _range.postValue(range.min to (range.max ?: "∞"))
                     } else {
                         min = 0.0
