@@ -80,6 +80,14 @@ class LocalStoreRepository_Impl(
         return getUserData().batchSize
     }
 
+    override fun setGapLimit(gap: Int) {
+        appPrefs.gapLimit = gap
+    }
+
+    override fun getGapLimit(): Int {
+        return appPrefs.gapLimit
+    }
+
     override fun setBatchSize(size: Int) {
         getUserData().batchSize = size
     }

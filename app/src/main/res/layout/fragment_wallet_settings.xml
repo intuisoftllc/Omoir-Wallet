@@ -139,6 +139,15 @@
                             app:item_subtitle="@string/wallet_settings_export_tx_data_description" />
 
                         <com.intuisoft.plaid.androidwrappers.SettingsItemView
+                            android:id="@+id/gap_limit"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            app:settings_variant="normal"
+                            android:layout_marginBottom="@dimen/horizontal_padding_size"
+                            app:item_title="@string/settings_option_gap_limit"
+                            app:item_subtitle="0"/>
+
+                        <com.intuisoft.plaid.androidwrappers.SettingsItemView
                             android:id="@+id/network"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"

@@ -117,7 +117,9 @@
     <string name="settings_option_view_accounts">Accounts</string>
     <string name="settings_option_view_accounts_description">Create accounts for your wallets</string>
     <string name="settings_option_view_address_min_confirmations">Minimum Confirmations</string>
+    <string name="settings_option_gap_limit">Gap Limit</string>
     <string name="settings_option_view_address_min_confirmations_description">Set the minimum confirmations needed for incoming/outgoing transactions</string>
+    <string name="settings_option_default_gap_limit_description">Set default gap limit when creating wallets</string>
     <string name="settings_option_view_address_min_escape_pod_protocol">Escape Pod Protocol</string>
     <string name="settings_option_view_address_min_escape_pod_protocol_description">Set default settings for epp</string>
     <string name="settings_option_omoir_wallet_pro">Omoir Wallet<font color="#104686">™</font> Pro</string>
@@ -259,6 +261,15 @@
     <string name="atp_externally_spent">Externally spent: %1$s</string>
     <string name="atp_failed_to_spend">Failed, fees too high:  %1$s</string>
 <!--    Atp Utxo Transfers Strings End -->
+
+<!--    Create Wallet Configuration Strings -->
+    <string name="create_wallet_configuration_title">Wallet Configuration</string>
+    <string name="create_wallet_configuration_item_1_title">Network</string>
+    <string name="create_wallet_configuration_item_2_title">Gap Limit</string>
+    <string name="create_wallet_configuration_item_3_title">Bip</string>
+    <string name="create_wallet_configuration_item_seed_title">Seed Phrase</string>
+    <string name="create_wallet_configuration_item_pub_priv_title">Pub/Priv Key</string>
+<!--    Create Wallet Configuration Strings End -->
 
 <!--    ATP Status Strings -->
     <string name="atp_status_not_started">Not Started</string>
@@ -873,6 +884,7 @@
     <string name="import_wallet">Import Wallet</string>
     <string name="main_net">Main Net</string>
     <string name="test_net">Test Net</string>
+    <string name="choose_network">Choose Network</string>
     <string name="not_applicable">N/A</string>
     <string name="failed_to_get_state">Failed to get state</string>
     <string name="select_all">Select All</string>
@@ -885,6 +897,7 @@
     <string name="today">Today</string>
     <string name="yesterday">Yesterday</string>
     <string name="close">Close</string>
+    <string name="private_symbol">****</string>
     <string name="unknown">Unknown</string>
     <string name="upgrade_to_pro">Upgrade To Pro</string>
     <string name="transaction_id">Transaction ID</string>

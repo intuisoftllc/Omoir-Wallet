@@ -45,8 +45,8 @@ abstract class AbstractWalletManager {
     abstract suspend fun removeSyncListener(listener: StateListener)
     abstract fun findLocalWallet(uuid: String): LocalWalletModel?
     abstract fun findStoredWallet(uuid: String): WalletIdentifier?
-    abstract suspend fun createWallet(name: String, seed: List<String>, bip: HDWallet.Purpose, testnetWallet: Boolean): String
-    abstract suspend fun createWallet(name: String, pubKey: String): String
+    abstract suspend fun createWallet(name: String, seed: List<String>, bip: HDWallet.Purpose, testnetWallet: Boolean, gapLimit: Int): String
+    abstract suspend fun createWallet(name: String, pubKey: String, gapLimit: Int): String
     abstract fun setCurrentHiddenWallet(localWallet: LocalWalletModel, passphrase: String, account: SavedAccountModel)
     abstract fun getCurrentHiddenWallet(localWallet: LocalWalletModel): HiddenWalletModel?
     abstract fun getBaseWallet(mainNet: Boolean = true): BitcoinKit

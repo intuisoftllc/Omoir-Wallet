@@ -12,6 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.NumberPicker
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatDialog
 import androidx.core.os.bundleOf
@@ -107,6 +108,8 @@ class WalletSettingsFragment : ConfigurableFragment<FragmentWalletSettingsBindin
             }
         })
 
+        binding.gapLimit.disableView(true)
+        binding.gapLimit.setSubTitleText("${viewModel.getWalletGapLimit()}")
         binding.exportWalletTx.setTitleText(getString(R.string.wallet_settings_export_tx_data))
         viewModel.walletBip.observe(viewLifecycleOwner, Observer {
             binding.bip.disableView(true)

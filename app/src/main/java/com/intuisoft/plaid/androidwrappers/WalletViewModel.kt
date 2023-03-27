@@ -14,6 +14,7 @@ import com.intuisoft.plaid.common.repositories.ApiRepository
 import com.intuisoft.plaid.listeners.StateListener
 import com.intuisoft.plaid.model.LocalWalletModel
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
+import com.intuisoft.plaid.common.util.Constants.Limit.DEFAULT_GAP_LIMIT
 import com.intuisoft.plaid.common.util.RateConverter
 import com.intuisoft.plaid.common.util.errors.ClosedWalletErr
 import com.intuisoft.plaid.walletmanager.AbstractWalletManager
@@ -234,6 +235,8 @@ open class WalletViewModel(
         _walletName.postValue(getWalletName())
     }
 
+    fun getWalletGapLimit() = walletManager.findStoredWallet(localWallet!!.uuid)!!.gapLimit ?: DEFAULT_GAP_LIMIT
+
     fun showHiddenWalletsCount() {
         _hiddenWallets.postValue(if(localStoreRepository.isHidingHiddenWalletsCount()) null else walletManager.getHiddenWalletCount(localWallet!!))
     }
@@ -405,7 +408,8 @@ open class WalletViewModel(
         walletName: String,
         seed: List<String>,
         bip: HDWallet.Purpose,
-        testNetWallet: Boolean
+        testNetWallet: Boolean,
+        gapLimit: Int
     ) {
         OmoirScope.applicationScope.launch(Dispatchers.IO) {
             try{
@@ -413,7 +417,8 @@ open class WalletViewModel(
                     name = walletName,
                     seed = seed!!,
                     bip = bip,
-                    testnetWallet = testNetWallet
+                    testnetWallet = testNetWallet,
+                    gapLimit = gapLimit
                 )
 
                 _walletCreated.postValue(walletId)
@@ -445,13 +450,15 @@ open class WalletViewModel(
 
     protected fun commitWalletToDisk(
         walletName: String,
-        pubKey: String
+        pubKey: String,
+        gapLimit: Int
     ) {
         OmoirScope.applicationScope.launch(Dispatchers.IO) {
             try {
                 val walletId = walletManager.createWallet(
                     name = walletName,
-                    pubKey = pubKey
+                    pubKey = pubKey,
+                    gapLimit = gapLimit
                 )
 
                 _walletCreated.postValue(walletId)

@@ -10,7 +10,10 @@ data class WalletIdentifier(
     var lastSynced: Long,
     var createdAt: Long,
     var isTestNet: Boolean,
-    var readOnly: Boolean
+    var readOnly: Boolean,
+
+    // @NonNull
+    var gapLimit: Int?
 ) {
 
     val isPrivateKeyWallet: Boolean

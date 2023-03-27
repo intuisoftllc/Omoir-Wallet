@@ -11,6 +11,7 @@ import com.intuisoft.plaid.common.analytics.EventTracker
 import com.intuisoft.plaid.common.analytics.events.EventDisableUsageData
 import com.intuisoft.plaid.common.analytics.events.EventEnableUsageData
 import com.intuisoft.plaid.common.coroutines.OmoirScope
+import com.intuisoft.plaid.common.local.AppPrefs
 import com.intuisoft.plaid.common.model.AppTheme
 import com.intuisoft.plaid.common.model.BitcoinDisplayUnit
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
@@ -71,6 +72,12 @@ class SettingsViewModel(
     fun getName() = localStoreRepository.getUserAlias()
     fun getMinConfirmations() = localStoreRepository.getMinimumConfirmations()
     fun versionTapLimitReached() = localStoreRepository.isDeveloper()
+
+    fun getGapLimit() = localStoreRepository.getGapLimit()
+
+    fun setGapLimit(limit: Int) {
+        localStoreRepository.setGapLimit(limit)
+    }
 
     var appRestartNeeded = false
 

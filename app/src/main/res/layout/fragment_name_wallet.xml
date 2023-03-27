@@ -96,6 +96,25 @@
         android:layout_marginTop="20dp"
         android:textColor="@color/error_color"/>
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/configuration"
+        android:drawableRight="@drawable/ic_chevron_right"
+        android:drawablePadding="@dimen/margin_10"
+        android:background="?android:selectableItemBackground"
+        android:id="@+id/configuration"
+        android:layout_gravity="center"
+        style="@style/TextStyle.Semibold.16"
+        android:textStyle="bold"
+        android:padding="@dimen/margin_10"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/confirm"
+        android:layout_marginBottom="@dimen/horizontal_padding_size"
+        android:textColor="?attr/colorPrimary"
+        android:gravity="center"/>
+
     <com.intuisoft.plaid.androidwrappers.RoundedButtonView
         android:id="@+id/confirm"
         android:layout_width="match_parent"

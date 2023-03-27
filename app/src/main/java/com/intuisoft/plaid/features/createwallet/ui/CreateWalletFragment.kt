@@ -1,11 +1,13 @@
 package com.intuisoft.plaid.features.createwallet.ui
 
+import android.app.Activity
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.NumberPicker
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatDialog
 import androidx.core.os.bundleOf
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -127,7 +129,18 @@ class CreateWalletFragment : ConfigurableFragment<FragmentCreateImportWalletBind
 
         bip.onClick {
             bottomSheetDialog.cancel()
-            showBipDialog()
+            showBipDialog(
+                activity = requireActivity(),
+                addToStack = ::addToStack,
+                removeFromStack = ::removeFromStack,
+                getBip = {
+                    viewModel.getLocalBipType()
+                },
+                setBip = {
+                    viewModel.setLocalBip(it)
+                },
+                onDismiss = {}
+            )
         }
 
         bottomSheetDialog.setOnCancelListener {
@@ -200,52 +213,67 @@ class CreateWalletFragment : ConfigurableFragment<FragmentCreateImportWalletBind
         bottomSheetDialog.show()
     }
 
-    private fun showBipDialog() {
-        val bottomSheetDialog = BottomSheetDialog(requireContext())
-        addToStack(bottomSheetDialog)
-        bottomSheetDialog.setContentView(R.layout.bottom_sheet_max_attempts)
-        val title = bottomSheetDialog.findViewById<TextView>(R.id.bottom_sheet_title)
-        val numberPicker = bottomSheetDialog.findViewById<NumberPicker>(R.id.numberPicker)
-
-        title?.setText(getString(R.string.create_wallet_advanced_options_bip))
-        numberPicker?.minValue = 0
-        numberPicker?.maxValue = 2
-        numberPicker?.displayedValues = arrayOf(
-            getString(R.string.create_wallet_advanced_options_bip_1),
-            getString(R.string.create_wallet_advanced_options_bip_2),
-            getString(R.string.create_wallet_advanced_options_bip_3)
-        )
-
-        when(viewModel.getLocalBipType()) {
-            HDWallet.Purpose.BIP84 -> {
-                numberPicker?.value = 0
+    companion object {
+        fun showBipDialog(
+            activity: Activity,
+            addToStack: (AppCompatDialog, onCancel: (() -> Unit)?) -> Unit,
+            removeFromStack: (AppCompatDialog) -> Unit,
+            getBip: () -> HDWallet.Purpose,
+            setBip: (HDWallet.Purpose) -> Unit,
+            onDismiss: () -> Unit
+        ) {
+            val bottomSheetDialog = BottomSheetDialog(activity)
+            var doNotRecreate = false
+            addToStack(bottomSheetDialog) {
+                doNotRecreate = true
             }
-            HDWallet.Purpose.BIP49 -> {
-                numberPicker?.value = 1
-            }
-            HDWallet.Purpose.BIP44 -> {
-                numberPicker?.value = 2
-            }
-        }
+            bottomSheetDialog.setContentView(R.layout.bottom_sheet_max_attempts)
+            val title = bottomSheetDialog.findViewById<TextView>(R.id.bottom_sheet_title)
+            val numberPicker = bottomSheetDialog.findViewById<NumberPicker>(R.id.numberPicker)
 
-        numberPicker?.setOnValueChangedListener { picker, oldVal, newVal ->
-            when(newVal) {
-                0 -> {
-                    viewModel.setLocalBip(HDWallet.Purpose.BIP84)
+            title?.setText(activity.getString(R.string.create_wallet_advanced_options_bip))
+            numberPicker?.minValue = 0
+            numberPicker?.maxValue = 2
+            numberPicker?.displayedValues = arrayOf(
+                activity.getString(R.string.create_wallet_advanced_options_bip_1),
+                activity.getString(R.string.create_wallet_advanced_options_bip_2),
+                activity.getString(R.string.create_wallet_advanced_options_bip_3)
+            )
+
+            when (getBip()) {
+                HDWallet.Purpose.BIP84 -> {
+                    numberPicker?.value = 0
                 }
-                1 -> {
-                    viewModel.setLocalBip(HDWallet.Purpose.BIP49)
+                HDWallet.Purpose.BIP49 -> {
+                    numberPicker?.value = 1
                 }
-                2 -> {
-                    viewModel.setLocalBip(HDWallet.Purpose.BIP44)
+                HDWallet.Purpose.BIP44 -> {
+                    numberPicker?.value = 2
                 }
             }
-        }
 
-        bottomSheetDialog.setOnCancelListener {
-            removeFromStack(bottomSheetDialog)
+            numberPicker?.setOnValueChangedListener { picker, oldVal, newVal ->
+                when (newVal) {
+                    0 -> {
+                        setBip(HDWallet.Purpose.BIP84)
+                    }
+                    1 -> {
+                        setBip(HDWallet.Purpose.BIP49)
+                    }
+                    2 -> {
+                        setBip(HDWallet.Purpose.BIP44)
+                    }
+                }
+            }
+
+            bottomSheetDialog.setOnCancelListener {
+                if(!doNotRecreate) {
+                    removeFromStack(bottomSheetDialog)
+                    onDismiss()
+                }
+            }
+            bottomSheetDialog.show()
         }
-        bottomSheetDialog.show()
     }
 
     override fun actionBarTitle(): Int {

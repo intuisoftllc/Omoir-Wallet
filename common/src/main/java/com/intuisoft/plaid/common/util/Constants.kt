@@ -144,6 +144,7 @@ class Constants {
     object Limit {
         const val MAX_ALIAS_LENGTH = 25
         const val DEFAULT_MAX_PIN_ATTEMPTS = 25
+        const val DEFAULT_GAP_LIMIT = 50
         const val MIN_RECOMMENDED_PIN_ATTEMPTS = 4
         const val VERSION_CODE_TAPPED_LIMIT = 4
         const val SATS_PER_BTC = 100000000

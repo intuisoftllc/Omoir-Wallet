@@ -4,6 +4,7 @@ import android.content.SharedPreferences
 import com.google.gson.Gson
 import com.intuisoft.plaid.common.model.*
 import com.intuisoft.plaid.common.util.Constants
+import com.intuisoft.plaid.common.util.Constants.Limit.DEFAULT_GAP_LIMIT
 import com.intuisoft.plaid.common.util.Constants.Limit.DEFAULT_MAX_PIN_ATTEMPTS
 import com.intuisoft.plaid.common.util.Constants.Limit.MIN_CONFIRMATIONS
 
@@ -22,6 +23,7 @@ class AppPrefs(
         const val PREMIUM_USER = "PREMIUM_USER"
         const val DERIVATION_PATH_CHANGE_WARNING = "DERIVATION_PATH_CHANGE_WARNING"
         const val TRACKING_CONSENT = "TRACKING_CONSENT"
+        const val GAP_LIMIT = "GAP_LIMIT"
     }
 
     var onboardingFinished: Boolean
@@ -46,6 +48,14 @@ class AppPrefs(
         }
         set(attempts) {
             putInt(MAX_PIN_ATTEMPTS_KEY, attempts)
+        }
+
+    var gapLimit: Int
+        get() {
+            return getInt(GAP_LIMIT, DEFAULT_GAP_LIMIT)
+        }
+        set(limit) {
+            putInt(GAP_LIMIT, limit)
         }
 
     var appTheme: AppTheme

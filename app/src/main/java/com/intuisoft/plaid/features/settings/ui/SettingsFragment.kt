@@ -295,6 +295,21 @@ class SettingsFragment : ConfigurableFragment<FragmentSettingsBinding>(
             bottomSheetDialog.show()
         }
 
+        binding.gapLimit.onClick {
+            showGapLimitDialog(
+                activity = requireActivity(),
+                addToStack = ::addToStack,
+                removeFromStack = ::removeFromStack,
+                getGapLimit = {
+                    viewModel.getGapLimit()
+                },
+                setGapLimit = {
+                    viewModel.setGapLimit(it)
+                },
+                onDismiss = {}
+            )
+        }
+
         viewModel.pinTimeoutSetting.observe(viewLifecycleOwner, Observer {
             binding.pinTimeout.setSubTitleText(viewModel.pinTimeoutToString(requireContext(), it))
         })
@@ -634,6 +649,42 @@ class SettingsFragment : ConfigurableFragment<FragmentSettingsBinding>(
     }
 
     companion object {
+        fun showGapLimitDialog(
+            activity: Activity,
+            addToStack: (AppCompatDialog, onCancel: (() -> Unit)?) -> Unit,
+            removeFromStack: (AppCompatDialog) -> Unit,
+            getGapLimit: () -> Int,
+            setGapLimit: (Int) -> Unit,
+            onDismiss: () -> Unit
+        ) {
+            val bottomSheetDialog = BottomSheetDialog(activity)
+            var doNotRecreate = false
+            addToStack(bottomSheetDialog) {
+                doNotRecreate = true
+            }
+
+            bottomSheetDialog.setContentView(R.layout.bottom_sheet_max_attempts)
+            val numberPicker = bottomSheetDialog.findViewById<NumberPicker>(R.id.numberPicker)
+            val title = bottomSheetDialog.findViewById<TextView>(R.id.bottom_sheet_title)
+            title?.text = activity.getString(R.string.settings_option_gap_limit)
+
+            numberPicker?.minValue = 1
+            numberPicker?.maxValue = 99
+            numberPicker?.value = getGapLimit()
+            numberPicker?.wrapSelectorWheel = true
+            numberPicker?.setOnValueChangedListener { picker, oldVal, newVal ->
+                setGapLimit(newVal)
+            }
+
+            bottomSheetDialog.setOnCancelListener {
+                if(!doNotRecreate) {
+                    removeFromStack(bottomSheetDialog)
+                    onDismiss()
+                }
+            }
+
+            bottomSheetDialog.show()
+        }
 
         fun simpleTextFieldDialog(
             activity: Activity,

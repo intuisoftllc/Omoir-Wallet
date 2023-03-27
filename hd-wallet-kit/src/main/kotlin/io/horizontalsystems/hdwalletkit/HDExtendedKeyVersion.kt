@@ -9,7 +9,8 @@ enum class HDExtendedKeyVersion(
     val base58Prefix: String,
     val purpose: Purpose,
     val extendedKeyCoinType: ExtendedKeyCoinType = ExtendedKeyCoinType.Bitcoin,
-    val isPublic: Boolean = false
+    val isPublic: Boolean = false,
+    val isTest: Boolean = false,
 ) {
 
     // bip44
@@ -25,16 +26,16 @@ enum class HDExtendedKeyVersion(
     zpub(0x04b24746, "zpub", Purpose.BIP84, isPublic = true),
 
     // bip44
-    tprv(0x04358394, "tprv", Purpose.BIP44),
-    tpub(0x043587cf, "tpub", Purpose.BIP44, isPublic = true),
+    tprv(0x04358394, "tprv", Purpose.BIP44, isTest = true),
+    tpub(0x043587cf, "tpub", Purpose.BIP44, isPublic = true, isTest = true),
 
     //bip49
-    uprv(0x044a4e28, "uprv", Purpose.BIP49),
-    upub(0x044a5262, "upub", Purpose.BIP49, isPublic = true),
+    uprv(0x044a4e28, "uprv", Purpose.BIP49, isTest = true),
+    upub(0x044a5262, "upub", Purpose.BIP49, isPublic = true, isTest = true),
 
     //bip84
-    vprv(0x045f18bc, "vprv", Purpose.BIP84),
-    vpub(0x045f1cf6, "vpub", Purpose.BIP84, isPublic = true),
+    vprv(0x045f18bc, "vprv", Purpose.BIP84, isTest = true),
+    vpub(0x045f1cf6, "vpub", Purpose.BIP84, isPublic = true, isTest = true),
 
 
     // litecoin bip44

@@ -9,6 +9,7 @@ import com.intuisoft.plaid.common.model.SavedAccountModel
 import com.intuisoft.plaid.common.model.WalletIdentifier
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.common.util.Constants
+import com.intuisoft.plaid.common.util.Constants.Limit.DEFAULT_GAP_LIMIT
 import com.intuisoft.plaid.common.util.extensions.remove
 import com.intuisoft.plaid.listeners.StateListener
 import com.intuisoft.plaid.model.LocalWalletModel
@@ -326,7 +327,8 @@ class WalletManager(
        name: String,
        seed: List<String>,
        bip: HDWallet.Purpose,
-       testnetWallet: Boolean
+       testnetWallet: Boolean,
+       gapLimit: Int
    ): String {
        val uuid = seed.joinToString(",").sha256(16)
        if(findStoredWallet(uuid) != null) {
@@ -344,7 +346,8 @@ class WalletManager(
                0,
                System.currentTimeMillis(),
                testnetWallet,
-               false
+               false,
+               gapLimit
            )
        )
 
@@ -353,7 +356,8 @@ class WalletManager(
 
    override suspend fun createWallet(
        name: String,
-       pubKey: String
+       pubKey: String,
+       gapLimit: Int
    ): String {
        val uuid = pubKey.sha256(16)
 
@@ -379,7 +383,8 @@ class WalletManager(
                0,
                System.currentTimeMillis(),
                network == BitcoinKit.NetworkType.TestNet,
-               validPubKey(pubKey)
+               validPubKey(pubKey),
+               gapLimit
            )
        )
 
@@ -411,8 +416,19 @@ class WalletManager(
 
                // Store wallet hashes for passphrases
                findAndUpdateBaseWallet(identifier.walletUUID) {
+                   var save = false
+
                    if (walletHashIds.find { it == model.uuid } == null) {
                        walletHashIds.add(model.uuid)
+                       save = true
+                   }
+
+                   if(gapLimit == null) {
+                       save = true
+                       gapLimit = DEFAULT_GAP_LIMIT
+                   }
+
+                   if(save) {
                        localStoreRepository.setStoredWalletInfo(localStoreRepository.getStoredWalletInfo())
                    }
                }
@@ -425,7 +441,7 @@ class WalletManager(
                        walletId = model.uuid,
                        networkType = getWalletNetwork(model),
                        peerSize = Constants.Limit.MAX_PEERS,
-                       gapLimit = 50,
+                       gapLimit = identifier.gapLimit ?: DEFAULT_GAP_LIMIT,
                        syncMode = BitcoinCore.SyncMode.Api(),
                        confirmationsThreshold = localStoreRepository.getMinimumConfirmations()
                    )
@@ -439,7 +455,7 @@ class WalletManager(
                            walletId = model.uuid,
                            networkType = getWalletNetwork(model),
                            peerSize = Constants.Limit.MAX_PEERS,
-                           gapLimit = 50,
+                           gapLimit = identifier.gapLimit ?: DEFAULT_GAP_LIMIT,
                            syncMode = BitcoinCore.SyncMode.Api(),
                            confirmationsThreshold = localStoreRepository.getMinimumConfirmations(),
                            purpose = HDWallet.Purpose.values()
@@ -454,7 +470,7 @@ class WalletManager(
                            walletId = model.uuid,
                            networkType = getWalletNetwork(model),
                            peerSize = Constants.Limit.MAX_PEERS,
-                           gapLimit = 50,
+                           gapLimit = identifier.gapLimit ?: DEFAULT_GAP_LIMIT,
                            syncMode = BitcoinCore.SyncMode.Api(),
                            confirmationsThreshold = localStoreRepository.getMinimumConfirmations(),
                            purpose = HDWallet.Purpose.values()

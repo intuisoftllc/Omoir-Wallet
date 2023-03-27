@@ -29,6 +29,10 @@ interface LocalStoreRepository {
 
     fun setBatchGap(gap: Int)
 
+    fun getGapLimit(): Int
+
+    fun setGapLimit(gap: Int)
+
     fun getBatchSize(): Int
 
     fun setBatchSize(size: Int)

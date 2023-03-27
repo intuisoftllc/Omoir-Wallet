@@ -68,12 +68,15 @@ class CreateWalletViewModel(
     private var invalidSeedWordErrors = 0
     private var maxWordsErrors = 0
 
+    var gapLimit = localStoreRepository.getGapLimit()
     var useTestNet = false
         private set
 
     fun generateNewWallet() {
         generateNewWallet(entropyStrength)
     }
+
+    fun getLocalSeedPhrase() = seed
 
     fun setUseTestNet(use: Boolean) {
         useTestNet = use
@@ -262,6 +265,8 @@ class CreateWalletViewModel(
         this.pubKey = pubKey
     }
 
+    fun getLocalPublicKey() = pubKey
+
     fun importPublicKey() {
         if(isPubPrivKeyAddressValid(pubKey)) {
             _onConfirm.postValue(Unit)
@@ -314,14 +319,16 @@ class CreateWalletViewModel(
         if(pubKey.isNotEmpty()) {
             commitWalletToDisk(
                 walletName = walletName,
-                pubKey = pubKey
+                pubKey = pubKey,
+                gapLimit = gapLimit
             )
         } else {
             commitWalletToDisk(
                 walletName = walletName,
                 seed = seed,
                 bip = bip,
-                testNetWallet = useTestNet
+                testNetWallet = useTestNet,
+                gapLimit = gapLimit
             )
         }
     }

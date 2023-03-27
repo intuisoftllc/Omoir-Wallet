@@ -244,7 +244,7 @@ class UserData {
             synchronized(this@UserData::class.java) {
                 val json = Gson().toJson(this@UserData, UserData::class.java)
                 AESUtils.encrypt(json, CommonService.getUserPin(), CommonService.getWalletSecret())?.let { usrData ->
-                    val dir: File = CommonService.getApplication().dataDir
+                    val dir: File = CommonService.getApplication().filesDir
                     if(File(dir, OLD_FILE_NAME).exists()) {
                         try {
                             File(dir, OLD_FILE_NAME).delete()
