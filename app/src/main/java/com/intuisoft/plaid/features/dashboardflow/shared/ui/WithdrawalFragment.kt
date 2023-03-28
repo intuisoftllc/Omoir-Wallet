@@ -19,6 +19,7 @@ import com.intuisoft.plaid.androidwrappers.*
 import com.intuisoft.plaid.androidwrappers.delegates.FragmentConfiguration
 import com.intuisoft.plaid.common.analytics.EventTracker
 import com.intuisoft.plaid.common.analytics.events.EventWithdrawMax
+import com.intuisoft.plaid.common.delegates.DelegateManager
 import com.intuisoft.plaid.common.model.BitcoinDisplayUnit
 import com.intuisoft.plaid.databinding.FragmentWithdrawBinding
 import com.intuisoft.plaid.features.dashboardflow.shared.viewModel.WithdrawalViewModel
@@ -46,6 +47,7 @@ class WithdrawalFragment : ConfigurableFragment<FragmentWithdrawBinding>(pinProt
     private val viewModel: WithdrawalViewModel by viewModel()
     private val localStoreRepository: LocalStoreRepository by inject()
     private val walletManager: AbstractWalletManager by inject()
+    private val delegateManager: DelegateManager by inject()
     protected val eventTracker: EventTracker by inject()
 
     override fun onCreateView(
@@ -137,6 +139,7 @@ class WithdrawalFragment : ConfigurableFragment<FragmentWithdrawBinding>(pinProt
                     viewModel.updateUTXOs(it.toMutableList())
                 },
                 localStoreRepository = localStoreRepository,
+                delegateManager = delegateManager,
                 getFullKeyPath = {
                     walletManager.getFullPublicKeyPath(it)
                 },
@@ -264,6 +267,7 @@ class WithdrawalFragment : ConfigurableFragment<FragmentWithdrawBinding>(pinProt
             addSingleUTXO: (UnspentOutput) -> Unit,
             getFullKeyPath: (PublicKey) -> String,
             localStoreRepository: LocalStoreRepository,
+            delegateManager: DelegateManager,
             addToStack: (AppCompatDialog, () -> Unit) -> Unit,
             removeFromStack: (AppCompatDialog) -> Unit
         ) {
@@ -310,6 +314,7 @@ class WithdrawalFragment : ConfigurableFragment<FragmentWithdrawBinding>(pinProt
                             context = context,
                             coin = it,
                             localStoreRepository = localStoreRepository,
+                            delegateManager = delegateManager,
                             getFullKeyPath = getFullKeyPath,
                             onDismiss = {
                                 if(!blockDialogRecreate) {
@@ -322,6 +327,7 @@ class WithdrawalFragment : ConfigurableFragment<FragmentWithdrawBinding>(pinProt
                                         addSingleUTXO = addSingleUTXO,
                                         getFullKeyPath = getFullKeyPath,
                                         localStoreRepository = localStoreRepository,
+                                        delegateManager = delegateManager,
                                         addToStack = addToStack,
                                         removeFromStack = removeFromStack
                                     )

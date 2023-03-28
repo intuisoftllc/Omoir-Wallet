@@ -9,6 +9,7 @@ import com.intuisoft.plaid.androidwrappers.SingleLiveData
 import com.intuisoft.plaid.androidwrappers.SwapPairItemView
 import com.intuisoft.plaid.androidwrappers.WalletViewModel
 import com.intuisoft.plaid.common.coroutines.PlaidScope
+import com.intuisoft.plaid.common.delegates.DelegateManager
 import com.intuisoft.plaid.common.local.db.SupportedCurrency
 import com.intuisoft.plaid.common.model.EstimatedReceiveAmountModel
 import com.intuisoft.plaid.common.model.ExchangeInfoDataModel
@@ -31,8 +32,9 @@ class ExchangeViewModel(
     application: Application,
     private val apiRepository: ApiRepository,
     private val localStoreRepository: LocalStoreRepository,
-    private val walletManager: AbstractWalletManager
-): WalletViewModel(application, localStoreRepository, apiRepository, walletManager) {
+    private val walletManager: AbstractWalletManager,
+    private val delegateManager: DelegateManager
+): WalletViewModel(application, localStoreRepository, apiRepository, walletManager, delegateManager) {
 
     protected val _sendPairInfo = SingleLiveData<SwapPairInfo>()
     val sendPairInfo: LiveData<SwapPairInfo> = _sendPairInfo

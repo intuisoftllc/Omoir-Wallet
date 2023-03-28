@@ -1,7 +1,7 @@
 package com.intuisoft.plaid.common.repositories
 
-import android.util.Log
-import com.intuisoft.plaid.common.local.db.SupportedCurrency
+import com.intuisoft.plaid.common.delegates.coins.CoinDelegate
+import com.intuisoft.plaid.common.delegates.market.MarketDataDelegate
 import com.intuisoft.plaid.common.local.memorycache.MemoryCache
 import com.intuisoft.plaid.common.model.*
 import com.intuisoft.plaid.common.network.blockchair.repository.*
@@ -36,10 +36,19 @@ class ApiRepository_Impl(
         } else return rate
     }
 
-    override suspend fun getRateFor(currencyCode: String): BasicPriceDataModel {
-        updateBasicPriceData()
-        return localStoreRepository.getRateFor(currencyCode)
-            ?: BasicPriceDataModel(0.0, 0.0, 0.0, localStoreRepository.getLocalCurrency())
+    override suspend fun getCryptoInfo(del: MarketDataDelegate): CoinInfoDataModel {
+        updateCryptoInfo(del)
+        return localStoreRepository.getBasicCoinInfo(del.coingeckoId)
+            ?: CoinInfoDataModel(
+                id = del.coingeckoId,
+                marketData = CoinMarketData(
+                    PriceData(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0),
+                    PriceData(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0),
+                    PriceData(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0),
+                    0.0,
+                    0.0
+                )
+            )
     }
 
     override suspend fun getSupportedCurrencies(): List<SupportedCurrencyModel> {
@@ -54,27 +63,13 @@ class ApiRepository_Impl(
     }
 
     /* On-Demand Call */
-    override suspend fun getBasicTickerData(): BasicTickerDataModel {
-        updateBasicNetworkData()
-        val data = localStoreRepository.getBasicNetworkData()
-        val rate = getRateFor(localStoreRepository.getLocalCurrency())
+    override suspend fun getBasicPriceData(del: MarketDataDelegate): BasicTickerDataModel {
+        val data = getCryptoInfo(del)
 
-        if(data != null) {
-            return BasicTickerDataModel(
-                price = rate.currentPrice,
-                marketCap = rate.marketCap,
-                volume24Hr = rate.volume24Hr,
-                circulatingSupply = data.circulatingSupply,
-                maxSupply = data.maxSupply
-            )
+        return if(data != null) {
+            BasicTickerDataModel.consume(data, localStoreRepository)
         } else {
-            return BasicTickerDataModel(
-                price = 0.0,
-                marketCap = 0.0,
-                volume24Hr = 0.0,
-                circulatingSupply = 0,
-                maxSupply = 0
-            )
+            BasicTickerDataModel(0.0, 0.0, 0.0, 0.0, 0.0)
         }
     }
 
@@ -246,13 +241,13 @@ class ApiRepository_Impl(
         }
     }
 
-    private suspend fun updateBasicPriceData() {
-        if((System.currentTimeMillis() - localStoreRepository.getLastCurrencyRateUpdateTime()) > Constants.Time.GENERAL_CACHE_UPDATE_TIME) {
-            val rates = coingeckoRepository.getBasicPriceData()
+    private suspend fun updateCryptoInfo(del: MarketDataDelegate) {
+        if((System.currentTimeMillis() - del.lastBasicCryptoInfoUpdateTime) > Constants.Time.GENERAL_CACHE_UPDATE_TIME_MED) {
+            val info = coingeckoRepository.getBasicInfoData(del.coingeckoId)
 
-            if(rates.isSuccess) {
-                localStoreRepository.setRates(rates!!.getOrThrow())
-                localStoreRepository.setLastCurrencyRateUpdate(System.currentTimeMillis())
+            if(info.isSuccess) {
+                localStoreRepository.setBasicCoinInfo(info!!.getOrThrow())
+                del.lastBasicCryptoInfoUpdateTime = System.currentTimeMillis()
             }
         }
     }
@@ -303,20 +298,6 @@ class ApiRepository_Impl(
 
             if(rangeLimit.isSuccess) {
                 memoryCache.setCurrencySwapRangeLimit(from, to, System.currentTimeMillis(), rangeLimit.getOrThrow())
-            }
-        }
-    }
-
-    private suspend fun updateBasicNetworkData() {
-        if((System.currentTimeMillis() - localStoreRepository.getLastBasicNetworkDataUpdateTime()) > Constants.Time.GENERAL_CACHE_UPDATE_TIME) {
-            val data = blockchainInfoRepository.getBasicNetworkData()
-
-            if(data.isSuccess) {
-                localStoreRepository.setBasicNetworkData(
-                    data.getOrThrow().currentSupply
-                )
-
-                localStoreRepository.setLastBasicNetworkDataUpdate(System.currentTimeMillis())
             }
         }
     }
@@ -408,9 +389,9 @@ class ApiRepository_Impl(
         }
     }
 
-    override suspend fun refreshLocalCache() {
+    override suspend fun refreshLocalCache() { // todo: pass ticker here??
         updateSuggestedFeeRates()
-        updateBasicPriceData()
+//        updateCryptoInfo()
         updateSupportedCurrenciesData()
         updateSupportedCurrenciesData()
     }

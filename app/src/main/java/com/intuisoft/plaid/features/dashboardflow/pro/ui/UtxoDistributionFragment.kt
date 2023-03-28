@@ -17,6 +17,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.*
 import com.intuisoft.plaid.androidwrappers.delegates.FragmentConfiguration
+import com.intuisoft.plaid.common.delegates.DelegateManager
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.common.util.RateConverter
@@ -38,6 +39,7 @@ import java.util.Locale
 class UtxoDistributionFragment : ConfigurableFragment<FragmentUtxoDistroReportBinding>(pinProtection = true, premiumContent = true) {
     protected val viewModel: UtxoDistributionViewModel by viewModel()
     protected val localStoreRepository: LocalStoreRepository by inject()
+    protected val delegateManager: DelegateManager by inject()
     protected val walletManager: AbstractWalletManager by inject()
 
     private val adapter = BasicCoinAdapter(
@@ -114,6 +116,7 @@ class UtxoDistributionFragment : ConfigurableFragment<FragmentUtxoDistroReportBi
             context = requireContext(),
             coin = coin,
             localStoreRepository = localStoreRepository,
+            delegateManager = delegateManager,
             getFullKeyPath = {
                 walletManager.getFullPublicKeyPath(it)
             },
@@ -143,6 +146,7 @@ class UtxoDistributionFragment : ConfigurableFragment<FragmentUtxoDistroReportBi
             context: Context,
             coin: UnspentOutput,
             localStoreRepository: LocalStoreRepository,
+            delegateManager: DelegateManager,
             getFullKeyPath: (PublicKey) -> String,
             onSpendCoin: ((UnspentOutput) -> Unit)? = null,
             onDismiss: (() -> Unit)? = null,
@@ -165,7 +169,7 @@ class UtxoDistributionFragment : ConfigurableFragment<FragmentUtxoDistroReportBi
             val balance = bottomSheetDialog.findViewById<TextView>(R.id.info_amount)!!
             val fiat = bottomSheetDialog.findViewById<TextView>(R.id.info_fiat_conversion)!!
             val rateConverter = RateConverter(
-                localStoreRepository.getRateFor(localStoreRepository.getLocalCurrency())?.currentPrice ?: 0.0
+                delegateManager.current().marketDelegate.getLocalBasicTickerData().price
             )
             rateConverter.setLocalRate(RateConverter.RateType.SATOSHI_RATE, coin.output.value.toDouble())
 

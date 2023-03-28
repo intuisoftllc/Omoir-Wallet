@@ -4,7 +4,6 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverters
-import com.intuisoft.plaid.common.model.BasicNetworkDataModel
 import com.intuisoft.plaid.common.model.BlacklistedAddressModel
 import com.intuisoft.plaid.common.model.BlacklistedTransactionModel
 import com.intuisoft.plaid.common.model.ExchangeInfoDataModel

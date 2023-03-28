@@ -8,6 +8,7 @@ import com.intuisoft.plaid.PlaidApp
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.SingleLiveData
 import com.intuisoft.plaid.androidwrappers.WalletViewModel
+import com.intuisoft.plaid.common.delegates.DelegateManager
 import com.intuisoft.plaid.common.repositories.ApiRepository
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.common.util.Constants
@@ -24,8 +25,9 @@ class ExchangeDetailsViewModel(
     application: Application,
     private val apiRepository: ApiRepository,
     private val localStoreRepository: LocalStoreRepository,
-    private val walletManager: AbstractWalletManager
-): WalletViewModel(application, localStoreRepository, apiRepository, walletManager) {
+    private val walletManager: AbstractWalletManager,
+    private val delegateManager: DelegateManager,
+): WalletViewModel(application, localStoreRepository, apiRepository, walletManager, delegateManager) {
 
     protected val _priceConversion = SingleLiveData<String>()
     val priceConversion: LiveData<String> = _priceConversion
@@ -37,12 +39,11 @@ class ExchangeDetailsViewModel(
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
                 safeWalletScope {
-                    val rate = apiRepository.getRateFor(localStoreRepository.getLocalCurrency())
-                    val rateConverter = RateConverter(rate.currentPrice)
+                    val rate = delegateManager.current().marketDelegate.getBasicTickerData()
+                    val rateConverter = RateConverter(rate.price)
                     rateConverter.setLocalRate(RateConverter.RateType.BTC_RATE, receiveValue)
 
-
-                    if (rate.currentPrice != 0.0) {
+                    if (rate.price != 0.0) {
                         _priceConversion.postValue(
                             rateConverter.from(
                                 RateConverter.RateType.FIAT_RATE,

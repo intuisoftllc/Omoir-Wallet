@@ -13,7 +13,6 @@ import java.util.concurrent.CopyOnWriteArrayList
 class MemoryCache {
     private var rangeLimitsCache: HashMap<String, Pair<Long, CurrencyRangeLimitModel>> = hashMapOf()
     private var exchangeUpdateTimes: HashMap<String, Long> = hashMapOf()
-    private var currencyRateCache: HashMap<String, BasicPriceDataModel?> = hashMapOf()
     private var storedWalletInfoCache: StoredWalletInfo? = null
     private var blacklistedAddressesCache: CopyOnWriteArrayList<BlacklistedAddressModel>? = null
     private var blacklistedTransactionsCache: CopyOnWriteArrayList<BlacklistedTransactionModel>? = null
@@ -26,7 +25,6 @@ class MemoryCache {
     fun clear() {
         rangeLimitsCache = hashMapOf()
         exchangeUpdateTimes = hashMapOf()
-        currencyRateCache = hashMapOf()
         storedWalletInfoCache = null
         blacklistedAddressesCache = null
         blacklistedTransactionsCache = null
@@ -90,14 +88,6 @@ class MemoryCache {
 
     fun setBlacklistedTransactions(transactions: List<BlacklistedTransactionModel>) {
         blacklistedTransactionsCache = CopyOnWriteArrayList(transactions)
-    }
-
-    fun getRateFor(currencyCode: String): BasicPriceDataModel? {
-        return currencyRateCache.get(currencyCode)
-    }
-
-    fun setRateFor(currencyCode: String, rate: BasicPriceDataModel?) {
-        currencyRateCache.put(currencyCode, rate)
     }
 
     fun getCurrencySwapRangeLimit(from: SupportedCurrencyModel, to: SupportedCurrencyModel): CurrencyRangeLimitModel? {

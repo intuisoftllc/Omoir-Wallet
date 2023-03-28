@@ -58,7 +58,8 @@ class PlaidApp : Application(), Application.ActivityLifecycleCallbacks, KoinComp
                     apiRepositoriesModule,
                     walletManagerModule,
                     analyticsModule,
-                    billingModule
+                    billingModule,
+                    delegateManagerModule
                 )
             )
         }

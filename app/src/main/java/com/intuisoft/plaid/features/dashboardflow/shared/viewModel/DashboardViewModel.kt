@@ -8,6 +8,7 @@ import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.SingleLiveData
 import com.intuisoft.plaid.androidwrappers.WalletViewModel
 import com.intuisoft.plaid.common.coroutines.PlaidScope
+import com.intuisoft.plaid.common.delegates.DelegateManager
 import com.intuisoft.plaid.common.model.*
 import com.intuisoft.plaid.common.repositories.ApiRepository
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
@@ -17,7 +18,6 @@ import com.intuisoft.plaid.common.util.SimpleCurrencyFormat
 import com.intuisoft.plaid.common.util.extensions.safeWalletScope
 import com.intuisoft.plaid.util.NetworkUtil
 import com.intuisoft.plaid.common.util.SimpleTimeFormat
-import com.intuisoft.plaid.common.util.extensions.prepend
 import com.intuisoft.plaid.common.util.extensions.roundTo
 import com.intuisoft.plaid.walletmanager.AbstractWalletManager
 import io.horizontalsystems.bitcoincore.models.TransactionInfo
@@ -34,8 +34,9 @@ class DashboardViewModel(
     application: Application,
     private val apiRepository: ApiRepository,
     private val localStoreRepository: LocalStoreRepository,
-    private val walletManager: AbstractWalletManager
-): WalletViewModel(application, localStoreRepository, apiRepository, walletManager) {
+    private val walletManager: AbstractWalletManager,
+    private val delegateManager: DelegateManager,
+): WalletViewModel(application, localStoreRepository, apiRepository, walletManager, delegateManager) {
 
     protected val _network = SingleLiveData<String>()
     val network: LiveData<String> = _network
@@ -143,7 +144,7 @@ class DashboardViewModel(
                         if (balanceHistory.isEmpty()) {
                             _noChartData.postValue(Unit)
 
-                            val rate = RateConverter(localStoreRepository.getRateFor(localStoreRepository.getLocalCurrency())?.currentPrice ?: 0.0)
+                            val rate = RateConverter(delegateManager.current().marketDelegate.getLocalBasicTickerData().price)
                             rate.setLocalRate(RateConverter.RateType.FIAT_RATE, 0.0)
                             _totalSent.postValue(
                                 rate.from(
@@ -220,8 +221,7 @@ class DashboardViewModel(
                             val highestBalance = balanceHistory.maxByOrNull { it.first }
 
                             val rate = RateConverter(
-                                localStoreRepository.getRateFor(localStoreRepository.getLocalCurrency())?.currentPrice
-                                    ?: 0.0
+                                delegateManager.current().marketDelegate.getLocalBasicTickerData().price
                             )
 
                             rate.setLocalRate(RateConverter.RateType.SATOSHI_RATE, getWalletBalance().toDouble())
@@ -285,7 +285,7 @@ class DashboardViewModel(
                                 )
                             )
 
-                            rate.setFiatRate(localStoreRepository.getRateFor(localStoreRepository.getLocalCurrency())?.currentPrice ?: 0.0)
+                            rate.setFiatRate(delegateManager.current().marketDelegate.getLocalBasicTickerData().price)
                             when (localStoreRepository.getBitcoinDisplayUnit()) {
                                 BitcoinDisplayUnit.SATS -> {
                                     _chartData.postValue(

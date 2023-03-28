@@ -21,6 +21,7 @@ import com.intuisoft.plaid.androidwrappers.delegates.FragmentConfiguration
 import com.intuisoft.plaid.billing.BillingManager
 import com.intuisoft.plaid.common.analytics.EventTracker
 import com.intuisoft.plaid.common.analytics.events.EventWalletSettingsExportCsv
+import com.intuisoft.plaid.common.delegates.DelegateManager
 import com.intuisoft.plaid.common.model.BitcoinDisplayUnit
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.common.util.Constants.Time.MIN_CLICK_INTERVAL_SHORT
@@ -41,6 +42,7 @@ class ExportOptionsFragment : ConfigurableFragment<FragmentExportOptionsBinding>
     protected val viewModel: ExportOptionsViewModel by viewModel()
     protected val eventTracker: EventTracker by inject()
     protected val localStoreRepository: LocalStoreRepository by inject()
+    protected val delegateManager: DelegateManager by inject()
     protected val billing: BillingManager by inject()
 
     override fun onCreateView(
@@ -95,7 +97,7 @@ class ExportOptionsFragment : ConfigurableFragment<FragmentExportOptionsBinding>
         val valueFilterIcon = bottomSheetDialog.findViewById<ImageView>(R.id.data_filter_icon)!!
         val dataValue = bottomSheetDialog.findViewById<EditText>(R.id.data_value)!!
         val done = bottomSheetDialog.findViewById<RoundedButtonView>(R.id.done)!!
-        val rateConverter = RateConverter(localStoreRepository.getRateFor(localStoreRepository.getLocalCurrency())?.currentPrice ?: 0.0 )
+        val rateConverter = RateConverter(delegateManager.current().marketDelegate.getLocalBasicTickerData().price)
 
         mode.isEnabled = false
         billing.shouldShowPremiumContent {

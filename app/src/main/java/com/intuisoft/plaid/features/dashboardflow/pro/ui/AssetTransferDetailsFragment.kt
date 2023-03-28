@@ -16,6 +16,7 @@ import com.intuisoft.plaid.androidwrappers.delegates.FragmentConfiguration
 import com.intuisoft.plaid.common.CommonService
 import com.intuisoft.plaid.common.analytics.EventTracker
 import com.intuisoft.plaid.common.analytics.events.EventAtpCancel
+import com.intuisoft.plaid.common.delegates.DelegateManager
 import com.intuisoft.plaid.common.local.db.AssetTransferDao
 import com.intuisoft.plaid.common.local.db.BatchDao
 import com.intuisoft.plaid.common.model.AssetTransferStatus
@@ -38,6 +39,7 @@ class AssetTransferDetailsFragment : ConfigurableFragment<FragmentAssetTransferD
     protected val viewModel: AtpDetailsViewModel by viewModel()
     protected val localStoreRepository: LocalStoreRepository by inject()
     protected val walletManager: AbstractWalletManager by inject()
+    protected val delegateManager: DelegateManager by inject()
     protected val eventTracker: EventTracker by inject()
 
     val adapter = BatchInfoAdapter(
@@ -109,7 +111,7 @@ class AssetTransferDetailsFragment : ConfigurableFragment<FragmentAssetTransferD
             binding.batchGap.setSubTitleText(Plural.of("Block", transfer.batchGap.toLong()))
             binding.batchSize.setSubTitleText(Plural.of("Utxo", transfer.batchSize.toLong()))
 
-            val rate = RateConverter(localStoreRepository.getRateFor(localStoreRepository.getLocalCurrency())?.currentPrice ?: 0.0)
+            val rate = RateConverter(delegateManager.current().marketDelegate.getLocalBasicTickerData().price)
             rate.setLocalRate(RateConverter.RateType.SATOSHI_RATE, transfer.expectedAmount.toDouble())
             binding.expectedAmount.setSubTitleText(rate.from(localStoreRepository.getBitcoinDisplayUnit().toRateType(), localStoreRepository.getLocalCurrency(), false).second)
 

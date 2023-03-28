@@ -6,6 +6,7 @@ import com.intuisoft.plaid.PlaidApp
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.SingleLiveData
 import com.intuisoft.plaid.androidwrappers.WalletViewModel
+import com.intuisoft.plaid.common.delegates.DelegateManager
 import com.intuisoft.plaid.common.repositories.ApiRepository
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.common.util.RateConverter
@@ -17,8 +18,9 @@ class InvoiceViewModel(
     application: Application,
     apiRepository: ApiRepository,
     private val localStoreRepository: LocalStoreRepository,
-    private val walletManager: AbstractWalletManager
-): WalletViewModel(application, localStoreRepository, apiRepository, walletManager) {
+    private val walletManager: AbstractWalletManager,
+    private val delegateManager: DelegateManager,
+): WalletViewModel(application, localStoreRepository, apiRepository, walletManager, delegateManager) {
 
     protected val _invoiceLoaded = SingleLiveData<InvoiceDetails>()
     val invoiceLoaded: LiveData<InvoiceDetails> = _invoiceLoaded
@@ -35,7 +37,7 @@ class InvoiceViewModel(
     protected val _onAvailableBalanceUpdated = SingleLiveData<String>()
     val onAvailableBalanceUpdated: LiveData<String> = _onAvailableBalanceUpdated
 
-    private var amountToSpend: RateConverter = RateConverter(localStoreRepository.getRateFor(localStoreRepository.getLocalCurrency())?.currentPrice ?: 0.0)
+    private var amountToSpend: RateConverter = RateConverter(delegateManager.current().marketDelegate.getLocalBasicTickerData().price)
     private var description: String = ""
     private var address: String = ""
     private var exchangeId: String? = null

@@ -31,6 +31,11 @@ val walletManagerModule = module {
     single { provideWalletAtpManager(get(), get(), get()) }
 }
 
+val delegateManagerModule = module {
+
+    single { CommonService.getDelegateManagerInstance() }
+}
+
 fun provideWalletSyncer(
     application: Application,
     localStoreRepository: LocalStoreRepository,

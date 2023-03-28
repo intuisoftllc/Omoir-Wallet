@@ -1,21 +1,23 @@
-package com.intuisoft.plaid.common.network.blockchair.api
+package com.intuisoft.plaid.common.network.coingecko.api
 
-import com.intuisoft.plaid.common.network.coingecko.response.BasicPriceDataResponse
 import com.intuisoft.plaid.common.network.coingecko.response.ChartDataResponse
+import com.intuisoft.plaid.common.network.coingecko.response.CryptoInfoDataResponse
 import com.intuisoft.plaid.common.network.coingecko.response.MarketHistoryDataResponse
 import retrofit2.Call
 import retrofit2.http.*
 
 interface CoingeckoApi {
 
-    @GET("simple/price")
+    @GET("coins/{ticker}")
     fun getBasicPriceData(
-        @Query("ids") id: String = "bitcoin",
-        @Query("vs_currencies") currencies: String = "usd,eur,cad,aed,ars,aud,bdt,bhd,chf,cny,czk,gbp,krw,rub,php,pkr,clp",
-        @Query("include_market_cap") includeMarketCap: Boolean = true,
-        @Query("include_24hr_vol") include24hrVol: Boolean = true,
+        @Path("ticker") ticker: String,
+        @Query("tickers") tickers: Boolean = false,
+        @Query("market_data") marketData: Boolean = true,
+        @Query("community_data") communityData: Boolean = false,
+        @Query("developer_data") devData: Boolean = false,
+        @Query("localization") localization: String = "en",
         @Query("x_cg_pro_api_key") apiKey: String? = null
-    ): Call<BasicPriceDataResponse>
+    ): Call<CryptoInfoDataResponse>
 
     @GET("coins/{id}/market_chart")
     fun get1DayChartData(

@@ -1,18 +1,15 @@
 package com.intuisoft.plaid.common.network.blockchair.repository
 
-import com.intuisoft.plaid.common.model.BasicPriceDataModel
-import com.intuisoft.plaid.common.model.ChartDataModel
-import com.intuisoft.plaid.common.model.ChartIntervalType
-import com.intuisoft.plaid.common.model.MarketHistoryDataModel
-import com.intuisoft.plaid.common.network.blockchair.api.CoingeckoApi
+import com.intuisoft.plaid.common.model.*
+import com.intuisoft.plaid.common.network.coingecko.api.CoingeckoApi
 import com.intuisoft.plaid.common.network.coingecko.response.ChartDataResponse
-import com.intuisoft.plaid.common.util.Constants
+import com.intuisoft.plaid.common.network.coingecko.response.PriceDataResponse
 
 interface CoingeckoRepository {
     val TAG: String
         get() = this.javaClass.simpleName
 
-    fun getBasicPriceData(): Result<List<BasicPriceDataModel>>
+    fun getBasicInfoData(coin: String): Result<CoinInfoDataModel>
 
     fun getChartData(interval: ChartIntervalType, currencyCode: String): Result<List<ChartDataModel>>
 
@@ -41,113 +38,22 @@ interface CoingeckoRepository {
             }
         }
 
-        override fun getBasicPriceData(): Result<List<BasicPriceDataModel>> {
+        override fun getBasicInfoData(coin: String): Result<CoinInfoDataModel> {
             try {
-                val prices = api.getBasicPriceData(apiKey = apiKey).execute().body()
+                val response = api.getBasicPriceData(
+                    ticker = coin,
+                    apiKey = apiKey
+                ).execute().body()
 
                 return Result.success(
-                    listOf(
-                        BasicPriceDataModel(
-                            marketCap = prices!!.bitcoin.usd_market_cap,
-                            volume24Hr = prices!!.bitcoin.usd_24h_vol,
-                            currentPrice = prices!!.bitcoin.usd,
-                            currencyCode = Constants.LocalCurrency.USD
-                        ),
-                        BasicPriceDataModel(
-                            marketCap = prices!!.bitcoin.eur_market_cap,
-                            volume24Hr = prices!!.bitcoin.eur_24h_vol,
-                            currentPrice = prices!!.bitcoin.eur,
-                            currencyCode = Constants.LocalCurrency.EURO
-                        ),
-                        BasicPriceDataModel(
-                            marketCap = prices!!.bitcoin.cad_market_cap,
-                            volume24Hr = prices!!.bitcoin.cad_24h_vol,
-                            currentPrice = prices!!.bitcoin.cad,
-                            currencyCode = Constants.LocalCurrency.CANADA
-                        ),
-                        BasicPriceDataModel(
-                            marketCap = prices!!.bitcoin.aed_market_cap,
-                            volume24Hr = prices!!.bitcoin.aed_24h_vol,
-                            currentPrice = prices!!.bitcoin.aed,
-                            currencyCode = Constants.LocalCurrency.AED
-                        ),
-                        BasicPriceDataModel(
-                            marketCap = prices!!.bitcoin.ars_market_cap,
-                            volume24Hr = prices!!.bitcoin.ars_24h_vol,
-                            currentPrice = prices!!.bitcoin.ars,
-                            currencyCode = Constants.LocalCurrency.ARS
-                        ),
-                        BasicPriceDataModel(
-                            marketCap = prices!!.bitcoin.aud_market_cap,
-                            volume24Hr = prices!!.bitcoin.aud_24h_vol,
-                            currentPrice = prices!!.bitcoin.aud,
-                            currencyCode = Constants.LocalCurrency.AUD
-                        ),
-                        BasicPriceDataModel(
-                            marketCap = prices!!.bitcoin.bdt_market_cap,
-                            volume24Hr = prices!!.bitcoin.bdt_24h_vol,
-                            currentPrice = prices!!.bitcoin.bdt,
-                            currencyCode = Constants.LocalCurrency.BDT
-                        ),
-                        BasicPriceDataModel(
-                            marketCap = prices!!.bitcoin.bhd_market_cap,
-                            volume24Hr = prices!!.bitcoin.bhd_24h_vol,
-                            currentPrice = prices!!.bitcoin.bhd,
-                            currencyCode = Constants.LocalCurrency.BHD
-                        ),
-                        BasicPriceDataModel(
-                            marketCap = prices!!.bitcoin.chf_market_cap,
-                            volume24Hr = prices!!.bitcoin.chf_24h_vol,
-                            currentPrice = prices!!.bitcoin.chf,
-                            currencyCode = Constants.LocalCurrency.CHF
-                        ),
-                        BasicPriceDataModel(
-                            marketCap = prices!!.bitcoin.cny_market_cap,
-                            volume24Hr = prices!!.bitcoin.cny_24h_vol,
-                            currentPrice = prices!!.bitcoin.cny,
-                            currencyCode = Constants.LocalCurrency.CNY
-                        ),
-                        BasicPriceDataModel(
-                            marketCap = prices!!.bitcoin.czk_market_cap,
-                            volume24Hr = prices!!.bitcoin.czk_24h_vol,
-                            currentPrice = prices!!.bitcoin.czk,
-                            currencyCode = Constants.LocalCurrency.CZK
-                        ),
-                        BasicPriceDataModel(
-                            marketCap = prices!!.bitcoin.gbp_market_cap,
-                            volume24Hr = prices!!.bitcoin.gbp_24h_vol,
-                            currentPrice = prices!!.bitcoin.gbp,
-                            currencyCode = Constants.LocalCurrency.GBP
-                        ),
-                        BasicPriceDataModel(
-                            marketCap = prices!!.bitcoin.krw_market_cap,
-                            volume24Hr = prices!!.bitcoin.krw_24h_vol,
-                            currentPrice = prices!!.bitcoin.krw,
-                            currencyCode = Constants.LocalCurrency.KRW
-                        ),
-                        BasicPriceDataModel(
-                            marketCap = prices!!.bitcoin.rub_market_cap,
-                            volume24Hr = prices!!.bitcoin.rub_24h_vol,
-                            currentPrice = prices!!.bitcoin.rub,
-                            currencyCode = Constants.LocalCurrency.RUB
-                        ),
-                        BasicPriceDataModel(
-                            marketCap = prices!!.bitcoin.php_market_cap,
-                            volume24Hr = prices!!.bitcoin.php_24h_vol,
-                            currentPrice = prices!!.bitcoin.php,
-                            currencyCode = Constants.LocalCurrency.PHP
-                        ),
-                        BasicPriceDataModel(
-                            marketCap = prices!!.bitcoin.pkr_market_cap,
-                            volume24Hr = prices!!.bitcoin.pkr_24h_vol,
-                            currentPrice = prices!!.bitcoin.pkr,
-                            currencyCode = Constants.LocalCurrency.PKR
-                        ),
-                        BasicPriceDataModel(
-                            marketCap = prices!!.bitcoin.clp_market_cap,
-                            volume24Hr = prices!!.bitcoin.clp_24h_vol,
-                            currentPrice = prices!!.bitcoin.clp,
-                            currencyCode = Constants.LocalCurrency.CLP
+                    CoinInfoDataModel(
+                        id = response!!.id,
+                        marketData = CoinMarketData(
+                            currentPrice = consumePriceDataResponse(response.marketData.currentPrice),
+                            marketCap = consumePriceDataResponse(response.marketData.marketCap),
+                            totalVolume = consumePriceDataResponse(response.marketData.totalVolume),
+                            maxSupply = response.marketData.maxSupply,
+                            circulatingSupply = response.marketData.circulatingSupply
                         )
                     )
                 )
@@ -192,6 +98,28 @@ interface CoingeckoRepository {
                 t.printStackTrace()
                 return Result.failure(t)
             }
+        }
+
+        private fun consumePriceDataResponse(response: PriceDataResponse): PriceData {
+            return PriceData(
+                usd = response.usd,
+                cad = response.cad,
+                eur = response.eur,
+                ars = response.ars,
+                aud = response.aud,
+                bdt = response.bdt,
+                bhd = response.bhd,
+                chf = response.chf,
+                cny = response.cny,
+                czk = response.czk,
+                gbp = response.gbp,
+                krw = response.krw,
+                rub = response.rub,
+                php = response.php,
+                pkr = response.pkr,
+                clp = response.clp,
+                aed = response.aed
+            )
         }
     }
 

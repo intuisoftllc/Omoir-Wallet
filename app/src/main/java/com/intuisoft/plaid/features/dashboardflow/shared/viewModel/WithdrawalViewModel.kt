@@ -6,6 +6,7 @@ import com.intuisoft.plaid.PlaidApp
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.SingleLiveData
 import com.intuisoft.plaid.androidwrappers.WalletViewModel
+import com.intuisoft.plaid.common.delegates.DelegateManager
 import com.intuisoft.plaid.common.model.BitcoinDisplayUnit
 import com.intuisoft.plaid.common.repositories.ApiRepository
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
@@ -21,8 +22,9 @@ class WithdrawalViewModel(
     application: Application,
     apiRepository: ApiRepository,
     private val localStoreRepository: LocalStoreRepository,
-    private val walletManager: AbstractWalletManager
-): WalletViewModel(application, localStoreRepository, apiRepository, walletManager) {
+    private val walletManager: AbstractWalletManager,
+    private val delegateManager: DelegateManager
+): WalletViewModel(application, localStoreRepository, apiRepository, walletManager, delegateManager) {
 
     protected val _localSpendAmount = SingleLiveData<String>()
     val localSpendAmount: LiveData<String> = _localSpendAmount
@@ -42,7 +44,7 @@ class WithdrawalViewModel(
     protected val _onNextStep = SingleLiveData<Unit>()
     val onNextStep: LiveData<Unit> = _onNextStep
 
-    private var amountToSpend: RateConverter = RateConverter(localStoreRepository.getRateFor(localStoreRepository.getLocalCurrency())?.currentPrice ?: 0.0)
+    private var amountToSpend: RateConverter = RateConverter(delegateManager.current().marketDelegate.getLocalBasicTickerData().price)
     private var internalAmountString: String = "0"
     private var overBalanceErrors = 0
     private var maxDecimalErrors = 0

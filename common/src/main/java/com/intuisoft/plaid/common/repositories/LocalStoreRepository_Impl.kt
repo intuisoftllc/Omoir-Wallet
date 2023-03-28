@@ -7,7 +7,6 @@ import com.intuisoft.plaid.common.listeners.WipeDataListener
 import com.intuisoft.plaid.common.local.AppPrefs
 import com.intuisoft.plaid.common.local.UserData
 import com.intuisoft.plaid.common.local.db.AddressBlacklistDao
-import com.intuisoft.plaid.common.local.db.BasicPriceDataDao
 import com.intuisoft.plaid.common.local.db.TransactionBlacklistDao
 import com.intuisoft.plaid.common.local.db.listeners.DatabaseListener
 import com.intuisoft.plaid.common.local.memorycache.MemoryCache
@@ -248,14 +247,6 @@ class LocalStoreRepository_Impl(
         return getUserData().lastFeeRateUpdateTime
     }
 
-    override fun setLastCurrencyRateUpdate(time: Long) {
-        getUserData().lastCurrencyRateUpdateTime = time
-    }
-
-    override fun getLastCurrencyRateUpdateTime(): Long {
-        return getUserData().lastCurrencyRateUpdateTime
-    }
-
     override fun setLastSupportedCurrenciesUpdate(time: Long) {
         getUserData().lastSupportedCurrenciesUpdateTime = time
     }
@@ -266,10 +257,6 @@ class LocalStoreRepository_Impl(
 
     override fun getLastSupportedCurrenciesUpdateTime(): Long {
         return getUserData().lastSupportedCurrenciesUpdateTime
-    }
-
-    override fun setLastBasicNetworkDataUpdate(time: Long) {
-        getUserData().lastBaseMarketDataUpdateTime = time
     }
 
     override fun setIsSendingBTC(sending: Boolean) {
@@ -290,10 +277,6 @@ class LocalStoreRepository_Impl(
 
     override fun getLastExchangeCurrency(): String {
         return getUserData().lastExchangeCurrency
-    }
-
-    override fun getLastBasicNetworkDataUpdateTime(): Long {
-        return getUserData().lastBaseMarketDataUpdateTime
     }
 
     override fun setLastExtendedMarketDataUpdate(time: Long) {
@@ -383,32 +366,14 @@ class LocalStoreRepository_Impl(
         return appPrefs.fingerprintSecurity
     }
 
-    override fun getRateFor(currencyCode: String): BasicPriceDataModel? {
+    override fun getBasicCoinInfo(id: String): CoinInfoDataModel? {
         return runBlocking {
-            if(memoryCache.getRateFor(currencyCode) == null) {
-                databaseRepository.getRateFor(currencyCode)?.let {
-                    memoryCache.setRateFor(it.currencyCode, it)
-                }
-            }
-
-            return@runBlocking databaseRepository.getRateFor(currencyCode)
+            return@runBlocking databaseRepository.getBasicCoinInfo(id)
         }
     }
 
-    override suspend fun setRates(rates: List<BasicPriceDataModel>) {
-        databaseRepository.setRates(rates)
-    }
-
-    override fun getBasicNetworkData(): BasicNetworkDataModel? {
-        return runBlocking {
-            return@runBlocking databaseRepository.getBasicNetworkData()
-        }
-    }
-
-    override suspend fun setBasicNetworkData(
-        circulatingSypply: Long
-    ) {
-        databaseRepository.setBasicNetworkData(circulatingSypply)
+    override suspend fun setBasicCoinInfo(info: CoinInfoDataModel) {
+        databaseRepository.setBasicCoinInfo(info)
     }
 
     override fun getExtendedNetworkData(testnetWallet: Boolean): ExtendedNetworkDataModel? {
@@ -442,12 +407,6 @@ class LocalStoreRepository_Impl(
 
     override suspend fun getTransactionMemo(txId: String): TransactionMemoModel? {
         return databaseRepository.getMemoForTransaction(txId)
-    }
-
-    override fun getAllRates(): List<BasicPriceDataModel> {
-        return runBlocking {
-            return@runBlocking databaseRepository.getAllRates()
-        }
     }
 
     override suspend fun setTickerPriceChartData(
@@ -532,7 +491,6 @@ class LocalStoreRepository_Impl(
 
     override fun clearCache() {
         try {
-            setLastCurrencyRateUpdate(0)
             setLastFeeRateUpdate(0)
             setLastSupportedCurrenciesUpdate(0)
             setLastSupportedCurrenciesUpdate(0)
@@ -564,12 +522,6 @@ class LocalStoreRepository_Impl(
 
                 is TransactionBlacklistDao -> {
                     memoryCache.setBlacklistedTransactions(databaseRepository.getAllBlacklistedTransactions())
-                }
-
-                is BasicPriceDataDao -> {
-                    databaseRepository.getAllRates().forEach {
-                        memoryCache.setRateFor(it.currencyCode, it)
-                    }
                 }
             }
 

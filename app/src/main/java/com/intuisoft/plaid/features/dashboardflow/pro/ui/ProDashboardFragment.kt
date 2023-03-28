@@ -21,6 +21,7 @@ import com.intuisoft.plaid.common.analytics.events.EventDashboardDeposit
 import com.intuisoft.plaid.common.analytics.events.EventDashboardOpenSettingsOpen
 import com.intuisoft.plaid.common.analytics.events.EventDashboardView
 import com.intuisoft.plaid.common.analytics.events.EventDashboardWithdrawal
+import com.intuisoft.plaid.common.delegates.DelegateManager
 import com.intuisoft.plaid.common.model.BitcoinDisplayUnit
 import com.intuisoft.plaid.common.model.ChartDataModel
 import com.intuisoft.plaid.common.model.ChartIntervalType
@@ -48,6 +49,7 @@ class ProDashboardFragment : ConfigurableFragment<FragmentProWalletDashboardBind
     protected val viewModel: DashboardViewModel by viewModel()
     protected val localStoreRepository: LocalStoreRepository by inject()
     protected val walletManager: AbstractWalletManager by inject()
+    protected val delegateManager: DelegateManager by inject()
     protected val eventTracker: EventTracker by inject()
 
     val balanceHistoryAdapter = BasicLineChartAdapter()
@@ -115,7 +117,7 @@ class ProDashboardFragment : ConfigurableFragment<FragmentProWalletDashboardBind
 
         viewModel.percentageGain.observe(viewLifecycleOwner, Observer { (percentageGain, rawGain) ->
             val rateConverter = RateConverter(
-                localStoreRepository.getRateFor(localStoreRepository.getLocalCurrency())?.currentPrice ?: 0.0
+                delegateManager.current().marketDelegate.getLocalBasicTickerData().price
             )
 
 

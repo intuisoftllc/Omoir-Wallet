@@ -35,86 +35,86 @@ val viewModelModule = module {
     }
 
     viewModel {
-        CreateWalletViewModel(get(), get(), get(), get())
+        CreateWalletViewModel(get(), get(), get(), get(), get())
     }
 
     viewModel {
-        WalletViewModel(get(), get(), get(), get())
+        WalletViewModel(get(), get(), get(), get(), get())
     }
 
     viewModel {
-        WalletSettingsViewModel(get(), get(), get(), get())
+        WalletSettingsViewModel(get(), get(), get(), get(), get())
     }
 
     viewModel {
-        WalletExportViewModel(get(), get(), get(), get())
+        WalletExportViewModel(get(), get(), get(), get(), get())
     }
 
     viewModel {
-        WithdrawalViewModel(get(), get(), get(), get())
+        WithdrawalViewModel(get(), get(), get(), get(), get())
     }
 
     viewModel {
-        AddressBookViewModel(get(), get(), get(), get())
+        AddressBookViewModel(get(), get(), get(), get(), get())
     }
 
     viewModel {
-        WithdrawConfirmationViewModel(get(), get(), get(), get())
+        WithdrawConfirmationViewModel(get(), get(), get(), get(), get())
     }
 
     viewModel {
-        MarketViewModel(get(), get(), get(), get())
+        MarketViewModel(get(), get(), get(), get(), get())
     }
 
     viewModel {
-        ExchangeViewModel(get(), get(), get(), get())
+        ExchangeViewModel(get(), get(), get(), get(), get())
     }
 
     viewModel {
-        InvoiceViewModel(get(), get(), get(), get())
+        InvoiceViewModel(get(), get(), get(), get(), get())
     }
 
     viewModel {
-        ExchangeDetailsViewModel(get(), get(), get(), get())
+        ExchangeDetailsViewModel(get(), get(), get(), get(), get())
     }
 
     viewModel {
-        ExchangeHistoryViewModel(get(), get(), get(), get())
+        ExchangeHistoryViewModel(get(), get(), get(), get(), get())
     }
 
     viewModel {
-        ReportDetailsViewModel(get(), get(), get(), get())
+        ReportDetailsViewModel(get(), get(), get(), get(), get())
     }
 
     viewModel {
-        DashboardViewModel(get(), get(), get(), get())
+        DashboardViewModel(get(), get(), get(), get(), get())
     }
 
     viewModel {
-        UtxoDistributionViewModel(get(), get(), get(), get())
+        UtxoDistributionViewModel(get(), get(), get(), get(), get())
     }
 
     viewModel {
-        AtpViewModel(get(), get(), get(), get())
+        AtpViewModel(get(), get(), get(), get(), get())
     }
 
     viewModel {
-        AtpHistoryViewModel(get(), get(), get(), get())
+        AtpHistoryViewModel(get(), get(), get(), get(), get())
     }
 
     viewModel {
-        AtpDetailsViewModel(get(), get(), get(), get())
+        AtpDetailsViewModel(get(), get(), get(), get(), get())
     }
 
     viewModel {
-        ExportOptionsViewModel(get(), get(), get(), get())
+        ExportOptionsViewModel(get(), get(), get(), get(), get())
     }
 
     viewModel {
-        AccountsViewModel(get(), get(), get(), get())
+        AccountsViewModel(get(), get(), get(), get(), get())
     }
 
     viewModel {
-        SubscriptionViewModel(get(), get(), get(), get())
+        SubscriptionViewModel(get(), get(), get(), get(), get())
     }
 }

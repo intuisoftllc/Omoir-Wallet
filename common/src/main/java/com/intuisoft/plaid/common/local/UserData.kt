@@ -126,22 +126,8 @@ class UserData {
             save()
         }
 
-    @SerializedName("lastCurrencyRateUpdateTime")
-    var lastCurrencyRateUpdateTime: Long = 0
-        set(value) {
-            field = value
-            save()
-        }
-
     @SerializedName("lastSupportedCurrenciesUpdateTime")
     var lastSupportedCurrenciesUpdateTime: Long = 0
-        set(value) {
-            field = value
-            save()
-        }
-
-    @SerializedName("lastBaseMarketDataUpdateTime")
-    var lastBaseMarketDataUpdateTime: Long = 0
         set(value) {
             field = value
             save()

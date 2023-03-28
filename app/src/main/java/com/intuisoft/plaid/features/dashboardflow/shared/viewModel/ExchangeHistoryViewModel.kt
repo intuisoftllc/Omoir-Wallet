@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.intuisoft.plaid.androidwrappers.SingleLiveData
 import com.intuisoft.plaid.androidwrappers.WalletViewModel
 import com.intuisoft.plaid.common.coroutines.PlaidScope
+import com.intuisoft.plaid.common.delegates.DelegateManager
 import com.intuisoft.plaid.common.model.ExchangeHistoryFilter
 import com.intuisoft.plaid.common.model.ExchangeInfoDataModel
 import com.intuisoft.plaid.common.repositories.ApiRepository
@@ -21,8 +22,9 @@ class ExchangeHistoryViewModel(
     application: Application,
     private val apiRepository: ApiRepository,
     private val localStoreRepository: LocalStoreRepository,
-    private val walletManager: AbstractWalletManager
-): WalletViewModel(application, localStoreRepository, apiRepository, walletManager) {
+    private val walletManager: AbstractWalletManager,
+    private val delegateManager: DelegateManager
+): WalletViewModel(application, localStoreRepository, apiRepository, walletManager, delegateManager) {
 
     protected val _historyFilter = SingleLiveData<Pair<ExchangeHistoryFilter, List<ExchangeInfoDataModel>>>()
     val historyFilter: LiveData<Pair<ExchangeHistoryFilter, List<ExchangeInfoDataModel>>> = _historyFilter

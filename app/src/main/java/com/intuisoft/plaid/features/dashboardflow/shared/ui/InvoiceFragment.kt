@@ -10,6 +10,7 @@ import androidx.navigation.fragment.findNavController
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.*
 import com.intuisoft.plaid.androidwrappers.delegates.FragmentConfiguration
+import com.intuisoft.plaid.common.delegates.DelegateManager
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.databinding.FragmentInvoiceBinding
@@ -26,6 +27,7 @@ class InvoiceFragment : ConfigurableFragment<FragmentInvoiceBinding>(pinProtecti
     protected val viewModel: InvoiceViewModel by viewModel()
     protected val localStoreRepository: LocalStoreRepository by inject()
     protected val walletManager: AbstractWalletManager by inject()
+    protected val delegateManager: DelegateManager by inject()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -114,6 +116,7 @@ class InvoiceFragment : ConfigurableFragment<FragmentInvoiceBinding>(pinProtecti
                     viewModel.updateUTXOs(it.toMutableList())
                 },
                 localStoreRepository = localStoreRepository,
+                delegateManager = delegateManager,
                 getFullKeyPath = {
                     walletManager.getFullPublicKeyPath(it)
                 },

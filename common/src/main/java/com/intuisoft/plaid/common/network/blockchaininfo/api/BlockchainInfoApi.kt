@@ -6,9 +6,6 @@ import retrofit2.http.*
 
 interface BlockchainInfoApi {
 
-    @GET("q/totalbc")
-    fun getCirculatingSupply(): Call<Long>
-
     @GET("stats")
     fun getBlockchainStats(): Call<BlockchainStatsResponse>
 }

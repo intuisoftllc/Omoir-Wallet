@@ -6,6 +6,7 @@ import android.content.SharedPreferences
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.intuisoft.plaid.common.analytics.EventTracker
+import com.intuisoft.plaid.common.delegates.DelegateManager
 import com.intuisoft.plaid.common.local.AppPrefs
 import com.intuisoft.plaid.common.local.UserData
 import com.intuisoft.plaid.common.local.db.*
@@ -18,6 +19,7 @@ import com.intuisoft.plaid.common.network.interceptors.AppConnectionMonitor
 import com.intuisoft.plaid.common.network.interceptors.ConnectivityInterceptor
 import com.intuisoft.plaid.common.network.blockchair.api.*
 import com.intuisoft.plaid.common.network.blockchair.repository.*
+import com.intuisoft.plaid.common.network.coingecko.api.CoingeckoApi
 import com.intuisoft.plaid.common.repositories.ApiRepository
 import com.intuisoft.plaid.common.repositories.ApiRepository_Impl
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
@@ -43,6 +45,7 @@ object CommonService {
     private var blockstreamInfoTestNetRepository: BlockstreamInfoRepository? = null
     private var blockchainInfoRepository: BlockchainInfoRepository? = null
     private var coingeckoRepository: CoingeckoRepository? = null
+    private var delegateManager: DelegateManager? = null
     private var testNetBlockchairRepository: BlockchairRepository? = null
     private var databaseRepository: DatabaseRepository? = null
     private var changeNowRepository: ChangeNowRepository? = null
@@ -161,6 +164,18 @@ object CommonService {
         return testNetBlockchairRepository!!
     }
 
+    fun getDelegateManagerInstance(): DelegateManager {
+        if(delegateManager == null) {
+            delegateManager = DelegateManager(
+                getLocalStoreInstance(),
+                getApiRepositoryInstance(),
+                getAppPrefs()
+            )
+        }
+
+        return delegateManager!!
+    }
+
     fun getBlockchainInfoRepositoryInstance(): BlockchainInfoRepository {
         if(blockchainInfoRepository == null) {
             blockchainInfoRepository = BlockchainInfoRepository.create(
@@ -261,10 +276,7 @@ object CommonService {
                 provideSuggestedFeeRateDao(
                     application!!
                 ),
-                provideLocalCurrencyRateDao(
-                    application!!
-                ),
-                provideBasicMarketDataDao(
+                provideBasicInfoDao(
                     application!!
                 ),
                 provideExtendedMarketDataDao(
@@ -361,6 +373,7 @@ object CommonService {
         getCoingeckoRepositoryInstance()
         getChangeNowRepositoryInstance()
         getEventTrackerInstance()
+        getDelegateManagerInstance().setCurrentDelegate("BTC") // todo: update this later
     }
 
     // loaders
@@ -450,16 +463,10 @@ object CommonService {
         return PlaidDatabase.getInstance(context).suggestedFeeRateDao()
     }
 
-    private fun provideLocalCurrencyRateDao(
+    private fun provideBasicInfoDao(
         context: Context
-    ): BasicPriceDataDao {
-        return PlaidDatabase.getInstance(context).localCurrencyRateDao()
-    }
-
-    private fun provideBasicMarketDataDao(
-        context: Context
-    ): BaseMarketDataDao {
-        return PlaidDatabase.getInstance(context).baseMarketDataDao()
+    ): BasicCoinInfoDao {
+        return PlaidDatabase.getInstance(context).basicCoinInfoDao()
     }
 
     private fun provideExtendedMarketDataDao(
@@ -519,8 +526,7 @@ object CommonService {
     private fun provideDatabaseRepository(
         database: PlaidDatabase,
         suggestedFeeRateDao: SuggestedFeeRateDao,
-        basicPriceDataDao: BasicPriceDataDao,
-        baseMarketDataDao: BaseMarketDataDao,
+        basiccoinInfoDao: BasicCoinInfoDao,
         extendedNetworkDataDao: ExtendedNetworkDataDao,
         tickerPriceChartDataDao: TickerPriceChartDataDao,
         supportedCurrencyDao: SupportedCurrencyDao,
@@ -534,8 +540,7 @@ object CommonService {
         return DatabaseRepository_Impl(
             database,
             suggestedFeeRateDao,
-            basicPriceDataDao,
-            baseMarketDataDao,
+            basiccoinInfoDao,
             extendedNetworkDataDao,
             tickerPriceChartDataDao,
             supportedCurrencyDao,

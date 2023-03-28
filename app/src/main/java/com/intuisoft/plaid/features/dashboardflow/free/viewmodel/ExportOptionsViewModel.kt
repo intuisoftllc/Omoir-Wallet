@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
 import com.intuisoft.plaid.androidwrappers.SingleLiveData
 import com.intuisoft.plaid.androidwrappers.WalletViewModel
+import com.intuisoft.plaid.common.delegates.DelegateManager
 import com.intuisoft.plaid.model.ExportDataType
 import com.intuisoft.plaid.common.repositories.ApiRepository
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
@@ -25,8 +26,9 @@ class ExportOptionsViewModel(
     application: Application,
     apiRepository: ApiRepository,
     private val localStoreRepository: LocalStoreRepository,
-    private val walletManager: AbstractWalletManager
-): WalletViewModel(application, localStoreRepository, apiRepository, walletManager) {
+    private val walletManager: AbstractWalletManager,
+    private val delegateManager: DelegateManager
+): WalletViewModel(application, localStoreRepository, apiRepository, walletManager, delegateManager) {
 
     protected val _exportFinished = SingleLiveData<String?>()
     val exportFinished: LiveData<String?> = _exportFinished
@@ -98,6 +100,7 @@ class ExportOptionsViewModel(
                 val exporter = CsvExporter(
                     getApplication(),
                     localStoreRepository,
+                    delegateManager,
                     getWalletName(),
                     transactions,
                     exportDataType

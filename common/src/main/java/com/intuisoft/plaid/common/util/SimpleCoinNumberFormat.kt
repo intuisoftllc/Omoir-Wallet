@@ -7,8 +7,9 @@ import kotlin.math.absoluteValue
 
 object SimpleCoinNumberFormat {
 
+    // todo: make more generic to support different currencies
     fun format(localStoreRepository: LocalStoreRepository, sats: Long, shortenSats: Boolean = true) : String {
-        val converter = RateConverter(localStoreRepository.getRateFor(localStoreRepository.getLocalCurrency())?.currentPrice ?: 0.0)
+        val converter = RateConverter(localStoreRepository.getBasicCoinInfo("BTC")?.marketData?.currentPrice?.getPrice(localStoreRepository.getLocalCurrency()) ?: 0.0)
         converter.setLocalRate(RateConverter.RateType.SATOSHI_RATE, sats.toDouble())
 
         when(localStoreRepository.getBitcoinDisplayUnit()) {

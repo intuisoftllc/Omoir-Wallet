@@ -95,10 +95,6 @@ interface LocalStoreRepository {
 
     fun getLastFeeRateUpdateTime(): Long
 
-    fun setLastCurrencyRateUpdate(time: Long)
-
-    fun getLastCurrencyRateUpdateTime(): Long
-
     fun setLastSupportedCurrenciesUpdate(time: Long)
     fun setLastChartPriceUpdate(time: Long, type: ChartIntervalType)
 
@@ -111,10 +107,6 @@ interface LocalStoreRepository {
     fun isSendingBTC(): Boolean
 
     fun setIsSendingBTC(sending: Boolean)
-
-    fun setLastBasicNetworkDataUpdate(time: Long)
-
-    fun getLastBasicNetworkDataUpdateTime(): Long
 
     fun setLastExtendedMarketDataUpdate(time: Long)
 
@@ -156,13 +148,9 @@ interface LocalStoreRepository {
 
     fun isFingerprintEnabled(): Boolean
 
-    fun getRateFor(currencyCode: String): BasicPriceDataModel?
+    fun getBasicCoinInfo(id: String): CoinInfoDataModel?
 
-    suspend fun setRates(rates: List<BasicPriceDataModel>)
-
-    fun getBasicNetworkData(): BasicNetworkDataModel?
-
-    suspend fun setBasicNetworkData(circulatingSupply: Long)
+    suspend fun setBasicCoinInfo(info: CoinInfoDataModel)
 
     fun getExtendedNetworkData(testnetWallet: Boolean): ExtendedNetworkDataModel?
 
@@ -175,8 +163,6 @@ interface LocalStoreRepository {
     suspend fun setTransactionMemo(txId: String, memo: String)
 
     suspend fun getTransactionMemo(txId: String): TransactionMemoModel?
-
-    fun getAllRates(): List<BasicPriceDataModel>
 
     suspend fun setTickerPriceChartData(data: List<ChartDataModel>, currencyCode: String, intervalType: ChartIntervalType)
 

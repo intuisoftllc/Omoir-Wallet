@@ -8,8 +8,7 @@ import com.intuisoft.plaid.common.network.blockchair.response.SupportedCurrencyM
 class DatabaseRepository_Impl(
     private val database: PlaidDatabase,
     private val suggestedFeeRateDao: SuggestedFeeRateDao,
-    private val basicPriceDataDao: BasicPriceDataDao,
-    private val baseNetworkDataDao: BaseMarketDataDao,
+    private val basicCoinInfoDao: BasicCoinInfoDao,
     private val extendedNetworkDataDao: ExtendedNetworkDataDao,
     private val tickerCharPriceChartDataDao: TickerPriceChartDataDao,
     private val supportedCurrencyDao: SupportedCurrencyDao,
@@ -109,10 +108,6 @@ class DatabaseRepository_Impl(
     override suspend fun getAllBlacklistedAddresses(): List<BlacklistedAddressModel> =
         addressBlacklistDao.getBlacklistedAddresses().map { it.from() }
 
-    override suspend fun getAllRates(): List<BasicPriceDataModel> {
-        return basicPriceDataDao.getAllRates().map { it.from() }
-    }
-
     override suspend fun getMemoForTransaction(txid: String): TransactionMemoModel? {
         return transactionMemoDao.getMemoFor(txid)?.from()
     }
@@ -144,30 +139,18 @@ class DatabaseRepository_Impl(
         return supportedCurrencyDao.getAllSupportedCurrencies().map { it.from() }
     }
 
-    override suspend fun getRateFor(currencyCode: String): BasicPriceDataModel? {
-        return basicPriceDataDao.getRateFor(currencyCode)?.from()
+    override suspend fun getBasicCoinInfo(id: String): CoinInfoDataModel? {
+        return basicCoinInfoDao.getBasicCoinInfo(id)?.from()
     }
 
-    override suspend fun getBasicNetworkData(): BasicNetworkDataModel? {
-        return baseNetworkDataDao.getNetworkData()?.from()
-    }
-
-    override suspend fun setBasicNetworkData(
-        circulatingSupply: Long
-    ) {
-        baseNetworkDataDao.insert(BasicNetworkData.consume(circulatingSupply))
-        database.onUpdate(baseNetworkDataDao)
-    }
-
-    override suspend fun setRates(rates: List<BasicPriceDataModel>) {
-        basicPriceDataDao.insert(rates.map { BasicPriceData.consume(it.marketCap, it.volume24Hr, it.currencyCode, it.currentPrice) })
-        database.onUpdate(basicPriceDataDao)
+    override suspend fun setBasicCoinInfo(info: CoinInfoDataModel) {
+        basicCoinInfoDao.insert(BasicCoinInfo.consume(info))
+        database.onUpdate(basicCoinInfoDao)
     }
 
     override suspend fun deleteAllData() {
         suggestedFeeRateDao.deleteTable() // todo: delete any data realated to wallets when theyre deleted
-        basicPriceDataDao.deleteTable()
-        baseNetworkDataDao.deleteTable()
+        basicCoinInfoDao.deleteTable()
         extendedNetworkDataDao.deleteTable()
         tickerCharPriceChartDataDao.deleteTable()
         supportedCurrencyDao.deleteTable()

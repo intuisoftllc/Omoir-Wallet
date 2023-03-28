@@ -169,7 +169,7 @@ class MarketFragment : ConfigurableFragment<FragmentMarketBinding>(pinProtection
             binding.marketCap.text = it
         })
 
-        viewModel.volume24Hr.observe(viewLifecycleOwner, Observer {
+        viewModel.totalVolume.observe(viewLifecycleOwner, Observer {
             binding.volume.text = it
         })
 

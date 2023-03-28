@@ -18,6 +18,7 @@ import com.intuisoft.plaid.androidwrappers.*
 import com.intuisoft.plaid.androidwrappers.delegates.FragmentConfiguration
 import com.intuisoft.plaid.common.analytics.EventTracker
 import com.intuisoft.plaid.common.analytics.events.*
+import com.intuisoft.plaid.common.delegates.DelegateManager
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.common.util.RateConverter
@@ -38,6 +39,7 @@ class AtpFragment : ConfigurableFragment<FragmentAtpBinding>(pinProtection = tru
     protected val viewModel: AtpViewModel by viewModel()
     protected val localStoreRepository: LocalStoreRepository by inject()
     protected val walletManager: AbstractWalletManager by inject()
+    protected val delegateManager: DelegateManager by inject()
     protected val eventTracker: EventTracker by inject()
 
     override fun onCreateView(
@@ -159,6 +161,7 @@ class AtpFragment : ConfigurableFragment<FragmentAtpBinding>(pinProtection = tru
                     viewModel.updateUTXOs(it.toMutableList())
                 },
                 localStoreRepository = localStoreRepository,
+                delegateManager = delegateManager,
                 getFullKeyPath = {
                     walletManager.getFullPublicKeyPath(it)
                 },

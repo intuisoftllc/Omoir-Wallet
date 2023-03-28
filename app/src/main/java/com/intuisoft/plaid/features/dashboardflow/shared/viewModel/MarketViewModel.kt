@@ -8,6 +8,7 @@ import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.SingleLiveData
 import com.intuisoft.plaid.androidwrappers.WalletViewModel
 import com.intuisoft.plaid.common.coroutines.PlaidScope
+import com.intuisoft.plaid.common.delegates.DelegateManager
 import com.intuisoft.plaid.common.model.ChartDataModel
 import com.intuisoft.plaid.common.model.ChartIntervalType
 import com.intuisoft.plaid.common.model.CongestionRating
@@ -28,14 +29,15 @@ class MarketViewModel(
     application: Application,
     private val apiRepository: ApiRepository,
     private val localStoreRepository: LocalStoreRepository,
-    private val walletManager: AbstractWalletManager
-): WalletViewModel(application, localStoreRepository, apiRepository, walletManager) {
+    private val walletManager: AbstractWalletManager,
+    private val delegateManager: DelegateManager
+): WalletViewModel(application, localStoreRepository, apiRepository, walletManager, delegateManager) {
 
     protected val _marketCap = SingleLiveData<String>()
     val marketCap: LiveData<String> = _marketCap
 
-    protected val _volume24Hr = SingleLiveData<String>()
-    val volume24Hr: LiveData<String> = _volume24Hr
+    protected val _totalVolume = SingleLiveData<String>()
+    val totalVolume: LiveData<String> = _totalVolume
 
     protected val _circulatingSupply = SingleLiveData<String>()
     val circulatingSupply: LiveData<String> = _circulatingSupply
@@ -120,7 +122,7 @@ class MarketViewModel(
     fun onNoInternet(hasInternet: Boolean) {
         PlaidScope.applicationScope.launch(Dispatchers.IO) {
             safeWalletScope {
-                val basicData = apiRepository.getBasicTickerData()
+                val basicData = delegateManager.current().marketDelegate.getBasicTickerData()
                 val extendedData =
                     apiRepository.getExtendedNetworkData(getWalletNetwork() == BitcoinKit.NetworkType.TestNet)
                 val chartData = getChartData()
@@ -150,7 +152,7 @@ class MarketViewModel(
             withContext(Dispatchers.IO) {
                 safeWalletScope {
                     _basicNetworkDataLoading.postValue(true)
-                    val data = apiRepository.getBasicTickerData()
+                    val data = delegateManager.current().marketDelegate.getBasicTickerData()
 
                     var mktCap = SimpleCurrencyFormat.formatValue(
                         localStoreRepository.getLocalCurrency(),
@@ -159,7 +161,7 @@ class MarketViewModel(
 
                     var vol = SimpleCurrencyFormat.formatValue(
                         localStoreRepository.getLocalCurrency(),
-                        data.volume24Hr
+                        data.totalVolume
                     )
 
                     if (mktCap.contains(".00")) {
@@ -171,9 +173,9 @@ class MarketViewModel(
                     }
 
                     _marketCap.postValue(mktCap)
-                    _volume24Hr.postValue(vol)
-                    _circulatingSupply.postValue(SimpleCoinNumberFormat.format(data.circulatingSupply) + " BTC")
-                    _maxSupply.postValue(SimpleCoinNumberFormat.format(data.maxSupply.toLong()) + " BTC")
+                    _totalVolume.postValue(vol)
+                    _circulatingSupply.postValue(SimpleCoinNumberFormat.format(data.circulatingSupply) + " ${delegateManager.current().symbol}")
+                    _maxSupply.postValue(SimpleCoinNumberFormat.format(data.maxSupply.toLong()) + " ${delegateManager.current().symbol}")
                     _basicNetworkDataLoading.postValue(false)
                 }
             }
@@ -347,7 +349,7 @@ class MarketViewModel(
                     _tickerPrice.postValue(
                         SimpleCurrencyFormat.formatValue(
                             localStoreRepository.getLocalCurrency(),
-                            apiRepository.getBasicTickerData().price
+                            delegateManager.current().marketDelegate.getBasicTickerData().price
                         )
                     )
 

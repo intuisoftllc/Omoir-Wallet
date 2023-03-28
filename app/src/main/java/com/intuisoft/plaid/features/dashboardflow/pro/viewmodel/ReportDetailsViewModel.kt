@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
 import com.intuisoft.plaid.androidwrappers.SingleLiveData
 import com.intuisoft.plaid.androidwrappers.WalletViewModel
+import com.intuisoft.plaid.common.delegates.DelegateManager
 import com.intuisoft.plaid.common.model.BitcoinDisplayUnit
 import com.intuisoft.plaid.common.model.ReportHistoryTimeFilter
 import com.intuisoft.plaid.common.model.ReportType
@@ -27,8 +28,9 @@ class ReportDetailsViewModel(
     application: Application,
     private val apiRepository: ApiRepository,
     private val localStoreRepository: LocalStoreRepository,
-    private val walletManager: AbstractWalletManager
-): WalletViewModel(application, localStoreRepository, apiRepository, walletManager) {
+    private val walletManager: AbstractWalletManager,
+    private val delegateManager: DelegateManager
+): WalletViewModel(application, localStoreRepository, apiRepository, walletManager, delegateManager) {
 
     protected val _currentTimePeriod = SingleLiveData<Pair<Instant, Instant>>()
     val currentTimePeriod: LiveData<Pair<Instant, Instant>> = _currentTimePeriod
@@ -77,7 +79,7 @@ class ReportDetailsViewModel(
             val filtered: List<TransactionInfo>
 
             val rate = RateConverter(
-                localStoreRepository.getRateFor(localStoreRepository.getLocalCurrency())?.currentPrice ?: 0.0
+                delegateManager.current().marketDelegate.getLocalBasicTickerData().price
             )
 
             when(filter) {

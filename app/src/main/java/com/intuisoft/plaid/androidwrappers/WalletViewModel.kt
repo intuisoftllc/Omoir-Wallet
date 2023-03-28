@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.intuisoft.plaid.PlaidApp
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.common.coroutines.PlaidScope
+import com.intuisoft.plaid.common.delegates.DelegateManager
 import com.intuisoft.plaid.common.model.BitcoinDisplayUnit
 import com.intuisoft.plaid.common.model.SavedAccountModel
 import com.intuisoft.plaid.common.model.TransactionMemoModel
@@ -33,7 +34,8 @@ open class WalletViewModel(
     application: Application,
     private val localStoreRepository: LocalStoreRepository,
     private val apiRepository: ApiRepository,
-    private val walletManager: AbstractWalletManager
+    private val walletManager: AbstractWalletManager,
+    private val delegateManager: DelegateManager,
 ): BaseViewModel(application, localStoreRepository, walletManager) {
 
     protected val _seedPhraseGenerated = SingleLiveData<List<String>>()
@@ -358,7 +360,7 @@ open class WalletViewModel(
     }
 
     open fun getMaxSpend() : RateConverter {
-        val rate = RateConverter(localStoreRepository.getRateFor(localStoreRepository.getLocalCurrency())?.currentPrice ?: 0.0)
+        val rate = RateConverter(delegateManager.current().marketDelegate.getLocalBasicTickerData().price)
         rate.setLocalRate(RateConverter.RateType.SATOSHI_RATE, getAdjustedWalletBalance().toDouble())
         return rate
     }

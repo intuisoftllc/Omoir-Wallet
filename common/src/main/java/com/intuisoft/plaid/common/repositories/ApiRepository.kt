@@ -1,6 +1,7 @@
 package com.intuisoft.plaid.common.repositories
 
-import com.intuisoft.plaid.common.local.db.SupportedCurrency
+import com.intuisoft.plaid.common.delegates.coins.CoinDelegate
+import com.intuisoft.plaid.common.delegates.market.MarketDataDelegate
 import com.intuisoft.plaid.common.model.*
 import com.intuisoft.plaid.common.network.blockchair.response.SupportedCurrencyModel
 
@@ -8,11 +9,11 @@ interface ApiRepository {
 
     suspend fun getSuggestedFeeRate(testNetWallet: Boolean): NetworkFeeRate?
 
-    suspend fun getRateFor(currencyCode: String): BasicPriceDataModel
+    suspend fun getCryptoInfo(del: MarketDataDelegate): CoinInfoDataModel
 
     suspend fun getSupportedCurrencies(): List<SupportedCurrencyModel>
 
-    suspend fun getBasicTickerData(): BasicTickerDataModel
+    suspend fun getBasicPriceData(del: MarketDataDelegate): BasicTickerDataModel
 
     suspend fun getCurrencyRangeLimit(from: SupportedCurrencyModel, to: SupportedCurrencyModel): CurrencyRangeLimitModel?
 

@@ -20,8 +20,7 @@ import com.intuisoft.plaid.common.util.Constants
 @Database(
     entities = arrayOf(
         SuggestedFeeRate::class,
-        BasicPriceData::class,
-        BasicNetworkData::class,
+        BasicCoinInfo::class,
         ExtendedNetworkData::class,
         TickerPriceChartData::class,
         SupportedCurrency::class,
@@ -63,9 +62,7 @@ abstract class PlaidDatabase : RoomDatabase() {
 
     abstract fun suggestedFeeRateDao(): SuggestedFeeRateDao
 
-    abstract fun localCurrencyRateDao(): BasicPriceDataDao
-
-    abstract fun baseMarketDataDao(): BaseMarketDataDao
+    abstract fun basicCoinInfoDao(): BasicCoinInfoDao
 
     abstract fun extendedMarketDataDao(): ExtendedNetworkDataDao
 

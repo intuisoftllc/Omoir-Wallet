@@ -6,17 +6,18 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 
 @Dao
-interface BaseMarketDataDao {
+interface BasicCoinInfoDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(data: BasicNetworkData)
+    suspend fun insert(info: BasicCoinInfo)
 
     @Query("""
-        SELECT * from base_market_data
+        SELECT * from basic_coin_info
+         WHERE id = :id
          ORDER BY id ASC LIMIT 1
     """)
-    fun getNetworkData() : BasicNetworkData?
+    fun getBasicCoinInfo(id: String) : BasicCoinInfo?
 
-    @Query("DELETE FROM base_market_data")
+    @Query("DELETE FROM basic_coin_info")
     fun deleteTable()
 }

@@ -8,6 +8,7 @@ import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.SingleLiveData
 import com.intuisoft.plaid.androidwrappers.WalletViewModel
 import com.intuisoft.plaid.common.coroutines.PlaidScope
+import com.intuisoft.plaid.common.delegates.DelegateManager
 import com.intuisoft.plaid.common.model.FeeType
 import com.intuisoft.plaid.common.model.NetworkFeeRate
 import com.intuisoft.plaid.common.repositories.ApiRepository
@@ -30,8 +31,9 @@ class WithdrawConfirmationViewModel(
     application: Application,
     apiRepository: ApiRepository,
     private val localStoreRepository: LocalStoreRepository,
-    private val walletManager: AbstractWalletManager
-): WalletViewModel(application, localStoreRepository, apiRepository, walletManager) {
+    private val walletManager: AbstractWalletManager,
+    private val delegateManager: DelegateManager,
+): WalletViewModel(application, localStoreRepository, apiRepository, walletManager, delegateManager) {
 
     protected val _onInputRejected = SingleLiveData<Unit>()
     val onInputRejected: LiveData<Unit> = _onInputRejected
@@ -56,7 +58,7 @@ class WithdrawConfirmationViewModel(
     private var address: String? = null
     private var exchangeId: String? = null
     private var invalidAddressErrors = 0
-    private var amountToSpend: RateConverter = RateConverter(localStoreRepository.getRateFor(localStoreRepository.getLocalCurrency())?.currentPrice ?: 0.0)
+    private var amountToSpend: RateConverter = RateConverter(delegateManager.current().marketDelegate.getLocalBasicTickerData().price)
     private var networkFeeRate: NetworkFeeRate = NetworkFeeRate(1, 2, 6)
 
     fun getFeeRate() = feeRate

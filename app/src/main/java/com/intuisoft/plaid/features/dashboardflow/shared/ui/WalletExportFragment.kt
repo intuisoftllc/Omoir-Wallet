@@ -23,6 +23,7 @@ import com.intuisoft.plaid.common.analytics.EventTracker
 import com.intuisoft.plaid.common.analytics.events.EventDepositBuildInvoice
 import com.intuisoft.plaid.common.analytics.events.EventDepositCreateInvoice
 import com.intuisoft.plaid.common.analytics.events.EventDepositShareAddress
+import com.intuisoft.plaid.common.delegates.DelegateManager
 import com.intuisoft.plaid.common.model.BitcoinDisplayUnit
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.common.util.Constants
@@ -43,6 +44,7 @@ import java.util.*
 class WalletExportFragment : ConfigurableFragment<FragmentWalletExportBinding>(pinProtection = true) {
     private val viewModel: WalletExportViewModel by viewModel()
     private val localStoreRepository: LocalStoreRepository by inject()
+    private val delegateManager: DelegateManager by inject()
     protected val eventTracker: EventTracker by inject()
 
     override fun onCreateView(
@@ -96,7 +98,7 @@ class WalletExportFragment : ConfigurableFragment<FragmentWalletExportBinding>(p
 
             viewModel.showInvoice.observe(viewLifecycleOwner, Observer {
                 eventTracker.log(EventDepositShareAddress())
-                val rateConverter = RateConverter(localStoreRepository.getRateFor(localStoreRepository.getLocalCurrency())?.currentPrice ?: 0.0 )
+                val rateConverter = RateConverter(delegateManager.current().marketDelegate.getLocalBasicTickerData().price)
 
                 rateConverter.setLocalRate(RateConverter.RateType.BTC_RATE, it.amount!!)
                 binding.pubKeyTitle.text = rateConverter.from(localStoreRepository.getBitcoinDisplayUnit().toRateType(), localStoreRepository.getLocalCurrency(), false).second
@@ -194,7 +196,7 @@ class WalletExportFragment : ConfigurableFragment<FragmentWalletExportBinding>(p
         val description = bottomSheetDialog.findViewById<EditText>(R.id.description)!!
         val save = bottomSheetDialog.findViewById<RoundedButtonView>(R.id.save)!!
         val cancel = bottomSheetDialog.findViewById<RoundedButtonView>(R.id.cancel)!!
-        val rateConverter = RateConverter(localStoreRepository.getRateFor(localStoreRepository.getLocalCurrency())?.currentPrice ?: 0.0 )
+        val rateConverter = RateConverter(delegateManager.current().marketDelegate.getLocalBasicTickerData().price)
 
         eventTracker.log(EventDepositBuildInvoice())
         save.enableButton(false)

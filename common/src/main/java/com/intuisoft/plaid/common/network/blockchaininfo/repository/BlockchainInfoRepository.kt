@@ -9,23 +9,11 @@ interface BlockchainInfoRepository {
     val TAG: String
         get() = this.javaClass.simpleName
 
-    fun getBasicNetworkData(): Result<BasicNetworkDataResponse>
-
     fun getExtendedNetworkData(): Result<ExtendedNetworkDataModel>
 
     private class Impl(
         private val api: BlockchainInfoApi,
     ) : BlockchainInfoRepository {
-
-        override fun getBasicNetworkData(): Result<BasicNetworkDataResponse> {
-            try {
-                val supply = api.getCirculatingSupply().execute().body()
-
-                return Result.success(BasicNetworkDataResponse(supply!! / Constants.Limit.SATS_PER_BTC))
-            } catch (t: Throwable) {
-                return Result.failure(t)
-            }
-        }
 
         override fun getExtendedNetworkData(): Result<ExtendedNetworkDataModel> {
             try {
