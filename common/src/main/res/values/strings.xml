@@ -1,4 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="no_connection_message">No internet connection</string>
+    <string name="market_data_bitcoin_description">Bitcoin is the first worldwide decentralized cryptocurrency that can be transferred peer-to-peer without a third party or middleman. It uses nodes to relay transactions and miners to validate and add them to the blockchain where all bitcoin transactions live.</string>
+
+<!--  Bitcoin Extended Network Data Titles  -->
+    <string name="btc_extended_net_data_title_1">Network</string>
+    <string name="btc_extended_net_data_title_2">Block Height</string>
+    <string name="btc_extended_net_data_title_3">Network Difficulty</string>
+    <string name="btc_extended_net_data_title_4">Blockchain Size</string>
+    <string name="btc_extended_net_data_title_5">Nodes Online</string>
+    <string name="btc_extended_net_data_title_6">Mem Pool Size</string>
+    <string name="btc_extended_net_data_title_7">Transactions Per Second</string>
+    <string name="btc_extended_net_data_title_8">Address With Balances</string>
+    <string name="btc_extended_net_data_title_9">Unconfirmed Txs</string>
+    <string name="btc_extended_net_data_title_10">Avg Conf. Time</string>
+    <string name="btc_extended_net_data_title_11">Network Congestion Rating (beta)</string>
+    <!--  Bitcoin Extended Network Data Titles End -->
+
+    <!--  Bitcoin Extended Network Data Values -->
+    <string name="btc_extended_net_data_value_1_a">Main-Chain</string>
+    <string name="btc_extended_net_data_value_1_b">Testnet</string>
+    <string name="btc_extended_net_data_value_11_a">light</string>
+    <string name="btc_extended_net_data_value_11_b">normal</string>
+    <string name="btc_extended_net_data_value_11_c">medium</string>
+    <string name="btc_extended_net_data_value_11_d">busy</string>
+    <string name="btc_extended_net_data_value_11_e">congested</string>
+    <!--  Bitcoin Extended Network Data Values End -->
+
+
+    <!--  Generic Values -->
+    <string name="not_applicable">N/A</string>
+    <string name="nodes">nodes</string>
+    <string name="tx_per_sec">tx/s</string>
+    <string name="min">min</string>
+    <string name="addresses">addresses</string>
+    <!--  Generic Values End -->
 </resources>

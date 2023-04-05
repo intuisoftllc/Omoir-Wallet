@@ -37,7 +37,6 @@ class PlaidApp : Application(), Application.ActivityLifecycleCallbacks, KoinComp
             BuildConfig.BLOCKSTREAM_INFO_SERVER_URL,
             BuildConfig.BLOCKSTREAM_INFO_TEST_NET_SERVER_URL,
             BuildConfig.BLOCKCHAIR_SERVER_URL,
-            BuildConfig.BLOCKCHAIR_TESTNET_SERVER_URL,
             BuildConfig.BLOCKCHAIN_INFO_SERVER_URL,
             BuildConfig.COIN_GECKO_SERVER_URL,
             BuildConfig.CHANGE_NOW_SERVER_URL,

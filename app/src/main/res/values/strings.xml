@@ -634,7 +634,6 @@
     <string name="market_bitcoin_ticker_title">Bitcoin (BTC)</string>
     <string name="market_data_title_1">About Bitcoin</string>
     <string name="market_data_title_2">Market Data</string>
-    <string name="market_data_bitcoin_description">Bitcoin is the first worldwide decentralized cryptocurrency that can be transferred peer-to-peer without a third party or middleman. It uses nodes to relay transactions and miners to validate and add them to the blockchain where all bitcoin transactions live.</string>
     <string name="market_data_bitcoin_website_title_short">bitcoin.org</string>
     <string name="market_data_bitcoin_explorer_title_short">blockchain.com</string>
     <string name="market_data_item_1_title">Market Cap</string>
@@ -657,10 +656,6 @@
     <string name="market_data_extended_item_10_title">Network Congestion Rating (beta)</string>
     <string name="market_data_extended_item_11_title">Transactions Per\nSecond</string>
     <string name="market_data_extended_item_12_title">Addresses With\nBalances</string>
-    <string name="market_data_what_is_bitcoin_link">https://www.coindesk.com/learn/what-is-bitcoin/</string>
-    <string name="market_data_bitcoin_org_link">https://www.bitcoin.org</string>
-    <string name="market_data_bitcoin_explorer_link">https://www.blockchain.com/explorer?view=btc</string>
-    <string name="market_data_bitcoin_market_external_link">https://www.coingecko.com/coins/bitcoin</string>
     <string name="market_data_congestion_rating_1">light</string>
     <string name="market_data_congestion_rating_2">normal</string>
     <string name="market_data_congestion_rating_3">medium</string>

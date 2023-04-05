@@ -21,7 +21,7 @@ interface CoingeckoApi {
 
     @GET("coins/{id}/market_chart")
     fun get1DayChartData(
-        @Path("id") id: String = "bitcoin",
+        @Path("id") id: String,
         @Query("vs_currency") currencyCode: String,
         @Query("days") days: Int = 1,
         @Query("x_cg_pro_api_key") apiKey: String? = null
@@ -29,7 +29,7 @@ interface CoingeckoApi {
 
     @GET("coins/{id}/market_chart")
     fun get7DayChartData(
-        @Path("id") id: String = "bitcoin",
+        @Path("id") id: String,
         @Query("vs_currency") currencyCode: String,
         @Query("days") days: Int = 7,
         @Query("x_cg_pro_api_key") apiKey: String? = null
@@ -37,7 +37,7 @@ interface CoingeckoApi {
 
     @GET("coins/{id}/market_chart")
     fun get30DayChartData(
-        @Path("id") id: String = "bitcoin",
+        @Path("id") id: String,
         @Query("vs_currency") currencyCode: String,
         @Query("days") days: Int = 30,
         @Query("x_cg_pro_api_key") apiKey: String? = null
@@ -45,7 +45,7 @@ interface CoingeckoApi {
 
     @GET("coins/{id}/market_chart")
     fun get90DayChartData(
-        @Path("id") id: String = "bitcoin",
+        @Path("id") id: String,
         @Query("vs_currency") currencyCode: String,
         @Query("days") days: Int = 90,
         @Query("x_cg_pro_api_key") apiKey: String? = null
@@ -53,7 +53,7 @@ interface CoingeckoApi {
 
     @GET("coins/{id}/market_chart")
     fun get6MonthChartData(
-        @Path("id") id: String = "bitcoin",
+        @Path("id") id: String,
         @Query("vs_currency") currencyCode: String,
         @Query("days") days: Int = 180,
         @Query("x_cg_pro_api_key") apiKey: String? = null
@@ -61,7 +61,7 @@ interface CoingeckoApi {
 
     @GET("coins/{id}/market_chart")
     fun get1YearChartData(
-        @Path("id") id: String = "bitcoin",
+        @Path("id") id: String,
         @Query("vs_currency") currencyCode: String,
         @Query("days") days: Int = 365,
         @Query("x_cg_pro_api_key") apiKey: String? = null
@@ -69,7 +69,7 @@ interface CoingeckoApi {
 
     @GET("coins/{id}/market_chart")
     fun getMaxChartData(
-        @Path("id") id: String = "bitcoin",
+        @Path("id") id: String,
         @Query("vs_currency") currencyCode: String,
         @Query("days") days: String = "max",
         @Query("x_cg_pro_api_key") apiKey: String? = null
@@ -77,7 +77,7 @@ interface CoingeckoApi {
 
     @GET("coins/{id}/market_chart/range")
     fun getHistoryData(
-        @Path("id") id: String = "bitcoin",
+        @Path("id") id: String,
         @Query("vs_currency") currency: String,
         @Query("from") from: Long,
         @Query("to") to: Long,

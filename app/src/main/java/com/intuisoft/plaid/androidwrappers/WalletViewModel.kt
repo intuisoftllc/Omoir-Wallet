@@ -360,7 +360,7 @@ open class WalletViewModel(
     }
 
     open fun getMaxSpend() : RateConverter {
-        val rate = RateConverter(delegateManager.current().marketDelegate.getLocalBasicTickerData().price)
+        val rate = RateConverter(delegateManager.current().marketDelegate.getBasicTickerData().price)
         rate.setLocalRate(RateConverter.RateType.SATOSHI_RATE, getAdjustedWalletBalance().toDouble())
         return rate
     }

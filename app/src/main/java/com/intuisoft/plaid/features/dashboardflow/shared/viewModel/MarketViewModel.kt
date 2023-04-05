@@ -45,38 +45,11 @@ class MarketViewModel(
     protected val _maxSupply = SingleLiveData<String>()
     val maxSupply: LiveData<String> = _maxSupply
 
-    protected val _network = SingleLiveData<String>()
-    val network: LiveData<String> = _network
+    protected val _blockStatsTitles = SingleLiveData<List<String>>()
+    val blockStatsTitles: LiveData<List<String>> = _blockStatsTitles
 
-    protected val _blockHeight = SingleLiveData<String>()
-    val blockHeight: LiveData<String> = _blockHeight
-
-    protected val _difficulty = SingleLiveData<String>()
-    val difficulty: LiveData<String> = _difficulty
-
-    protected val _blockchainSize = SingleLiveData<String>()
-    val blockchainSize: LiveData<String> = _blockchainSize
-
-    protected val _addressesWithBalance = SingleLiveData<String>()
-    val addressesWithBalance: LiveData<String> = _addressesWithBalance
-
-    protected val _txPerSecond = SingleLiveData<String>()
-    val txPerSecond: LiveData<String> = _txPerSecond
-
-    protected val _memoryPoolSize = SingleLiveData<String>()
-    val memoryPoolSize: LiveData<String> = _memoryPoolSize
-
-    protected val _nodesOnNetwork = SingleLiveData<String>()
-    val nodesOnNetwork: LiveData<String> = _nodesOnNetwork
-
-    protected val _avgFeeRate = SingleLiveData<String>()
-    val avgFeeRate: LiveData<String> = _avgFeeRate
-
-    protected val _unconfirmedTxs = SingleLiveData<String>()
-    val unconfirmedTxs: LiveData<String> = _unconfirmedTxs
-
-    protected val _avgConfTime = SingleLiveData<String>()
-    val avgConfTime: LiveData<String> = _avgConfTime
+    protected val _blockStatsSubTitles = SingleLiveData<List<Pair<String, String>>>()
+    val blockStatsSubTitles: LiveData<List<Pair<String, String>>> = _blockStatsSubTitles
 
     protected val _couldNotLoadData = SingleLiveData<Unit>()
     val couldNotLoadData: LiveData<Unit> = _couldNotLoadData
@@ -96,8 +69,8 @@ class MarketViewModel(
     protected val _showContent = SingleLiveData<Boolean>()
     val showContent: LiveData<Boolean> = _showContent
 
-    protected val _extendedNetworkDataLoading = SingleLiveData<Boolean>()
-    val extendedNetworkDataLoading: LiveData<Boolean> = _extendedNetworkDataLoading
+    protected val _blockStatsDataLoading = SingleLiveData<Boolean>()
+    val blockStatsDataLoading: LiveData<Boolean> = _blockStatsDataLoading
 
     protected val _basicNetworkDataLoading = SingleLiveData<Boolean>()
     val basicNetworkDataLoading: LiveData<Boolean> = _basicNetworkDataLoading
@@ -122,9 +95,9 @@ class MarketViewModel(
     fun onNoInternet(hasInternet: Boolean) {
         PlaidScope.applicationScope.launch(Dispatchers.IO) {
             safeWalletScope {
-                val basicData = delegateManager.current().marketDelegate.getBasicTickerData()
+                val basicData = delegateManager.current().marketDelegate.fetchBasicTickerData()
                 val extendedData =
-                    apiRepository.getExtendedNetworkData(getWalletNetwork() == BitcoinKit.NetworkType.TestNet)
+                    apiRepository.getBlockStats(getWalletNetwork() == BitcoinKit.NetworkType.TestNet, delegateManager.current().networkDelegate)
                 val chartData = getChartData()
 
                 if (basicData.marketCap != 0.0 && extendedData != null && chartData != null) {
@@ -152,7 +125,7 @@ class MarketViewModel(
             withContext(Dispatchers.IO) {
                 safeWalletScope {
                     _basicNetworkDataLoading.postValue(true)
-                    val data = delegateManager.current().marketDelegate.getBasicTickerData()
+                    val data = delegateManager.current().marketDelegate.fetchBasicTickerData()
 
                     var mktCap = SimpleCurrencyFormat.formatValue(
                         localStoreRepository.getLocalCurrency(),
@@ -182,161 +155,25 @@ class MarketViewModel(
         }
     }
 
-    // for testing purposes only
-    private fun printCongestionRatingPoints() {
-        val indicator1Points = listOf(-1, 0, 1, 2)
-        val indicator2Points = listOf(2, 1, -1, -2)
-        val indicator3Points = listOf(-2, -1, 2, 3)
-        val indicator4Points = listOf(-1, 1, 2, 3)
-        var points = mutableListOf<Int>()
-
-        indicator1Points.forEach { it1 ->
-            indicator2Points.forEach { it2 ->
-                indicator3Points.forEach { it3 ->
-                    indicator4Points.forEach { it4 ->
-                        points.add(it1 + it2 + it3 + it4)
-                    }
-                }
-            }
-        }
-
-        points = points.distinct().sorted().toMutableList()
-        println("points range: $points")
-    }
-
     fun updateExtendedMarketData() {
         if(!localStoreRepository.isPremiumUser()) return
 
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
                 safeWalletScope {
-                    _extendedNetworkDataLoading.postValue(true)
-                    if(getWalletNetwork() == BitcoinKit.NetworkType.TestNet) {
-                        _network.postValue(getApplication<PlaidApp>().getString(R.string.market_data_extended_item_1_description2))
-                    } else {
-                        _network.postValue(getApplication<PlaidApp>().getString(R.string.market_data_extended_item_1_description))
-                    }
+                    _blockStatsDataLoading.postValue(true)
+                    _blockStatsTitles.postValue(delegateManager.current().networkDelegate.getExtendedNetworkDataTitles())
+                    val data = delegateManager.current().networkDelegate.fetchExtendedNetworkData(getWalletNetwork() == BitcoinKit.NetworkType.TestNet)
 
-                    val extendedData = apiRepository.getExtendedNetworkData(getWalletNetwork() == BitcoinKit.NetworkType.TestNet)
-
-                    if(extendedData != null) {
-                        _blockHeight.postValue(SimpleCoinNumberFormat.format(extendedData.height.toLong()) ?: "")
-                        _difficulty.postValue(SimpleCoinNumberFormat.format(extendedData.difficulty) ?: "")
-                        _blockchainSize.postValue(extendedData.blockchainSize.humanReadableByteCountSI() ?: "")
-                        _addressesWithBalance.postValue(SimpleCoinNumberFormat.formatSatsShort(extendedData.addressesWithBalance) + " ${getApplication<PlaidApp>().getString(R.string.addresses)}")
-                        _memoryPoolSize.postValue(extendedData.memPoolSize.humanReadableByteCountSI() ?: "")
-                        _unconfirmedTxs.postValue(SimpleCoinNumberFormat.format(extendedData.unconfirmedTxs.toLong()) ?: "")
-
-                        if(getWalletNetwork() == BitcoinKit.NetworkType.TestNet || extendedData == null) {
-                            _congestionRating.postValue(CongestionRating.NA)
-                            _avgConfTime.postValue(getApplication<PlaidApp>().getString(R.string.not_applicable))
-                            _nodesOnNetwork.postValue(getApplication<PlaidApp>().getString(R.string.not_applicable))
-                            _txPerSecond.postValue(getApplication<PlaidApp>().getString(R.string.not_applicable))
-                        } else {
-                            _avgConfTime.postValue(SimpleCoinNumberFormat.formatCurrency(extendedData.avgConfTime) ?: "")
-                            _nodesOnNetwork.postValue(SimpleCoinNumberFormat.format(extendedData.nodesOnNetwork.toLong()) + " ${getApplication<PlaidApp>().getString(R.string.nodes)}")
-                            _txPerSecond.postValue(SimpleCoinNumberFormat.format(extendedData.txPerSecond.toLong()) + " ${getApplication<PlaidApp>().getString(R.string.tx_per_sec)}")
-
-                            var points: Int
-
-                            when {
-                                Constants.UnconfirmedTxsCongestion.LIGHT.contains(extendedData.unconfirmedTxs) -> {
-                                    points = -1
-                                }
-                                Constants.UnconfirmedTxsCongestion.NORMAL.contains(extendedData.unconfirmedTxs) -> {
-                                    points = 0
-                                }
-                                Constants.UnconfirmedTxsCongestion.MED.contains(extendedData.unconfirmedTxs) -> {
-                                    points = 1
-                                }
-                                Constants.UnconfirmedTxsCongestion.BUSY.contains(extendedData.unconfirmedTxs) -> {
-                                    points = 2
-                                }
-                                else -> {
-                                    points = 3
-                                }
-                            }
-
-                            when {
-                                extendedData.txPerSecond  in 0..1-> {
-                                    points += 2
-                                }
-
-                                extendedData.txPerSecond == 2 -> {
-                                    points++
-                                }
-
-                                extendedData.txPerSecond in 3..4 -> {
-                                    points--
-                                }
-
-                                extendedData.txPerSecond >= 5 -> {
-                                    points -= 2
-                                }
-                            }
-
-                            when {
-                                extendedData.memPoolSize in 0..5_000_000 -> { // < 5mb
-                                    points -= 2
-                                }
-
-                                extendedData.memPoolSize in 5_000_001..10_000_000 -> { // 5-10mb
-                                    points--
-                                }
-
-                                extendedData.memPoolSize in 10_000_001 .. 20_000_000 -> { // 10-20mb
-                                    points++
-                                }
-
-                                extendedData.memPoolSize in 20_000_001 .. 40_000_000 -> { // 20-40mb
-                                    points+= 2
-                                }
-
-                                extendedData.memPoolSize >= 40_000_001 -> { // > 40mb
-                                    points+= 3
-                                }
-                            }
-
-                            when {
-                                extendedData.avgConfTime in 0.0..9.9 -> {
-                                    points--
-                                }
-
-                                extendedData.avgConfTime in 10.0..100.0 -> {
-                                    points++
-                                }
-
-                                extendedData.avgConfTime in 101.0..200.0 -> {
-                                    points += 2
-                                }
-
-                                extendedData.avgConfTime > 200 -> {
-                                    points += 3
-                                }
-                            }
-                                    //        [    light   ]   [   normal   ]  [ med ]  [ busy ] [congested]
-                            when { // range: [-6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8,   9,  10]
-                                points in -6 .. -3 -> {
-                                    _congestionRating.postValue(CongestionRating.LIGHT)
-                                }
-                                points in -2..2 -> {
-                                    _congestionRating.postValue(CongestionRating.NORMAL)
-                                }
-                                points in 3..5 -> {
-                                    _congestionRating.postValue(CongestionRating.MED)
-                                }
-                                points in 6..8 -> {
-                                    _congestionRating.postValue(CongestionRating.BUSY)
-                                }
-                                else -> {
-                                    _congestionRating.postValue(CongestionRating.CONGESTED)
-                                }
-                            }
-                        }
+                    if(data.isNotEmpty()) {
+                        _blockStatsSubTitles.postValue(
+                            data
+                        )
                     } else {
                         _couldNotLoadData.postValue(Unit)
                     }
-                    _extendedNetworkDataLoading.postValue(false)
+
+                    _blockStatsDataLoading.postValue(false)
                 }
             }
         }
@@ -349,7 +186,7 @@ class MarketViewModel(
                     _tickerPrice.postValue(
                         SimpleCurrencyFormat.formatValue(
                             localStoreRepository.getLocalCurrency(),
-                            delegateManager.current().marketDelegate.getBasicTickerData().price
+                            delegateManager.current().marketDelegate.fetchBasicTickerData().price
                         )
                     )
 
@@ -392,5 +229,5 @@ class MarketViewModel(
         }
     }
 
-    private suspend fun getChartData() = apiRepository.getTickerPriceChartData(intervalType)
+    private suspend fun getChartData() = delegateManager.current().marketDelegate.fetchChartDataForInterval(intervalType)
 }

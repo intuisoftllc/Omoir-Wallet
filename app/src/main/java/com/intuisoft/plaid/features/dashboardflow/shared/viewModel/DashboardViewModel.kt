@@ -144,7 +144,7 @@ class DashboardViewModel(
                         if (balanceHistory.isEmpty()) {
                             _noChartData.postValue(Unit)
 
-                            val rate = RateConverter(delegateManager.current().marketDelegate.getLocalBasicTickerData().price)
+                            val rate = RateConverter(delegateManager.current().marketDelegate.getBasicTickerData().price)
                             rate.setLocalRate(RateConverter.RateType.FIAT_RATE, 0.0)
                             _totalSent.postValue(
                                 rate.from(
@@ -190,7 +190,7 @@ class DashboardViewModel(
 
                             val time = getMaxMarketInterval(ChartIntervalType.INTERVAL_ALL_TIME, birthdate)
                             val allTimeMarketData =
-                                apiRepository.getTickerPriceChartData(ChartIntervalType.INTERVAL_ALL_TIME)
+                                delegateManager.current().marketDelegate.fetchChartDataForInterval(ChartIntervalType.INTERVAL_ALL_TIME)
                             val createdTime =
                                 Math.min(walletManager.findStoredWallet(getWalletId())!!.createdAt, balanceHistory.first().second * Constants.Time.MILLS_PER_SEC)
                             val incomingTxs =
@@ -221,7 +221,7 @@ class DashboardViewModel(
                             val highestBalance = balanceHistory.maxByOrNull { it.first }
 
                             val rate = RateConverter(
-                                delegateManager.current().marketDelegate.getLocalBasicTickerData().price
+                                delegateManager.current().marketDelegate.getBasicTickerData().price
                             )
 
                             rate.setLocalRate(RateConverter.RateType.SATOSHI_RATE, getWalletBalance().toDouble())
@@ -285,7 +285,7 @@ class DashboardViewModel(
                                 )
                             )
 
-                            rate.setFiatRate(delegateManager.current().marketDelegate.getLocalBasicTickerData().price)
+                            rate.setFiatRate(delegateManager.current().marketDelegate.getBasicTickerData().price)
                             when (localStoreRepository.getBitcoinDisplayUnit()) {
                                 BitcoinDisplayUnit.SATS -> {
                                     _chartData.postValue(
@@ -331,7 +331,7 @@ class DashboardViewModel(
 
                                 BitcoinDisplayUnit.FIAT -> {
                                     val max = getMaxMarketInterval(intervalType, birthdate)
-                                    val data = apiRepository.getTickerPriceChartData(intervalType)
+                                    val data = delegateManager.current().marketDelegate.fetchChartDataForInterval(intervalType)
 
                                     if(data != null && data.isNotEmpty()) {
                                         var cData = data
@@ -568,7 +568,7 @@ class DashboardViewModel(
     fun onNoInternet(hasInternet: Boolean) {
         PlaidScope.applicationScope.launch(Dispatchers.IO) {
 
-            val data = apiRepository.getTickerPriceChartData(intervalType)
+            val data = delegateManager.current().marketDelegate.fetchChartDataForInterval(intervalType)
 
             if(data != null) {
                 _showChartError.postValue(null)

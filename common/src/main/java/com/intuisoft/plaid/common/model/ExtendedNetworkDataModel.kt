@@ -1,6 +1,6 @@
 package com.intuisoft.plaid.common.model
 
-data class ExtendedNetworkDataModel(
+data class BlockStatsDataModel(
     var height: Int,
     var difficulty: Long,
     var blockchainSize: Long,
@@ -9,5 +9,5 @@ data class ExtendedNetworkDataModel(
     var txPerSecond: Int,
     var unconfirmedTxs: Int,
     var addressesWithBalance: Long,
-    var avgConfTime: Double
+    var marketDominance: Double
 )

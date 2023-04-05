@@ -21,7 +21,8 @@ import com.intuisoft.plaid.common.util.Constants
     entities = arrayOf(
         SuggestedFeeRate::class,
         BasicCoinInfo::class,
-        ExtendedNetworkData::class,
+        BlockStatsData::class,
+        BitcoinStatsData::class,
         TickerPriceChartData::class,
         SupportedCurrency::class,
         TransactionMemo::class,
@@ -64,7 +65,7 @@ abstract class PlaidDatabase : RoomDatabase() {
 
     abstract fun basicCoinInfoDao(): BasicCoinInfoDao
 
-    abstract fun extendedMarketDataDao(): ExtendedNetworkDataDao
+    abstract fun blockStatsDataDao(): BlockStatsDataDao
 
     abstract fun tickerPriceChartDataDao(): TickerPriceChartDataDao
 
@@ -77,6 +78,8 @@ abstract class PlaidDatabase : RoomDatabase() {
     abstract fun assetTransfersDao(): AssetTransferDao
 
     abstract fun batchDataDao(): BatchDao
+
+    abstract fun bitcoinStatsDataDao(): BitcoinStatsDataDao
 
     abstract fun addressBlacklistDao(): AddressBlacklistDao
 

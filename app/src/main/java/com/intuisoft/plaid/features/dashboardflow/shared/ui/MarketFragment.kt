@@ -12,6 +12,7 @@ import com.intuisoft.plaid.androidwrappers.delegates.FragmentConfiguration
 import com.intuisoft.plaid.billing.BillingManager
 import com.intuisoft.plaid.common.analytics.EventTracker
 import com.intuisoft.plaid.common.analytics.events.EventMarketView
+import com.intuisoft.plaid.common.delegates.DelegateManager
 import com.intuisoft.plaid.common.model.ChartDataModel
 import com.intuisoft.plaid.common.model.ChartIntervalType
 import com.intuisoft.plaid.common.model.CongestionRating
@@ -31,6 +32,7 @@ import java.util.*
 class MarketFragment : ConfigurableFragment<FragmentMarketBinding>(pinProtection = true) {
     private val viewModel: MarketViewModel by viewModel()
     private val localStore: LocalStoreRepository by inject()
+    private val delegateManager: DelegateManager by inject()
     protected val eventTracker: EventTracker by inject()
     protected val billingManager: BillingManager by inject()
 
@@ -173,15 +175,7 @@ class MarketFragment : ConfigurableFragment<FragmentMarketBinding>(pinProtection
             binding.volume.text = it
         })
 
-        viewModel.nodesOnNetwork.observe(viewLifecycleOwner, Observer {
-            binding.nodes.text = it
-        })
-
-        viewModel.memoryPoolSize.observe(viewLifecycleOwner, Observer {
-            binding.memPoolSize.text = it
-        })
-
-        viewModel.extendedNetworkDataLoading.observe(viewLifecycleOwner, Observer {
+        viewModel.blockStatsDataLoading.observe(viewLifecycleOwner, Observer {
             binding.extendedNetworkDataLoading.isVisible = it
         })
 
@@ -189,32 +183,49 @@ class MarketFragment : ConfigurableFragment<FragmentMarketBinding>(pinProtection
             binding.basicNetworkDataLoading.isVisible = it
         })
 
-        viewModel.chartDataLoading.observe(viewLifecycleOwner, Observer {
-            binding.chartDataLoading.isVisible = it
+        viewModel.blockStatsTitles.observe(viewLifecycleOwner, Observer {
+            binding.blockStats1Title.text = it[0]
+            binding.blockStats2Title.text = it[1]
+            binding.blockStats3Title.text = it[2]
+            binding.blockStats4Title.text = it[3]
+            binding.blockStats5Title.text = it[4]
+            binding.blockStats6Title.text = it[5]
+            binding.blockStats7Title.text = it[6]
+            binding.blockStats8Title.text = it[7]
+            binding.blockStats9Title.text = it[8]
+            binding.blockStats10Title.text = it[9]
+            binding.blockStats11Title.text = it[10]
         })
 
-        viewModel.txPerSecond.observe(viewLifecycleOwner, Observer {
-            binding.txsPerSecond.text = it
-        })
-
-        viewModel.addressesWithBalance.observe(viewLifecycleOwner, Observer {
-            binding.addressesWithBalances.text = it
+        viewModel.blockStatsSubTitles.observe(viewLifecycleOwner, Observer {
+            binding.blockStats1Subtitle.text = it[0].second
+            binding.blockStats2Subtitle.text = it[1].second
+            binding.blockStats3Subtitle.text = it[2].second
+            binding.blockStats4Subtitle.text = it[3].second
+            binding.blockStats5Subtitle.text = it[4].second
+            binding.blockStats6Subtitle.text = it[5].second
+            binding.blockStats7Subtitle.text = it[6].second
+            binding.blockStats8Subtitle.text = it[7].second
+            binding.blockStats9Subtitle.text = it[8].second
+            binding.blockStats10Subtitle.text = it[9].second
+            binding.blockStats11Subtitle.text = it[10].second
         })
 
         viewModel.upgradeToPro.observe(viewLifecycleOwner, Observer {
             binding.upgradeToProContainer.isVisible = it
 
             if(!it) {
-                binding.height.text = ""
-                binding.difficulty.text = ""
-                binding.blockchainSize.text = ""
-                binding.unconfirmedTxs.text = ""
-                binding.avgConfTime.text = ""
-                binding.congestionRating.text = ""
-                binding.nodes.text = ""
-                binding.memPoolSize.text = ""
-                binding.txsPerSecond.text = ""
-                binding.addressesWithBalances.text = ""
+                binding.blockStats1Subtitle.text = ""
+                binding.blockStats2Subtitle.text = ""
+                binding.blockStats3Subtitle.text = ""
+                binding.blockStats4Subtitle.text = ""
+                binding.blockStats5Subtitle.text = ""
+                binding.blockStats6Subtitle.text = ""
+                binding.blockStats7Subtitle.text = ""
+                binding.blockStats8Subtitle.text = ""
+                binding.blockStats9Subtitle.text = ""
+                binding.blockStats10Subtitle.text = ""
+                binding.blockStats11Subtitle.text = ""
             }
         })
 
@@ -236,78 +247,26 @@ class MarketFragment : ConfigurableFragment<FragmentMarketBinding>(pinProtection
             }
         }
 
-        viewModel.congestionRating.observe(viewLifecycleOwner, Observer {
-            when(it) {
-                CongestionRating.NA -> {
-                    binding.congestionRating.setTextColor(resources.getColor(R.color.subtitle_text_color))
-                    binding.congestionRating.text = getString(R.string.market_data_congestion_rating_6)
-                }
-                CongestionRating.LIGHT -> {
-                    binding.congestionRating.setTextColor(resources.getColor(R.color.success_color))
-                    binding.congestionRating.text = getString(R.string.market_data_congestion_rating_1)
-                }
-                CongestionRating.NORMAL -> {
-                    binding.congestionRating.setTextColor(resources.getColor(R.color.subtitle_text_color))
-                    binding.congestionRating.text = getString(R.string.market_data_congestion_rating_2)
-                }
-                CongestionRating.MED -> {
-                    binding.congestionRating.setTextColor(resources.getColor(R.color.warning_color))
-                    binding.congestionRating.text = getString(R.string.market_data_congestion_rating_3)
-                }
-                CongestionRating.BUSY -> {
-                    binding.congestionRating.setTextColor(resources.getColor(R.color.warning_color))
-                    binding.congestionRating.text = getString(R.string.market_data_congestion_rating_4)
-                }
-                CongestionRating.CONGESTED -> {
-                    binding.congestionRating.setTextColor(resources.getColor(R.color.error_color))
-                    binding.congestionRating.text = getString(R.string.market_data_congestion_rating_5)
-                }
-            }
-        })
-
-        binding.bitcoinDescription.setOnSingleClickListener(Constants.Time.MIN_CLICK_INTERVAL_SHORT) {
-            openLink(getString(R.string.market_data_what_is_bitcoin_link))
+        binding.tokenDescription.text = delegateManager.current().marketDelegate.getTickerDescription()
+        binding.tokenDescription.setOnSingleClickListener(Constants.Time.MIN_CLICK_INTERVAL_SHORT) {
+            openLink(delegateManager.current().marketDelegate.learnMoreLink)
         }
 
-        binding.bitcoinOrg.setOnSingleClickListener(Constants.Time.MIN_CLICK_INTERVAL_SHORT) {
-            openLink(getString(R.string.market_data_bitcoin_org_link))
+        binding.website.setOnSingleClickListener(Constants.Time.MIN_CLICK_INTERVAL_SHORT) {
+            openLink(delegateManager.current().marketDelegate.website)
         }
 
         binding.explorer.setOnSingleClickListener(Constants.Time.MIN_CLICK_INTERVAL_SHORT) {
-            openLink(getString(R.string.market_data_bitcoin_explorer_link))
+            openLink(delegateManager.current().networkDelegate.explorer)
         }
 
         binding.marketData.setOnSingleClickListener(Constants.Time.MIN_CLICK_INTERVAL_SHORT) {
-            openLink(getString(R.string.market_data_bitcoin_market_external_link))
+            openLink(delegateManager.current().marketDelegate.coingeckoLink)
         }
 
         viewModel.couldNotLoadData.observe(viewLifecycleOwner, Observer {
             binding.chartDataLoading.isVisible = false
             styledSnackBar(requireView(), getString(R.string.market_data_load_error), true)
-        })
-
-        viewModel.network.observe(viewLifecycleOwner, Observer {
-            binding.network.text = it
-        })
-
-        viewModel.blockHeight.observe(viewLifecycleOwner, Observer {
-            binding.height.text = it
-        })
-
-        viewModel.difficulty.observe(viewLifecycleOwner, Observer {
-            binding.difficulty.text = it
-        })
-
-        viewModel.blockchainSize.observe(viewLifecycleOwner, Observer {
-            binding.blockchainSize.text = it
-        })
-
-        viewModel.unconfirmedTxs.observe(viewLifecycleOwner, Observer {
-            binding.unconfirmedTxs.text = it
-        })
-
-        viewModel.avgConfTime.observe(viewLifecycleOwner, Observer {
-            binding.avgConfTime.text = it
         })
 
         viewModel.tickerPrice.observe(viewLifecycleOwner, Observer {

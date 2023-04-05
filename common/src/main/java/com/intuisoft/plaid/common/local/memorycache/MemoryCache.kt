@@ -3,7 +3,6 @@ package com.intuisoft.plaid.common.local.memorycache
 import com.intuisoft.plaid.common.model.*
 import com.intuisoft.plaid.common.network.blockchair.response.SupportedCurrencyModel
 import com.intuisoft.plaid.common.util.extensions.remove
-import com.intuisoft.plaid.common.util.extensions.toArrayList
 import java.util.concurrent.CopyOnWriteArrayList
 
 /**
@@ -64,13 +63,13 @@ class MemoryCache {
         if(testnet) testnetAddressTransactionsCache.get(address)?.first
         else addressTransactionsCache.get(address)?.first
 
-    fun setMarketHistoryForCurrency(currency: String, from: Long, to: Long, data: List<MarketHistoryDataModel>) {
-        marketHistoryCache.remove { it.currency == currency && it.from == from && it.to == to }
-        marketHistoryCache.add(MarketHistoryCache(currency, from, to, data))
+    fun setMarketHistoryForCurrency(currency: String, from: Long, to: Long, coin: String, data: List<MarketHistoryDataModel>) {
+        marketHistoryCache.remove { it.currencyCode == currency && it.from == from && it.to == to }
+        marketHistoryCache.add(MarketHistoryCache(currency, coin, from, to, data))
     }
 
-    fun getMarketHistoryForCurrency(currency: String, from: Long, to: Long): List<MarketHistoryDataModel>? {
-        return marketHistoryCache.find { it.currency == currency && it.from == from && it.to == to }?.data
+    fun getMarketHistoryForCurrency(currencyCode: String, from: Long, to: Long, coin: String): List<MarketHistoryDataModel>? {
+        return marketHistoryCache.find { it.currencyCode == currencyCode && it.from == from && it.to == to && it.coin == coin }?.data
     }
 
     fun setAddressTransactions(address: String, testnet: Boolean, updateTime: Long, data: List<AddressTransactionData>) {
@@ -111,7 +110,8 @@ class MemoryCache {
     }
 
     data class MarketHistoryCache(
-        val currency: String,
+        val currencyCode: String,
+        val coin: String,
         val from: Long,
         val to: Long,
         val data: List<MarketHistoryDataModel>

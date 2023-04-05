@@ -74,7 +74,7 @@ class CsvExporter(
         )
         
         val feeConverter =
-            RateConverter(delegateManager.current().marketDelegate.getLocalBasicTickerData().price)
+            RateConverter(delegateManager.current().marketDelegate.getBasicTickerData().price)
         val amountConverter = feeConverter.clone()
         val totalValueConverter = feeConverter.clone()
         filteredTransactions.forEach {

@@ -13,16 +13,10 @@ interface TickerPriceChartDataDao {
 
     @Query("""
         SELECT * from ticker_price_chart_data
-         WHERE interval_type = :intervalType AND currency_code = :currencyCode
+         WHERE interval_type = :intervalType AND currency_code = :currencyCode AND coin = :coin
          ORDER BY id ASC LIMIT 1
     """)
-    fun getChartDataFor(intervalType: Int, currencyCode: String) : TickerPriceChartData?
-
-    @Query("""
-        SELECT * from ticker_price_chart_data
-         ORDER BY id ASC
-    """)
-    fun getAllChartData() : List<TickerPriceChartData>
+    fun getChartDataFor(intervalType: Int, currencyCode: String, coin: String) : TickerPriceChartData?
 
     @Query("DELETE FROM ticker_price_chart_data")
     fun deleteTable()

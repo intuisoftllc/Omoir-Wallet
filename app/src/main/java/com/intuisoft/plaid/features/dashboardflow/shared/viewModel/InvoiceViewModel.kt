@@ -37,7 +37,7 @@ class InvoiceViewModel(
     protected val _onAvailableBalanceUpdated = SingleLiveData<String>()
     val onAvailableBalanceUpdated: LiveData<String> = _onAvailableBalanceUpdated
 
-    private var amountToSpend: RateConverter = RateConverter(delegateManager.current().marketDelegate.getLocalBasicTickerData().price)
+    private var amountToSpend: RateConverter = RateConverter(delegateManager.current().marketDelegate.getBasicTickerData().price)
     private var description: String = ""
     private var address: String = ""
     private var exchangeId: String? = null

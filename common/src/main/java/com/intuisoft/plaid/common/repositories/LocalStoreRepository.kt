@@ -1,8 +1,11 @@
 package com.intuisoft.plaid.common.repositories
 
+import com.intuisoft.plaid.common.delegates.market.MarketDataDelegate
+import com.intuisoft.plaid.common.delegates.network.NetworkDataDelegate
 import com.intuisoft.plaid.common.listeners.WipeDataListener
 import com.intuisoft.plaid.common.local.db.listeners.DatabaseListener
 import com.intuisoft.plaid.common.model.*
+import com.intuisoft.plaid.common.network.blockchair.response.BlockStatsData
 import com.intuisoft.plaid.common.network.blockchair.response.SupportedCurrencyModel
 
 interface LocalStoreRepository {
@@ -96,7 +99,7 @@ interface LocalStoreRepository {
     fun getLastFeeRateUpdateTime(): Long
 
     fun setLastSupportedCurrenciesUpdate(time: Long)
-    fun setLastChartPriceUpdate(time: Long, type: ChartIntervalType)
+    fun setLastBTCChartPriceUpdate(time: Long, type: ChartIntervalType)
 
     fun getLastSupportedCurrenciesUpdateTime(): Long
 
@@ -108,9 +111,9 @@ interface LocalStoreRepository {
 
     fun setIsSendingBTC(sending: Boolean)
 
-    fun setLastExtendedMarketDataUpdate(time: Long)
+    fun setLastBTCBlockStatsUpdate(time: Long, testnet: Boolean)
 
-    fun getLastExtendedMarketDataUpdateTime(): Long
+    fun getLastBTCBlockStatsUpdateTime(testnet: Boolean): Long
 
     fun updateStepsLeftToDeveloper()
 
@@ -152,11 +155,14 @@ interface LocalStoreRepository {
 
     suspend fun setBasicCoinInfo(info: CoinInfoDataModel)
 
-    fun getExtendedNetworkData(testnetWallet: Boolean): ExtendedNetworkDataModel?
+    fun getBlockStatsData(testnet: Boolean, del: NetworkDataDelegate): BlockStatsDataModel?
 
-    suspend fun setExtendedNetworkData(testnetWallet: Boolean, extendedData: ExtendedNetworkDataModel)
+    suspend fun setBlockStatsData(testnet: Boolean, data: BlockStatsDataModel, del: NetworkDataDelegate)
 
     fun getSupportedCurrenciesData(): List<SupportedCurrencyModel>
+
+    fun getBitcoinStatsData(): BitcoinStatsDataModel?
+    suspend fun setBitcoinStatsData(data: BitcoinStatsDataModel)
 
     suspend fun setSupportedCurrenciesData(data: List<SupportedCurrencyModel>)
 
@@ -164,11 +170,15 @@ interface LocalStoreRepository {
 
     suspend fun getTransactionMemo(txId: String): TransactionMemoModel?
 
-    suspend fun setTickerPriceChartData(data: List<ChartDataModel>, currencyCode: String, intervalType: ChartIntervalType)
+    fun getLastBTCStatsUpdateTime(): Long
 
-    fun getLastChartPriceUpdateTime(type: ChartIntervalType): Long
+    fun setLastBTCStatsUpdate(time: Long)
 
-    fun getTickerPriceChartData(currencyCode: String, intervalType: ChartIntervalType): List<ChartDataModel>?
+    suspend fun setTickerPriceChartData(data: List<ChartDataModel>, currencyCode: String, intervalType: ChartIntervalType, del: MarketDataDelegate)
+
+    fun getLastBTCChartPriceUpdateTime(type: ChartIntervalType): Long
+
+    fun getTickerPriceChartData(currencyCode: String, intervalType: ChartIntervalType, del: MarketDataDelegate): List<ChartDataModel>?
 
     suspend fun wipeAllData(onWipeFinished: suspend () -> Unit)
 

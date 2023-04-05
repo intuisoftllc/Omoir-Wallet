@@ -33,6 +33,9 @@ data class BlockStatsData(
     @SerializedName("hodling_addresses")
     val hodling_addresses : Long,
 
+    @SerializedName("market_dominance_percentage")
+    val market_dominance_percentage: Double,
+
     @SerializedName("nodes")
     val nodes: Int,
 ): Parcelable

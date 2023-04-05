@@ -6,18 +6,18 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 
 @Dao
-interface ExtendedNetworkDataDao {
+interface BlockStatsDataDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(extendedData: ExtendedNetworkData)
+    suspend fun insert(extendedData: BlockStatsData)
 
     @Query("""
-        SELECT * from extended_network_data
-         WHERE testnet_data = :testnetData
+        SELECT * from block_stats_data
+         WHERE testnet_data = :testnetData AND coin = :coin
          ORDER BY id ASC LIMIT 1
     """)
-    fun getExtendedNetworkData(testnetData: Boolean) : ExtendedNetworkData?
+    fun getBlockStatsData(testnetData: Boolean, coin: String) : BlockStatsData?
 
-    @Query("DELETE FROM extended_network_data")
+    @Query("DELETE FROM block_stats_data")
     fun deleteTable()
 }

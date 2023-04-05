@@ -111,7 +111,7 @@ class AssetTransferDetailsFragment : ConfigurableFragment<FragmentAssetTransferD
             binding.batchGap.setSubTitleText(Plural.of("Block", transfer.batchGap.toLong()))
             binding.batchSize.setSubTitleText(Plural.of("Utxo", transfer.batchSize.toLong()))
 
-            val rate = RateConverter(delegateManager.current().marketDelegate.getLocalBasicTickerData().price)
+            val rate = RateConverter(delegateManager.current().marketDelegate.getBasicTickerData().price)
             rate.setLocalRate(RateConverter.RateType.SATOSHI_RATE, transfer.expectedAmount.toDouble())
             binding.expectedAmount.setSubTitleText(rate.from(localStoreRepository.getBitcoinDisplayUnit().toRateType(), localStoreRepository.getLocalCurrency(), false).second)
 

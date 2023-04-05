@@ -39,7 +39,7 @@ class ExchangeDetailsViewModel(
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
                 safeWalletScope {
-                    val rate = delegateManager.current().marketDelegate.getBasicTickerData()
+                    val rate = delegateManager.current().marketDelegate.fetchBasicTickerData()
                     val rateConverter = RateConverter(rate.price)
                     rateConverter.setLocalRate(RateConverter.RateType.BTC_RATE, receiveValue)
 

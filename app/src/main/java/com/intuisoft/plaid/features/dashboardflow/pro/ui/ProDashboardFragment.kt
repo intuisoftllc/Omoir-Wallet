@@ -117,7 +117,7 @@ class ProDashboardFragment : ConfigurableFragment<FragmentProWalletDashboardBind
 
         viewModel.percentageGain.observe(viewLifecycleOwner, Observer { (percentageGain, rawGain) ->
             val rateConverter = RateConverter(
-                delegateManager.current().marketDelegate.getLocalBasicTickerData().price
+                delegateManager.current().marketDelegate.getBasicTickerData().price
             )
 
 

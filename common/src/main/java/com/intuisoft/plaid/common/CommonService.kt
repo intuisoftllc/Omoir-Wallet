@@ -46,7 +46,6 @@ object CommonService {
     private var blockchainInfoRepository: BlockchainInfoRepository? = null
     private var coingeckoRepository: CoingeckoRepository? = null
     private var delegateManager: DelegateManager? = null
-    private var testNetBlockchairRepository: BlockchairRepository? = null
     private var databaseRepository: DatabaseRepository? = null
     private var changeNowRepository: ChangeNowRepository? = null
     private var memoryCache: MemoryCache? = null
@@ -54,7 +53,6 @@ object CommonService {
     private var application: Application? = null
     private var blockchairClientSecret: String? = ""
     private var blockchairApiUrl: String? = ""
-    private var blockchairTestNetNodeApiUrl: String? = ""
     private var blockchainInfoApiUrl: String? = ""
     private var blockstreamInfoApiUrl: String? = ""
     private var blockstreamInfoTestNetApiUrl: String? = ""
@@ -115,7 +113,6 @@ object CommonService {
             apiRepository = provideApiRepository(
                 getLocalStoreInstance(),
                 getBlockchairRepositoryInstance(),
-                getTestBlockchairRepositoryInstance(),
                 getBlockchainInfoRepositoryInstance(),
                 getBlockstreamInfoRepositoryInstance(),
                 getBlockstreamInfoTestNetRepositoryInstance(),
@@ -146,30 +143,13 @@ object CommonService {
         return blockchairRepository!!
     }
 
-    fun getTestBlockchairRepositoryInstance(): BlockchairRepository {
-        if(testNetBlockchairRepository == null) {
-            testNetBlockchairRepository = BlockchairRepository.create(
-                provideBlockchairApi(
-                    provideNowNodesTestNetNodeRetrofit(
-                        provideBaseHttpClient(
-                            provideConnectivityInterceptor()
-                        ),
-                        getGsonInstance()
-                    )
-                ),
-                null
-            )
-        }
-
-        return testNetBlockchairRepository!!
-    }
-
     fun getDelegateManagerInstance(): DelegateManager {
         if(delegateManager == null) {
             delegateManager = DelegateManager(
                 getLocalStoreInstance(),
                 getApiRepositoryInstance(),
-                getAppPrefs()
+                getAppPrefs(),
+                getApplication()
             )
         }
 
@@ -279,7 +259,10 @@ object CommonService {
                 provideBasicInfoDao(
                     application!!
                 ),
-                provideExtendedMarketDataDao(
+                provideBlockStatsDataDao(
+                    application!!
+                ),
+                provideBtcStatsDataDao(
                     application!!
                 ),
                 provideTickerPriceDataDao(
@@ -337,7 +320,6 @@ object CommonService {
         blockstreamInfoURL: String,
         blockstreamInfoTestNetURL: String,
         blockchairApiUrl: String,
-        testNetBlockchairApiUrl: String,
         blockchainInfoApiUrl: String,
         coingeckoApiUrl: String,
         changeNowApiUrl: String,
@@ -351,8 +333,7 @@ object CommonService {
         provideChangeNowSecret(changeNowSecret)
         provideBlockstreamInfoApiApiUrl(blockstreamInfoURL)
         provideBlockstreamInfoTestNetApiUrl(blockstreamInfoTestNetURL)
-        provideNowNodesNodeApiUrl(blockchairApiUrl)
-        provideNowNodesTestNetNodeApiUrl(testNetBlockchairApiUrl)
+        provideBlockChairApiUrl(blockchairApiUrl)
         provideBlockchainInfoApiUrl(blockchainInfoApiUrl)
         provideCoingeckoApiUrl(coingeckoApiUrl)
         provideChangeNowApiUrl(changeNowApiUrl)
@@ -367,7 +348,6 @@ object CommonService {
         getBlockchairRepositoryInstance()
         getBlockstreamInfoRepositoryInstance()
         getBlockstreamInfoTestNetRepositoryInstance()
-        getTestBlockchairRepositoryInstance()
         getDatabaseRepositoryInstance()
         getBlockchainInfoRepositoryInstance()
         getCoingeckoRepositoryInstance()
@@ -409,7 +389,7 @@ object CommonService {
         this.blockstreamInfoTestNetApiUrl = url
     }
 
-    private fun provideNowNodesNodeApiUrl(url: String) {
+    private fun provideBlockChairApiUrl(url: String) {
         this.blockchairApiUrl = url
     }
 
@@ -427,10 +407,6 @@ object CommonService {
 
     private fun provideCoingeckoSecret(secret: String?) {
         this.coingeckoSecret = secret
-    }
-
-    private fun provideNowNodesTestNetNodeApiUrl(url: String) {
-        this.blockchairTestNetNodeApiUrl = url
     }
 
     private fun provideBlockchainInfoApiUrl(url: String) {
@@ -469,10 +445,16 @@ object CommonService {
         return PlaidDatabase.getInstance(context).basicCoinInfoDao()
     }
 
-    private fun provideExtendedMarketDataDao(
+    private fun provideBlockStatsDataDao(
         context: Context
-    ): ExtendedNetworkDataDao {
-        return PlaidDatabase.getInstance(context).extendedMarketDataDao()
+    ): BlockStatsDataDao {
+        return PlaidDatabase.getInstance(context).blockStatsDataDao()
+    }
+
+    private fun provideBtcStatsDataDao(
+        context: Context
+    ):  BitcoinStatsDataDao {
+        return PlaidDatabase.getInstance(context).bitcoinStatsDataDao()
     }
 
     private fun provideTickerPriceDataDao(
@@ -527,7 +509,8 @@ object CommonService {
         database: PlaidDatabase,
         suggestedFeeRateDao: SuggestedFeeRateDao,
         basiccoinInfoDao: BasicCoinInfoDao,
-        extendedNetworkDataDao: ExtendedNetworkDataDao,
+        blockStatsDataDao: BlockStatsDataDao,
+        bitcoinStatsDataDao: BitcoinStatsDataDao,
         tickerPriceChartDataDao: TickerPriceChartDataDao,
         supportedCurrencyDao: SupportedCurrencyDao,
         transactionMemoDao: TransactionMemoDao,
@@ -541,7 +524,7 @@ object CommonService {
             database,
             suggestedFeeRateDao,
             basiccoinInfoDao,
-            extendedNetworkDataDao,
+            blockStatsDataDao,
             tickerPriceChartDataDao,
             supportedCurrencyDao,
             transactionMemoDao,
@@ -549,7 +532,8 @@ object CommonService {
             transferDao,
             batchDao,
             transactionBlacklistDao,
-            addressBlacklistDao
+            addressBlacklistDao,
+            bitcoinStatsDataDao,
         )
     }
 
@@ -585,7 +569,6 @@ object CommonService {
     private fun provideApiRepository(
         localStoreRepository: LocalStoreRepository,
         blockchairRepository: BlockchairRepository,
-        testNetBlockchairRepository: BlockchairRepository,
         blockchainInfoRepository: BlockchainInfoRepository,
         blockstreamInfoRepository: BlockstreamInfoRepository,
         blockstreamInfoTestNetRepository: BlockstreamInfoRepository,
@@ -596,7 +579,6 @@ object CommonService {
         return ApiRepository_Impl(
             localStoreRepository,
             blockchairRepository,
-            testNetBlockchairRepository,
             blockchainInfoRepository,
             coingeckoRepository,
             changeNowRepository,
@@ -625,19 +607,6 @@ object CommonService {
             .client(okHttpClient)
             .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
             .baseUrl(blockchairApiUrl!!)
-//        .addConverterFactory(NullOnEmptyBodyConverterFactory())
-            .addConverterFactory(GsonConverterFactory.create(gson))
-            .build()
-    }
-
-    private fun provideNowNodesTestNetNodeRetrofit(
-        okHttpClient: OkHttpClient,
-        gson: Gson
-    ): Retrofit {
-        return Retrofit.Builder()
-            .client(okHttpClient)
-            .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
-            .baseUrl(blockchairTestNetNodeApiUrl!!)
 //        .addConverterFactory(NullOnEmptyBodyConverterFactory())
             .addConverterFactory(GsonConverterFactory.create(gson))
             .build()

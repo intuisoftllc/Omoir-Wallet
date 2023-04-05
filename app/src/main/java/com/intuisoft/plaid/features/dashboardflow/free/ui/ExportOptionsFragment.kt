@@ -97,7 +97,7 @@ class ExportOptionsFragment : ConfigurableFragment<FragmentExportOptionsBinding>
         val valueFilterIcon = bottomSheetDialog.findViewById<ImageView>(R.id.data_filter_icon)!!
         val dataValue = bottomSheetDialog.findViewById<EditText>(R.id.data_value)!!
         val done = bottomSheetDialog.findViewById<RoundedButtonView>(R.id.done)!!
-        val rateConverter = RateConverter(delegateManager.current().marketDelegate.getLocalBasicTickerData().price)
+        val rateConverter = RateConverter(delegateManager.current().marketDelegate.getBasicTickerData().price)
 
         mode.isEnabled = false
         billing.shouldShowPremiumContent {

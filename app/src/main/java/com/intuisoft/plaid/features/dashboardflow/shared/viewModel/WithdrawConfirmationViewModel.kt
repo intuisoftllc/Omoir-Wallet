@@ -58,7 +58,7 @@ class WithdrawConfirmationViewModel(
     private var address: String? = null
     private var exchangeId: String? = null
     private var invalidAddressErrors = 0
-    private var amountToSpend: RateConverter = RateConverter(delegateManager.current().marketDelegate.getLocalBasicTickerData().price)
+    private var amountToSpend: RateConverter = RateConverter(delegateManager.current().marketDelegate.getBasicTickerData().price)
     private var networkFeeRate: NetworkFeeRate = NetworkFeeRate(1, 2, 6)
 
     fun getFeeRate() = feeRate

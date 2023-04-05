@@ -2,6 +2,8 @@ package com.intuisoft.plaid.common.repositories
 
 import com.intuisoft.plaid.common.CommonService
 import com.intuisoft.plaid.common.coroutines.PlaidScope
+import com.intuisoft.plaid.common.delegates.market.MarketDataDelegate
+import com.intuisoft.plaid.common.delegates.network.NetworkDataDelegate
 import com.intuisoft.plaid.common.util.extensions.remove
 import com.intuisoft.plaid.common.listeners.WipeDataListener
 import com.intuisoft.plaid.common.local.AppPrefs
@@ -251,12 +253,20 @@ class LocalStoreRepository_Impl(
         getUserData().lastSupportedCurrenciesUpdateTime = time
     }
 
-    override fun setLastChartPriceUpdate(time: Long, type: ChartIntervalType) {
-        getUserData().lastChartPriceUpdateTime.put(type.ordinal, time)
+    override fun setLastBTCChartPriceUpdate(time: Long, type: ChartIntervalType) {
+        getUserData().lastBTCChartPriceUpdateTime.put(type.ordinal, time)
     }
 
     override fun getLastSupportedCurrenciesUpdateTime(): Long {
         return getUserData().lastSupportedCurrenciesUpdateTime
+    }
+
+    override fun setLastBTCStatsUpdate(time: Long) {
+        getUserData().lastBTCStatsUpdateTime = time
+    }
+
+    override fun getLastBTCStatsUpdateTime(): Long {
+        return getUserData().lastBTCStatsUpdateTime
     }
 
     override fun setIsSendingBTC(sending: Boolean) {
@@ -279,12 +289,18 @@ class LocalStoreRepository_Impl(
         return getUserData().lastExchangeCurrency
     }
 
-    override fun setLastExtendedMarketDataUpdate(time: Long) {
-        getUserData().lastExtendedMarketDataUpdateTime = time
+    override fun setLastBTCBlockStatsUpdate(time: Long, testnet: Boolean) {
+        if(testnet)
+            getUserData().lastBTCBlockStatsUpdateTime = time to getUserData().lastBTCBlockStatsUpdateTime.second
+        else
+            getUserData().lastBTCBlockStatsUpdateTime = getUserData().lastBTCBlockStatsUpdateTime.first to time
     }
 
-    override fun getLastExtendedMarketDataUpdateTime(): Long {
-        return getUserData().lastExtendedMarketDataUpdateTime
+    override fun getLastBTCBlockStatsUpdateTime(testnet: Boolean): Long {
+        return if(testnet)
+            getUserData().lastBTCBlockStatsUpdateTime.first
+        else
+            getUserData().lastBTCBlockStatsUpdateTime.second
     }
 
     override fun getPinTimeout(): Int {
@@ -376,18 +392,32 @@ class LocalStoreRepository_Impl(
         databaseRepository.setBasicCoinInfo(info)
     }
 
-    override fun getExtendedNetworkData(testnetWallet: Boolean): ExtendedNetworkDataModel? {
+    override fun getBlockStatsData(testnet: Boolean, del: NetworkDataDelegate): BlockStatsDataModel? {
         return runBlocking {
-            return@runBlocking databaseRepository.getExtendedNetworkData(testnetWallet)
+            return@runBlocking databaseRepository.getBlockStatsData(testnet, del.blockchairId)
         }
     }
 
-    override suspend fun setExtendedNetworkData(
-        testnetWallet: Boolean,
-        extendedData: ExtendedNetworkDataModel
+    override suspend fun setBlockStatsData(
+        testnet: Boolean,
+        data: BlockStatsDataModel,
+        del: NetworkDataDelegate
     ) {
-        databaseRepository.setExtendedNetworkData(extendedData, testnetWallet)
+        databaseRepository.setBlockStatsData(data, testnet, del.blockchairId)
     }
+
+    override suspend fun setBitcoinStatsData(
+        data: BitcoinStatsDataModel
+    ) {
+        databaseRepository.setBitcoinStatsData(data)
+    }
+
+    override fun getBitcoinStatsData(): BitcoinStatsDataModel? {
+        return runBlocking {
+            return@runBlocking databaseRepository.getBitcoinStatsData()
+        }
+    }
+
 
     override fun getSupportedCurrenciesData(): List<SupportedCurrencyModel> {
         return runBlocking {
@@ -412,21 +442,23 @@ class LocalStoreRepository_Impl(
     override suspend fun setTickerPriceChartData(
         data: List<ChartDataModel>,
         currencyCode: String,
-        intervalType: ChartIntervalType
+        intervalType: ChartIntervalType,
+        del: MarketDataDelegate
     ) {
-        databaseRepository.setTickerPriceChartData(data, currencyCode, intervalType)
+        databaseRepository.setTickerPriceChartData(data, currencyCode, intervalType, del)
     }
 
-    override fun getLastChartPriceUpdateTime(type: ChartIntervalType): Long {
-        return CommonService.getUserData()?.lastChartPriceUpdateTime?.get(type.ordinal) ?: 0
+    override fun getLastBTCChartPriceUpdateTime(type: ChartIntervalType): Long {
+        return CommonService.getUserData()?.lastBTCChartPriceUpdateTime?.get(type.ordinal) ?: 0
     }
 
     override fun getTickerPriceChartData(
         currencyCode: String,
-        intervalType: ChartIntervalType
+        intervalType: ChartIntervalType,
+        del: MarketDataDelegate
     ): List<ChartDataModel>? {
         return runBlocking {
-            return@runBlocking databaseRepository.getTickerPriceChartData(currencyCode, intervalType)
+            return@runBlocking databaseRepository.getTickerPriceChartData(currencyCode, intervalType, del)
         }
     }
 
@@ -489,12 +521,12 @@ class LocalStoreRepository_Impl(
         databaseRepository.saveAssetTransfer(data)
     }
 
-    override fun clearCache() {
+    override fun clearCache() { // todo: update function to reset all last updated times
         try {
             setLastFeeRateUpdate(0)
             setLastSupportedCurrenciesUpdate(0)
             setLastSupportedCurrenciesUpdate(0)
-            CommonService.getUserData()!!.lastChartPriceUpdateTime = hashMapOf()
+            CommonService.getUserData()!!.lastBTCChartPriceUpdateTime = hashMapOf()
         } catch(_: EmptyUsrDataErr) { }
         memoryCache.clear()
     }

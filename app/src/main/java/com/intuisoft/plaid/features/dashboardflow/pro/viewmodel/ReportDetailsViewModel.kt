@@ -79,7 +79,7 @@ class ReportDetailsViewModel(
             val filtered: List<TransactionInfo>
 
             val rate = RateConverter(
-                delegateManager.current().marketDelegate.getLocalBasicTickerData().price
+                delegateManager.current().marketDelegate.getBasicTickerData().price
             )
 
             when(filter) {

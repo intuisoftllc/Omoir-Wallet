@@ -2,6 +2,7 @@ package com.intuisoft.plaid.common.repositories
 
 import com.intuisoft.plaid.common.delegates.coins.CoinDelegate
 import com.intuisoft.plaid.common.delegates.market.MarketDataDelegate
+import com.intuisoft.plaid.common.delegates.network.NetworkDataDelegate
 import com.intuisoft.plaid.common.model.*
 import com.intuisoft.plaid.common.network.blockchair.response.SupportedCurrencyModel
 
@@ -17,11 +18,13 @@ interface ApiRepository {
 
     suspend fun getCurrencyRangeLimit(from: SupportedCurrencyModel, to: SupportedCurrencyModel): CurrencyRangeLimitModel?
 
-    suspend fun getExtendedNetworkData(testNetWallet: Boolean): ExtendedNetworkDataModel?
+    suspend fun getBlockStats(testNet: Boolean, del: NetworkDataDelegate): BlockStatsDataModel?
 
-    suspend fun getTickerPriceChartData(intervalType: ChartIntervalType): List<ChartDataModel>?
+    suspend fun getBitcoinStats(): BitcoinStatsDataModel?
 
-    suspend fun getMarketHistoryData(currencyCode: String, from: Long, to: Long): List<MarketHistoryDataModel>?
+    suspend fun getTickerPriceChartData(intervalType: ChartIntervalType, del: MarketDataDelegate): List<ChartDataModel>?
+
+    suspend fun getMarketHistoryData(currencyCode: String, from: Long, to: Long, del: MarketDataDelegate): List<MarketHistoryDataModel>?
 
     fun isAddressValid(currency: SupportedCurrencyModel, address: String): Pair<Boolean, String?>
 

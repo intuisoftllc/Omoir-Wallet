@@ -1,7 +1,8 @@
 package com.intuisoft.plaid.common.repositories
 
-import com.intuisoft.plaid.common.delegates.coins.CoinDelegate
+import android.util.Log
 import com.intuisoft.plaid.common.delegates.market.MarketDataDelegate
+import com.intuisoft.plaid.common.delegates.network.NetworkDataDelegate
 import com.intuisoft.plaid.common.local.memorycache.MemoryCache
 import com.intuisoft.plaid.common.model.*
 import com.intuisoft.plaid.common.network.blockchair.repository.*
@@ -18,7 +19,6 @@ import java.time.ZonedDateTime
 class ApiRepository_Impl(
     private val localStoreRepository: LocalStoreRepository,
     private val blockchairRepository: BlockchairRepository,
-    private val testNetBlockchairRepository: BlockchairRepository,
     private val blockchainInfoRepository: BlockchainInfoRepository,
     private val coingeckoRepository: CoingeckoRepository,
     private val changeNowRepository: ChangeNowRepository,
@@ -74,21 +74,27 @@ class ApiRepository_Impl(
     }
 
     /* On-Demand Call */
-    override suspend fun getExtendedNetworkData(testNetWallet: Boolean): ExtendedNetworkDataModel? {
-        updateExtendedNetworkData()
-        return localStoreRepository.getExtendedNetworkData(testNetWallet)
+    override suspend fun getBlockStats(testNet: Boolean, del: NetworkDataDelegate): BlockStatsDataModel? {
+        updateBlockStatsData(testNet, del)
+        return localStoreRepository.getBlockStatsData(testNet, del)
     }
 
     /* On-Demand Call */
-    override suspend fun getTickerPriceChartData(intervalType: ChartIntervalType): List<ChartDataModel>? {
-        updateTickerPriceChartData(intervalType)
-        return localStoreRepository.getTickerPriceChartData(localStoreRepository.getLocalCurrency(), intervalType)
+    override suspend fun getBitcoinStats(): BitcoinStatsDataModel? {
+        updateBitcoinStatsData()
+        return localStoreRepository.getBitcoinStatsData()
     }
 
     /* On-Demand Call */
-    override suspend fun getMarketHistoryData(currencyCode: String, from: Long, to: Long): List<MarketHistoryDataModel>? {
-        updateMarketHistoryData(currencyCode, from, to)
-        return memoryCache.getMarketHistoryForCurrency(currencyCode, from, to)
+    override suspend fun getTickerPriceChartData(intervalType: ChartIntervalType, del: MarketDataDelegate): List<ChartDataModel>? {
+        updateTickerPriceChartData(intervalType, del)
+        return localStoreRepository.getTickerPriceChartData(localStoreRepository.getLocalCurrency(), intervalType, del)
+    }
+
+    /* On-Demand Call */
+    override suspend fun getMarketHistoryData(currencyCode: String, from: Long, to: Long, del: MarketDataDelegate): List<MarketHistoryDataModel>? {
+        updateMarketHistoryData(currencyCode, from, to, del)
+        return memoryCache.getMarketHistoryForCurrency(currencyCode, from, to, del.coingeckoId)
     }
 
     /* On-Demand Call */
@@ -252,12 +258,12 @@ class ApiRepository_Impl(
         }
     }
 
-    private suspend fun updateMarketHistoryData(currencyCode: String, from: Long, to: Long) {
-        if(memoryCache.getMarketHistoryForCurrency(currencyCode, from, to) == null) {
-            val history = coingeckoRepository.getHistoryData(currencyCode, from, to)
+    private suspend fun updateMarketHistoryData(currencyCode: String, from: Long, to: Long, del: MarketDataDelegate) {
+        if(memoryCache.getMarketHistoryForCurrency(currencyCode, from, to, del.coingeckoId) == null) {
+            val history = coingeckoRepository.getHistoryData(currencyCode, from, to, del.coingeckoId)
 
             if(history.isSuccess) {
-                memoryCache.setMarketHistoryForCurrency(currencyCode, from, to, history.getOrThrow())
+                memoryCache.setMarketHistoryForCurrency(currencyCode, from, to, del.coingeckoId, history.getOrThrow())
             }
         }
     }
@@ -302,49 +308,57 @@ class ApiRepository_Impl(
         }
     }
 
-    private suspend fun updateExtendedNetworkData() {
-        if((System.currentTimeMillis() - localStoreRepository.getLastExtendedMarketDataUpdateTime()) > Constants.Time.GENERAL_CACHE_UPDATE_TIME_MED) {
-            val dataTest = testNetBlockchairRepository.getExtendedNetworkData()
-            val dataMain = blockchairRepository.getExtendedNetworkData()
-            val data2 = blockchainInfoRepository.getExtendedNetworkData()
+    private suspend fun updateBlockStatsData(testNet: Boolean, del: NetworkDataDelegate) {
+        if((System.currentTimeMillis() - del.getLastBlockStatsUpdateTime(testNet)) > Constants.Time.GENERAL_CACHE_UPDATE_TIME_MED) {
+            val data: Result<BlockStatsDataModel>
 
-            if(dataTest.isSuccess && dataMain.isSuccess && data2.isSuccess) {
-                localStoreRepository.setExtendedNetworkData(
+            if(testNet) {
+                data = blockchairRepository.getTestnetBlockStats(del.blockchairId)
+            } else {
+                data = blockchairRepository.getBlockStats(del.blockchairId)
+            }
+
+
+            Log.e("LOOK", "get data $data")
+            if(data.isSuccess) {
+                localStoreRepository.setBlockStatsData(
                     false,
-                    ExtendedNetworkDataModel(
-                        height = dataMain.getOrThrow().height,
-                        difficulty = dataMain.getOrThrow().difficulty,
-                        blockchainSize = dataMain.getOrThrow().blockchainSize,
-                        addressesWithBalance = dataMain.getOrThrow().addressesWithBalance,
-                        memPoolSize = dataMain.getOrThrow().memPoolSize,
-                        nodesOnNetwork = dataMain.getOrThrow().nodesOnNetwork,
-                        txPerSecond = dataMain.getOrThrow().txPerSecond,
-                        unconfirmedTxs = dataMain.getOrThrow().unconfirmedTxs,
-                        avgConfTime = data2.getOrThrow().avgConfTime
-                    )
+                    BlockStatsDataModel(
+                        height = data.getOrThrow().height,
+                        difficulty = data.getOrThrow().difficulty,
+                        blockchainSize = data.getOrThrow().blockchainSize,
+                        addressesWithBalance = data.getOrThrow().addressesWithBalance,
+                        memPoolSize = data.getOrThrow().memPoolSize,
+                        nodesOnNetwork = data.getOrThrow().nodesOnNetwork,
+                        txPerSecond = data.getOrThrow().txPerSecond,
+                        unconfirmedTxs = data.getOrThrow().unconfirmedTxs,
+                        marketDominance = data.getOrThrow().marketDominance
+                    ),
+                    del
                 )
 
-                localStoreRepository.setExtendedNetworkData(
-                    true,
-                    ExtendedNetworkDataModel(
-                        height = dataTest.getOrThrow().height,
-                        difficulty = dataTest.getOrThrow().difficulty,
-                        blockchainSize = dataTest.getOrThrow().blockchainSize,
-                        addressesWithBalance = dataTest.getOrThrow().addressesWithBalance,
-                        memPoolSize = dataTest.getOrThrow().memPoolSize,
-                        nodesOnNetwork = dataTest.getOrThrow().nodesOnNetwork,
-                        txPerSecond = dataTest.getOrThrow().txPerSecond,
-                        unconfirmedTxs = dataTest.getOrThrow().unconfirmedTxs,
-                        avgConfTime = 0.0
-                    )
-                )
-
-                localStoreRepository.setLastExtendedMarketDataUpdate(System.currentTimeMillis())
+                del.setLastBlockStatsUpdateTime(testNet, System.currentTimeMillis())
             }
         }
     }
 
-    private suspend fun updateTickerPriceChartData(intervalType: ChartIntervalType) {
+    private suspend fun updateBitcoinStatsData() {
+        if((System.currentTimeMillis() - localStoreRepository.getLastBTCStatsUpdateTime()) > Constants.Time.GENERAL_CACHE_UPDATE_TIME_MED) {
+            val data = blockchainInfoRepository.getAverageBTCConfTime()
+
+            if(data.isSuccess) {
+                localStoreRepository.setBitcoinStatsData(
+                    BitcoinStatsDataModel(
+                        avgConfTime = data.getOrThrow()
+                    )
+                )
+
+                localStoreRepository.setLastBTCStatsUpdate(System.currentTimeMillis())
+            }
+        }
+    }
+
+    private suspend fun updateTickerPriceChartData(intervalType: ChartIntervalType, del: MarketDataDelegate) {
         var cacheLimit: Long
 
         when(intervalType) { // update price values according to time intervals provided by coingecko
@@ -357,9 +371,9 @@ class ApiRepository_Impl(
              }
         }
 
-        if((System.currentTimeMillis() - localStoreRepository.getLastChartPriceUpdateTime(intervalType)) > cacheLimit
-            || localStoreRepository.getTickerPriceChartData(localStoreRepository.getLocalCurrency(), intervalType) == null) {
-            val data = coingeckoRepository.getChartData(intervalType, localStoreRepository.getLocalCurrency())
+        if((System.currentTimeMillis() - del.getLastChartPriceUpdateTime(intervalType)) > cacheLimit
+            || localStoreRepository.getTickerPriceChartData(localStoreRepository.getLocalCurrency(), intervalType, del) == null) {
+            val data = coingeckoRepository.getChartData(intervalType, localStoreRepository.getLocalCurrency(), del.coingeckoId)
 
             if(data.isSuccess) {
                 var marketPriceData = data.getOrThrow().toMutableList()
@@ -372,7 +386,8 @@ class ApiRepository_Impl(
                         val realtimeData = getMarketHistoryData(
                             localStoreRepository.getLocalCurrency(),
                             data.getOrThrow().last().time + (Constants.Time.FIVE_MINUTES * Constants.Time.MILLS_PER_SEC),
-                            SimpleTimeFormat.endOfDay(ZonedDateTime.ofInstant(Instant.now(), ZoneId.systemDefault())).toInstant().toEpochMilli()
+                            SimpleTimeFormat.endOfDay(ZonedDateTime.ofInstant(Instant.now(), ZoneId.systemDefault())).toInstant().toEpochMilli(),
+                            del
                         )
                         marketPriceData.addAll(realtimeData?.map { ChartDataModel(it.time, it.price.toFloat()) } ?: listOf())
                     }
@@ -381,10 +396,11 @@ class ApiRepository_Impl(
                 localStoreRepository.setTickerPriceChartData(
                     marketPriceData,
                     localStoreRepository.getLocalCurrency(),
-                    intervalType
+                    intervalType,
+                    del
                 )
 
-                localStoreRepository.setLastChartPriceUpdate(System.currentTimeMillis(), intervalType)
+                del.setLastChartPriceUpdate(System.currentTimeMillis(), intervalType)
             }
         }
     }

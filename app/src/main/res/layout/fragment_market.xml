@@ -253,12 +253,11 @@
                             android:orientation="horizontal">
 
                             <TextView
-                                android:id="@+id/bitcoin_description"
+                                android:id="@+id/token_description"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
-                                android:layout_marginRight="@dimen/margin_10"
-                                android:text="@string/market_data_bitcoin_description"/>
+                                android:layout_marginRight="@dimen/margin_10"/>
 
                             <ImageView
                                 android:layout_width="wrap_content"
@@ -292,7 +291,7 @@
                                 android:text="@string/website"/>
 
                             <TextView
-                                android:id="@+id/bitcoin_org"
+                                android:id="@+id/website"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
@@ -615,6 +614,7 @@
                                     android:layout_marginRight="@dimen/margin_4"
                                     android:layout_weight="1">
                                     <TextView
+                                        android:id="@+id/block_stats_1_title"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         style="@style/TextStyle.Regular.14"
@@ -622,7 +622,7 @@
                                         android:text="@string/market_data_extended_item_1_title"/>
 
                                     <TextView
-                                        android:id="@+id/network"
+                                        android:id="@+id/block_stats_1_subtitle"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         style="@style/TextStyle.Medium.16"
@@ -639,6 +639,7 @@
                                     android:gravity="start"
                                     android:layout_weight="1">
                                     <TextView
+                                        android:id="@+id/block_stats_2_title"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         style="@style/TextStyle.Regular.14"
@@ -646,7 +647,7 @@
                                         android:text="@string/market_data_extended_item_2_title"/>
 
                                     <TextView
-                                        android:id="@+id/height"
+                                        android:id="@+id/block_stats_2_subtitle"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         style="@style/TextStyle.Medium.16"
@@ -673,6 +674,7 @@
                                 android:layout_marginRight="@dimen/margin_4"
                                 android:layout_weight="1">
                                 <TextView
+                                    android:id="@+id/block_stats_3_title"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     style="@style/TextStyle.Regular.14"
@@ -680,7 +682,7 @@
                                     android:text="@string/market_data_extended_item_3_title"/>
 
                                 <TextView
-                                    android:id="@+id/difficulty"
+                                    android:id="@+id/block_stats_3_subtitle"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     style="@style/TextStyle.Medium.16"
@@ -697,6 +699,7 @@
                                 android:gravity="start"
                                 android:layout_weight="1">
                                 <TextView
+                                    android:id="@+id/block_stats_4_title"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     style="@style/TextStyle.Regular.14"
@@ -704,7 +707,7 @@
                                     android:text="@string/market_data_extended_item_4_title"/>
 
                                 <TextView
-                                    android:id="@+id/blockchainSize"
+                                    android:id="@+id/block_stats_4_subtitle"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     style="@style/TextStyle.Medium.16"
@@ -729,6 +732,7 @@
                                 android:layout_marginRight="@dimen/margin_4"
                                 android:layout_weight="1">
                                 <TextView
+                                    android:id="@+id/block_stats_5_title"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     style="@style/TextStyle.Regular.14"
@@ -736,7 +740,7 @@
                                     android:text="@string/market_data_extended_item_5_title"/>
 
                                 <TextView
-                                    android:id="@+id/nodes"
+                                    android:id="@+id/block_stats_5_subtitle"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     style="@style/TextStyle.Medium.16"
@@ -753,6 +757,7 @@
                                 android:gravity="start"
                                 android:layout_weight="1">
                                 <TextView
+                                    android:id="@+id/block_stats_6_title"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     style="@style/TextStyle.Regular.14"
@@ -760,7 +765,7 @@
                                     android:text="@string/market_data_extended_item_6_title"/>
 
                                 <TextView
-                                    android:id="@+id/mem_pool_size"
+                                    android:id="@+id/block_stats_6_subtitle"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     style="@style/TextStyle.Medium.16"
@@ -785,6 +790,7 @@
                                 android:layout_marginRight="@dimen/margin_4"
                                 android:layout_weight="1">
                                 <TextView
+                                    android:id="@+id/block_stats_7_title"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     style="@style/TextStyle.Regular.14"
@@ -792,7 +798,7 @@
                                     android:text="@string/market_data_extended_item_11_title"/>
 
                                 <TextView
-                                    android:id="@+id/txs_per_second"
+                                    android:id="@+id/block_stats_7_subtitle"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     style="@style/TextStyle.Medium.16"
@@ -809,6 +815,7 @@
                                 android:gravity="start"
                                 android:layout_weight="1">
                                 <TextView
+                                    android:id="@+id/block_stats_8_title"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     style="@style/TextStyle.Regular.14"
@@ -816,7 +823,7 @@
                                     android:text="@string/market_data_extended_item_12_title"/>
 
                                 <TextView
-                                    android:id="@+id/addresses_with_balances"
+                                    android:id="@+id/block_stats_8_subtitle"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     style="@style/TextStyle.Medium.16"
@@ -841,6 +848,7 @@
                                 android:layout_marginRight="@dimen/margin_4"
                                 android:layout_weight="1">
                                 <TextView
+                                    android:id="@+id/block_stats_9_title"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     style="@style/TextStyle.Regular.14"
@@ -848,7 +856,7 @@
                                     android:text="@string/market_data_extended_item_8_title"/>
 
                                 <TextView
-                                    android:id="@+id/unconfirmed_txs"
+                                    android:id="@+id/block_stats_9_subtitle"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     style="@style/TextStyle.Medium.16"
@@ -865,6 +873,7 @@
                                 android:gravity="start"
                                 android:layout_weight="1">
                                 <TextView
+                                    android:id="@+id/block_stats_10_title"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     style="@style/TextStyle.Regular.14"
@@ -872,7 +881,7 @@
                                     android:text="@string/market_data_extended_item_9_title"/>
 
                                 <TextView
-                                    android:id="@+id/avgConfTime"
+                                    android:id="@+id/block_stats_10_subtitle"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     style="@style/TextStyle.Medium.16"
@@ -898,6 +907,7 @@
                                 android:layout_marginRight="@dimen/margin_4"
                                 android:layout_weight=".5">
                                 <TextView
+                                    android:id="@+id/block_stats_11_title"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     style="@style/TextStyle.Regular.14"
@@ -905,7 +915,7 @@
                                     android:text="@string/market_data_extended_item_10_title"/>
 
                                 <TextView
-                                    android:id="@+id/congestion_rating"
+                                    android:id="@+id/block_stats_11_subtitle"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     style="@style/TextStyle.Medium.16"

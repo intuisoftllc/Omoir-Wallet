@@ -1,5 +1,6 @@
 package com.intuisoft.plaid.common.repositories.db
 
+import com.intuisoft.plaid.common.delegates.market.MarketDataDelegate
 import com.intuisoft.plaid.common.local.db.*
 import com.intuisoft.plaid.common.local.db.listeners.DatabaseListener
 import com.intuisoft.plaid.common.model.*
@@ -9,7 +10,7 @@ class DatabaseRepository_Impl(
     private val database: PlaidDatabase,
     private val suggestedFeeRateDao: SuggestedFeeRateDao,
     private val basicCoinInfoDao: BasicCoinInfoDao,
-    private val extendedNetworkDataDao: ExtendedNetworkDataDao,
+    private val blockStatsDataDao: BlockStatsDataDao,
     private val tickerCharPriceChartDataDao: TickerPriceChartDataDao,
     private val supportedCurrencyDao: SupportedCurrencyDao,
     private val transactionMemoDao: TransactionMemoDao,
@@ -17,7 +18,8 @@ class DatabaseRepository_Impl(
     private val transferDao: AssetTransferDao,
     private val batchDao: BatchDao,
     private val transactionBlacklistDao: TransactionBlacklistDao,
-    private val addressBlacklistDao: AddressBlacklistDao
+    private val addressBlacklistDao: AddressBlacklistDao,
+    private val bitcoinStatsDataDao: BitcoinStatsDataDao,
 ) : DatabaseRepository {
 
     override suspend fun getSuggestedFeeRate(testNetWallet: Boolean): NetworkFeeRate? =
@@ -28,19 +30,27 @@ class DatabaseRepository_Impl(
         database.onUpdate(suggestedFeeRateDao)
     }
 
-    override suspend fun getExtendedNetworkData(testNetWallet: Boolean): ExtendedNetworkDataModel? =
-        extendedNetworkDataDao.getExtendedNetworkData(testNetWallet)?.from()
+    override suspend fun getBlockStatsData(testNet: Boolean, coin: String): BlockStatsDataModel? =
+        blockStatsDataDao.getBlockStatsData(testNet, coin )?.from()
 
-    override suspend fun setExtendedNetworkData(extendedData: ExtendedNetworkDataModel, testNetWallet: Boolean) {
-        extendedNetworkDataDao.insert(ExtendedNetworkData.consume(testNetWallet, extendedData))
-        database.onUpdate(extendedNetworkDataDao)
+    override suspend fun setBlockStatsData(data: BlockStatsDataModel, testNet: Boolean, coin: String) {
+        blockStatsDataDao.insert(BlockStatsData.consume(testNet, coin, data))
+        database.onUpdate(blockStatsDataDao)
     }
 
-    override suspend fun getTickerPriceChartData(currencyCode: String, intervalType: ChartIntervalType): List<ChartDataModel>? =
-        tickerCharPriceChartDataDao.getChartDataFor(intervalType.ordinal, currencyCode)?.from()
+    override suspend fun getBitcoinStatsData(): BitcoinStatsDataModel? =
+        bitcoinStatsDataDao.getStatsData()?.from()
 
-    override suspend fun setTickerPriceChartData(data: List<ChartDataModel>, currencyCode: String, intervalType: ChartIntervalType) {
-        tickerCharPriceChartDataDao.insert(TickerPriceChartData.consume(intervalType, data, currencyCode))
+    override suspend fun setBitcoinStatsData(data: BitcoinStatsDataModel) {
+        bitcoinStatsDataDao.insert(BitcoinStatsData.consume(data))
+        database.onUpdate(bitcoinStatsDataDao)
+    }
+
+    override suspend fun getTickerPriceChartData(currencyCode: String, intervalType: ChartIntervalType, del: MarketDataDelegate): List<ChartDataModel>? =
+        tickerCharPriceChartDataDao.getChartDataFor(intervalType.ordinal, currencyCode, del.coingeckoId)?.from()
+
+    override suspend fun setTickerPriceChartData(data: List<ChartDataModel>, currencyCode: String, intervalType: ChartIntervalType, del: MarketDataDelegate) {
+        tickerCharPriceChartDataDao.insert(TickerPriceChartData.consume(intervalType, data, currencyCode, del.coingeckoId))
         database.onUpdate(tickerCharPriceChartDataDao)
     }
 
@@ -151,7 +161,8 @@ class DatabaseRepository_Impl(
     override suspend fun deleteAllData() {
         suggestedFeeRateDao.deleteTable() // todo: delete any data realated to wallets when theyre deleted
         basicCoinInfoDao.deleteTable()
-        extendedNetworkDataDao.deleteTable()
+        blockStatsDataDao.deleteTable()
+        bitcoinStatsDataDao.deleteTable()
         tickerCharPriceChartDataDao.deleteTable()
         supportedCurrencyDao.deleteTable()
         exchangeInfoDao.deleteTable()

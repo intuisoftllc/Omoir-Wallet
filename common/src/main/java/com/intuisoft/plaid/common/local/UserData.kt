@@ -133,15 +133,8 @@ class UserData {
             save()
         }
 
-    @SerializedName("lastExtendedMarketDataUpdateTime")
-    var lastExtendedMarketDataUpdateTime: Long = 0
-        set(value) {
-            field = value
-            save()
-        }
-
-    @SerializedName("lastChartPriceUpdateTime")
-    var lastChartPriceUpdateTime: HashMap<Int, Long> = hashMapOf()
+    @SerializedName("lastBTCBlockStatsUpdateTime")
+    var lastBTCBlockStatsUpdateTime: Pair<Long, Long> = 0L to 0L
         set(value) {
             field = value
             save()
@@ -223,6 +216,24 @@ class UserData {
             field = value
             save()
         }
+
+    // BTC
+
+    @SerializedName("lastBTCChartPriceUpdateTime")
+    var lastBTCChartPriceUpdateTime: HashMap<Int, Long> = hashMapOf()
+        set(value) {
+            field = value
+            save()
+        }
+
+    @SerializedName("lastBTCStatsUpdateTime")
+    var lastBTCStatsUpdateTime: Long = 0
+        set(value) {
+            field = value
+            save()
+        }
+
+    // BTC End
 
     fun save() {
         PlaidScope.applicationScope.launch(Dispatchers.IO) {

@@ -44,7 +44,7 @@ class WithdrawalViewModel(
     protected val _onNextStep = SingleLiveData<Unit>()
     val onNextStep: LiveData<Unit> = _onNextStep
 
-    private var amountToSpend: RateConverter = RateConverter(delegateManager.current().marketDelegate.getLocalBasicTickerData().price)
+    private var amountToSpend: RateConverter = RateConverter(delegateManager.current().marketDelegate.getBasicTickerData().price)
     private var internalAmountString: String = "0"
     private var overBalanceErrors = 0
     private var maxDecimalErrors = 0

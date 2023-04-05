@@ -1,7 +1,10 @@
 package com.intuisoft.plaid.common.repositories.db
 
+import com.intuisoft.plaid.common.delegates.market.MarketDataDelegate
+import com.intuisoft.plaid.common.local.db.BitcoinStatsData
 import com.intuisoft.plaid.common.local.db.listeners.DatabaseListener
 import com.intuisoft.plaid.common.model.*
+import com.intuisoft.plaid.common.network.blockchair.response.BlockStatsData
 import com.intuisoft.plaid.common.network.blockchair.response.SupportedCurrencyModel
 
 
@@ -11,13 +14,17 @@ interface DatabaseRepository {
 
     suspend fun getSuggestedFeeRate(testNetWallet: Boolean): NetworkFeeRate?
 
-    suspend fun setExtendedNetworkData(extendedData: ExtendedNetworkDataModel, testNetWallet: Boolean)
+    suspend fun setBlockStatsData(data: BlockStatsDataModel, testNet: Boolean, coin: String)
 
-    suspend fun getExtendedNetworkData(testNetWallet: Boolean): ExtendedNetworkDataModel?
+    suspend fun getBlockStatsData(testNet: Boolean, coin: String): BlockStatsDataModel?
 
-    suspend fun getTickerPriceChartData(currencyCode: String, intervalType: ChartIntervalType): List<ChartDataModel>?
+    suspend fun getBitcoinStatsData(): BitcoinStatsDataModel?
 
-    suspend fun setTickerPriceChartData(data: List<ChartDataModel>, currencyCode: String, intervalType: ChartIntervalType)
+    suspend fun setBitcoinStatsData(data: BitcoinStatsDataModel)
+
+    suspend fun getTickerPriceChartData(currencyCode: String, intervalType: ChartIntervalType, del: MarketDataDelegate): List<ChartDataModel>?
+
+    suspend fun setTickerPriceChartData(data: List<ChartDataModel>, currencyCode: String, intervalType: ChartIntervalType, del: MarketDataDelegate)
 
     suspend fun setBatchData(data: BatchDataModel)
 

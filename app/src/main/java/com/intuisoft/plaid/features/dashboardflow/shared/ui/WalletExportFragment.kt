@@ -98,7 +98,7 @@ class WalletExportFragment : ConfigurableFragment<FragmentWalletExportBinding>(p
 
             viewModel.showInvoice.observe(viewLifecycleOwner, Observer {
                 eventTracker.log(EventDepositShareAddress())
-                val rateConverter = RateConverter(delegateManager.current().marketDelegate.getLocalBasicTickerData().price)
+                val rateConverter = RateConverter(delegateManager.current().marketDelegate.getBasicTickerData().price)
 
                 rateConverter.setLocalRate(RateConverter.RateType.BTC_RATE, it.amount!!)
                 binding.pubKeyTitle.text = rateConverter.from(localStoreRepository.getBitcoinDisplayUnit().toRateType(), localStoreRepository.getLocalCurrency(), false).second
@@ -196,7 +196,7 @@ class WalletExportFragment : ConfigurableFragment<FragmentWalletExportBinding>(p
         val description = bottomSheetDialog.findViewById<EditText>(R.id.description)!!
         val save = bottomSheetDialog.findViewById<RoundedButtonView>(R.id.save)!!
         val cancel = bottomSheetDialog.findViewById<RoundedButtonView>(R.id.cancel)!!
-        val rateConverter = RateConverter(delegateManager.current().marketDelegate.getLocalBasicTickerData().price)
+        val rateConverter = RateConverter(delegateManager.current().marketDelegate.getBasicTickerData().price)
 
         eventTracker.log(EventDepositBuildInvoice())
         save.enableButton(false)

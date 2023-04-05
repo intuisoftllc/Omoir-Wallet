@@ -169,7 +169,7 @@ class UtxoDistributionFragment : ConfigurableFragment<FragmentUtxoDistroReportBi
             val balance = bottomSheetDialog.findViewById<TextView>(R.id.info_amount)!!
             val fiat = bottomSheetDialog.findViewById<TextView>(R.id.info_fiat_conversion)!!
             val rateConverter = RateConverter(
-                delegateManager.current().marketDelegate.getLocalBasicTickerData().price
+                delegateManager.current().marketDelegate.getBasicTickerData().price
             )
             rateConverter.setLocalRate(RateConverter.RateType.SATOSHI_RATE, coin.output.value.toDouble())
 

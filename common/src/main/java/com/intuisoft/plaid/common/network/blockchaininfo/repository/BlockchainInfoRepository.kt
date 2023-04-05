@@ -1,6 +1,5 @@
 package com.intuisoft.plaid.common.network.blockchair.repository
 
-import com.intuisoft.plaid.common.model.ExtendedNetworkDataModel
 import com.intuisoft.plaid.common.network.blockchair.api.BlockchainInfoApi
 import com.intuisoft.plaid.common.network.blockchaininfo.response.BasicNetworkDataResponse
 import com.intuisoft.plaid.common.util.Constants
@@ -9,28 +8,18 @@ interface BlockchainInfoRepository {
     val TAG: String
         get() = this.javaClass.simpleName
 
-    fun getExtendedNetworkData(): Result<ExtendedNetworkDataModel>
+    fun getAverageBTCConfTime(): Result<Double>
 
     private class Impl(
         private val api: BlockchainInfoApi,
     ) : BlockchainInfoRepository {
 
-        override fun getExtendedNetworkData(): Result<ExtendedNetworkDataModel> {
+        override fun getAverageBTCConfTime(): Result<Double> {
             try {
                 val stats = api.getBlockchainStats().execute().body()
 
                 return Result.success(
-                    ExtendedNetworkDataModel(
-                        height = 0,
-                        difficulty = 0,
-                        blockchainSize = 0,
-                        nodesOnNetwork = 0,
-                        memPoolSize = 0,
-                        txPerSecond = 0,
-                        addressesWithBalance = 0,
-                        unconfirmedTxs = 0,
-                        avgConfTime = stats!!.minutes_between_blocks
-                    )
+                    stats!!.minutes_between_blocks
                 )
             } catch (t: Throwable) {
                 return Result.failure(t)
