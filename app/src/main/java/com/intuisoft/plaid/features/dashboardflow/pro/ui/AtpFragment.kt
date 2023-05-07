@@ -18,7 +18,7 @@ import com.intuisoft.plaid.androidwrappers.*
 import com.intuisoft.plaid.androidwrappers.delegates.FragmentConfiguration
 import com.intuisoft.plaid.common.analytics.EventTracker
 import com.intuisoft.plaid.common.analytics.events.*
-import com.intuisoft.plaid.common.delegates.DelegateManager
+import com.intuisoft.plaid.delegates.DelegateManager
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.common.util.RateConverter
@@ -31,14 +31,14 @@ import com.intuisoft.plaid.features.dashboardflow.pro.adapters.UtxoTransfersAdap
 import com.intuisoft.plaid.common.util.Plural
 import com.intuisoft.plaid.common.util.SimpleTimeFormat
 import com.intuisoft.plaid.util.fragmentconfig.BasicConfigData
-import com.intuisoft.plaid.walletmanager.AbstractWalletManager
+import com.intuisoft.plaid.common.delegates.wallet.WalletDelegate
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class AtpFragment : ConfigurableFragment<FragmentAtpBinding>(pinProtection = true, premiumContent = true) {
     protected val viewModel: AtpViewModel by viewModel()
     protected val localStoreRepository: LocalStoreRepository by inject()
-    protected val walletManager: AbstractWalletManager by inject()
+    protected val walletManager: WalletDelegate by inject()
     protected val delegateManager: DelegateManager by inject()
     protected val eventTracker: EventTracker by inject()
 

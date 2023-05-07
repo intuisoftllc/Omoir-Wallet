@@ -9,8 +9,7 @@ import com.intuisoft.plaid.androidwrappers.SingleLiveData
 import com.intuisoft.plaid.androidwrappers.SwapPairItemView
 import com.intuisoft.plaid.androidwrappers.WalletViewModel
 import com.intuisoft.plaid.common.coroutines.PlaidScope
-import com.intuisoft.plaid.common.delegates.DelegateManager
-import com.intuisoft.plaid.common.local.db.SupportedCurrency
+import com.intuisoft.plaid.delegates.DelegateManager
 import com.intuisoft.plaid.common.model.EstimatedReceiveAmountModel
 import com.intuisoft.plaid.common.model.ExchangeInfoDataModel
 import com.intuisoft.plaid.common.network.blockchair.response.SupportedCurrencyModel
@@ -22,7 +21,7 @@ import com.intuisoft.plaid.common.util.SimpleCoinNumberFormat
 import com.intuisoft.plaid.common.util.extensions.roundTo
 import com.intuisoft.plaid.common.util.extensions.safeWalletScope
 import com.intuisoft.plaid.util.NetworkUtil
-import com.intuisoft.plaid.walletmanager.AbstractWalletManager
+import com.intuisoft.plaid.common.delegates.wallet.WalletDelegate
 import kotlinx.coroutines.*
 import java.time.Instant
 import java.util.*
@@ -32,7 +31,7 @@ class ExchangeViewModel(
     application: Application,
     private val apiRepository: ApiRepository,
     private val localStoreRepository: LocalStoreRepository,
-    private val walletManager: AbstractWalletManager,
+    private val walletManager: WalletDelegate,
     private val delegateManager: DelegateManager
 ): WalletViewModel(application, localStoreRepository, apiRepository, walletManager, delegateManager) {
 

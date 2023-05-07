@@ -42,7 +42,7 @@ import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.common.util.Plural
 import com.intuisoft.plaid.common.util.SimpleCoinNumberFormat
 import com.intuisoft.plaid.common.util.extensions.toArrayList
-import com.intuisoft.plaid.model.LocalWalletModel
+import com.intuisoft.plaid.common.delegates.wallet.btc.LocalWalletModel
 import com.intuisoft.plaid.util.fragmentconfig.SendFundsData
 import io.horizontalsystems.bitcoincore.extensions.toHexString
 import io.horizontalsystems.bitcoincore.extensions.toReversedHex

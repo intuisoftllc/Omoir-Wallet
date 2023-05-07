@@ -5,11 +5,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
 import com.intuisoft.plaid.androidwrappers.SingleLiveData
 import com.intuisoft.plaid.androidwrappers.WalletViewModel
-import com.intuisoft.plaid.common.delegates.DelegateManager
+import com.intuisoft.plaid.delegates.DelegateManager
 import com.intuisoft.plaid.common.model.SavedAddressModel
 import com.intuisoft.plaid.common.repositories.ApiRepository
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
-import com.intuisoft.plaid.walletmanager.AbstractWalletManager
+import com.intuisoft.plaid.common.delegates.wallet.WalletDelegate
 import kotlinx.coroutines.launch
 
 
@@ -17,7 +17,7 @@ class AddressBookViewModel(
     application: Application,
     apiRepository: ApiRepository,
     private val localStoreRepository: LocalStoreRepository,
-    private val walletManager: AbstractWalletManager,
+    private val walletManager: WalletDelegate,
     private val delegateManager: DelegateManager
 ): WalletViewModel(application, localStoreRepository, apiRepository, walletManager, delegateManager) {
 

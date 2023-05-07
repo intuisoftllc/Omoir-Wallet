@@ -1,13 +1,10 @@
-package com.intuisoft.plaid.common.delegates.network
+package com.intuisoft.plaid.delegates.network
 
 import android.app.Application
 import android.util.Log
 import com.intuisoft.plaid.common.R
+import com.intuisoft.plaid.common.delegates.network.NetworkDataDelegate
 import com.intuisoft.plaid.common.local.AppPrefs
-import com.intuisoft.plaid.common.model.BasicTickerDataModel
-import com.intuisoft.plaid.common.model.ChartDataModel
-import com.intuisoft.plaid.common.model.ChartIntervalType
-import com.intuisoft.plaid.common.model.CongestionRating
 import com.intuisoft.plaid.common.repositories.ApiRepository
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.common.util.Constants

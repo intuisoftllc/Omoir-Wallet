@@ -9,7 +9,7 @@ import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.BindingViewHolder
 import com.intuisoft.plaid.databinding.ListItemBasicWalletDetailBinding
 import com.intuisoft.plaid.features.homescreen.free.adapters.detail.BasicWalletDataDetail
-import com.intuisoft.plaid.model.LocalWalletModel
+import com.intuisoft.plaid.common.delegates.wallet.btc.LocalWalletModel
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 
 

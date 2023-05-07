@@ -10,7 +10,7 @@ import androidx.navigation.fragment.findNavController
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.*
 import com.intuisoft.plaid.androidwrappers.delegates.FragmentConfiguration
-import com.intuisoft.plaid.common.delegates.DelegateManager
+import com.intuisoft.plaid.delegates.DelegateManager
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.databinding.FragmentInvoiceBinding
@@ -18,7 +18,7 @@ import com.intuisoft.plaid.features.dashboardflow.shared.viewModel.InvoiceViewMo
 import com.intuisoft.plaid.listeners.BarcodeResultListener
 import com.intuisoft.plaid.util.fragmentconfig.ConfigInvoiceData
 import com.intuisoft.plaid.util.fragmentconfig.SendFundsData
-import com.intuisoft.plaid.walletmanager.AbstractWalletManager
+import com.intuisoft.plaid.common.delegates.wallet.WalletDelegate
 import io.horizontalsystems.bitcoincore.models.BitcoinPaymentData
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -26,7 +26,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class InvoiceFragment : ConfigurableFragment<FragmentInvoiceBinding>(pinProtection = true), BarcodeResultListener {
     protected val viewModel: InvoiceViewModel by viewModel()
     protected val localStoreRepository: LocalStoreRepository by inject()
-    protected val walletManager: AbstractWalletManager by inject()
+    protected val walletManager: WalletDelegate by inject()
     protected val delegateManager: DelegateManager by inject()
 
     override fun onCreateView(

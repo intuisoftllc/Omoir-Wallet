@@ -8,7 +8,6 @@ import android.content.res.Configuration
 import android.content.res.Resources
 import android.graphics.PorterDuff
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.util.TypedValue
 import android.view.Gravity
@@ -16,12 +15,10 @@ import android.view.View
 import android.view.animation.LinearInterpolator
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
-import androidx.activity.OnBackPressedCallback
 import androidx.annotation.DimenRes
 import androidx.annotation.DrawableRes
 import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
-import androidx.core.os.bundleOf
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -30,19 +27,14 @@ import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import coil.ImageLoader
 import coil.decode.SvgDecoder
-import coil.request.CachePolicy
 import coil.request.ImageRequest
 import com.google.android.material.R
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.intuisoft.plaid.PlaidApp
 import com.intuisoft.plaid.activities.MainActivity
-import com.intuisoft.plaid.model.LocalWalletModel
 import com.intuisoft.plaid.common.util.Constants
-import com.intuisoft.plaid.common.util.errors.ClosedWalletErr
-import com.intuisoft.plaid.common.util.extensions.mapToListOf
 import com.intuisoft.plaid.util.entensions.getColorFromAttr
-import java.util.HashMap
 import java.util.concurrent.Executor
 
 

@@ -17,7 +17,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.*
 import com.intuisoft.plaid.androidwrappers.delegates.FragmentConfiguration
-import com.intuisoft.plaid.common.delegates.DelegateManager
+import com.intuisoft.plaid.delegates.DelegateManager
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.common.util.RateConverter
@@ -28,7 +28,7 @@ import com.intuisoft.plaid.features.homescreen.adapters.BasicCoinAdapter
 import com.intuisoft.plaid.common.util.Plural
 import com.intuisoft.plaid.common.util.SimpleTimeFormat
 import com.intuisoft.plaid.util.fragmentconfig.BasicConfigData
-import com.intuisoft.plaid.walletmanager.AbstractWalletManager
+import com.intuisoft.plaid.common.delegates.wallet.WalletDelegate
 import io.horizontalsystems.bitcoincore.models.PublicKey
 import io.horizontalsystems.bitcoincore.storage.UnspentOutput
 import kotlinx.coroutines.*
@@ -40,7 +40,7 @@ class UtxoDistributionFragment : ConfigurableFragment<FragmentUtxoDistroReportBi
     protected val viewModel: UtxoDistributionViewModel by viewModel()
     protected val localStoreRepository: LocalStoreRepository by inject()
     protected val delegateManager: DelegateManager by inject()
-    protected val walletManager: AbstractWalletManager by inject()
+    protected val walletManager: WalletDelegate by inject()
 
     private val adapter = BasicCoinAdapter(
         onCoinSelected = ::onCoinSelected,

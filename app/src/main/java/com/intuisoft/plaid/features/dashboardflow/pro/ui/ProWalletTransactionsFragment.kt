@@ -9,33 +9,27 @@ import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.intuisoft.plaid.R
-import com.intuisoft.plaid.activities.MainActivity
 import com.intuisoft.plaid.androidwrappers.*
 import com.intuisoft.plaid.androidwrappers.delegates.FragmentConfiguration
 import com.intuisoft.plaid.common.CommonService
 import com.intuisoft.plaid.common.analytics.EventTracker
 import com.intuisoft.plaid.common.analytics.events.EventDashboardViewTransaction
 import com.intuisoft.plaid.features.homescreen.adapters.BasicTransactionAdapter
-import com.intuisoft.plaid.listeners.StateListener
-import com.intuisoft.plaid.model.LocalWalletModel
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.common.util.Constants
-import com.intuisoft.plaid.common.util.extensions.safeWalletScope
 import com.intuisoft.plaid.common.util.extensions.toArrayList
 import com.intuisoft.plaid.databinding.FragmentProWalletTrasactionsBinding
 import com.intuisoft.plaid.features.dashboardflow.shared.viewModel.DashboardViewModel
 import com.intuisoft.plaid.util.fragmentconfig.BasicConfigData
-import com.intuisoft.plaid.walletmanager.AbstractWalletManager
+import com.intuisoft.plaid.common.delegates.wallet.WalletDelegate
 import io.horizontalsystems.bitcoincore.models.TransactionInfo
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class ProWalletTransactionsFragment : ConfigurableFragment<FragmentProWalletTrasactionsBinding>(pinProtection = true, premiumContent = true) {
     protected val viewModel: DashboardViewModel by viewModel()
     protected val localStoreRepository: LocalStoreRepository by inject()
-    protected val walletManager: AbstractWalletManager by inject()
+    protected val walletManager: WalletDelegate by inject()
     protected val eventTracker: EventTracker by inject()
 
     private val adapter = BasicTransactionAdapter(

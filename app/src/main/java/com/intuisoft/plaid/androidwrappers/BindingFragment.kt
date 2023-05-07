@@ -6,12 +6,10 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatDialog
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.viewbinding.ViewBinding
 import com.google.gson.Gson
-import com.intuisoft.plaid.PlaidApp
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.activities.MainActivity
 import com.intuisoft.plaid.androidwrappers.delegates.FragmentActionBarDelegate
@@ -20,7 +18,7 @@ import com.intuisoft.plaid.common.model.StoredHiddenWalletsModel
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.listeners.NetworkStateChangeListener
-import com.intuisoft.plaid.walletmanager.AbstractWalletManager
+import com.intuisoft.plaid.common.delegates.wallet.WalletDelegate
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -51,7 +49,7 @@ abstract class BindingFragment<T: ViewBinding> : Fragment(), FragmentActionBarDe
         findNavController().popBackStack()
     }
 
-    fun softRestart(walletManager: AbstractWalletManager, localStoreRepository: LocalStoreRepository) {
+    fun softRestart(walletManager: WalletDelegate, localStoreRepository: LocalStoreRepository) {
         (this as FragmentBottomBarBarDelegate).apply {
             runBlocking {
                 walletManager.stop()

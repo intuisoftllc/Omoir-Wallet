@@ -16,13 +16,13 @@ import com.intuisoft.plaid.common.model.BitcoinDisplayUnit
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.common.util.extensions.safeWalletScope
-import com.intuisoft.plaid.walletmanager.AbstractWalletManager
+import com.intuisoft.plaid.common.delegates.wallet.WalletDelegate
 import kotlinx.coroutines.launch
 
 class SettingsViewModel(
     application: Application,
     private val localStoreRepository: LocalStoreRepository,
-    private val walletManager: AbstractWalletManager,
+    private val walletManager: WalletDelegate,
     private val eventTracker: EventTracker
 ): BaseViewModel(application, localStoreRepository, walletManager) {
 

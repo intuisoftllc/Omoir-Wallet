@@ -18,7 +18,7 @@ import com.intuisoft.plaid.common.coroutines.PlaidScope
 import com.intuisoft.plaid.common.model.BitcoinDisplayUnit
 import com.intuisoft.plaid.features.homescreen.shared.viewmodel.HomeScreenViewModel
 import com.intuisoft.plaid.listeners.StateListener
-import com.intuisoft.plaid.model.LocalWalletModel
+import com.intuisoft.plaid.common.delegates.wallet.btc.LocalWalletModel
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.common.util.SimpleCoinNumberFormat
@@ -26,7 +26,7 @@ import com.intuisoft.plaid.common.util.extensions.safeWalletScope
 import com.intuisoft.plaid.common.util.extensions.toArrayList
 import com.intuisoft.plaid.databinding.FragmentProHomescreenBinding
 import com.intuisoft.plaid.features.homescreen.pro.adapters.ProWalletDataAdapter
-import com.intuisoft.plaid.walletmanager.AbstractWalletManager
+import com.intuisoft.plaid.common.delegates.wallet.WalletDelegate
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -40,7 +40,7 @@ class ProHomescreenFragment : ConfigurableFragment<FragmentProHomescreenBinding>
     protected val viewModel: HomeScreenViewModel by viewModel()
     protected val walletVM: WalletViewModel by viewModel()
     protected val localStoreRepository: LocalStoreRepository by inject()
-    protected val walletManager: AbstractWalletManager by inject()
+    protected val walletManager: WalletDelegate by inject()
     protected val eventTracker: EventTracker by inject()
 
     private val adapter = ProWalletDataAdapter(

@@ -21,7 +21,7 @@ import com.intuisoft.plaid.androidwrappers.delegates.FragmentConfiguration
 import com.intuisoft.plaid.billing.BillingManager
 import com.intuisoft.plaid.common.analytics.EventTracker
 import com.intuisoft.plaid.common.analytics.events.EventWalletSettingsExportCsv
-import com.intuisoft.plaid.common.delegates.DelegateManager
+import com.intuisoft.plaid.delegates.DelegateManager
 import com.intuisoft.plaid.common.model.BitcoinDisplayUnit
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.common.util.Constants.Time.MIN_CLICK_INTERVAL_SHORT

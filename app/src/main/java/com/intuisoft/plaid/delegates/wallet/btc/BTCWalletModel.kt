@@ -1,8 +1,10 @@
-package com.intuisoft.plaid.model
+package com.intuisoft.plaid.delegates.wallet.btc
 
 import android.content.Context
 import android.widget.TextView
 import com.intuisoft.plaid.R
+import com.intuisoft.plaid.common.delegates.wallet.GenericWalletModel
+import com.intuisoft.plaid.common.delegates.wallet.WalletDelegate
 import com.intuisoft.plaid.common.model.HiddenWalletModel
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.common.util.SimpleCoinNumberFormat
@@ -12,27 +14,27 @@ import io.horizontalsystems.bitcoinkit.BitcoinKit
 import io.horizontalsystems.hdwalletkit.HDWallet
 
 
-data class LocalWalletModel(
-    var name: String,
-    var uuid: String,
-    var testNetWallet: Boolean,
-    var hiddenWallet: Boolean,
-) {
+data class BTCWalletModel(
+    val name: String,
+    val uuid: String,
+    val testNet: Boolean,
+    val hidden: Boolean,
+): GenericWalletModel(name, uuid, testNet, hidden) {
     var walletKit: BitcoinKit? = null
 
-    val isSyncing: Boolean
+    override val isSyncing: Boolean
         get() = walletKit!!.syncState.isSyncing()
 
-    val isSynced: Boolean
+    override val isSynced: Boolean
         get() = walletKit!!.syncState.hasSynced()
 
-    val isRestored: Boolean
+    override val isRestored: Boolean
         get() = walletKit!!.isRestored
 
-    val notStarted: Boolean
+    override val notStarted: Boolean
         get() = !isSynced && !isSynced
 
-    val syncPercentage: Int
+    override val syncPercentage: Int
         get() = (walletKit!!.syncState.syncPercentage() * 100).toInt()
 
     var lastSyncPercentage = -1

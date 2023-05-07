@@ -19,7 +19,7 @@ import com.intuisoft.plaid.features.createwallet.viewmodel.CreateWalletViewModel
 import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.util.fragmentconfig.AllSetData
 import com.intuisoft.plaid.util.fragmentconfig.WalletConfigurationData
-import com.intuisoft.plaid.walletmanager.AbstractWalletManager
+import com.intuisoft.plaid.common.delegates.wallet.WalletDelegate
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -29,7 +29,7 @@ class NameYourWalletFragment : ConfigurableFragment<FragmentNameWalletBinding>(
     requiresWallet = false
 ) {
     protected val viewModel: CreateWalletViewModel by viewModel()
-    protected val walletManager: AbstractWalletManager by inject()
+    protected val walletManager: WalletDelegate by inject()
     protected val localStoreRepository: LocalStoreRepository by inject()
 
     override fun onCreateView(

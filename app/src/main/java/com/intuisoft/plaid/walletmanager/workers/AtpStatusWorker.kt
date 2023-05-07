@@ -3,7 +3,6 @@ package com.intuisoft.plaid.walletmanager.workers
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
-import android.util.Log
 import androidx.annotation.NonNull
 import androidx.core.app.NotificationCompat
 import androidx.work.CoroutineWorker
@@ -17,7 +16,7 @@ import com.intuisoft.plaid.common.model.BatchDataModel
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.common.util.RateConverter
-import com.intuisoft.plaid.walletmanager.AbstractWalletManager
+import com.intuisoft.plaid.common.delegates.wallet.WalletDelegate
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.delay
 import org.koin.java.KoinJavaComponent.inject
@@ -36,7 +35,7 @@ class AtpStatusWorker(
                 NotificationManager
 
     private val localStoreRepository: LocalStoreRepository by inject(LocalStoreRepository::class.java)
-    private val walletManager: AbstractWalletManager by inject(AbstractWalletManager::class.java)
+    private val walletManager: WalletDelegate by inject(WalletDelegate::class.java)
 
     @NonNull
     override suspend fun doWork(): Result {

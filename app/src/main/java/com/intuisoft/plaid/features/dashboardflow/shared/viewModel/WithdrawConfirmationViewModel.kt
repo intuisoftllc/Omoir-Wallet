@@ -8,7 +8,7 @@ import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.SingleLiveData
 import com.intuisoft.plaid.androidwrappers.WalletViewModel
 import com.intuisoft.plaid.common.coroutines.PlaidScope
-import com.intuisoft.plaid.common.delegates.DelegateManager
+import com.intuisoft.plaid.delegates.DelegateManager
 import com.intuisoft.plaid.common.model.FeeType
 import com.intuisoft.plaid.common.model.NetworkFeeRate
 import com.intuisoft.plaid.common.repositories.ApiRepository
@@ -17,7 +17,7 @@ import com.intuisoft.plaid.util.NetworkUtil
 import com.intuisoft.plaid.common.util.RateConverter
 import com.intuisoft.plaid.common.util.extensions.safeWalletScope
 import com.intuisoft.plaid.common.model.ExchangeStatus
-import com.intuisoft.plaid.walletmanager.AbstractWalletManager
+import com.intuisoft.plaid.common.delegates.wallet.WalletDelegate
 import io.horizontalsystems.bitcoincore.models.TransactionDataSortType
 import io.horizontalsystems.bitcoincore.storage.FullTransaction
 import io.horizontalsystems.bitcoinkit.BitcoinKit
@@ -31,7 +31,7 @@ class WithdrawConfirmationViewModel(
     application: Application,
     apiRepository: ApiRepository,
     private val localStoreRepository: LocalStoreRepository,
-    private val walletManager: AbstractWalletManager,
+    private val walletManager: WalletDelegate,
     private val delegateManager: DelegateManager,
 ): WalletViewModel(application, localStoreRepository, apiRepository, walletManager, delegateManager) {
 

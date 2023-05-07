@@ -7,11 +7,11 @@ import com.intuisoft.plaid.PlaidApp
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.SingleLiveData
 import com.intuisoft.plaid.androidwrappers.WalletViewModel
-import com.intuisoft.plaid.common.delegates.DelegateManager
+import com.intuisoft.plaid.delegates.DelegateManager
 import com.intuisoft.plaid.common.repositories.ApiRepository
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.util.fragmentconfig.WalletConfigurationData
-import com.intuisoft.plaid.walletmanager.AbstractWalletManager
+import com.intuisoft.plaid.common.delegates.wallet.WalletDelegate
 import io.horizontalsystems.hdwalletkit.HDWallet
 import io.horizontalsystems.hdwalletkit.Language
 import io.horizontalsystems.hdwalletkit.Mnemonic
@@ -22,7 +22,7 @@ class CreateWalletViewModel(
     application: Application,
     localStoreRepository: LocalStoreRepository,
     apiRepository: ApiRepository,
-    private val walletManager: AbstractWalletManager,
+    private val walletManager: WalletDelegate,
     private val delegateManager: DelegateManager
 ): WalletViewModel(application, localStoreRepository, apiRepository, walletManager, delegateManager) {
 

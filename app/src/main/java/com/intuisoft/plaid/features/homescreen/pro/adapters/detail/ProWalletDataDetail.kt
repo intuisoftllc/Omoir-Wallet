@@ -6,7 +6,7 @@ import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.BindingViewHolder
 import com.intuisoft.plaid.androidwrappers.ListItem
 import com.intuisoft.plaid.androidwrappers.setOnSingleClickListener
-import com.intuisoft.plaid.model.LocalWalletModel
+import com.intuisoft.plaid.common.delegates.wallet.btc.LocalWalletModel
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.common.util.Constants
 import kotlinx.android.synthetic.main.list_item_pro_wallet_detail.view.*

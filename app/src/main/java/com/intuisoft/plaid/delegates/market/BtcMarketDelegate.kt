@@ -1,17 +1,14 @@
-package com.intuisoft.plaid.common.delegates.market
+package com.intuisoft.plaid.delegates.market
 
 import android.app.Application
 import com.intuisoft.plaid.common.R
+import com.intuisoft.plaid.common.delegates.market.MarketDataDelegate
 import com.intuisoft.plaid.common.local.AppPrefs
 import com.intuisoft.plaid.common.model.BasicTickerDataModel
 import com.intuisoft.plaid.common.model.ChartDataModel
 import com.intuisoft.plaid.common.model.ChartIntervalType
-import com.intuisoft.plaid.common.model.CongestionRating
 import com.intuisoft.plaid.common.repositories.ApiRepository
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
-import com.intuisoft.plaid.common.util.Constants
-import com.intuisoft.plaid.common.util.SimpleCoinNumberFormat
-import com.intuisoft.plaid.common.util.extensions.humanReadableByteCountSI
 
 class BtcMarketDelegate(
     private val localStoreRepository: LocalStoreRepository,

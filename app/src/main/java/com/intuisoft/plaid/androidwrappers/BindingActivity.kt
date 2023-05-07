@@ -9,7 +9,7 @@ import com.intuisoft.plaid.androidwrappers.delegates.FragmentBottomBarBarDelegat
 import com.intuisoft.plaid.common.model.StoredHiddenWalletsModel
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.common.util.Constants
-import com.intuisoft.plaid.walletmanager.AbstractWalletManager
+import com.intuisoft.plaid.common.delegates.wallet.WalletDelegate
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -28,7 +28,7 @@ abstract class BindingActivity<T: ViewBinding> : AppCompatActivity() {
         _binding?.delegate()
     }
 
-    fun softRestart(walletManager: AbstractWalletManager, localStoreRepository: LocalStoreRepository) {
+    fun softRestart(walletManager: WalletDelegate, localStoreRepository: LocalStoreRepository) {
         (this as FragmentBottomBarBarDelegate).apply {
             runBlocking {
                 walletManager.stop()

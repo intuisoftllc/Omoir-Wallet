@@ -1,7 +1,7 @@
-package com.intuisoft.plaid.common.delegates
+package com.intuisoft.plaid.delegates
 
 import android.app.Application
-import com.intuisoft.plaid.common.delegates.coins.Btc
+import com.intuisoft.plaid.delegates.coins.Btc
 import com.intuisoft.plaid.common.delegates.coins.CoinDelegate
 import com.intuisoft.plaid.common.local.AppPrefs
 import com.intuisoft.plaid.common.repositories.ApiRepository

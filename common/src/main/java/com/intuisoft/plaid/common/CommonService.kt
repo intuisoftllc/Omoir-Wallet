@@ -6,7 +6,7 @@ import android.content.SharedPreferences
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.intuisoft.plaid.common.analytics.EventTracker
-import com.intuisoft.plaid.common.delegates.DelegateManager
+import com.intuisoft.plaid.delegates.DelegateManager
 import com.intuisoft.plaid.common.local.AppPrefs
 import com.intuisoft.plaid.common.local.UserData
 import com.intuisoft.plaid.common.local.db.*
@@ -45,7 +45,7 @@ object CommonService {
     private var blockstreamInfoTestNetRepository: BlockstreamInfoRepository? = null
     private var blockchainInfoRepository: BlockchainInfoRepository? = null
     private var coingeckoRepository: CoingeckoRepository? = null
-    private var delegateManager: DelegateManager? = null
+    private var delegateManager: com.intuisoft.plaid.delegates.DelegateManager? = null
     private var databaseRepository: DatabaseRepository? = null
     private var changeNowRepository: ChangeNowRepository? = null
     private var memoryCache: MemoryCache? = null
@@ -143,9 +143,9 @@ object CommonService {
         return blockchairRepository!!
     }
 
-    fun getDelegateManagerInstance(): DelegateManager {
+    fun getDelegateManagerInstance(): com.intuisoft.plaid.delegates.DelegateManager {
         if(delegateManager == null) {
-            delegateManager = DelegateManager(
+            delegateManager = com.intuisoft.plaid.delegates.DelegateManager(
                 getLocalStoreInstance(),
                 getApiRepositoryInstance(),
                 getAppPrefs(),

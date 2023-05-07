@@ -25,14 +25,14 @@ import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.common.util.Constants.Limit.MAX_ALIAS_LENGTH
 import com.intuisoft.plaid.databinding.FragmentOnboardingWelcomeBinding
 import com.intuisoft.plaid.features.onboarding.viewmodel.OnboardingViewModel
-import com.intuisoft.plaid.walletmanager.AbstractWalletManager
+import com.intuisoft.plaid.common.delegates.wallet.WalletDelegate
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 
 class WelcomeFragment : BindingFragment<FragmentOnboardingWelcomeBinding>() {
     private val viewModel: OnboardingViewModel by sharedViewModel()
-    private val walletManager: AbstractWalletManager by inject()
+    private val walletManager: WalletDelegate by inject()
     protected val eventTracker: EventTracker by inject()
 
     override fun onCreateView(

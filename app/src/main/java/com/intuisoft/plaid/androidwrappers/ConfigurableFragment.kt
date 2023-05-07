@@ -14,9 +14,9 @@ import com.intuisoft.plaid.common.CommonService
 import com.intuisoft.plaid.common.local.UserData
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.common.util.Constants
-import com.intuisoft.plaid.model.LocalWalletModel
+import com.intuisoft.plaid.common.delegates.wallet.btc.LocalWalletModel
 import com.intuisoft.plaid.common.util.errors.ClosedWalletErr
-import com.intuisoft.plaid.walletmanager.AbstractWalletManager
+import com.intuisoft.plaid.common.delegates.wallet.WalletDelegate
 import org.koin.android.ext.android.inject
 
 
@@ -29,7 +29,7 @@ abstract class ConfigurableFragment<T: ViewBinding>(
 ) : BindingFragment<T>() {
     protected var baseVM: BaseViewModel? = null
     private var configTypes = listOf<FragmentConfigurationType>()
-    private val _manager: AbstractWalletManager by inject()
+    private val _manager: WalletDelegate by inject()
     private val _localStore: LocalStoreRepository by inject()
     private val _billing: BillingManager by inject()
 

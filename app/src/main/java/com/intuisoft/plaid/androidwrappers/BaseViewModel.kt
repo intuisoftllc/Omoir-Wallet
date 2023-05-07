@@ -14,13 +14,12 @@ import com.intuisoft.plaid.PlaidApp
 import com.intuisoft.plaid.androidwrappers.delegates.FragmentConfiguration
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.common.util.extensions.safeWalletScope
-import com.intuisoft.plaid.walletmanager.AbstractWalletManager
+import com.intuisoft.plaid.common.delegates.wallet.WalletDelegate
 import kotlinx.coroutines.*
 
 open class BaseViewModel(
     application: Application,
-    private val localStoreRepository: LocalStoreRepository,
-    private val walletManager: AbstractWalletManager
+    private val localStoreRepository: LocalStoreRepository
 ) : AndroidViewModel(application) {
 
     private val _fingerprintEnroll = SingleLiveData<Boolean>()

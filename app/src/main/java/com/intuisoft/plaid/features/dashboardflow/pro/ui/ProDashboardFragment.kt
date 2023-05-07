@@ -21,12 +21,12 @@ import com.intuisoft.plaid.common.analytics.events.EventDashboardDeposit
 import com.intuisoft.plaid.common.analytics.events.EventDashboardOpenSettingsOpen
 import com.intuisoft.plaid.common.analytics.events.EventDashboardView
 import com.intuisoft.plaid.common.analytics.events.EventDashboardWithdrawal
-import com.intuisoft.plaid.common.delegates.DelegateManager
+import com.intuisoft.plaid.delegates.DelegateManager
 import com.intuisoft.plaid.common.model.BitcoinDisplayUnit
 import com.intuisoft.plaid.common.model.ChartDataModel
 import com.intuisoft.plaid.common.model.ChartIntervalType
 import com.intuisoft.plaid.listeners.StateListener
-import com.intuisoft.plaid.model.LocalWalletModel
+import com.intuisoft.plaid.common.delegates.wallet.btc.LocalWalletModel
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.common.util.RateConverter
@@ -38,7 +38,7 @@ import com.intuisoft.plaid.features.dashboardflow.shared.adapters.BasicLineChart
 import com.intuisoft.plaid.features.dashboardflow.shared.viewModel.DashboardViewModel
 import com.intuisoft.plaid.common.util.SimpleTimeFormat
 import com.intuisoft.plaid.util.fragmentconfig.ConfigQrDisplayData
-import com.intuisoft.plaid.walletmanager.AbstractWalletManager
+import com.intuisoft.plaid.common.delegates.wallet.WalletDelegate
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
@@ -48,7 +48,7 @@ import java.util.*
 class ProDashboardFragment : ConfigurableFragment<FragmentProWalletDashboardBinding>(pinProtection = true, premiumContent = true), StateListener {
     protected val viewModel: DashboardViewModel by viewModel()
     protected val localStoreRepository: LocalStoreRepository by inject()
-    protected val walletManager: AbstractWalletManager by inject()
+    protected val walletManager: WalletDelegate by inject()
     protected val delegateManager: DelegateManager by inject()
     protected val eventTracker: EventTracker by inject()
 

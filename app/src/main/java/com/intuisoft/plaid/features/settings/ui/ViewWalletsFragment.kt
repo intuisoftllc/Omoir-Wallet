@@ -13,11 +13,11 @@ import com.intuisoft.plaid.androidwrappers.*
 import com.intuisoft.plaid.androidwrappers.delegates.FragmentConfiguration
 import com.intuisoft.plaid.databinding.FragmentManageWalletsBinding
 import com.intuisoft.plaid.features.homescreen.free.adapters.BasicWalletDataAdapter
-import com.intuisoft.plaid.model.LocalWalletModel
+import com.intuisoft.plaid.common.delegates.wallet.btc.LocalWalletModel
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.common.util.extensions.toArrayList
-import com.intuisoft.plaid.walletmanager.AbstractWalletManager
+import com.intuisoft.plaid.common.delegates.wallet.WalletDelegate
 import org.koin.android.ext.android.inject
 
 
@@ -26,7 +26,7 @@ class ViewWalletsFragment : ConfigurableFragment<FragmentManageWalletsBinding>(
     requiresWallet = false
 ) {
     protected val localStoreRepository: LocalStoreRepository by inject()
-    protected val walletManager: AbstractWalletManager by inject()
+    protected val walletManager: WalletDelegate by inject()
 
     private val adapter = BasicWalletDataAdapter(
         onWalletSelected = ::onWalletSelected,

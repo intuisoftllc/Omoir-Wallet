@@ -8,14 +8,14 @@ import androidx.navigation.NavDirections
 import com.intuisoft.plaid.androidwrappers.BaseViewModel
 import com.intuisoft.plaid.features.splash.ui.SplashFragmentDirections
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
-import com.intuisoft.plaid.walletmanager.AbstractWalletManager
+import com.intuisoft.plaid.common.delegates.wallet.WalletDelegate
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class SplashViewModel(
     application: Application,
     private val localStoreRepository: LocalStoreRepository,
-    private val walletManager: AbstractWalletManager
+    private val walletManager: WalletDelegate
 ): BaseViewModel(application, localStoreRepository, walletManager) {
 
     private val _nextDestination = MutableLiveData<NavDirections>()

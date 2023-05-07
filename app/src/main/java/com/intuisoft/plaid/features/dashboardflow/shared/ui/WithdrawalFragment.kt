@@ -19,13 +19,13 @@ import com.intuisoft.plaid.androidwrappers.*
 import com.intuisoft.plaid.androidwrappers.delegates.FragmentConfiguration
 import com.intuisoft.plaid.common.analytics.EventTracker
 import com.intuisoft.plaid.common.analytics.events.EventWithdrawMax
-import com.intuisoft.plaid.common.delegates.DelegateManager
+import com.intuisoft.plaid.delegates.DelegateManager
 import com.intuisoft.plaid.common.model.BitcoinDisplayUnit
 import com.intuisoft.plaid.databinding.FragmentWithdrawBinding
 import com.intuisoft.plaid.features.dashboardflow.shared.viewModel.WithdrawalViewModel
 import com.intuisoft.plaid.features.homescreen.adapters.CoinControlAdapter
 import com.intuisoft.plaid.listeners.StateListener
-import com.intuisoft.plaid.model.LocalWalletModel
+import com.intuisoft.plaid.common.delegates.wallet.btc.LocalWalletModel
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.common.util.Constants.Navigation.ANIMATED_ENTER_EXIT_RIGHT_NAV_OPTION
@@ -35,7 +35,7 @@ import com.intuisoft.plaid.common.util.extensions.toArrayList
 import com.intuisoft.plaid.features.dashboardflow.pro.ui.UtxoDistributionFragment
 import com.intuisoft.plaid.util.fragmentconfig.BasicConfigData
 import com.intuisoft.plaid.util.fragmentconfig.SendFundsData
-import com.intuisoft.plaid.walletmanager.AbstractWalletManager
+import com.intuisoft.plaid.common.delegates.wallet.WalletDelegate
 import io.horizontalsystems.bitcoincore.models.PublicKey
 import io.horizontalsystems.bitcoincore.storage.UnspentOutput
 import kotlinx.coroutines.*
@@ -46,7 +46,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class WithdrawalFragment : ConfigurableFragment<FragmentWithdrawBinding>(pinProtection = true), StateListener {
     private val viewModel: WithdrawalViewModel by viewModel()
     private val localStoreRepository: LocalStoreRepository by inject()
-    private val walletManager: AbstractWalletManager by inject()
+    private val walletManager: WalletDelegate by inject()
     private val delegateManager: DelegateManager by inject()
     protected val eventTracker: EventTracker by inject()
 

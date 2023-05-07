@@ -7,14 +7,14 @@ import com.intuisoft.plaid.PlaidApp
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.BaseViewModel
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
-import com.intuisoft.plaid.walletmanager.AbstractWalletManager
+import com.intuisoft.plaid.common.delegates.wallet.WalletDelegate
 import java.util.*
 
 
 class HomeScreenViewModel(
     application: Application,
     private val localStoreRepository: LocalStoreRepository,
-    private val walletManager: AbstractWalletManager
+    private val walletManager: WalletDelegate
 ): BaseViewModel(application, localStoreRepository, walletManager) {
 
     private val _homeScreenGreeting = MutableLiveData<Pair<String, String>>()

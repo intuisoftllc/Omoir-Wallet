@@ -4,10 +4,10 @@ import android.app.Application
 import com.intuisoft.plaid.common.CommonService
 import com.intuisoft.plaid.common.repositories.ApiRepository
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
-import com.intuisoft.plaid.walletmanager.AbstractWalletManager
-import com.intuisoft.plaid.walletmanager.AtpManager
-import com.intuisoft.plaid.walletmanager.WalletManager
-import com.intuisoft.plaid.walletmanager.SyncManager
+import com.intuisoft.plaid.common.delegates.wallet.WalletDelegate
+import com.intuisoft.plaid.delegates.wallet.btc.AtpManager
+import com.intuisoft.plaid.delegates.wallet.btc.WalletManager
+import com.intuisoft.plaid.delegates.wallet.btc.SyncManager
 import org.koin.dsl.module
 
 val preferencesModule = module {
@@ -56,6 +56,6 @@ fun provideWalletManager(
     application: Application,
     localStoreRepository: LocalStoreRepository,
     syncer: SyncManager
-): AbstractWalletManager {
+): WalletDelegate {
     return WalletManager(application, localStoreRepository, syncer)
 }

@@ -19,7 +19,7 @@ import com.intuisoft.plaid.databinding.FragmentAtpHistoryBinding
 import com.intuisoft.plaid.features.dashboardflow.pro.adapters.AtpHistoryAdapter
 import com.intuisoft.plaid.features.dashboardflow.pro.viewmodel.AtpHistoryViewModel
 import com.intuisoft.plaid.util.fragmentconfig.BasicConfigData
-import com.intuisoft.plaid.walletmanager.AbstractWalletManager
+import com.intuisoft.plaid.common.delegates.wallet.WalletDelegate
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -27,7 +27,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class AtpHistoryFragment : ConfigurableFragment<FragmentAtpHistoryBinding>(pinProtection = true, premiumContent = true) {
     protected val viewModel: AtpHistoryViewModel by viewModel()
     protected val localStoreRepository: LocalStoreRepository by inject()
-    protected val walletManager: AbstractWalletManager by inject()
+    protected val walletManager: WalletDelegate by inject()
 
     val adapter = AtpHistoryAdapter(
         onItemSelected = ::onTransferSelected,

@@ -7,17 +7,18 @@ import androidx.lifecycle.viewModelScope
 import com.intuisoft.plaid.PlaidApp
 import com.intuisoft.plaid.R
 import com.intuisoft.plaid.common.coroutines.PlaidScope
-import com.intuisoft.plaid.common.delegates.DelegateManager
+import com.intuisoft.plaid.common.delegates.wallet.GenericWalletModel
+import com.intuisoft.plaid.delegates.DelegateManager
 import com.intuisoft.plaid.common.model.BitcoinDisplayUnit
 import com.intuisoft.plaid.common.model.SavedAccountModel
 import com.intuisoft.plaid.common.model.TransactionMemoModel
 import com.intuisoft.plaid.common.repositories.ApiRepository
 import com.intuisoft.plaid.listeners.StateListener
-import com.intuisoft.plaid.model.LocalWalletModel
+import com.intuisoft.plaid.common.delegates.wallet.btc.LocalWalletModel
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.common.util.RateConverter
 import com.intuisoft.plaid.common.util.errors.ClosedWalletErr
-import com.intuisoft.plaid.walletmanager.AbstractWalletManager
+import com.intuisoft.plaid.common.delegates.wallet.WalletDelegate
 import com.intuisoft.plaid.common.util.errors.ExistingWalletErr
 import com.intuisoft.plaid.common.util.extensions.safeWalletScope
 import io.horizontalsystems.bitcoincore.managers.SendValueErrors
@@ -34,9 +35,8 @@ open class WalletViewModel(
     application: Application,
     private val localStoreRepository: LocalStoreRepository,
     private val apiRepository: ApiRepository,
-    private val walletManager: AbstractWalletManager,
     private val delegateManager: DelegateManager,
-): BaseViewModel(application, localStoreRepository, walletManager) {
+): BaseViewModel(application, localStoreRepository) {
 
     protected val _seedPhraseGenerated = SingleLiveData<List<String>>()
     val seedPhraseGenerated: LiveData<List<String>> = _seedPhraseGenerated
@@ -50,8 +50,8 @@ open class WalletViewModel(
     protected val _walletCreated = SingleLiveData<String>()
     val walletCreated: LiveData<String> = _walletCreated
 
-    protected val _displayWallet = SingleLiveData<LocalWalletModel>()
-    val displayWallet: LiveData<LocalWalletModel> = _displayWallet
+    protected val _displayWallet = SingleLiveData<GenericWalletModel>()
+    val displayWallet: LiveData<GenericWalletModel> = _displayWallet
 
     protected val _readOnlyWallet = SingleLiveData<Unit>()
     val readOnlyWallet: LiveData<Unit> = _readOnlyWallet
@@ -80,8 +80,8 @@ open class WalletViewModel(
     protected val _onEditMemo = SingleLiveData<TransactionMemoModel>()
     val onUpdateMemo: LiveData<TransactionMemoModel> = _onEditMemo
 
-    protected val localWallet: LocalWalletModel?
-        get() = walletManager.getOpenedWallet()
+    protected val localWallet: GenericWalletModel?
+        get() = delegateManager.current().walletDelegate.getOpenedWallet()
 
     var selectedUTXOs: MutableList<UnspentOutput> = mutableListOf()
 

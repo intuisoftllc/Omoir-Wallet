@@ -3,7 +3,7 @@ package com.intuisoft.plaid.util
 import android.app.Application
 import android.os.Environment
 import com.intuisoft.plaid.R
-import com.intuisoft.plaid.common.delegates.DelegateManager
+import com.intuisoft.plaid.delegates.DelegateManager
 import com.intuisoft.plaid.common.model.BitcoinDisplayUnit
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.common.util.Constants

@@ -4,32 +4,29 @@ import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
 import com.intuisoft.plaid.PlaidApp
-import com.intuisoft.plaid.R
 import com.intuisoft.plaid.androidwrappers.SingleLiveData
 import com.intuisoft.plaid.androidwrappers.WalletViewModel
 import com.intuisoft.plaid.common.coroutines.PlaidScope
-import com.intuisoft.plaid.common.delegates.DelegateManager
+import com.intuisoft.plaid.delegates.DelegateManager
 import com.intuisoft.plaid.common.model.ChartDataModel
 import com.intuisoft.plaid.common.model.ChartIntervalType
 import com.intuisoft.plaid.common.model.CongestionRating
 import com.intuisoft.plaid.common.repositories.ApiRepository
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
-import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.common.util.SimpleCoinNumberFormat
 import com.intuisoft.plaid.common.util.SimpleCurrencyFormat
-import com.intuisoft.plaid.common.util.extensions.humanReadableByteCountSI
 import com.intuisoft.plaid.common.util.extensions.safeWalletScope
 import com.intuisoft.plaid.util.NetworkUtil
-import com.intuisoft.plaid.walletmanager.AbstractWalletManager
+import com.intuisoft.plaid.common.delegates.wallet.WalletDelegate
 import io.horizontalsystems.bitcoinkit.BitcoinKit
 import kotlinx.coroutines.*
 
 
 class MarketViewModel(
     application: Application,
-    private val apiRepository: ApiRepository,
+    apiRepository: ApiRepository,
     private val localStoreRepository: LocalStoreRepository,
-    private val walletManager: AbstractWalletManager,
+    private val walletManager: WalletDelegate,
     private val delegateManager: DelegateManager
 ): WalletViewModel(application, localStoreRepository, apiRepository, walletManager, delegateManager) {
 
@@ -96,11 +93,10 @@ class MarketViewModel(
         PlaidScope.applicationScope.launch(Dispatchers.IO) {
             safeWalletScope {
                 val basicData = delegateManager.current().marketDelegate.fetchBasicTickerData()
-                val extendedData =
-                    apiRepository.getBlockStats(getWalletNetwork() == BitcoinKit.NetworkType.TestNet, delegateManager.current().networkDelegate)
+                val extendedData = delegateManager.current().networkDelegate.fetchExtendedNetworkData(getWalletNetwork() == BitcoinKit.NetworkType.TestNet)
                 val chartData = getChartData()
 
-                if (basicData.marketCap != 0.0 && extendedData != null && chartData != null) {
+                if (basicData.marketCap != 0.0 && extendedData.isNotEmpty() && chartData != null) {
                     _showContent.postValue(true)
                     updateBasicMarketData()
                     updateExtendedMarketData()

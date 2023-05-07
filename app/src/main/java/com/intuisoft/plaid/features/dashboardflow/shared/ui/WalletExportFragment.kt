@@ -23,7 +23,7 @@ import com.intuisoft.plaid.common.analytics.EventTracker
 import com.intuisoft.plaid.common.analytics.events.EventDepositBuildInvoice
 import com.intuisoft.plaid.common.analytics.events.EventDepositCreateInvoice
 import com.intuisoft.plaid.common.analytics.events.EventDepositShareAddress
-import com.intuisoft.plaid.common.delegates.DelegateManager
+import com.intuisoft.plaid.delegates.DelegateManager
 import com.intuisoft.plaid.common.model.BitcoinDisplayUnit
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
 import com.intuisoft.plaid.common.util.Constants

@@ -13,8 +13,7 @@ import com.intuisoft.plaid.androidwrappers.BindingActivity
 import com.intuisoft.plaid.androidwrappers.checkAppPermission
 import com.intuisoft.plaid.common.util.Constants.ActivityResult.BARCODE_EXTRA
 import com.intuisoft.plaid.databinding.ActivityScanBarcodeBinding
-import com.intuisoft.plaid.walletmanager.AbstractWalletManager
-import io.horizontalsystems.hdwalletkit.HDExtendedKey
+import com.intuisoft.plaid.common.delegates.wallet.WalletDelegate
 import org.koin.android.ext.android.inject
 import org.koin.core.component.KoinComponent
 
@@ -22,7 +21,7 @@ import org.koin.core.component.KoinComponent
 class BarcodeScannerActivity : BindingActivity<ActivityScanBarcodeBinding>(), KoinComponent {
     private lateinit var barcodeDetector: BarcodeDetector
     private lateinit var cameraSource: CameraSource
-    private val walletManager: AbstractWalletManager by inject()
+    private val walletManager: WalletDelegate by inject()
 
     companion object {
         var invoiceMode = false

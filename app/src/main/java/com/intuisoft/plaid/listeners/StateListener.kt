@@ -1,8 +1,8 @@
 package com.intuisoft.plaid.listeners
 
-import com.intuisoft.plaid.model.LocalWalletModel
+import com.intuisoft.plaid.common.delegates.wallet.GenericWalletModel
 
 interface StateListener {
-    fun onWalletStateUpdated(wallet: LocalWalletModel)
-    fun onWalletAlreadySynced(wallet: LocalWalletModel)
+    fun onWalletStateUpdated(wallet: GenericWalletModel)
+    fun onWalletAlreadySynced(wallet: GenericWalletModel)
 }

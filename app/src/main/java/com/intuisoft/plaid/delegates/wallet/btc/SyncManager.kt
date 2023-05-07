@@ -1,18 +1,12 @@
-package com.intuisoft.plaid.walletmanager
+package com.intuisoft.plaid.delegates.wallet.btc
 
 import android.app.Application
-import android.util.Log
 import com.intuisoft.plaid.common.coroutines.PlaidScope
-import com.intuisoft.plaid.common.model.DevicePerformanceLevel
-import com.intuisoft.plaid.common.repositories.ApiRepository
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
-import com.intuisoft.plaid.model.LocalWalletModel
+import com.intuisoft.plaid.common.delegates.wallet.btc.LocalWalletModel
 import com.intuisoft.plaid.common.util.Constants
-import com.intuisoft.plaid.common.util.extensions.remove
-import com.intuisoft.plaid.common.util.extensions.splitIntoGroupOf
 import com.intuisoft.plaid.util.NetworkUtil
 import com.intuisoft.plaid.util.entensions.ensureActive
-import io.horizontalsystems.bitcoincore.network.peer.PeerGroup
 import kotlinx.coroutines.*
 import java.util.concurrent.CopyOnWriteArrayList
 import java.util.concurrent.atomic.AtomicBoolean

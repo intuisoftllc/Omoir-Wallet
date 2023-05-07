@@ -1,4 +1,4 @@
-package com.intuisoft.plaid.walletmanager
+package com.intuisoft.plaid.delegates.wallet.btc
 
 import android.app.Application
 import androidx.work.Data
@@ -10,7 +10,7 @@ import com.intuisoft.plaid.common.CommonService
 import com.intuisoft.plaid.common.model.*
 import com.intuisoft.plaid.common.repositories.ApiRepository
 import com.intuisoft.plaid.common.repositories.LocalStoreRepository
-import com.intuisoft.plaid.model.LocalWalletModel
+import com.intuisoft.plaid.common.delegates.wallet.btc.LocalWalletModel
 import com.intuisoft.plaid.common.util.Constants
 import com.intuisoft.plaid.common.util.extensions.nextInt
 import com.intuisoft.plaid.util.NetworkUtil
